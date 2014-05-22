@@ -1,0 +1,9 @@
+{
+    "name": "manager",
+    "title": "Module manager",
+    "description": "Manage modules",
+    "source": "lib",
+    "assets": "assets",
+    "dependencies": ["system"],
+    "hidden": false
+}
