@@ -76,7 +76,7 @@ class PageController
             Using('SystemAlerts')->error('Faild when collecting resources');
         }
         
-        HttpRedirect(UriForPath('/module-manager'));
+        HttpRedirect(UriForPath('/module-manager'), 303);
     }
     
     public function module()
@@ -259,7 +259,7 @@ class PageController
             
             App::systemCache()->clear();
             Using('SystemAlerts')->success('Your settings have been saved.');
-            HttpRedirect(UriForPath('/module-manager'));
+            HttpRedirect(UriForPath('/module-manager'), 303);
         }
         
         $menu = null;
