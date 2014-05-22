@@ -5,13 +5,13 @@ A different kind of framework
 
 ### Installation
 
-```console
+```bash
 
 #Install composer
 
 curl -sS https://getcomposer.org/installer | php
 
-#Make it globaly available (optional)
+#Make it globally available (optional)
 
 mv composer.phar /usr/local/bin/composer
 
@@ -51,3 +51,5 @@ composer create-project opis/colibri <project-name>
 ```
 
 ### Documentation
+
+No documentation available yet.
