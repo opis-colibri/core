@@ -191,36 +191,31 @@ class PageController
     public function setup()
     {
         
-        $menu = null;
+        $menu = array(
+            'links' => array(
+                'Home' => array(
+                    'class' => 'fa fa-home fa-lg',
+                    'title' => 'Back to site',
+                    'href' => UriForPath('/'),
+                ),
+            ),
+        );
         
         if(Config()->has('manager'))
         {
-            $menu = View('manager.menu', array(
-                'links' => array(
-                    'Home' => array(
-                        'class' => 'fa fa-home fa-lg',
-                        'title' => 'Back to site',
-                        'href' => UriForPath('/'),
-                    ),
-                    'Module list' => array(
-                        'class' => 'fa fa-list fa-lg',
-                        'title' => 'Module list',
-                        'href' => UriForPath('/module-manager'),
-                    ),
-                ),
-            ));
+            $menu['links']['Module list'] = array(
+                'class' => 'fa fa-list fa-lg',
+                'title' => 'Module list',
+                'href' => UriForPath('/module-manager'),
+            );
         }
-        
-        $values = Config()->read('manager', array(
-            'username' => null,
-        ));
         
         return array(
             'title' => 'Account setup',
-            'menu' => $menu,
+            'menu' => View('manager.menu', $menu),
             'content' => View('manager.setup', array(
                 'alerts' => Using('SystemAlerts'),
-                'username' => $values['username'],
+                'username' => null,
                 'password' => null,
                 'check' => null,
             )),
@@ -262,29 +257,28 @@ class PageController
             HttpRedirect(UriForPath('/module-manager'), 303);
         }
         
-        $menu = null;
+        $menu = array(
+            'links' => array(
+                'Home' => array(
+                    'class' => 'fa fa-home fa-lg',
+                    'title' => 'Back to site',
+                    'href' => UriForPath('/'),
+                ),
+            ),
+        );
         
         if(Config()->has('manager'))
         {
-            $menu = View('manager.menu', array(
-                'links' => array(
-                    'Home' => array(
-                        'class' => 'fa fa-home fa-lg',
-                        'title' => 'Back to site',
-                        'href' => UriForPath('/'),
-                    ),
-                    'Module list' => array(
-                        'class' => 'fa fa-list fa-lg',
-                        'title' => 'Module list',
-                        'href' => UriForPath('/module-manager'),
-                    ),
-                ),
-            ));
+            $menu['links']['Module list'] = array(
+                'class' => 'fa fa-list fa-lg',
+                'title' => 'Module list',
+                'href' => UriForPath('/module-manager'),
+            );
         }
         
         return array(
             'title' => 'Account setup',
-            'menu' => $menu,
+            'menu' => View('manager.menu', $menu),
             'content' => View('manager.setup', array(
                 'alerts' => Using('SystemAlerts'),
                 'username' => $username,
