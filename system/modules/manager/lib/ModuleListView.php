@@ -33,7 +33,7 @@ class ModuleListView extends View
         $form += array(
             'id' => 'form-module-manager',
             'method' => 'post',
-            'action' => Request()->uriForPath('/module-manager/module'),
+            'action' => UriForPath('/module-manager/module'),
         );
         
         foreach(Module::findAll() as $module => $info)
