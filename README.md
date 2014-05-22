@@ -5,7 +5,23 @@ A different kind of framework
 
 ### Installation
 
-`composer create-project opis/colibri <project-name>`
+```console
+
+#Install composer
+
+curl -sS https://getcomposer.org/installer | php
+
+#Make it globaly available (optional)
+
+mv composer.phar /usr/local/bin/composer
+
+#Install Opis Colibri
+
+cd /var/www
+
+composer create-project opis/colibri <project-name>
+
+```
 
 ### Apache configuration
 
