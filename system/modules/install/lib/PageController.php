@@ -365,7 +365,7 @@ class PageController
             
             $account = Session()->get('account');
             
-            $conf->write('admin', array(
+            $conf->write('manager', array(
                 'username' => $account['username'],
                 'password' => md5($account['password']),
             ));
