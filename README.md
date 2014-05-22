@@ -5,6 +5,8 @@ A different kind of framework
 
 ### Installation
 
-### Apache setup
+`composer create-project opis/colibri:1.0.*@dev path/to/install`
+
+### Apache configuration
 
 ### Documentation
