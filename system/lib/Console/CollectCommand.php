@@ -32,25 +32,25 @@ use Opis\Colibri\App;
 use Opis\Colibri\Module;
 
 
-class RefreshCommand extends Command
+class CollectCommand extends Command
 {
     
     protected function configure()
     {
         $this
-            ->setName('refresh')
-            ->setDescription('Clear system cache');
+            ->setName('collect')
+            ->setDescription('Collect resources');
     }
     
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if(App::systemCache()->clear())
         {
-            $output->writeln('<info>System cache cleared.</info>');
+            $output->writeln('<info>Resources have been collected .</info>');
         }
         else
         {
-            $output->writeln('<error>System cache was not cleared.</error>');
+            $output->writeln('<error>Resources were not collected.</error>');
         }
     }
     

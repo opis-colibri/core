@@ -63,7 +63,7 @@ use Opis\Colibri\Console\ModuleEnableCommand;
 use Opis\Colibri\Console\ModuleDisableCommand;
 use Opis\Colibri\Console\ModuleUninstallCommand;
 use Opis\Colibri\Console\ModuleInfoCommand;
-use Opis\Colibri\Console\RefreshCommand;
+use Opis\Colibri\Console\CollectCommand;
 
 $application = new Application();
 $application->add(new ModuleInstallCommand);
@@ -71,6 +71,6 @@ $application->add(new ModuleEnableCommand);
 $application->add(new ModuleDisableCommand);
 $application->add(new ModuleUninstallCommand);
 $application->add(new ModuleInfoCommand);
-$application->add(new RefreshCommand);
+$application->add(new CollectCommand);
 $application->run();
 
