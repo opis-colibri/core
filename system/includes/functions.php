@@ -24,70 +24,182 @@ use Opis\Colibri\View;
 use Opis\Colibri\ModuleInfo;
 use Opis\Colibri\Module;
 
+/**
+ * Returns an instance of the specified contract or class
+ *
+ * @param   string  $contract   Contract name or class name
+ * @param   array   $arguments  (optional) Arguments that will be passed to the contract constructor
+ *
+ * @return  mixed
+ */
+
 function Using($contract, array $arguments = array())
 {
     return App::contracts()->make($contract, $arguments);
 }
+
+/**
+ * Returns a database abstraction layer
+ *
+ * @param   string  $connection (optional) Connection name
+ *
+ * @return  \Opis\Database\Database
+ */
 
 function Database($connection = null)
 {
     return $connection === null ? App::systemDatabase() : App::connections()->database($connection);
 }
 
+/**
+ * Returns a database shema abstraction layer
+ *
+ * @param   string  $connection (optional) Connection name
+ *
+ * @return  \Opis\Database\Schema
+ */
+
 function Schema($connection = null)
 {
     return $connection === null ? App::systemSchema() : App::connections()->schema($connection);
 }
+
+/**
+ * Returns a caching storage
+ *
+ * @param   string  $storage (optional) Storage name
+ *
+ * @return  \Opis\Cache\Cache
+ */
 
 function Cache($storage = null)
 {
     return $storage === null ? App::systemCache() : App::cache()->get($storage);
 }
 
+/**
+ * Returns a config storage
+ *
+ * @param   string  $storage (optional) Storage name
+ *
+ * @return  \Opis\Config\Config
+ */
+
 function Config($storage = null)
 {
     return $storage === null ? App::systemConfig() : App::configs()->get($storage);
 }
+
+/**
+ * Returns a session storage
+ *
+ * @param   string  $storage (optional) Storage name
+ *
+ * @return  \Opis\Session\Session
+ */
 
 function Session($storage = null)
 {
     return $storage === null ? App::systemSession() : App::session()->get($storage);
 }
 
+/**
+ * Emit a new event
+ *
+ * @param   string  $name       Event name
+ * @param   boolean $cancelable (optional) Cancelable flag
+ *
+ * @return  \Opis\Colibri\Event
+ */
 function Emit($name, $cancelable = false)
 {
     return Dispatch(new Event($name, $cancelable));
 }
+
+/**
+ * Dispatch an event
+ *
+ * @param   \Opis\Colibri\Event $event  An event to be dispatched
+ *
+ * @return  \Opis\Colibri\Event The dispatched event
+ */
 
 function Dispatch(Event $event)
 {
     return $event->dispatch();
 }
 
+/**
+ * Creates a new view
+ *
+ * @param   string  $name       View name
+ * @param   array   $arguments  (optional) View's arguments
+ *
+ * @return  \Opis\Colibri\View
+ */
+
 function View($name, array $arguments = array())
 {
     return new View($name, $arguments);
 }
+
+/**
+ * Renders a view
+ *
+ * @param   string|\Opis\View\ViewInterface $view   The view that will be rendered
+ *
+ * @return  string
+ */
 
 function Render($view)
 {
     return App::view()->render($view);
 }
 
+/**
+ * Returns a path to a module's asset
+ *
+ * @param   string  $module Module name
+ * @param   string  $path   Module's resource relative path
+ * @param   boolean $full   Full path flag
+ *
+ * @return  string
+ */
+
 function Asset($module, $path, $full = true)
 {
     return UriForPath('/assets/module/' . strtolower($module) . '/' . trim($path), $full);
 }
+
+/**
+ * Return the underlying HTTP request object
+ *
+ * @return  \Opis\Http\Request
+ */
 
 function HttpRequest()
 {
     return App::systemRequest();
 }
 
+/**
+ * Return the underlying HTTP response object
+ *
+ * @return  \Opis\Http\Response
+ */
+
 function HttpResponse()
 {
     return App::systemRequest()->response();
 }
+
+/**
+ * Redirects to a new locations
+ *
+ * @param   string  $location   The new location
+ * @param   int     $code       Redirect status code
+ * @param   array   $query      (optional)  Query arguments
+ */
 
 function HttpRedirect($location, $code = 302, array $query = array())
 {
@@ -105,6 +217,14 @@ function HttpRedirect($location, $code = 302, array $query = array())
     HttpResponse()->redirect($location, $code);
 }
 
+/**
+ * Get informations about a module
+ *
+ * @param   string  $module Module name
+ *
+ * @return  \Opis\Colibri\ModuleInfo
+ */
+
 function Module($module)
 {
     static $list = array();
@@ -119,10 +239,28 @@ function Module($module)
     return $list[$module];
 }
 
+/**
+ * Get the URI for a path
+ *
+ * @param   string  $path   The path
+ * @param   boolean $full   Full URI flag
+ *
+ * @return  string
+ */
+
 function UriForPath($path, $full = true)
 {
     return $full ? HttpRequest()->uriForPath($path) : HttpRequest()->baseUrl() . $path;
 }
+
+/**
+ * Creates an URL from a named route
+ *
+ * @param   string  $route  Route name
+ * @param   array   $args   (optional) Route wildecard's values
+ *
+ * @return  string
+ */
 
 function CreateUrl($route, array $args = array())
 {
