@@ -13,7 +13,7 @@ curl -sS https://getcomposer.org/installer | php
 
 #Make it globally available (optional)
 
-mv composer.phar /usr/local/bin/composer
+sudo mv composer.phar /usr/local/bin/composer
 
 #Install Opis Colibri
 
@@ -27,7 +27,8 @@ composer create-project opis/colibri <project-name>
 
 ```apache
 <VirtualHost *:80>
-
+    
+    ServerName  colibri.dev
     DocumentRoot /var/www/<project-name>/public
 
     <Directory /var/www/<project-name>/public>
