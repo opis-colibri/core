@@ -21,7 +21,6 @@
 namespace Opis\Colibri\Collectors;
 
 use Closure;
-use Opis\Config\Config;
 use Opis\Colibri\Serializable\StorageCollection;
 use Opis\Colibri\ConfigCollectorInterface;
 
@@ -31,7 +30,7 @@ class ConfigCollector extends AbstractCollector implements ConfigCollectorInterf
     public function __construct()
     {
         $collection = new StorageCollection(function($storage, Closure $constructor){
-            return new Config($constructor());
+            return new \Opis\Config\Config($constructor());
         });
         
         parent::__construct($collection);

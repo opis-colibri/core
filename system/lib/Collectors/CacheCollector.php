@@ -21,7 +21,6 @@
 namespace Opis\Colibri\Collectors;
 
 use Closure;
-use Opis\Cache\Cache;
 use Opis\Colibri\Serializable\StorageCollection;
 use Opis\Colibri\CacheCollectorInterface;
 
@@ -31,7 +30,7 @@ class CacheCollector extends AbstractCollector implements CacheCollectorInterfac
     public function __construct()
     {
         $collection = new StorageCollection(function($storage, Closure $constructor){
-            return new Cache($constructor());
+            return new \Opis\Cache\Cache($constructor());
         });
         
         parent::__construct($collection);

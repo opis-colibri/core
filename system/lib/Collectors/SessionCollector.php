@@ -21,7 +21,6 @@
 namespace Opis\Colibri\Collectors;
 
 use Closure;
-use Opis\Session\Session;
 use Opis\Colibri\Serializable\StorageCollection;
 use Opis\Colibri\SessionCollectorInterface;
 
@@ -31,7 +30,7 @@ class SessionCollector extends AbstractCollector implements SessionCollectorInte
     public function __construct()
     {
         $collection = new StorageCollection(function($storage, Closure $constructor){
-            return new Session($constructor(), array('name' => $storage));
+            return new \Opis\Session\Session($constructor(), array('name' => $storage));
         });
         
         parent::__construct($collection);
