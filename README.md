@@ -28,6 +28,7 @@ composer create-project opis/colibri <project-name>
 ```apache
 <VirtualHost *:80>
 
+    ServerName  colibri.dev
     DocumentRoot /var/www/<project-name>/public
 
     <Directory /var/www/<project-name>/public>
