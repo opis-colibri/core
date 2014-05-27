@@ -13,7 +13,7 @@ curl -sS https://getcomposer.org/installer | php
 
 #Make it globally available (optional)
 
-mv composer.phar /usr/local/bin/composer
+sudo mv composer.phar /usr/local/bin/composer
 
 #Install Opis Colibri
 
