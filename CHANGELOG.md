@@ -1,5 +1,8 @@
 CHANGELOG
 -----------
+### Opis Colibri 0.1.3, 2014.05.27
+
+* Fixed several bugs related to storage collectors
 
 ### Opis Colibri 0.1.2, 2014.05.27
 
