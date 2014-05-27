@@ -20,6 +20,7 @@
 
 namespace Opis\Colibri;
 
+use SessionHandlerInterface;
 use Opis\HttpRouting\Path;
 use Opis\Http\Request as HttpRequest;
 use Opis\Http\Error\NotFound as NotFoundError;
@@ -27,7 +28,6 @@ use Opis\Cache\Cache as OpisCache;
 use Opis\Cache\StorageInterface as OpisCacheStorage;
 use Opis\Config\Config as OpisConfig;
 use Opis\Config\StorageInterface as OpisConfigStorage;
-use Opis\Session\SessionStorage as OpisSessionStorage;
 use Opis\Session\Session as OpisSession;
 use Opis\Database\Connection as OpisConnection;
 use Opis\Database\Database as OpisDatabase;
@@ -154,15 +154,10 @@ class App
         return static::$instances['systemCache'];
     }
     
-    public static function systemSession(OpisSessionStorage $storage = null)
+    public static function systemSession(SessionHandlerInterface $storage = null)
     {
         if(!isset(static::$instances['systemSession']))
-        {
-            if($storage === null)
-            {
-                $storage = new \Opis\Session\Storage\Native();
-            }
-            
+        {   
             static::$instances['systemSession'] = new OpisSession($storage);
         }
         

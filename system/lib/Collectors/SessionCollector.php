@@ -31,7 +31,7 @@ class SessionCollector extends AbstractCollector implements SessionCollectorInte
     public function __construct()
     {
         $collection = new StorageCollection(function($storage, Closure $constructor){
-            return new Session($constructor(), $storage);
+            return new Session($constructor(), array('name' => $storage));
         });
         
         parent::__construct($collection);
