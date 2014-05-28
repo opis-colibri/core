@@ -3,6 +3,7 @@ CHANGELOG
 ### Opis Colibri 0.2.1, 2014.05.28
 
 * Bugfix in welcome module
+* Updated core version
 
 ### Opis Colibri 0.2.0, 2014.05.28
 
