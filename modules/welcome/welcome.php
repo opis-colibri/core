@@ -52,7 +52,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cc0000', end
         </div>
         
         <div id="code">
-            <?php print highlight_file(__DIR__ . '/module.php', true); ?>
+            <?php print highlight_file(__DIR__ . '/welcome.module.php', true); ?>
         </div>
         <h2 class="center">My sole purpose is to prevent a 404 error</h2>
     </body>
