@@ -1,5 +1,4 @@
 {
-    "name": "manager",
     "title": "Module manager",
     "description": "Manage modules",
     "source": "lib",

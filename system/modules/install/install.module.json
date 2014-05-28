@@ -1,5 +1,4 @@
 {
-    "name": "install",
     "source": "lib",
     "assets": "assets",
     "hidden": true

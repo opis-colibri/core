@@ -33,9 +33,41 @@ class Module
         
     }
     
+    protected static function toCamelCase($module)
+    {
+        $module = explode('-', $module);
+        $module = array_map(function($value){
+            return ucfirst(strtolower($value));
+        }, $module);
+        
+        return implode('', $module);
+    }
+    
+    protected static function toModuleTitle($module)
+    {
+        $module = explode('-', $module);
+        $module = array_map(function($value){
+            return strtolower($value);
+        }, $module);
+        
+        return ucfirst(implode(' ', $module));
+    }
+    
+    protected static function toModuleId($module)
+    {   
+        $module = explode('-', $module);
+        $module = array_map(function($value){
+            return strtolower($value);
+        }, $module);
+        
+        return implode('-', $module);
+    }
+    
     
     protected static function recursiveDependencies($module, array &$list = array())
     {
+        
+        $module = static::toModuleId($module);
         
         if(!isset($list[$module]))
         {
@@ -74,43 +106,51 @@ class Module
         
         foreach($search_paths as $modules_path)
         {
-            $iterator = new GlobIterator($modules_path . '/*/module.json');
+            $iterator = new GlobIterator($modules_path . '/*/*.module.json');
             
             foreach($iterator as $fileInfo)
             {
+                //Extract module name
+                $name = $fileInfo->getFileName();
+                $name = substr($name, 0,  strlen($name) - 12);
+                
+                //Check if it is a valid module name
+                if(!preg_match('/^[a-zA-Z](-?[a-zA-Z0-9]+)*$/', $name))
+                {
+                    continue;
+                }
+                
+                //Generate a module ID
+                $module = static::toModuleId($name);
+                
+                //Check if module ID was not already registered
+                if($module === '' || isset(static::$moduleList[$module]))
+                {
+                    continue;
+                }
+                
+                //Get the directroy and the JSON file path
                 $directory = $fileInfo->getPath();
                 $jsonFile = $fileInfo->getPathName();
                 
+                //Check if the json contained in file is valid
                 if(!is_readable($jsonFile) || !is_file($jsonFile) || null === $info = json_decode(file_get_contents($jsonFile), true))
                 {
                     continue;
                 }
                 
-                if(!isset($info['name']) || !is_string($info['name']))
-                {
-                    continue;
-                }
-                
-                $info['name'] = trim($info['name']);
-                $module = strtolower($info['name']);
-                
-                if($info['name'] == '' ||
-                   !preg_match('/[a-zA-Z0-9_]+/', $info['name']) ||
-                   isset(static::$moduleList[$module]))
-                {
-                    continue;
-                }
+                $info['name'] = $name;
                 
                 $info += array(
-                    'title' => ucfirst($info['name']),
+                    'title' => static::toModuleTitle($name),
                     'core' => App::version(),
                     'description' => '',
-                    'namespace' => 'Colibri\\Module\\' . ucfirst($info['name']),
+                    'namespace' => 'Colibri\\Module\\' . static::toCamelCase($name),
                     'include' => null,
                     'assets' => null,
                     'source' => null,
                     'dependencies' => array(),
-                    'collector' => 'module.php',
+                    'collector' => $name . '.module.php',
                     'hidden' => false,
                 );
                 
@@ -128,7 +168,6 @@ class Module
                 
                 
                 $info['directory'] = $directory;
-                //$info['namespace'] = 'Colibri\\Module\\' . $info['name'];
                 
                 
                 if($info['source'] === null)
@@ -189,7 +228,7 @@ class Module
     
     public static function exists($module)
     {
-        $module = strtolower($module);
+        $module = static::toModuleId($module);
         
         if(App::systemConfig()->read('modules.list.' . $module, false) !== false)
         {
@@ -202,19 +241,19 @@ class Module
     
     public static function isInstalled($module)
     {
-        $module = strtolower($module);
+        $module = static::toModuleId($module);
         return false !== App::systemConfig()->read('modules.list.' . $module, false);
     }
     
     public static function isEnabled($module)
     {
-        $module = strtolower($module);
+        $module = static::toModuleId($module);
         return App::systemConfig()->read('modules.enabled.' . $module, false);
     }
     
     public static function info($module)
     {
-        $module = strtolower($module);
+        $module = static::toModuleId($module);
         
         if(!static::exists($module))
         {
@@ -231,7 +270,7 @@ class Module
     
     public static function dependencies($module)
     {
-        $module = strtolower($module);
+        $module = static::toModuleId($module);
         
         if(null !== $info = static::info($module))
         {
@@ -243,7 +282,7 @@ class Module
     
     public static function dependents($module)
     {
-        $module = strtolower($module);
+        $module = static::toModuleId($module);
         
         if(!static::exists($module))
         {
@@ -266,7 +305,7 @@ class Module
     
     public static function canBeInstalled($module)
     {
-        $module = strtolower($module);
+        $module = static::toModuleId($module);
         
         if(static::isEnabled($module) || static::isInstalled($module))
         {
@@ -287,7 +326,7 @@ class Module
     
     public static function canBeUninstalled($module)
     {
-        $module = strtolower($module);
+        $module = static::toModuleId($module);
         
         if(!static::isInstalled($module) || static::isEnabled($module))
         {
@@ -299,7 +338,7 @@ class Module
     
     public static function canBeDisabled($module)
     {
-        $module = strtolower($module);
+        $module = static::toModuleId($module);
         
         if(!static::isEnabled($module))
         {
@@ -323,7 +362,7 @@ class Module
     
     public static function canBeEnabled($module)
     {
-        $module = strtolower($module);
+        $module = static::toModuleId($module);
         
         if(static::isInstalled($module))
         {
@@ -335,7 +374,7 @@ class Module
     
     public static function install($module, $clearCache = true)
     {
-        $module = strtolower($module);
+        $module = static::toModuleId($module);
         
         if(!static::canBeInstalled($module))
         {
@@ -357,7 +396,7 @@ class Module
     
     public static function uninstall($module, $clearCache = true)
     {
-        $module = strtolower($module);
+        $module = static::toModuleId($module);
         
         if(!static::canBeUninstalled($module))
         {
@@ -380,7 +419,7 @@ class Module
     
     public static function enable($module, $clearCache = true)
     {
-        $module = strtolower($module);
+        $module = static::toModuleId($module);
         
         if(!static::canBeEnabled($module))
         {
@@ -403,7 +442,7 @@ class Module
     
     public static function disable($module, $clearCache = true)
     {
-        $module = strtolower($module);
+        $module = static::toModuleId($module);
         
         if(!static::canBeDisabled($module))
         {
@@ -426,7 +465,7 @@ class Module
     
     public static function title($module)
     {
-        $module = strtolower($module);
+        $module = static::toModuleId($module);
         
         if(null === $info = static::info($module))
         {
@@ -438,7 +477,7 @@ class Module
     
     public static function description($module)
     {
-        $module = strtolower($module);
+        $module = static::toModuleId($module);
         
         if(null === $info = static::info($module))
         {
@@ -450,7 +489,7 @@ class Module
     
     public static function registerAssets($module)
     {
-        $module = strtolower($module);
+        $module = static::toModuleId($module);
         
         if(!static::isEnabled($module))
         {
@@ -477,13 +516,12 @@ class Module
     
     public static function unregisterAssets($module)
     {
-        $module = strtolower($module);
+        $module = static::toModuleId($module);
         
         if(static::isEnabled($module))
         {
             return false;
         }
-        
        
         $path = COLIBRI_PUBLIC_ASSETS_PATH . '/module/' . $module;
         
