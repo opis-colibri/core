@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### Opis Colibri 0.2.1, 2014.05.28
+
+* Bugfix in welcome module
+
 ### Opis Colibri 0.2.0, 2014.05.28
 
 * Multiple modules can now be declared inside one folder.
