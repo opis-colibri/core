@@ -1,5 +1,9 @@
 Opis Colibri
 ============
+[![Latest Stable Version](https://poser.pugx.org/opis/colibri/version.svg)](https://packagist.org/packages/opis/colibri)
+[![Latest Unstable Version](https://poser.pugx.org/opis/colibri/v/unstable.svg)](//packagist.org/packages/opis/colibri)
+[![License](https://poser.pugx.org/opis/colibri/license.svg)](https://packagist.org/packages/opis/colibri)
+
 A different kind of framework
 -------------
 
