@@ -1,5 +1,11 @@
 CHANGELOG
 -----------
+### Opis Colibri 0.2.3, 2014.06.04
+
+* Updated `opis/http-routing` library to version `2.2.*`
+* Updated `opis/events` library to version `2.2.*`
+* Updated `opis/view` library to version `2.2.*`
+
 ### Opis Colibri 0.2.2, 2014.06.01
 
 * Updated `opis/config` library to version `1.2.*`
