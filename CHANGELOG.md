@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### Opis Colibri 0.2.4, 2014.06.05
+
+* Added `AccessDenied` handler to `Opis\Colibri\Route`
+
 ### Opis Colibri 0.2.3, 2014.06.04
 
 * Updated `opis/http-routing` library to version `2.2.*`
