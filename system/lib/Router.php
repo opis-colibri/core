@@ -27,6 +27,7 @@ use Opis\HttpRouting\Path;
 use Opis\HttpRouting\Router as HttpRouter;
 use Opis\Routing\Contracts\PathInterface;
 use Opis\Http\Error\NotFound;
+use Opis\Http\Error\AccessDenied;
 
 class Router extends HttpRouter
 {
@@ -34,10 +35,15 @@ class Router extends HttpRouter
     public function __construct()
     {
         parent::__construct(App::httpRoutes(), App::httpDispatchers());
+        
+        $this->getRouteCollection()->accessDenied(function($path){
+            return new AccessDenied(View('error.403'), array('path' => $path));
+        });
     }
     
     public function route(PathInterface $path)
     {
+        
         $result = parent::route($path);
         
         if($result === null)
