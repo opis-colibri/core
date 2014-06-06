@@ -41,63 +41,50 @@ Colibri\Define\Routes(function($route){
         
     };
     
+    $bindMethod = function($action, $path){
+        return $path->method() == 'GET' ? $action : 'submit' . ucfirst($action);
+    };
+    
+    $callAction = function($method){
+        return Using('ManagerPageController')->{$method}();
+    };
     
     if(!Config()->has('manager'))
     {
-        $route->all('/module-manager', function($method){
-            return Using('ManagerPageController')->{$method}();
-        })
+        $route->all('/module-manager', $callAction)
         ->method(array('GET', 'POST'))
         ->implicit('action', 'setup')
-        ->bind('method', function($action, $path){
-            return $path->method() == 'GET' ? $action : 'submit' . ucfirst($action);
-        })
+        ->bind('method', $bindMethod)
         ->dispatcher('html')
         ->callback($callback);
         
         return;
     }
     
-    $route->filter('manager:is_system_admin', function($path, $route){
+    $route->all('/module-manager/{action?}', $callAction)
+    ->method(array('GET', 'POST'))
+    ->where('action', 'login|module|setup|logout')
+    ->implicit('action', 'index')
+    ->bind('method', $bindMethod)
+    ->filter('is_logged_in', function($path){
+        
         if(Session()->get('is_system_admin', false))
         {
             if($path->path() === '/module-manager/login')
             {
-                HttpRedirect(UriForPath('/module-manager'), 303);
+                HttpRedirect(UriForPath('/module-manager'));
             }
         }
         else
         {
-            if($path->path() !== '/module-manager/login')
-            {
-                HttpRedirect(UriForPath('/module-manager/login'), 303);
-            }
+            HttpRedirect(UriForPath('/module-manager/login'));
         }
+        
         return true;
-    });
-   
-    $route->all('/module-manager/{action?}', function($method){
-        return Using('ManagerPageController')->{$method}();
     })
-    ->method(array('GET', 'POST'))
-    ->where('action', 'login|module|setup|logout')
-    ->implicit('action', 'index')
-    ->bind('method', function($action, $path){
-        return $path->method() == 'GET' ? $action : 'submit' . ucfirst($action);
-    })
-    ->useFilters(array('manager:is_system_admin'))
+    ->preFilter(array('is_logged_in'))
     ->dispatcher('html')
     ->callback($callback);
-    
-});
-
-Colibri\Define\Connections(function($connection){
-    
-    $connection->create('test')
-                    ->mysql('root', 'x')
-                    ->database('opis.dev')
-                    ->charset('utf8')
-                    ->persistent();
     
 });
 
