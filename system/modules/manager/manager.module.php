@@ -77,7 +77,10 @@ Colibri\Define\Routes(function($route){
         }
         else
         {
-            HttpRedirect(UriForPath('/module-manager/login'));
+            if($path->path() !== '/module-manager/login')
+            {
+                HttpRedirect(UriForPath('/module-manager/login'));
+            }
         }
         
         return true;
