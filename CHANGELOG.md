@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### Opis Colibri 0.2.5, 2014.06.06
+
+* Updated module `Manager` to use proper route filters.
+
 ### Opis Colibri 0.2.4, 2014.06.05
 
 * Added `AccessDenied` handler to `Opis\Colibri\Route`
