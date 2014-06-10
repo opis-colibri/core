@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### Opis Colibri 0.2.6, 2014.06.10
+
+* Bugfix in `Manager` module
+
 ### Opis Colibri 0.2.5, 2014.06.06
 
 * Updated module `Manager` to use proper route filters.
