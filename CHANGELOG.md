@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### Opis Colibri 0.2.8, 2014.06.20
+
+* Fixed a bug that prevented Opis Colibri to properly run on PHP 5.3
+
 ### Opis Colibri 0.2.7, 2014.06.11
 
 * Updated `opis/http-routing` library to version `2.3.*`

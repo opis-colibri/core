@@ -47,14 +47,13 @@ class App
         
     }
     
-    
     public static function loadFromSystemCache($entry)
     {
         if(!isset(static::$cache[$entry]))
         {
             static::$cache[$entry] = static::systemCache()->load($entry, function() use ($entry){
-                static::includeModules();
-                return static::collector()->collect($entry)->data();
+                App::includeModules();
+                return App::collector()->collect($entry)->data();
             });
         }
         
