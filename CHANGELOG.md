@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### Opis Colibri 0.2.9, 2014.06.26
+
+* Routes that intercept POST, PUT, PATCH or DELETE requests can be now named.
+
 ### Opis Colibri 0.2.8, 2014.06.20
 
 * Fixed a bug that prevented Opis Colibri to properly run on PHP 5.3
