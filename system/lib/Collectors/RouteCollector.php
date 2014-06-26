@@ -74,23 +74,23 @@ class RouteCollector extends AbstractCollector implements RouteCollectorInterfac
         return $this->handle($path, $action, $name)->method('GET');
     }
     
-    public function post($path, Closure $action)
+    public function post($path, Closure $action, $name = null)
     {
-        return $this->handle($path, $action, null)->method('POST');
+        return $this->handle($path, $action, $name)->method('POST');
     }
     
-    public function delete($path, Closure $action)
+    public function delete($path, Closure $action, $name = null)
     {
-        return $this->handle($path, $action, null)->method('DELETE');
+        return $this->handle($path, $action, $name)->method('DELETE');
     }
     
-    public function put($path, Closure $action)
+    public function put($path, Closure $action, $name = null)
     {
-        return $this->handle($path, $action, null)->method('PUT');
+        return $this->handle($path, $action, $name)->method('PUT');
     }
     
-    public function patch($path, Closure $action)
+    public function patch($path, Closure $action, $name = null)
     {
-        return $this->handle($path, $action, null)->method('PATCH');
+        return $this->handle($path, $action, $name)->method('PATCH');
     }
 }

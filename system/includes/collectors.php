@@ -106,40 +106,43 @@ interface RouteCollectorInterface
      * @return  \Opis\HttpRouter\Route
      */
         
-    public function post($path, Closure $action);
+    public function post($path, Closure $action, $name = null);
     
     /**
      * Defines a new route that will intercept all DELETE requests
      *
      * @param   string      $path   The path to match
      * @param   \Closure    $value  An action that will be executed
+     * @param   string      $name   (optional) Route name
      *
      * @return  \Opis\HttpRouter\Route
      */
     
-    public function delete($path, Closure $action);
+    public function delete($path, Closure $action, $name = null);
     
     /**
      * Defines a new route that will intercept all PUT requests
      *
      * @param   string      $path   The path to match
      * @param   \Closure    $value  An action that will be executed
+     * @param   string      $name   (optional) Route name
      *
      * @return  \Opis\HttpRouter\Route
      */
     
-    public function put($path, Closure $action);
+    public function put($path, Closure $action, $name = null);
     
     /**
      * Defines a new route that will intercept all PATCH requests
      *
      * @param   string      $path   The path to match
      * @param   \Closure    $value  An action that will be executed
+     * @param   string      $name   (optional) Route name
      *
      * @return  \Opis\HttpRouter\Route
      */
     
-    public function patch($path, Closure $action);
+    public function patch($path, Closure $action, $name = null);
 }
 
 /**
