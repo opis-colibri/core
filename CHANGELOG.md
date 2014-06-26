@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### Opis Colibri 0.2.11, 2014.06.26
+
+* Updated `opis/config` library dependency to version `1.3.*`
+
 ### Opis Colibri 0.2.10, 2014.06.26
 
 * Updated `opis/cache` library dependency to version `1.6.*`
