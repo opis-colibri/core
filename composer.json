@@ -18,8 +18,8 @@
         "opis/view": "2.3.*",
         "opis/events": "2.3.*",
         "opis/config": "1.2.*",
-        "opis/cache": "1.5.*",
-        "opis/session": "2.0.*",
+        "opis/cache": "1.6.*",
+        "opis/session": "2.1.*",
         "symfony/console": "2.4"
     },
     "autoload":{

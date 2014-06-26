@@ -1,5 +1,10 @@
 CHANGELOG
 -----------
+### Opis Colibri 0.2.10, 2014.06.26
+
+* Updated `opis/cache` library dependency to version `1.6.*`
+* Updated `opis/session` library dependency to version `2.1.*`
+
 ### Opis Colibri 0.2.9, 2014.06.26
 
 * Routes that intercept POST, PUT, PATCH or DELETE requests can be now named.
