@@ -1,5 +1,18 @@
 CHANGELOG
 -----------
+### Opis Colibri 0.3.0, 2014.07.16
+
+* Removed `system/includes/define.php` file.
+* All collectables are now collected using the `Opis\Colibri\Define` class.
+* Removed `httpRoutes`, `httpDispatchers`, `httpRouteAliases`, `contracts`, `cache`,
+`session`, `events`, `configs`, `viewCollection`,  `viewEngineResolvers` and  `connections`
+methods from `Opis\Colibri\App` class.
+* `Opis\Colibri\App::view` method was renamed to `Opis\Colibri\App::systemView`
+* `Opis\Colibri\ModuleInfo` doesn't throws an exception anymore if the specified module doesn't exist.
+You can use the newly added `exists` method to check if the module exists.
+* `Opis\Colibri\EventCollectorInterface` was renamed to `Opis\Colibri\EventHandlerCollectorInterface`
+* `Opis\Colibri\Collectors\EventCollector` was renamed to `Opis\Colibri\Collectors\EventHandlerCollector`
+
 ### Opis Colibri 0.2.11, 2014.06.26
 
 * Updated `opis/config` library dependency to version `1.3.*`
