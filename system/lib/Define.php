@@ -38,6 +38,6 @@ class Define
             $arguments[1] = 0;
         }
         
-        return App::collector()->handle($name, $arguments[0], $arguments[1]);
+        App::collector()->handle($name, $arguments[0], $arguments[1]);
     }
 }

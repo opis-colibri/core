@@ -38,47 +38,47 @@ App::systemConfig()->write('modules', array(
 ));
 
 App::systemConfig()->write('collectors', array(
-    'routes' => array(
+    'Routes' => array(
         'interface' => 'Opis\\Colibri\\RouteCollectorInterface',
         'class' => 'Opis\\Colibri\\Collectors\\RouteCollector',
     ),
-    'aliases' => array(
+    'RouteAliases' => array(
         'interface' => 'Opis\\Colibri\\RouteAliasCollectorInterface',
         'class' => 'Opis\\Colibri\\Collectors\\RouteAliasCollector',
     ),
-    'views' => array(
+    'Views' => array(
         'interface' => 'Opis\\Colibri\\ViewCollectorInterface',
         'class' => 'Opis\\Colibri\\Collectors\\ViewCollector',
     ),
-    'dispatchers' => array(
+    'Dispatchers' => array(
         'interface' => 'Opis\\Colibri\\DispatcherCollectorInterface',
         'class' => 'Opis\\Colibri\\Collectors\\DispatcherCollector',
     ),
-    'contracts' => array(
+    'Contracts' => array(
         'interface' => 'Opis\\Colibri\\ContractCollectorInterface',
         'class' => 'Opis\\Colibri\\Collectors\\ContractCollector',
     ),
-    'connections' => array(
+    'Connections' => array(
         'interface' => 'Opis\\Colibri\\ConnectionCollectorInterface',
         'class' => 'Opis\\Colibri\\Collectors\\ConnectionCollector',
     ),
-    'events' => array(
-        'interface' => 'Opis\\Colibri\\EventCollectorInterface',
-        'class' => 'Opis\\Colibri\\Collectors\\EventCollector',
+    'EventHandlers' => array(
+        'interface' => 'Opis\\Colibri\\EventHandlerCollectorInterface',
+        'class' => 'Opis\\Colibri\\Collectors\\EventHandlerCollector',
     ),
-    'viewEngines' => array(
+    'ViewEngines' => array(
         'interface' => 'Opis\\Colibri\\ViewEngineCollectorInterface',
         'class' => 'Opis\\Colibri\\Collectors\\ViewEngineCollector',
     ),
-    'cacheStorages' => array(
+    'CacheStorages' => array(
         'interface' => 'Opis\\Colibri\\CacheCollectorInterface',
         'class' => 'Opis\\Colibri\\Collectors\\CacheCollector',
     ),
-    'sessionStorages' => array(
+    'SessionStorages' => array(
         'interface' => 'Opis\\Colibri\\SessionCollectorInterface',
         'class' => 'Opis\\Colibri\\Collectors\\SessionCollector',
     ),
-    'configStorages' => array(
+    'ConfigStorages' => array(
         'interface' => 'Opis\\Colibri\\ConfigCollectorInterface',
         'class' => 'Opis\\Colibri\\Colectors\\ConfigCollector',
     ),

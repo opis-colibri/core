@@ -275,7 +275,7 @@ interface ContractCollectorInterface
  * Collects event handlers
  */
 
-interface EventCollectorInterface
+interface EventHandlerCollectorInterface
 {
     /**
      * Register a new event handler

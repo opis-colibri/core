@@ -35,7 +35,7 @@ use Opis\Colibri\Module;
 
 function Using($contract, array $arguments = array())
 {
-    return App::contracts()->make($contract, $arguments);
+    return App::loadFromSystemCache('Contracts')->make($contract, $arguments);
 }
 
 /**
@@ -48,7 +48,7 @@ function Using($contract, array $arguments = array())
 
 function Database($connection = null)
 {
-    return $connection === null ? App::systemDatabase() : App::connections()->database($connection);
+    return $connection === null ? App::systemDatabase() : App::loadFromSystemCache('Connections')->database($connection);
 }
 
 /**
@@ -61,7 +61,7 @@ function Database($connection = null)
 
 function Schema($connection = null)
 {
-    return $connection === null ? App::systemSchema() : App::connections()->schema($connection);
+    return $connection === null ? App::systemSchema() : App::loadFromSystemCache('Connections')->schema($connection);
 }
 
 /**
@@ -74,7 +74,7 @@ function Schema($connection = null)
 
 function Cache($storage = null)
 {
-    return $storage === null ? App::systemCache() : App::cache()->get($storage);
+    return $storage === null ? App::systemCache() : App::loadFromSystemCache('CacheStorages')->get($storage);
 }
 
 /**
@@ -87,7 +87,7 @@ function Cache($storage = null)
 
 function Config($storage = null)
 {
-    return $storage === null ? App::systemConfig() : App::configs()->get($storage);
+    return $storage === null ? App::systemConfig() : App::loadFromSystemCache('ConfigStorages')->get($storage);
 }
 
 /**
@@ -100,7 +100,7 @@ function Config($storage = null)
 
 function Session($storage = null)
 {
-    return $storage === null ? App::systemSession() : App::session()->get($storage);
+    return $storage === null ? App::systemSession() : App::loadFromSystemCache('SessionStorages')->get($storage);
 }
 
 /**
@@ -111,6 +111,7 @@ function Session($storage = null)
  *
  * @return  \Opis\Colibri\Event
  */
+
 function Emit($name, $cancelable = false)
 {
     return Dispatch(new Event($name, $cancelable));
@@ -153,7 +154,7 @@ function View($name, array $arguments = array())
 
 function Render($view)
 {
-    return App::view()->render($view);
+    return App::systemView()->render($view);
 }
 
 /**
@@ -264,7 +265,7 @@ function UriForPath($path, $full = true)
 
 function CreateUrl($route, array $args = array())
 {
-    $routes = App::httpRoutes();
+    $routes = App::loadFromSystemCache('Routes');
     if(!isset($routes[$route]))
     {
         return $route;

@@ -30,68 +30,116 @@ class ModuleInfo
     
     public function __construct($module)
     {
-        if(!Module::exists($module))
+        $this->module = strtolower($module);
+    }
+    
+    protected function get($property)
+    {
+        if($this->info === null)
         {
-            throw new \Exception("Module $module doesn't exists");
+            if(!$this->exists())
+            {
+                throw new \Exception("Module $module doesn't exists");
+            }
+            
+            $this->info = Module::info($this->module);
         }
         
-        $this->info = Module::info($module);
-        $this->module = strtolower($module);
+        return $this->info[$property];
+    }
+    
+    protected function has($property)
+    {
+        if($this->info === null)
+        {
+            if(!$this->exists())
+            {
+                throw new \Exception("Module $module doesn't exists");
+            }
+            else
+            {
+                $this->info = Module::info($this->module);
+            }
+        }
+        
+        return isset($this->info[$property]);
+    }
+    
+    protected function set($property, $value)
+    {
+        if($this->info === null)
+        {
+            if(!$this->exists())
+            {
+                throw new \Exception("Module $module doesn't exists");
+            }
+            else
+            {
+                $this->info = Module::info($this->module);
+            }
+        }
+        
+        $this->info[$property] = $value;
+    }
+    
+    public function exists()
+    {
+        return Module::exists($this->module);
     }
     
     public function name()
     {
-        return $this->info['name'];
+        return $this->get('name');
     }
     
     public function title()
     {
-        return $this->info['title'];
+        return $this->get('title');
     }
     
     public function description()
     {
-        return $this->info['description'];
+        return $this->get('description');
     }
     
     public function dependencies()
     {
-        return $this->info['dependencies'];
+        return $this->get('dependencies');
     }
     
     public function dependents()
     {
-        if(!isset($this->info['dependents']))
+        if(!$this->has('dependents'))
         {
-            $this->info['dependents'] = Module::dependents($this->module);
+            $this->set('dependents', Module::dependents($this->module));
         }
         
-        return $this->info['dependents'];
+        return $this->get('dependents');
     }
     
     public function nspace()
     {
-        return $this->info['namespace'];
+        return $this->get('namespace');
     }
     
     public function source()
     {
-        return $this->info['source'];
+        return $this->get('source');
     }
     
     public function directory()
     {
-        return $this->info['directory'];
+        return $this->get('directory');
     }
     
     public function collector()
     {
-        return $this->info['collector'];
+        return $this->get('collector');
     }
     
     public function assets()
     {
-        return $this->info['assets'];
+        return $this->get('assets');
     }
     
     public function resource($name, $absolute = true)
@@ -100,7 +148,7 @@ class ModuleInfo
         
         if($absolute)
         {
-            $path = Request()->uriForPath($path);
+            $path = HttpRequest()->uriForPath($path);
         }
         
         return $path;
@@ -108,7 +156,7 @@ class ModuleInfo
     
     public function isHidden()
     {
-        return $this->info['hidden'];
+        return $this->get('hidden');
     }
     
     public function isEnabled()

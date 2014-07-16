@@ -18,7 +18,9 @@
  * limitations under the License.
  * ============================================================================ */
 
-Colibri\Define\Dispatchers(function($dispatcher){
+use Opis\Colibri\Define;
+
+Define::Dispatchers(function($dispatcher){
     
     $dispatcher->register('html', function(){
         return new Colibri\Module\System\HtmlDispatcher();
@@ -26,7 +28,7 @@ Colibri\Define\Dispatchers(function($dispatcher){
     
 });
 
-Colibri\Define\Views(function($view){
+Define::Views(function($view){
     
     $view->handle('html.{suggestion?}', function(){
         return 'template://Colibri\Module\System\Template@html';
@@ -52,7 +54,7 @@ Colibri\Define\Views(function($view){
 });
 
 
-Colibri\Define\Handlers(function($handler){
+Define::EventHandlers(function($handler){
     
     $handler->handle('system.init', function(){
         Colibri\Module\System\TemplateStream::register();
@@ -60,7 +62,7 @@ Colibri\Define\Handlers(function($handler){
     
 });
 
-Colibri\Define\Contracts(function($contract){
+Define::Contracts(function($contract){
     
     $contract->singleton('Colibri\\Module\\System\\Views\\Alerts');
     $contract->alias('Colibri\\Module\\System\\Views\\Alerts', 'SystemAlerts');

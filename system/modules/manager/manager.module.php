@@ -18,7 +18,9 @@
  * limitations under the License.
  * ============================================================================ */
 
-Colibri\Define\Routes(function($route){
+use Opis\Colibri\Define;
+ 
+Define::Routes(function($route){
     
     
     $callback = function($html, $page)
@@ -91,7 +93,7 @@ Colibri\Define\Routes(function($route){
     
 });
 
-Colibri\Define\Views(function($view){
+Define::Views(function($view){
     
     $view->handle('manager.{content}', function($content){
         return __DIR__ . '/view/' . $content . '.php';
@@ -105,7 +107,7 @@ Colibri\Define\Views(function($view){
     
 });
 
-Colibri\Define\Contracts(function($contract){
+Define::Contracts(function($contract){
     
     $contract->alias('Colibri\Module\Manager\PageController', 'ManagerPageController');
     

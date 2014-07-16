@@ -30,7 +30,7 @@ class View extends OpisView
     {
         if($this->renderedContent === null)
         {
-            $this->renderedContent = App::view()->render($this);
+            $this->renderedContent = App::systemView()->render($this);
             
             if(!is_string($this->renderedContent))
             {

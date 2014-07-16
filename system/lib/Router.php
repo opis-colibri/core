@@ -34,7 +34,7 @@ class Router extends HttpRouter
     
     public function __construct()
     {
-        parent::__construct(App::httpRoutes(), App::httpDispatchers());
+        parent::__construct(App::loadFromSystemCache('Routes'), App::loadFromSystemCache('Dispatchers'));
         
         $this->getRouteCollection()->accessDenied(function($path){
             return new AccessDenied(View('error.403'), array('path' => $path));
@@ -52,7 +52,7 @@ class Router extends HttpRouter
                 return new NotFound(View('error.404', array('path' => $path)));
             });
             
-            $router = new AliasRouter(App::httpRouteAliases());
+            $router = new AliasRouter(App::loadFromSystemCache('RouteAliases'));
             $alias = $router->route(new AliasPath($path->path()));
             
             if($alias === null)

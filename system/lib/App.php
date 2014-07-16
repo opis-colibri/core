@@ -199,7 +199,7 @@ class App
         {
             if($connection === null)
             {
-                $connection = static::connections()->get();
+                $connection = static::loadFromSystemCache('Connections')->get();
             }
             
             static::$instances['systemConnection'] = $connection;
@@ -228,69 +228,16 @@ class App
         return static::$instances['systemSchema'];
     }
     
-    public static function view()
+    public static function systemView()
     {
         if(!isset(static::$instances['view']))
         {
-            static::$instances['view'] = new ViewRouter(static::viewCollection(), static::viewEngineResolvers());
+            static::$instances['view'] = new ViewRouter(static::loadFromSystemCache('Views'),
+                                                        static::loadFromSystemCache('ViewEngines'));
         }
         
         return static::$instances['view'];
     }
     
-    public static function httpRoutes()
-    {
-        return static::loadFromSystemCache('routes');
-    }
-    
-    public static function httpDispatchers()
-    {
-        return static::loadFromSystemCache('dispatchers');
-    }
-    
-    public static function httpRouteAliases()
-    {
-        return static::loadFromSystemCache('aliases');
-    }
-    
-    public static function contracts()
-    {
-        return static::loadFromSystemCache('contracts');
-    }
-    
-    public static function cache()
-    {
-        return static::loadFromSystemCache('cacheStorages');
-    }
-    
-    public static function session()
-    {
-        return static::loadFromSystemCache('sessionStorages');
-    }
-    
-    public static function events()
-    {
-        return static::loadFromSystemCache('events');
-    }
-    
-    public static function configs()
-    {
-        return static::loadFromSystemCache('configStorages');
-    }
-    
-    public static function viewCollection()
-    {
-        return static::loadFromSystemCache('views');
-    }
-    
-    public static function viewEngineResolvers()
-    {
-        return static::loadFromSystemCache('viewEngines');
-    }
-    
-    public static function connections()
-    {
-        return static::loadFromSystemCache('connections');
-    }
     
 }

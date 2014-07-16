@@ -26,6 +26,6 @@ class Event extends OpisEvent
 {
     public function __construct($name, $cancelable = false)
     {
-        parent::__construct(App::events(), $name, $cancelable);
+        parent::__construct(App::loadFromSystemCache('EventHandlers'), $name, $cancelable);
     }
 }

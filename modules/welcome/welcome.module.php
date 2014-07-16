@@ -1,7 +1,9 @@
 <?php
 
+use Opis\Colibri\Define;
+
 //Collect routes
-Colibri\Define\Routes(function($route){
+Define::Routes(function($route){
     
     $route->get('/', function(){
         return View('welcome');
@@ -10,7 +12,7 @@ Colibri\Define\Routes(function($route){
 });
 
 //Collect views
-Colibri\Define\Views(function($view){
+Define::Views(function($view){
     
     $view->handle('welcome', function(){
         return __DIR__ . '/welcome.php';
