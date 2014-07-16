@@ -22,7 +22,7 @@ namespace Opis\Colibri\Collectors;
 
 use Closure;
 use Opis\Events\EventTarget as OpisEventTarget;
-use Opis\Colibri\EventCollectorInterface;
+use Opis\Colibri\EventHandlerCollectorInterface;
 
 class EventHandlerCollector extends AbstractCollector implements EventHandlerCollectorInterface
 {
