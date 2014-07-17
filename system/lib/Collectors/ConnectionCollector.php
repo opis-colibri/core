@@ -20,8 +20,8 @@
 
 namespace Opis\Colibri\Collectors;
 
+use Closure;
 use Opis\Colibri\Serializable\ConnectionList;
-use Opis\Colibri\Serializable\DSNConnection;
 use Opis\Colibri\ConnectionCollectorInterface;
 
 class ConnectionCollector extends AbstractCollector implements ConnectionCollectorInterface
@@ -32,10 +32,9 @@ class ConnectionCollector extends AbstractCollector implements ConnectionCollect
         parent::__construct(new ConnectionList());
     }
     
-    public function create($name, $default = false)
+    public function create($name, Closure $callback, $default = false)
     {
-        $connection = new DSNConnection();
-        $this->dataObject->set($name, $connection, $default);
-        return $connection;
+        $this->dataObject->set($name, $callback(), $default);
+        return $this;
     }
 }

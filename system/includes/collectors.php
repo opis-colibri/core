@@ -299,13 +299,14 @@ interface ConnectionCollectorInterface
     /**
      * Defines a new database connection
      *
-     * @param   string  $name       Connection name
-     * @param   boolean $default    (optional) Default flag
+     * @param   string      $name       Connection name
+     * @param   \Closure    $callback   Connection constructor callback
+     * @param   boolean     $default    (optional) Default flag
      *
-     * @return  \Opis\Colibri\Serializable\DSNConnection
+     * @return  \Opis\Colibri\ConnectionCollectorInterface  Self reference
      */
     
-    public function create($name, $default = false);
+    public function create($name, Closure $callback, $default = false);
 }
 
 /**

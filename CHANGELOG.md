@@ -1,5 +1,12 @@
 CHANGELOG
 -----------
+### Opis Colibri 0.4.0, 2014.07.xx
+
+* Changed `Connections` collector
+* Removed `Opis\Colibri\Serializable\DSNConnection` class.
+* Removed `Opis\Colibri\Serializable\GenericConnection` class.
+* Updated `opis/database` library dependency to version `2.0.0`
+
 ### Opis Colibri 0.3.0, 2014.07.16
 
 * Removed `system/includes/define.php` file.

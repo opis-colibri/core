@@ -22,6 +22,7 @@ namespace Opis\Colibri\Serializable;
 
 use Closure;
 use Serializable;
+use Opis\Database\Connection;
 use Opis\Database\Database;
 use Opis\Database\Schema;
 
@@ -30,15 +31,13 @@ class ConnectionList implements Serializable
     
     protected $connections = array();
     
-    protected $instances = array();
-    
     protected $databases = array();
     
     protected $schemas = array();
     
     protected $defaultConnection;
     
-    public function set($name, DSNConnection $connection, $default = false)
+    public function set($name, Connection $connection, $default = false)
     {
         if($this->defaultConnection === null)
         {
@@ -50,8 +49,6 @@ class ConnectionList implements Serializable
             $this->defaultConnection = $name;
         }
         
-        unset($this->instances[$name]);
-        
         $this->connections[$name] = $connection;
     }
     
@@ -62,12 +59,7 @@ class ConnectionList implements Serializable
             $connection = $this->defaultConnection;
         }
         
-        if(!isset($this->instances[$connection]))
-        {
-            $this->instances[$connection] = $this->connections[$connection]->getConnection();
-        }
-        
-        return $this->instances[$connection];
+        return $this->connections[$connection];
     }
     
     public function database($connection = null)
