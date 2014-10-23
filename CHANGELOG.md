@@ -1,11 +1,18 @@
 CHANGELOG
 -----------
-### Opis Colibri 0.4.0, 2014.07.xx
+### Opis Colibri 0.4.0
 
 * Changed `Connections` collector
 * Removed `Opis\Colibri\Serializable\DSNConnection` class.
 * Removed `Opis\Colibri\Serializable\GenericConnection` class.
-* Updated `opis/database` library dependency to version `2.0.0`
+* Updated `opis/database` library dependency to version `2.0.*`
+* Updated `opis/container` library dependency to version `2.2.*`
+* Updated `opis/http-routing` library dependency to version `2.4.*`
+* Updated `opis/views` library dependency to version `2.4.*`
+* Updated `opis/events` library dependency to version `2.4.*`
+* Updated `opis/config` library dependency to version `1.4.*`
+* Updated `opis/cache` library dependency to version `1.7.*`
+* Updated `opis/session` library dependency to version `2.2.*`
 
 ### Opis Colibri 0.3.0, 2014.07.16
 
