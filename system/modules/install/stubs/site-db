@@ -27,9 +27,5 @@ App::systemConfig(new ConfigStorage(COLIBRI_STORAGES_PATH . '/config', 'system')
 
 App::systemCache(new CacheStorage(COLIBRI_STORAGES_PATH . '/cache', 'system'));
 
-App::systemConnection(DBConnection::mysql({$username}, {$password})
-                                  ->database({$database})
-                                  ->host({$host})
-                                  ->port({$port})
-                                  ->charset('utf8')
+App::systemConnection(DBConnection::create({dsn}, {$username}, {$password})
                                   ->persistent());

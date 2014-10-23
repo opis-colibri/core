@@ -4,10 +4,8 @@
         <div class="col-md-4">
             <h3>Connection setup (optional)</h3>
             <p>
-                Although Opis Colibri supports various databases,
-                this prerelease version provides setup support only for MySQL databases.
-                If you are not planning to use MySQL databases, or if you are not planning to use databases
-                at all, you can skip this step and setup your default database connection later.
+                Define a default database connection for your web application.
+                You can skip this step if you are not planning to use databases within your application.
             </p>
         </div>
         <div class="col-md-8">

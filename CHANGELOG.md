@@ -13,6 +13,7 @@ CHANGELOG
 * Updated `opis/config` library dependency to version `1.4.*`
 * Updated `opis/cache` library dependency to version `1.7.*`
 * Updated `opis/session` library dependency to version `2.2.*`
+* Changed how default database connections are declared in `install` module
 
 ### Opis Colibri 0.3.0, 2014.07.16
 
