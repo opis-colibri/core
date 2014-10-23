@@ -92,11 +92,9 @@ class PageController
     public function database()
     {   
         $data = Session()->get('database', array(
-            'database' => null,
+            'dsn' => null,
             'username' => null,
             'password' => null,
-            'host' => 'localhost',
-            'port' => 3306,
         ));
         
         $data['alerts'] = Using('SystemAlerts');
@@ -120,17 +118,13 @@ class PageController
     {
         $request = HttpRequest();
         
-        $database = trim($request->post('database', ''));
+        $dsn = trim($request->post('dsn', ''));
         $username = trim($request->post('username', ''));
         $password = trim($request->post('password', ''));
-        $host = trim($request->post('host', 'localhost'));
-        $port = trim($request->post('port', '3306'));
         
         $check = array(
-            'Database' => $database,
+            'DSN' => $dsn,
             'Username' => $username,
-            'Host' => $host,
-            'Port' => $port,
         );
         
         foreach($check as $key => $value)
@@ -145,11 +139,7 @@ class PageController
         {
             try
             {
-                Connection::mysql($username, $password)
-                            ->database($database)
-                            ->host($host)
-                            ->port($port)
-                            ->pdo();
+                Connection::create($dsn, $username, $password)->pdo();
             }
             catch(Exception $e)
             {
@@ -158,11 +148,9 @@ class PageController
         }
         
         $data = array(
-            'database' => $database,
+            'dsn' => $dsn,
             'username' => $username,
             'password' => $password,
-            'host' => $host,
-            'port' => $port,
         );
         
         Session()->remember('database', $data);
