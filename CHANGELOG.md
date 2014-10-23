@@ -1,6 +1,6 @@
 CHANGELOG
 -----------
-### Opis Colibri 0.4.0
+### Opis Colibri 0.4.0, 2014.10.24
 
 * Changed `Connections` collector
 * Removed `Opis\Colibri\Serializable\DSNConnection` class.
