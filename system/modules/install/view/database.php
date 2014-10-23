@@ -14,9 +14,9 @@
             <?php if(isset($alerts)) print $alerts;?>
             <form class="form-horizontal" role="form" method="post">
                 <div class="form-group">
-                    <label for="db-name" class="col-md-3 control-label text-primary">Database name</label>
+                    <label for="db-name" class="col-md-3 control-label text-primary">Connection DSN</label>
                     <div class="col-md-4">
-                        <input type="text" name="database" value="<?php print $database;?>" class="form-control" id="db-name" placeholder="Database name">
+                        <input type="text" name="dsn" value="<?php print $dsn;?>" class="form-control" id="db-name" placeholder="mysql:host=localhost;dbname=mydatabase">
                     </div>
                 </div>
                 <div class="form-group">
@@ -29,18 +29,6 @@
                     <label for="db-pass" class="col-md-3 control-label text-primary">Database password</label>
                     <div class="col-md-4">
                         <input type="password" name="password" value="<?php print $password;?>" class="form-control" id="db-pass">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="db-host" class="col-md-3 control-label text-primary">Host</label>
-                    <div class="col-md-4">
-                        <input type="text" name="host" value="<?php print $host;?>" class="form-control" id="db-host" placeholder="localhost">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="db-port" class="col-md-3 control-label text-primary">Port</label>
-                    <div class="col-md-4">
-                        <input type="text" name="port" value="<?php print $port;?>" class="form-control" id="db-port" placeholder="port">
                     </div>
                 </div>
                 <div class="form-group">
