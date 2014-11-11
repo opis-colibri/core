@@ -37,7 +37,7 @@ composer create-project opis/colibri <project-name>
 
     <Directory /var/www/<project-name>/public>
 
-        Options -Indexes FollowSymLinks -MultiViews
+        Options -Indexes +FollowSymLinks -MultiViews
         AllowOverride All
         Order allow,deny
         allow from all
