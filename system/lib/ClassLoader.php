@@ -70,10 +70,10 @@ class ClassLoader
         self::$classes = array_merge(self::$classes, $classes);
     }
 
-    public static function init(array $dirs = array())
+    public static function init(array $dirs = array(), $preload = true)
     {
         self::$directories = $dirs;
-        spl_autoload_register(__CLASS__ . '::load');
+        spl_autoload_register(__CLASS__ . '::load', true, $preload);
     }
 
     public static function load($class)
