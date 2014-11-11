@@ -78,7 +78,7 @@ class App
     
     public static function init()
     {
-        ClassLoader::init();
+        ClassLoader::init(array(), true);
         
         $info = App::systemConfig()->read('modules.list');
         
