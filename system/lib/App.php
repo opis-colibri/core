@@ -80,6 +80,8 @@ class App
     {
         ClassLoader::init(array(), true);
         
+        ClassLoader::mapClass('Opis\Closure\SerializableClosure', COLIBRI_SYSTEM_PATH . '/replace/SerializableClosure.php');
+        
         $info = App::systemConfig()->read('modules.list');
         
         foreach(App::systemConfig()->read('modules.enabled') as $module => $status)
