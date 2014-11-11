@@ -1,5 +1,13 @@
 CHANGELOG
 -----------
+### Opis Colibri 0.5.0, 2014.11.11
+
+* Changed welcome page desing
+* Modified `Opis\Colibri\ClassLoader` class. The autoload function is now prepended.
+* Added `Opis\Colibri\Serialize\ClosureList` class
+* Overwritten the `Opis\Closure\SerializableClosure` class and altered the way closures are
+handled and serialized.
+
 ### Opis Colibri 0.4.0, 2014.10.24
 
 * Changed `Connections` collector
