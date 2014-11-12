@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### Opis Colibri 0.5.3, 2014.11.12
+
+* Fixed a bug in `Colibri\Module\System\Views\Alerts` class.
+
 ### Opis Colibri 0.5.2, 2014.11.12
 
 * Fixed alerts. Modified `Colibri\Module\System\Views\Alerts` class.
