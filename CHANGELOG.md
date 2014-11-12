@@ -1,5 +1,10 @@
 CHANGELOG
 -----------
+### Opis Colibri 0.5.2, 2014.11.12
+
+* Fixed alerts. Modified `Colibri\Module\System\Views\Alerts` class.
+* Cleanup session after a new instance of Opis Colibri was installed.
+
 ### Opis Colibri 0.5.1, 2014.11.12
 
 * Fixed a bug that prevented the proper installation of Opis Colibri when a default database was specified.
