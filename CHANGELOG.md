@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### Opis Colibri 0.5.1, 2014.11.12
+
+* Fixed a bug that prevented the proper installation of Opis Colibri when a default database was specified.
+
 ### Opis Colibri 0.5.0, 2014.11.11
 
 * Changed welcome page desing
