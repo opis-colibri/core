@@ -87,7 +87,7 @@ class Alerts extends View
     
     public function hasMessages()
     {
-        return Session()->flash()->has('system_succes');
+        return Session()->flash()->has('system_success');
     }
     
     public function dismissable($value = true)
