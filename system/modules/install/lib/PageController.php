@@ -368,7 +368,8 @@ class PageController
         $conf->write('collectors', Config()->read('collectors'));
         
         file_put_contents(COLIBRI_STORAGES_PATH . '/site.php', $content);
-        Session()->dispose();
+        Session()->clear();
+        Session()->destroy();
         HttpRedirect(UriForPath('/'));
     }
     
