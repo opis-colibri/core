@@ -24,88 +24,75 @@ use Opis\Colibri\View;
 
 class Alerts extends View
 {
+    protected $dismissable = false;
     
     public function __construct()
     {
-        parent::__construct('alerts', array(
-            'error' => $this->getFlashData('error'),
-            'warning' => $this->getFlashData('warning'),
-            'success' => $this->getFlashData('success'),
-            'info' => $this->getFlashData('info'),
-            'hasAlerts' => false,
-            'dismissable' => false,
-        ));
+        parent::__construct('alerts');
+        
+        $this->arguments = null;
     }
     
-    
-    protected function getFlashData($type)
-    {
-        $type = 'system_' . $type;
-        
-        if(!Session()->flash()->has($type))
-        {
-            Session()->flash()->set($type, array());
-        }
-        
-        $data = Session()->flash()->get($type, array());
-        
-        return $data;
-        
-    }
-    
-    protected function hasAlerts()
-    {
-        foreach(array('info', 'error', 'warning', 'success') as $key)
-        {
-            if(!empty($this->arguments[$key]))
-            {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-    
-    protected function setFlashData($type, $message)
-    {
-        $type = 'system_' . $type;
-        
-        $data = $this->getFlashData($type);
-        $data[] = $message;
-        
-        Session()->flash()->set($type, $data);
-    }
     
     protected function alert($type, $message)
-    {   
-        $this->arguments[$type][] = $message;
-        
-        $this->setFlashData($type, $message);
+    {
+        $type = 'system_' . $type;
+        $list = Session()->flash()->get($type, array());
+        $list[] = $message;
+        Session()->flash()->set($type, $list);
         
         return $this;
     }
     
     public function viewArguments()
     {
-        $this->arguments['hasAlerts'] = $this->hasAlerts();
-        return parent::viewArguments();
+        if($this->arguments === null)
+        {
+            $this->arguments = array(
+                'dismissable' => $this->dismissable,
+                'hasAlerts' => $this->hasAlerts(),
+            );
+            
+            foreach(array('error', 'warning', 'success', 'info') as $key)
+            {
+                $type = 'system_' . $key;
+                $this->arguments[$key] = Session()->flash()->get($type, array());
+                Session()->flash()->delete($type);
+            }
+            
+        }
+        
+        return $this->arguments;
+    }
+    
+    protected function hasAlerts()
+    {
+        return ($this->hasErrors() || $this->hasMessages() || $this->hasWarnings() || $this->hasInfos());
     }
     
     public function hasErrors()
     {
-        $errors = $this->getFlashData('error');
-        return !empty($errors);
+        return Session()->flash()->has('system_error');
     }
     
     public function hasWarnings()
     {
-        $errors = $this->getFlashData('warning');
-        return !empty($errors);
+        return Session()->flash()->has('system_warning');
+    }
+    
+    public function hasInfos()
+    {
+        return Session()->flash()->has('system_info');
+    }
+    
+    public function hasMessages()
+    {
+        return Session()->flash()->has('system_succes');
     }
     
     public function dismissable($value = true)
     {
-        $this->arguments['dismissable'] = $value;
+        $this->dismissable = $value;
         return $this;
     }
     
