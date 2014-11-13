@@ -1,5 +1,10 @@
 CHANGELOG
 -----------
+### Opis Colibri 0.5.4, 2014.11.13
+
+* Fixed a bug that prevented a user to be logged in as system admin
+* Removed 303 redirects from `manager` module.
+
 ### Opis Colibri 0.5.3, 2014.11.12
 
 * Fixed a bug in `Colibri\Module\System\Views\Alerts` class.
