@@ -4,5 +4,5 @@
     "source": "lib",
     "assets": "assets",
     "dependencies": ["system"],
-    "hidden": false
+    "hidden": true
 }
