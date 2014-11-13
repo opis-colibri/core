@@ -4,6 +4,7 @@ CHANGELOG
 
 * Fixed a bug that prevented a user to be logged in as system admin
 * Removed 303 redirects from `manager` module.
+* Module `manager` was marked as `hidden`.
 
 ### Opis Colibri 0.5.3, 2014.11.12
 
