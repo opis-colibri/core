@@ -64,7 +64,7 @@ class PageController
         {
             Session()->forget('is_system_admin');
             Using('SystemAlerts')->success('You have been logged out.');
-            HttpRedirect(UriForPath('/module-manager/login'), 303);
+            HttpRedirect(UriForPath('/module-manager/login'));
         }
         
         if(App::systemCache()->clear())
@@ -76,7 +76,7 @@ class PageController
             Using('SystemAlerts')->error('Faild when collecting resources');
         }
         
-        HttpRedirect(UriForPath('/module-manager'), 303);
+        HttpRedirect(UriForPath('/module-manager'));
     }
     
     public function module()
@@ -105,7 +105,7 @@ class PageController
             }
         }
         
-        HttpRedirect(UriForPath('/module-manager'), 303);
+        HttpRedirect(UriForPath('/module-manager'));
     }
     
     public function login()
@@ -159,7 +159,7 @@ class PageController
         {
             Session()->remember('is_system_admin', true);
             Using('SystemAlerts')->success("Hello <strong>$username</strong>. You are now authenticated as system admin");
-            HttpRedirect(UriForPath('/module-manager'), 303);
+            HttpRedirect(UriForPath('/module-manager'));
         }
         
         $menu = View('manager.menu', array(
@@ -249,7 +249,7 @@ class PageController
             
             App::systemCache()->clear();
             Using('SystemAlerts')->success('Your settings have been saved.');
-            HttpRedirect(UriForPath('/module-manager'), 303);
+            HttpRedirect(UriForPath('/module-manager'));
         }
         
         $menu = array(
