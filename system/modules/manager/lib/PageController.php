@@ -146,11 +146,6 @@ class PageController
             Using('SystemAlerts')->error('Password is required');
         }
         
-        Config()->write('manager', array(
-            'username' => 'root',
-            'password' => md5('x'),
-        ));
-        
         if(!Using('SystemAlerts')->hasErrors())
         {
             if($username != Config()->read('manager.username') || md5($password) !== Config()->read('manager.password'))
