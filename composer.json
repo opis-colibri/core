@@ -18,7 +18,7 @@
         "opis/view": "2.4.*",
         "opis/events": "2.4.*",
         "opis/config": "1.4.*",
-        "opis/cache": "1.7.*",
+        "opis/cache": "2.0.*",
         "opis/session": "2.2.*",
         "symfony/console": "2.4"
     },

@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### Opis Colibri 0.6.0, 2014.11.17
+
+* Updated `opis/cache` library dependency to version `2.0.*`
+
 ### Opis Colibri 0.5.4, 2014.11.13
 
 * Fixed a bug that prevented a user to be logged in as system admin
