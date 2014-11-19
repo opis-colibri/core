@@ -12,15 +12,7 @@
         }
     ],
     "require": {
-        "opis/container": "2.2.*",
-        "opis/http": "1.3.*",
-        "opis/http-routing": "2.4.*",
-        "opis/view": "2.4.*",
-        "opis/events": "2.4.*",
-        "opis/config": "1.4.*",
-        "opis/cache": "2.0.*",
-        "opis/session": "2.2.*",
-        "symfony/console": "2.4"
+        "opis-colibri/framework": "0.1.*"
     },
     "autoload":{
         "psr-4": {"Opis\\Colibri\\": "system/lib"},
@@ -32,6 +24,10 @@
     },
     "minimum-stability": "dev",
     "extra": {
+        "installer-paths": {
+            "system/modules/{$name}/":["opis-colibri/system", "opis-colibri/install",
+                                       "opis-colibri/manager"]
+        },
         "branch-alias": {
             "dev-master": "1.0-dev"
         }
