@@ -1,5 +1,11 @@
 CHANGELOG
 -----------
+### Opis Colibri 0.7.0, 2014.11.20
+
+* Removed all modules files. Modules are now installed using composer.
+* Removed all dependencies.
+* Added `opis-colibri/framework` dependency.
+
 ### Opis Colibri 0.6.0, 2014.11.17
 
 * Updated `opis/cache` library dependency to version `2.0.*`
