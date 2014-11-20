@@ -37,6 +37,11 @@ elseif(COLIBRI_INSTALL_MODE)
     die('Opis Colibri is not installed' . PHP_EOL);
 }
 
+if(!is_writable(COLIBRI_STORAGES_PATH . '/config'))
+{
+    die('Try running command with sudo' . PHP_EOL);
+}
+
 require_once 'vendor/autoload.php';
 
 if(file_exists(COLIBRI_ROOT . '/site.php'))
