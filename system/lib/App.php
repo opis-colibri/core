@@ -102,7 +102,7 @@ class App
     
     public static function version()
     {
-        return '0.7.1';
+        return '0.8.0';
     }
     
     public static function run(HttpRequest $request = null)
