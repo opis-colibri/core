@@ -96,7 +96,7 @@ class Module
         
         if($info['installer'] !== null)
         {
-            $installer = '\\Opis\\Colibri\\Module\\Installer\\' . static::toCamelCase($module);
+            $installer = '\\Opis\\Colibri\\ModuleInstaller\\' . static::toCamelCase($module);
             require_once $info['installer'];
             $reflector = new ReflectionClass($installer);
             if($reflector->isSubclassOf('\\Opis\Colibri\\ModuleInstaller'))
