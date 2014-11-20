@@ -22,14 +22,14 @@ use Opis\Colibri\App;
 use Opis\Colibri\ClassLoader;
 use Opis\Colibri\Module;
 
+$composerContent = json_decode(file_get_contents(COLIBRI_ROOT . '/composer.json'), true);
 
+$enabled_modules = array();
 
-
-$enabled_modules = array(
-    'install' => true,
-    'system' => true,
-    //'manager' => true,
-);
+foreach($composerContent['extra']['installer-modules'] as $module)
+{
+    $enabled_modules[$module] = true;
+}
 
 $modules = array_filter(Module::findAll(), function(&$value) use($enabled_modules){
     return isset($enabled_modules[$value['name']]);

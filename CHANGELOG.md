@@ -5,6 +5,7 @@ CHANGELOG
 * Removed all modules files. Modules are now installed using composer.
 * Removed all dependencies.
 * Added `opis-colibri/framework` dependency.
+* Modules that are enabled at install time are now defined in the `composer.json` file
 
 ### Opis Colibri 0.6.0, 2014.11.17
 
