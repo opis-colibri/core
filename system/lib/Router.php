@@ -36,41 +36,32 @@ class Router extends HttpRouter
     {
         parent::__construct(App::loadFromSystemCache('Routes'), App::loadFromSystemCache('Dispatchers'));
         
-        $this->getRouteCollection()->accessDenied(function($path){
-            return new AccessDenied(View('error.403'), array('path' => $path));
-        });
+        $this->getRouteCollection()
+            ->notFound(function($path){
+                return new NotFound(View('error.404', array('path' => $path)));
+            })
+            ->accessDenied(function($path){
+                return new AccessDenied(View('error.403'), array('path' => $path));
+            });
     }
     
     public function route(PathInterface $path)
     {
+        $router = new AliasRouter(App::loadFromSystemCache('RouteAliases'));
+        $alias = $router->route(new AliasPath($path->path()));
+        
+        if($alias !== null)
+        {
+            $path = new Path(
+                (string) $alias,
+                $path->domain(),
+                $path->method(),
+                $path->isSecure(),
+                $path->request()
+            );
+        }
         
         $result = parent::route($path);
-        
-        if($result === null)
-        {
-            $this->getRouteCollection()->notFound(function($path){
-                return new NotFound(View('error.404', array('path' => $path)));
-            });
-            
-            $router = new AliasRouter(App::loadFromSystemCache('RouteAliases'));
-            $alias = $router->route(new AliasPath($path->path()));
-            
-            if($alias === null)
-            {
-                $result = new NotFound(View('error.404', array('path' => $path)));
-            }
-            else
-            {
-                $result = parent::route(new Path(
-                    $alias,
-                    $path->domain(),
-                    $path->method(),
-                    $path->isSecure(),
-                    $path->request()
-                ));
-            }
-            
-        }
         
         $response = $path->request()->response();
         $response->body($result);
