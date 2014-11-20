@@ -123,7 +123,7 @@ class ModuleInfoCommand extends Command
         }
         else
         {
-            $output->writeln('<p>Assets:</p> <e>No installer</e>');
+            $output->writeln('<p>Installer:</p> <e>No installer</e>');
         }
         
         if($info['assets'])
