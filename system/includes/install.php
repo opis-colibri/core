@@ -22,6 +22,9 @@ use Opis\Colibri\App;
 use Opis\Colibri\ClassLoader;
 use Opis\Colibri\Module;
 
+
+
+
 $enabled_modules = array(
     'install' => true,
     'system' => true,

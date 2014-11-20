@@ -24,11 +24,11 @@
     },
     "minimum-stability": "dev",
     "extra": {
-        "installer": "install", 
         "installer-paths": {
             "system/modules/{$name}/":["opis-colibri/system", "opis-colibri/install",
                                        "opis-colibri/manager"]
         },
+        "installer-modules": ["install", "system"], 
         "branch-alias": {
             "dev-master": "1.0-dev"
         }
