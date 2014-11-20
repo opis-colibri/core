@@ -12,10 +12,10 @@
         }
     ],
     "require": {
-        "opis-colibri/install": "1.0.*",
-        "opis-colibri/system": "1.0.*",
-        "opis-colibri/manager": "1.0.*",
-        "opis-colibri/welcome": "1.0.*"
+        "opis-colibri/install": "1.0.*@dev",
+        "opis-colibri/system": "1.0.*@dev",
+        "opis-colibri/manager": "1.0.*@dev",
+        "opis-colibri/welcome": "1.0.*@dev"
     },
     "autoload":{
         "psr-4": {"Opis\\Colibri\\": "system/lib"},
