@@ -1,5 +1,10 @@
 CHANGELOG
 -----------
+### Opis Colibri 0.7.2, 2014.11.20
+
+* Changed dependencies
+* Changed default module's namespace to `Opis\Colibri\Module\{ModuleName}`
+
 ### Opis Colibri 0.7.1, 2014.11.20
 
 * Module installer(if any) is now executed before installing, uninstalling, enabling or disabling a module.
