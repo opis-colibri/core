@@ -117,6 +117,15 @@ class ModuleInfoCommand extends Command
         $output->writeln('<p>Source</p>: <i>'.str_replace($info['directory'], '{Directory}', $info['source']).'</i>');
         $output->writeln('<p>Collector</p>: <i>'.str_replace($info['directory'], '{Directory}', $info['collector']).'</i>');
         
+        if($info['installer'])
+        {
+            $output->writeln('<p>Installer:</p> <i>'.str_replace($info['directory'], '{Directory}', $info['installer']).'</i>');
+        }
+        else
+        {
+            $output->writeln('<p>Assets:</p> <e>No installer</e>');
+        }
+        
         if($info['assets'])
         {
             $output->writeln('<p>Assets:</p> <i>'.str_replace($info['directory'], '{Directory}', $info['assets']).'</i>');
