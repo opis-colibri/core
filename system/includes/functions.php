@@ -61,7 +61,7 @@ function Database($connection = null)
 
 function Schema($connection = null)
 {
-    return $connection === null ? App::systemSchema() : App::loadFromSystemCache('Connections')->schema($connection);
+    return $connection === null ? App::systemDatabase()->schema() : App::loadFromSystemCache('Connections')->database($connection)->schema();
 }
 
 /**

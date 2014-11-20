@@ -77,21 +77,6 @@ class ConnectionList implements Serializable
         return $this->databases[$connection];
     }
     
-    public function schema($connection = null)
-    {
-        if($connection === null)
-        {
-            $connection = $this->defaultConnection;
-        }
-        
-        if(!isset($this->schemas[$connection]))
-        {
-            $this->schemas[$connection] = new Schema($this->get($connection));
-        }
-        
-        return $this->schemas[$connection];
-    }
-    
     public function serialize()
     {
         return serialize(array(

@@ -220,16 +220,6 @@ class App
         return static::$instances['systemDatabase'];
     }
     
-    public static function systemSchema()
-    {
-        if(!isset(static::$instances['systemSchema']))
-        {   
-            static::$instances['systemSchema'] = new OpisSchema(static::systemConnection());
-        }
-        
-        return static::$instances['systemSchema'];
-    }
-    
     public static function systemView()
     {
         if(!isset(static::$instances['view']))
