@@ -21,6 +21,7 @@
 namespace Opis\Colibri;
 
 use GlobIterator;
+use ReflectionClass;
 
 class Module
 {
@@ -85,6 +86,25 @@ class Module
         return array_keys($list);
     }
     
+    
+    protected static function executeInstallerAction($module, $action, &$info = null)
+    {
+        if($info === null)
+        {
+            $info = static::info($module);
+        }
+        
+        if($info['installer'] !== null)
+        {
+            $installer = '\\Opis\\Colibri\\Module\\Installer\\' . static::toCamelCase($module);
+            require_once $info['installer'];
+            $reflector = new ReflectionClass($installer);
+            if($reflector->isSubclassOf('\\Opis\Colibri\\ModuleInstaller'))
+            {
+                $installer::instance()->{$action}();
+            }
+        }
+    }
     
     public static function findAll($clear = false)
     {
@@ -151,6 +171,7 @@ class Module
                     'source' => null,
                     'dependencies' => array(),
                     'collector' => $name . '.module.php',
+                    'installer' => $name . '.install.php',
                     'hidden' => false,
                 );
                 
@@ -202,6 +223,18 @@ class Module
                     }
                     
                     $info['collector'] = $collector;
+                }
+                
+                if($info['installer'] !== null)
+                {
+                    $installer = $directory . '/' . trim($info['installer'], '/');
+                    
+                    if(!file_exists($installer) || is_dir($installer))
+                    {
+                        $installer = null;
+                    }
+                    
+                    $info['installer'] = $installer;
                 }
                 
                 if($info['include'] !== null)
@@ -381,7 +414,9 @@ class Module
             return false;
         }
         
-        App::systemConfig()->write('modules.list.' . $module, static::info($module));
+        $info = static::info($module);
+        
+        App::systemConfig()->write('modules.list.' . $module, $info);
         App::systemConfig()->write('modules.enabled.' . $module, false);
         
         if($clearCache)
@@ -389,6 +424,7 @@ class Module
             App::systemCache()->clear();
         }
         
+        static::executeInstallerAction($module, 'install', $info);
         Emit('module.installed.' . $module);
         
         return true;
@@ -412,6 +448,7 @@ class Module
             App::systemCache()->clear();
         }
         
+        static::executeInstallerAction($module, 'uninstall');
         Emit('module.uninstalled.' . $module);
         
         return true;
@@ -435,6 +472,7 @@ class Module
             App::systemCache()->clear();
         }
         
+        static::executeInstallerAction($module, 'enable');
         Emit('module.enabled.' . $module);
         
         return true;
@@ -458,6 +496,7 @@ class Module
             App::systemCache()->clear();
         }
         
+        static::executeInstallerAction($module, 'disable');
         Emit('module.disabled.' . $module);
         
         return true;
