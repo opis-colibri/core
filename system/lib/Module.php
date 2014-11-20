@@ -165,7 +165,7 @@ class Module
                     'title' => static::toModuleTitle($name),
                     'core' => App::version(),
                     'description' => '',
-                    'namespace' => 'Colibri\\Module\\' . static::toCamelCase($name),
+                    'namespace' => 'Opis\\Colibri\\Module\\' . static::toCamelCase($name),
                     'include' => null,
                     'assets' => null,
                     'source' => null,
