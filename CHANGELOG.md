@@ -6,6 +6,7 @@ CHANGELOG
 * Removed all dependencies.
 * Added `opis-colibri/framework` dependency.
 * Modules that are enabled at install time are now defined in the `composer.json` file
+* Added `Opis\Colibri\ModuleInstaller` class. Modules can now define an installer.
 
 ### Opis Colibri 0.6.0, 2014.11.17
 
