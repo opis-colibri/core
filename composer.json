@@ -24,6 +24,7 @@
     },
     "minimum-stability": "dev",
     "extra": {
+        "installer": "install", 
         "installer-paths": {
             "system/modules/{$name}/":["opis-colibri/system", "opis-colibri/install",
                                        "opis-colibri/manager"]
