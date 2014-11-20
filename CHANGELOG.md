@@ -3,6 +3,7 @@ CHANGELOG
 ### Opis Colibri 0.7.1, 2014.11.20
 
 * Module installer(if any) is now executed before installing, uninstalling, enabling or disabling a module.
+* Display module installer when executing a `php colibri about {module}` command.
 
 ### Opis Colibri 0.7.0, 2014.11.20
 
