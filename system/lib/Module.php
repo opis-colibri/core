@@ -416,6 +416,7 @@ class Module
         
         $info = static::info($module);
         
+        static::executeInstallerAction($module, 'install', $info);
         App::systemConfig()->write('modules.list.' . $module, $info);
         App::systemConfig()->write('modules.enabled.' . $module, false);
         
@@ -424,7 +425,6 @@ class Module
             App::systemCache()->clear();
         }
         
-        static::executeInstallerAction($module, 'install', $info);
         Emit('module.installed.' . $module);
         
         return true;
@@ -439,7 +439,7 @@ class Module
             return false;
         }
         
-        
+        static::executeInstallerAction($module, 'uninstall');
         App::systemConfig()->delete('modules.list.' . $module);
         App::systemConfig()->delete('modules.enabled.' . $module);
         
@@ -448,7 +448,6 @@ class Module
             App::systemCache()->clear();
         }
         
-        static::executeInstallerAction($module, 'uninstall');
         Emit('module.uninstalled.' . $module);
         
         return true;
@@ -463,6 +462,7 @@ class Module
             return false;
         }
         
+        static::executeInstallerAction($module, 'enable');
         App::systemConfig()->write('modules.enabled.' . $module, true);
         
         static::registerAssets($module);
@@ -472,7 +472,6 @@ class Module
             App::systemCache()->clear();
         }
         
-        static::executeInstallerAction($module, 'enable');
         Emit('module.enabled.' . $module);
         
         return true;
@@ -487,6 +486,7 @@ class Module
             return false;
         }
         
+        static::executeInstallerAction($module, 'disable');
         App::systemConfig()->write('modules.enabled.' . $module, false);
         
         static::unregisterAssets($module);
@@ -496,7 +496,6 @@ class Module
             App::systemCache()->clear();
         }
         
-        static::executeInstallerAction($module, 'disable');
         Emit('module.disabled.' . $module);
         
         return true;

@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### Opis Colibri 0.7.1, 2014.11.20
+
+* Module installer(if any) is now executed before installing, uninstalling, enabling or disabling a module.
+
 ### Opis Colibri 0.7.0, 2014.11.20
 
 * Removed all modules files. Modules are now installed using composer.
