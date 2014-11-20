@@ -1,5 +1,11 @@
 CHANGELOG
 -----------
+### Opis Colibri 0.8.0, 2014.11.20
+
+* Changed how router works
+* Removed `schema` method from `Opis\Colibri\Serializable\ConnectionList`
+* Removed `systemSchema` method from `Opis\Colibri\App`
+
 ### Opis Colibri 0.7.2, 2014.11.20
 
 * Changed dependencies
