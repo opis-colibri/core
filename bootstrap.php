@@ -19,6 +19,7 @@
  * ============================================================================ */
 
 define('COLIBRI_ROOT', __DIR__);
+define('COLIBRI_FRAMEWORK_PATH', COLIBRI_ROOT . '/vendor/opis-colibri/framework');
 define('COLIBRI_PUBLIC_PATH', COLIBRI_ROOT . '/public');
 define('COLIBRI_PUBLIC_ASSETS_PATH', COLIBRI_PUBLIC_PATH . '/assets');
 define('COLIBRI_MODULES_PATH', COLIBRI_ROOT . '/modules');
@@ -34,7 +35,7 @@ define('COLIBRI_INSTALL_MODE', !file_exists(COLIBRI_STORAGES_PATH . '/site.php')
 
 if(COLIBRI_INSTALL_MODE)
 {
-    require_once COLIBRI_SYSTEM_PATH . '/includes/install.php';
+    require_once COLIBRI_SYSTEM_PATH . '/install.php';
 }
 elseif(file_exists(COLIBRI_ROOT . '/site.php'))
 {
