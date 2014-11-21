@@ -17,11 +17,6 @@
         "opis-colibri/manager": "1.0.*@dev",
         "opis-colibri/welcome": "1.0.*@dev"
     },
-    "autoload":{
-        "psr-4": {"Opis\\Colibri\\": "system/lib"},
-        "classmap": ["system/includes/collectors.php"],
-        "files": ["system/includes/functions.php"]
-    },
     "config": {
         "preferred-install": "dist"
     },
