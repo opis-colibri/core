@@ -5,7 +5,7 @@ CHANGELOG
 * Removed `system/lib`, `system/includes` and `system/replace` folders. The framework files were moved
 into `opis-colibri/framework` library.
 * The `system/includes/install.php` file was moved to `system/install.php`.
-* Defined `COLIBRI_FRAMEWORK_PATH` constant in `bootstrap.php`.
+* Defined `COLIBRI_FRAMEWORK_PATH` constant in `bootstrap.php` and `colibri` files.
 
 ### Opis Colibri 0.8.0, 2014.11.20
 
