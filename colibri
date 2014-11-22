@@ -55,16 +55,4 @@ else
 }
 
 \Opis\Colibri\App::init();
-
-use Symfony\Component\Console\Application;
-use Opis\Colibri\Commands\CommandList;
-
-$application = new Application();
-
-foreach(CommandList::commands() as $command)
-{
-    $application->add($command);
-}
-
-$application->run();
-
+\Opis\Colibri\Commands\Application::run();
