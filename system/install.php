@@ -83,7 +83,7 @@ App::systemConfig()->write('collectors', array(
     ),
     'ConfigStorages' => array(
         'interface' => 'Opis\\Colibri\\ConfigCollectorInterface',
-        'class' => 'Opis\\Colibri\\Colectors\\ConfigCollector',
+        'class' => 'Opis\\Colibri\\Collectors\\ConfigCollector',
     ),
 ));
 
