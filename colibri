@@ -56,27 +56,15 @@ else
 
 \Opis\Colibri\App::init();
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Application;
-
-
-use Opis\Colibri\Console\ModuleInstallCommand;
-use Opis\Colibri\Console\ModuleEnableCommand;
-use Opis\Colibri\Console\ModuleDisableCommand;
-use Opis\Colibri\Console\ModuleUninstallCommand;
-use Opis\Colibri\Console\ModuleInfoCommand;
-use Opis\Colibri\Console\CollectCommand;
+use Opis\Colibri\Commands\CommandList;
 
 $application = new Application();
-$application->add(new ModuleInstallCommand);
-$application->add(new ModuleEnableCommand);
-$application->add(new ModuleDisableCommand);
-$application->add(new ModuleUninstallCommand);
-$application->add(new ModuleInfoCommand);
-$application->add(new CollectCommand);
+
+foreach(CommandList::commands() as $command)
+{
+    $application->add($command);
+}
+
 $application->run();
 
