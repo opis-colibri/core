@@ -4,6 +4,7 @@ CHANGELOG
 
 * Modified `colibri` file
 * Added `opis-colibri/core` dependency
+* Fixed a typo in `system/install.php`
 
 ### Opis Colibri 0.9.0, 2014.11.21
 
