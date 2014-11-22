@@ -1,5 +1,10 @@
 CHANGELOG
 -----------
+### Opis Colibri 1.0.0-beta, 2014.11.22
+
+* Modified `colibri` file
+* Added `opis-colibri/core` dependency
+
 ### Opis Colibri 0.9.0, 2014.11.21
 
 * Removed `system/lib`, `system/includes` and `system/replace` folders. The framework files were moved
