@@ -89,5 +89,9 @@ App::systemConfig()->write('collectors', array(
         'interface' => 'Opis\\Colibri\\ValidatorCollectorInterface',
         'class' => 'Opis\\Colibri\\Collectors\\ValidatorCollector',
     ),
+    'Variables' => array(
+        'interface' => 'Opis\\Colibri\\VariableCollectorInterface',
+        'class' => 'Opis\\Colibri\\Collectors\\VariableCollector'
+    ),
 ));
 
