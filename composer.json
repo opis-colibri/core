@@ -22,6 +22,10 @@
         "preferred-install": "dist"
     },
     "minimum-stability": "dev",
+    "scripts": {
+        "get-module": "Opis\\Colibri\\Commands\\Scripts\\Composer::getModule",
+        "get-project": "Opis\\Colibri\\Commands\\Scripts\\Composer::getProject"
+    },
     "extra": {
         "installer-paths": {
             "system/modules/{$name}/":["opis-colibri/system", "opis-colibri/install",
