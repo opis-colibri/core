@@ -1,10 +1,11 @@
 CHANGELOG
 -----------
-### Opis Colibri 1.0.0-beta, 2014.11.22
+### Opis Colibri 1.0.0
 
 * Modified `colibri` file
 * Added `opis-colibri/core` dependency
 * Fixed a typo in `system/install.php`
+* Added new composer commands
 
 ### Opis Colibri 0.9.0, 2014.11.21
 
