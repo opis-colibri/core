@@ -28,7 +28,8 @@
     },
     "extra": {
         "installer-paths": {
-            "system/modules/{$name}/":["opis-colibri/system", "opis-colibri/install",
+            "system/modules/{$name}/":["opis-colibri/system",
+                                       "opis-colibri/install",
                                        "opis-colibri/manager"]
         },
         "installer-modules": ["install", "system"], 
