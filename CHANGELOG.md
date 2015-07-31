@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### Opis Colibri 0.10.1, 2015.07.31
+
+* Added the `prefer-stable` option to `composer.json` file
+
 ### Opis Colibri 0.10.0, 2015.07.31
 
 * Modified `colibri` file
