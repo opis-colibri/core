@@ -8,6 +8,7 @@ CHANGELOG
 * Added new composer commands
 * The `opis-colibri/framework` library was renamed to `opis-colibri/core`
 and the old `opis-colibri/core` was deleted
+* The `COLIBRI_FRAMEWORK_PATH` constant was renamed to `COLIBRI_CORE_PATH`
 
 ### Opis Colibri 0.9.0, 2014.11.21
 
