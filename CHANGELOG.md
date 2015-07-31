@@ -1,13 +1,13 @@
 CHANGELOG
 -----------
-### Opis Colibri 0.1.0, 2015.07.31
+### Opis Colibri 0.10.0, 2015.07.31
 
 * Modified `colibri` file
 * Modified dependencies
 * Changed `system/install.php` file
 * Added new composer commands
 * The `opis-colibri/framework` library was renamed to `opis-colibri/core`
-and the old `opis-colibri/core` was delete
+and the old `opis-colibri/core` was deleted
 
 ### Opis Colibri 0.9.0, 2014.11.21
 
