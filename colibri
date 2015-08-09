@@ -19,7 +19,7 @@
  * ============================================================================ */
 
 define('COLIBRI_ROOT', __DIR__);
-define('COLIBRI_FRAMEWORK_PATH', COLIBRI_ROOT . '/vendor/opis-colibri/framework');
+define('COLIBRI_CORE_PATH', COLIBRI_ROOT . '/vendor/opis-colibri/core');
 define('COLIBRI_PUBLIC_PATH', COLIBRI_ROOT . '/public');
 define('COLIBRI_PUBLIC_ASSETS_PATH', COLIBRI_PUBLIC_PATH . '/assets');
 define('COLIBRI_MODULES_PATH', COLIBRI_ROOT . '/modules');

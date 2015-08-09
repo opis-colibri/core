@@ -20,6 +20,7 @@
     "config": {
         "preferred-install": "dist"
     },
+    "prefer-stable": true,
     "minimum-stability": "dev",
     "scripts": {
         "get-module": "Opis\\Colibri\\Commands\\Scripts\\Composer::getModule",
