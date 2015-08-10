@@ -1,8 +1,10 @@
 CHANGELOG
 -----------
-### dev
+### v0.11.0, 2015.08.10
 
 * Updated dependencies
+* Removed `install.php` file
+* Changed `bootstrap.php` file
 
 ### v0.10.0, 2015.07.31
 

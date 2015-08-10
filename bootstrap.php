@@ -35,7 +35,7 @@ define('COLIBRI_INSTALL_MODE', !file_exists(COLIBRI_STORAGES_PATH . '/site.php')
 
 if(COLIBRI_INSTALL_MODE)
 {
-    require_once COLIBRI_SYSTEM_PATH . '/install.php';
+    require_once COLIBRI_CORE_PATH . '/includes/install.php';
 }
 elseif(file_exists(COLIBRI_ROOT . '/site.php'))
 {
