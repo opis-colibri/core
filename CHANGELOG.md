@@ -1,6 +1,6 @@
 CHANGELOG
 -----------
-### dev
+### v0.12.0, 2015.08.16
 
 * Updated dependnencies
 
