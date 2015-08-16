@@ -13,9 +13,9 @@
     ],
     "require": {
         "opis-colibri/core": "^1.2.0",
-        "opis-colibri/commands": "^1.0.1",
+        "opis-colibri/commands": "^1.0.0",
         "opis-colibri/module-installer": "^1.0.0",
-        "opis-colibri/standard": "1.0.x-dev"
+        "opis-colibri/standard": "^1.0.0"
     },
     "config": {
         "preferred-install": "dist"

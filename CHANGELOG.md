@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### dev
+
+* Updated dependnencies
+
 ### v0.11.0, 2015.08.10
 
 * Updated dependencies
