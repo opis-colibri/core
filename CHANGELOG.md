@@ -1,5 +1,11 @@
 CHANGELOG
 -----------
+### v0.13.0, 2015.09.14
+
+* Modified how bootstrap is performed. `\Opis\Colibri\App::run()` is now invoked from the `index.php` file.
+* Modified `colibri` file to reflect changes
+* Updated dependencies
+
 ### v0.12.0, 2015.08.16
 
 * Updated dependnencies
