@@ -27,3 +27,5 @@ ini_set('opcache.enable', 0);
 error_reporting(-1);
 
 require_once "../bootstrap.php";
+
+\Opis\Colibri\App::run();

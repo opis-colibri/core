@@ -26,12 +26,23 @@ define('COLIBRI_MODULES_PATH', COLIBRI_ROOT . '/modules');
 define('COLIBRI_STORAGES_PATH', COLIBRI_ROOT . '/storage');
 define('COLIBRI_SYSTEM_PATH', COLIBRI_ROOT . '/system');
 define('COLIBRI_SYSTEM_MODULES_PATH', COLIBRI_SYSTEM_PATH . '/modules');
-define('COLIBRI_CLI_MODE', false);
+define('COLIBRI_INSTALL_MODE', !file_exists(COLIBRI_STORAGES_PATH . '/site.php'));
+define('COLIBRI_CLI_MODE', php_sapi_name() == 'cli');
 
 require_once 'vendor/autoload.php';
 
-
-define('COLIBRI_INSTALL_MODE', !file_exists(COLIBRI_STORAGES_PATH . '/site.php'));
+if(COLIBRI_CLI_MODE)
+{
+    if(COLIBRI_INSTALL_MODE)
+    {
+        die('Opis Colibri is not installed' . PHP_EOL);
+    }
+    
+    if(!is_writable(COLIBRI_STORAGES_PATH . '/config'))
+    {
+        die('Try running command with sudo' . PHP_EOL);
+    }
+}
 
 if(COLIBRI_INSTALL_MODE)
 {
@@ -47,5 +58,3 @@ else
 }
 
 \Opis\Colibri\App::init();
-
-\Opis\Colibri\App::run();
