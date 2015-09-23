@@ -1,5 +1,10 @@
 CHANGELOG
 -----------
+### v0.14.0, 2015.09.24
+
+* Removed `opis-colibri/commands`dependency
+* Updated `opis-colibri/core` dependency to version `^1.4.0`
+
 ### v0.13.0, 2015.09.14
 
 * Modified how bootstrap is performed. `\Opis\Colibri\App::run()` is now invoked from the `index.php` file.
