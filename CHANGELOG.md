@@ -2,7 +2,7 @@ CHANGELOG
 -----------
 ### v0.14.1, 2015.09.24
 
-* Maked `colibri` file executable and added hashbang
+* Made `colibri` file executable and added hashbang
 
 ### v0.14.0, 2015.09.24
 
