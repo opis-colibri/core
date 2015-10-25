@@ -19,7 +19,7 @@
  * ============================================================================ */
 
 /*
- * Use this file with the PHP's internal server.
+ * Use this file with the PHP's built in server.
  * Just type the following command and point your browser to http://localhost:8080/
  *
  * php - S localhost:8080 -t public router.php
