@@ -1,5 +1,9 @@
 CHANGELOG
 -----------
+### v0.14.2, 2015.10.26
+
+* Addes support for PHP's built in server
+
 ### v0.14.1, 2015.09.24
 
 * Made `colibri` file executable and added hashbang
