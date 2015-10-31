@@ -31,17 +31,11 @@ define('COLIBRI_CLI_MODE', php_sapi_name() == 'cli');
 
 require_once 'vendor/autoload.php';
 
-if(COLIBRI_CLI_MODE)
+if(COLIBRI_CLI_MODE &&
+   file_exists(COLIBRI_STORAGES_PATH . '/config') &&
+   !is_writable(COLIBRI_STORAGES_PATH . '/config'))
 {
-    if(COLIBRI_INSTALL_MODE)
-    {
-        die('Opis Colibri is not installed' . PHP_EOL);
-    }
-    
-    if(!is_writable(COLIBRI_STORAGES_PATH . '/config'))
-    {
-        die('Try running command with sudo' . PHP_EOL);
-    }
+    die('Try running command with sudo' . PHP_EOL);
 }
 
 if(COLIBRI_INSTALL_MODE)
