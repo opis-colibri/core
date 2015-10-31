@@ -2,7 +2,7 @@ CHANGELOG
 -----------
 ### v0.15.0, 2015.10.31
 
-* Removed the constraint the not allowed modules to execute commands when the
+* Removed the constraint that prevented modules to execute commands when the
 framework is in install mode.
 * `opis-colibri/core` dependency was updated to version `^1.7.0`
 
