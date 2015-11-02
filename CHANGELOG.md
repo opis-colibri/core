@@ -1,6 +1,6 @@
 CHANGELOG
 -----------
-### v0.16.0, 2015.10.31
+### v0.16.0, 2015.11.02
 
 * `opis-colibri/core` dependency was updated to version `^1.8.0`
 * The `update:collector` command is executed after each `composer update` method
