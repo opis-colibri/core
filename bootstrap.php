@@ -18,37 +18,30 @@
  * limitations under the License.
  * ============================================================================ */
 
-define('COLIBRI_ROOT', __DIR__);
-define('COLIBRI_CORE_PATH', COLIBRI_ROOT . '/vendor/opis-colibri/core');
-define('COLIBRI_PUBLIC_PATH', COLIBRI_ROOT . '/public');
-define('COLIBRI_PUBLIC_ASSETS_PATH', COLIBRI_PUBLIC_PATH . '/assets');
-define('COLIBRI_MODULES_PATH', COLIBRI_ROOT . '/modules');
-define('COLIBRI_STORAGES_PATH', COLIBRI_ROOT . '/storage');
-define('COLIBRI_SYSTEM_PATH', COLIBRI_ROOT . '/system');
-define('COLIBRI_SYSTEM_MODULES_PATH', COLIBRI_SYSTEM_PATH . '/modules');
-define('COLIBRI_INSTALL_MODE', !file_exists(COLIBRI_STORAGES_PATH . '/site.php'));
-define('COLIBRI_CLI_MODE', php_sapi_name() == 'cli');
-
 require_once 'vendor/autoload.php';
 
-if(COLIBRI_CLI_MODE &&
-   file_exists(COLIBRI_STORAGES_PATH . '/config') &&
-   !is_writable(COLIBRI_STORAGES_PATH . '/config'))
-{
-    die('Try running command with sudo' . PHP_EOL);
-}
+use Opis\Colibri\AppInfo;
+use Opis\Colibri\Application;
 
-if(COLIBRI_INSTALL_MODE)
-{
-    require_once COLIBRI_CORE_PATH . '/includes/install.php';
-}
-elseif(file_exists(COLIBRI_ROOT . '/site.php'))
-{
-    require_once COLIBRI_ROOT . '/site.php';
-}
-else
-{
-    require_once COLIBRI_STORAGES_PATH . '/site.php';
-}
+$appInfo = new AppInfo(array(
+    'ROOT_PATH' => __DIR__,
+    'CORE_PATH' => __DIR__ . '/vendor/opis-colibri/core',
+    'PUBLIC_PATH' => __DIR__ . '/public',
+    'ASSETS_PATH' => __DIR__ . '/public/assets',
+    'MODULES_PATH' => __DIR__ . '/modules',
+    'STORAGES_PATH' => __DIR__ . '/storage',
+    'SYSTEM_PATH' => __DIR__ . '/system',
+    'SYSTEM_MODULES_PATH' => __DIR__ . '/system/modules',
+    'INSTALL_MODE' => !file_exists(__DIR__ . '/storage/app.php'),
+    'CLI_MODE' => php_sapi_name() == 'cli',
+    'APP_FILE' => 'app.php',
+    'APP_CLASS' => 'Opis\Colibri\App'
+));
 
-\Opis\Colibri\App::init();
+$app = new Application($appInfo);
+
+$app->bootstrap();
+
+$app->init();
+
+return $app;

@@ -19,13 +19,10 @@
  * ============================================================================ */
 
 ini_set('display_errors', 1);
-
 ini_set('display_startup_errors', 1);
-
 ini_set('opcache.enable', 0);
-
 error_reporting(-1);
 
-require_once __DIR__ . '/../bootstrap.php';
+$app = require_once __DIR__ . '/../bootstrap.php';
 
-\Opis\Colibri\App::run();
+$app->run();
