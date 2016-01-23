@@ -1,5 +1,12 @@
 CHANGELOG
 -----------
+### v1.0.x-dev
+
+* `opis-colibri/core` dependency was updated to version `2.0.x-dev`
+* `opis-colibri/standard` dependency was updated to version `2.0.x-dev`
+* Changed `bootstrap.php` file to reflect changes in `opis-colibri/core` library
+* Updated `public/index.php` and `colibri` files
+
 ### v0.16.0, 2015.11.02
 
 * `opis-colibri/core` dependency was updated to version `^1.8.0`
