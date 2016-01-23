@@ -23,7 +23,7 @@
     "minimum-stability": "dev",
     "scripts": {
         "post-update-cmd": ["php colibri update:collectors"],
-        "get-module": "Opis\\Colibri\\Composer\\Command:getModule",
+        "get-module": "Opis\\Colibri\\Composer\\Command::getModule",
         "get-package": "Opis\\Colibri\\Composer\\Command::getPackage"
     },
     "extra": {
