@@ -23,8 +23,8 @@
     "minimum-stability": "dev",
     "scripts": {
         "post-update-cmd": ["php colibri update:collectors"],
-        "get-module": "Opis\\Colibri\\Commands\\Scripts\\Composer::getModule",
-        "get-package": "Opis\\Colibri\\Commands\\Scripts\\Composer::getPackage"
+        "get-module": "Opis\\Colibri\\Composer\\Command:getModule",
+        "get-package": "Opis\\Colibri\\Composer\\Command::getPackage"
     },
     "extra": {
         "installer-paths": {
