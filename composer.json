@@ -12,9 +12,9 @@
         }
     ],
     "require": {
-        "opis-colibri/core": "^1.8.0",
+        "opis-colibri/core": "2.0.x-dev",
         "opis-colibri/module-installer": "^1.0.0",
-        "opis-colibri/standard": "^1.0.0"
+        "opis-colibri/standard": "2.0.x-dev"
     },
     "config": {
         "preferred-install": "dist"
@@ -28,11 +28,12 @@
     },
     "extra": {
         "installer-paths": {
-            "system/modules/{$name}/":["opis-colibri/system",
-                                       "opis-colibri/install",
-                                       "opis-colibri/manager"]
+            "system/modules/{$name}/": ["opis-colibri/system",
+                                        "opis-colibri/install",
+                                        "opis-colibri/manager",
+                                        "opis-colibri/commands"]
         },
-        "installer-modules": ["install", "system"], 
+        "installer-modules": ["install", "system", "commands"],
         "branch-alias": {
             "dev-master": "1.0-dev"
         }
