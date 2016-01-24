@@ -25,7 +25,9 @@
         "post-update-cmd": ["php colibri update:collectors"],
         "get-module": "Opis\\Colibri\\Composer\\Command::getModule",
         "get-package": "Opis\\Colibri\\Composer\\Command::getPackage",
-        "post-package-install": "Opis\\Colibri\\Composer\\Command::postPackageInstall"
+        "post-package-install": [
+            "Opis\\Colibri\\Composer\\Command::postPackageInstall"
+        ]
     },
     "extra": {
         "branch-alias": {
