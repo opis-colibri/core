@@ -19,6 +19,9 @@
     "config": {
         "preferred-install": "dist"
     },
+    "autoload": {
+        "classmap": ["system/composer/"]
+    },
     "prefer-stable": true,
     "minimum-stability": "dev",
     "scripts": {
@@ -26,7 +29,7 @@
         "get-module": "Opis\\Colibri\\Composer\\Command::getModule",
         "get-package": "Opis\\Colibri\\Composer\\Command::getPackage",
         "post-package-install": [
-            "Opis\\Colibri\\Composer\\Command::postPackageInstall"
+            "Opis\\Colibri\\Composer\\PostPackageInstall::execute"
         ]
     },
     "extra": {
