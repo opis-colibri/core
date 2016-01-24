@@ -19,18 +19,12 @@
     "config": {
         "preferred-install": "dist"
     },
-    "autoload": {
-        "classmap": ["system/composer/"]
-    },
     "prefer-stable": true,
     "minimum-stability": "dev",
     "scripts": {
         "post-update-cmd": ["php colibri update:collectors"],
         "get-module": "Opis\\Colibri\\Composer\\Command::getModule",
-        "get-package": "Opis\\Colibri\\Composer\\Command::getPackage",
-        "post-package-install": [
-            "Opis\\Colibri\\Composer\\PostPackageInstall::execute"
-        ]
+        "get-package": "Opis\\Colibri\\Composer\\Command::getPackage"
     },
     "extra": {
         "branch-alias": {
