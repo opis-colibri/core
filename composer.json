@@ -27,6 +27,13 @@
         "get-package": "Opis\\Colibri\\Composer\\Command::getPackage"
     },
     "extra": {
+        "installer-paths": {
+            "system/modules/{$name}/": ["opis-colibri/system",
+                                        "opis-colibri/install",
+                                        "opis-colibri/manager",
+                                        "opis-colibri/commands"]
+        },
+        "installer-modules": ["install", "system", "commands"],
         "branch-alias": {
             "dev-master": "1.0-dev"
         }
