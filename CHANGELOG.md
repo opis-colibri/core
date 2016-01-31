@@ -4,6 +4,7 @@ CHANGELOG
 
 * `opis-colibri/core` dependency was updated to version `2.0.x-dev`
 * `opis-colibri/standard` dependency was updated to version `2.0.x-dev`
+* `opis-colibri/module-installer` dependency was updated to version `1.1.x-dev`
 * Changed `bootstrap.php` file to reflect changes in `opis-colibri/core` library
 * Updated `public/index.php` and `colibri` files
 * Modified `get-package` and `get-command` target methods
