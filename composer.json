@@ -13,7 +13,7 @@
     ],
     "require": {
         "opis-colibri/core": "2.0.x-dev",
-        "opis-colibri/module-installer": "^1.0.0",
+        "opis-colibri/module-installer": "1.1.x-dev",
         "opis-colibri/standard": "2.0.x-dev"
     },
     "config": {
