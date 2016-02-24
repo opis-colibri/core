@@ -1,39 +1,37 @@
 {
     "name": "opis/colibri",
-    "type": "project",
-    "description": "A different kind of framework",
-    "keywords": ["framework", "php"],
-    "homepage": "http://opis.io",
     "license": "Apache-2.0",
+    "description": "Opis Colibri Core",
+    "keywords": ["opis", "colibri", "framework", "core"],
+    "homepage": "http://opis.io",
     "authors": [
         {
             "name": "Marius Sarca",
             "email": "marius.sarca@gmail.com"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "Opis\\Colibri\\": "lib/"
+        }
+    },
     "require": {
-        "opis-colibri/core": "2.0.x-dev",
-        "opis-colibri/module-installer": "1.1.x-dev",
-        "opis-colibri/standard": "2.0.x-dev"
-    },
-    "config": {
-        "preferred-install": "dist"
-    },
-    "prefer-stable": true,
-    "minimum-stability": "dev",
-    "scripts": {
-        "post-update-cmd": ["php colibri update:collectors"],
-        "get-module": "Opis\\Colibri\\Composer\\Command::getModule",
-        "get-package": "Opis\\Colibri\\Composer\\Command::getPackage"
+        "opis/database": "^3.4.2",
+        "opis/container": "^2.3.1",
+        "opis/http": "^2.0.0",
+        "opis/http-routing": "^4.0.0",
+        "opis/view": "^4.1.1",
+        "opis/events": "^4.1.0",
+        "opis/config": "^2.1.1",
+        "opis/cache": "^3.1.0",
+        "opis/session": "^3.1.0",
+        "opis/storages": "^1.1.0",
+        "opis/utils": "^2.0.0",
+        "symfony/console": "2.7.*",
+        "doctrine/annotations": "1.2.*",
+        "monolog/monolog": "^1.17.1"
     },
     "extra": {
-        "installer-paths": {
-            "system/modules/{$name}/": ["opis-colibri/system",
-                                        "opis-colibri/install",
-                                        "opis-colibri/manager",
-                                        "opis-colibri/commands"]
-        },
-        "installer-modules": ["install", "system", "commands"],
         "branch-alias": {
             "dev-master": "1.0-dev"
         }
