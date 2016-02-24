@@ -1,4 +1,4 @@
-Opis Colibri Core
+Opis Colibri
 =================
 
-This is the core library of the Opis Colibri framework
+This is the Opis Colibri framework
