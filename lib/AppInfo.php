@@ -23,18 +23,17 @@ namespace Opis\Colibri;
 class AppInfo
 {
     const ROOT_PATH = 1;
-    const CORE_PATH = 2;
-    const PUBLIC_PATH = 3;
-    const ASSETS_PATH = 4;
-    const MODULES_PATH = 5;
-    const STORAGES_PATH = 6;
-    const SYSTEM_PATH = 7;
-    const SYSTEM_MODULES_PATH = 8;
-    const INSTALL_MODE = 9;
-    const CLI_MODE = 10;
-    const MAIN_APP_FILE = 11;
-    const USER_APP_FILE = 12;
-    const APP_CLASS = 13;
+    const PUBLIC_PATH = 2;
+    const ASSETS_PATH = 3;
+    const MODULES_PATH = 4;
+    const STORAGES_PATH = 5;
+    const SYSTEM_PATH = 6;
+    const SYSTEM_MODULES_PATH = 7;
+    const INSTALL_MODE = 8;
+    const CLI_MODE = 9;
+    const MAIN_APP_FILE = 10;
+    const USER_APP_FILE = 11;
+    const APP_CLASS = 12;
 
     /**  @var   array */
     protected $info;
@@ -57,16 +56,6 @@ class AppInfo
     public function rootPath()
     {
         return $this->info[static::ROOT_PATH];
-    }
-
-    /**
-     * Get core path
-     * 
-     * @return  string
-     */
-    public function corePath()
-    {
-        return $this->info[static::CORE_PATH];
     }
 
     /**
