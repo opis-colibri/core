@@ -24,18 +24,19 @@ use Opis\Colibri\AppInfo;
 use Opis\Colibri\Application;
 
 $appInfo = new AppInfo(array(
-    'ROOT_PATH' => __DIR__,
-    'CORE_PATH' => __DIR__ . '/vendor/opis-colibri/core',
-    'PUBLIC_PATH' => __DIR__ . '/public',
-    'ASSETS_PATH' => __DIR__ . '/public/assets',
-    'MODULES_PATH' => __DIR__ . '/modules',
-    'STORAGES_PATH' => __DIR__ . '/storage',
-    'SYSTEM_PATH' => __DIR__ . '/system',
-    'SYSTEM_MODULES_PATH' => __DIR__ . '/system/modules',
-    'INSTALL_MODE' => !file_exists(__DIR__ . '/storage/app.php'),
-    'CLI_MODE' => php_sapi_name() == 'cli',
-    'APP_FILE' => 'app.php',
-    'APP_CLASS' => 'Opis\Colibri\App'
+    AppInfo::ROOT_PATH => __DIR__,
+    AppInfo::CORE_PATH => __DIR__ . '/vendor/opis-colibri/core',
+    AppInfo::PUBLIC_PATH => __DIR__ . '/public',
+    AppInfo::ASSETS_PATH => __DIR__ . '/public/assets',
+    AppInfo::MODULES_PATH => __DIR__ . '/modules',
+    AppInfo::STORAGES_PATH => __DIR__ . '/storage',
+    AppInfo::SYSTEM_PATH => __DIR__ . '/system',
+    AppInfo::SYSTEM_MODULES_PATH => __DIR__ . '/system/modules',
+    AppInfo::INSTALL_MODE => !file_exists(__DIR__ . '/storage/app.php'),
+    AppInfo::CLI_MODE => php_sapi_name() == 'cli',
+    AppInfo::MAIN_APP_FILE => __DIR__ . '/storage/app.php',
+    AppInfo::USER_APP_FILE => __DIR__ . '/app.php',
+    AppInfo::APP_CLASS => 'Opis\Colibri\App'
 ));
 
 $app = new Application($appInfo);
