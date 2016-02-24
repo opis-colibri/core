@@ -1,6 +1,6 @@
 CHANGELOG
 -----------
-### v1.0.x-dev
+### v0.17.0, 2016.02.24
 
 * `opis-colibri/core` dependency was updated to version `2.0.x-dev`
 * `opis-colibri/standard` dependency was updated to version `2.0.x-dev`
