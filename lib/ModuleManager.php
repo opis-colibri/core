@@ -81,12 +81,7 @@ class ModuleManager
      */
     protected function toModuleId($module)
     {
-        $module = explode('-', $module);
-        $module = array_map(function($value) {
-            return strtolower($value);
-        }, $module);
-
-        return implode('-', $module);
+        return strtolower($module);
     }
 
     /**
@@ -99,7 +94,6 @@ class ModuleManager
      */
     protected function recursiveDependencies($module, array &$list = array(), $return = true)
     {
-
         $module = $this->toModuleId($module);
 
         if (!isset($list[$module])) {
@@ -162,11 +156,27 @@ class ModuleManager
         );
 
         foreach ($search_paths as $modules_path) {
-            $iterator = new GlobIterator($modules_path . '/*/module.json');
+            $iterator = new GlobIterator($modules_path . '/*/composer.json');
 
             foreach ($iterator as $fileInfo) {
+                //Get the directroy and the JSON file path
+                $directory = $fileInfo->getPath();
+                $jsonFile = $fileInfo->getPathName();
+
+                //Check if the json contained in file is valid
+                if (!is_readable($jsonFile) ||
+                    !is_file($jsonFile) ||
+                    null === $composer = json_decode(file_get_contents($jsonFile), true)) {
+                    continue;
+                }
+
+                // Check if is set the correct type
+                if (!isset($composer['type']) || $composer['type'] !== 'opis-colibri-module') {
+                    continue;
+                }
+
                 // Extract module's name
-                $name = basename($fileInfo->getPath());
+                $name = substr($composer['name'], strpos($composer['name'], '/') + 1);
 
                 // Check if it is a valid name
                 if (!preg_match('/^[a-zA-Z](-?[a-zA-Z0-9]+)*$/', $name)) {
@@ -180,17 +190,8 @@ class ModuleManager
                 if ($module === '' || isset($this->moduleList[$module])) {
                     continue;
                 }
-
-                //Get the directroy and the JSON file path
-                $directory = $fileInfo->getPath();
-                $jsonFile = $fileInfo->getPathName();
-
-                //Check if the json contained in file is valid
-                if (!is_readable($jsonFile) ||
-                    !is_file($jsonFile) ||
-                    null === $info = json_decode(file_get_contents($jsonFile), true)) {
-                    continue;
-                }
+                
+                $info = isset($composer['extra']['module']) ? $composer['extra']['module'] : array();
 
                 $info['name'] = $name;
                 $info['directory'] = $directory;
@@ -199,7 +200,7 @@ class ModuleManager
 
                 $info += array(
                     'title' => $this->toModuleTitle($name),
-                    'description' => '',
+                    'description' => isset($composer['description']) ? $composer['description'] : '',
                     'namespace' => 'Opis\\Colibri\\Module\\' . $className,
                     'include' => null,
                     'assets' => null,
@@ -211,7 +212,7 @@ class ModuleManager
                     'installerClass' => 'Opis\\Colibri\\ModuleInstaller\\' . $className,
                     'hidden' => false,
                 );
-
+                
                 // Handle `source`
                 if ($info['source'] === null) {
                     $info['source'] = $directory;
