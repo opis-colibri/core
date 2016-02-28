@@ -142,6 +142,16 @@ class ModuleInfo
     {
         return $this->get('name');
     }
+    
+    /**
+     * Get the module's version
+     * 
+     * @return  string
+     */
+    public function version()
+    {
+        return $this->get('version');
+    }
 
     /**
      * Get the module's title

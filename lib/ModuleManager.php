@@ -31,6 +31,9 @@ class ModuleManager
     /** @var    array */
     protected $moduleList;
 
+    /** @var    array */
+    protected $packages;
+
     /**
      * Constructor
      * 
@@ -136,6 +139,43 @@ class ModuleManager
     }
 
     /**
+     * Get module packs from composer.lock
+     * 
+     * @param   bool    $clear  (optional)
+     * 
+     * @return  array
+     */
+    protected function getPackages($clear = false)
+    {
+        if ($clear) {
+            $this->packages = null;
+        }
+
+        if ($this->packages === null) {
+            $file = $this->app->info()->rootPath() . '/composer.lock';
+            if (!file_exists($file)) {
+                return $this->packages = array();
+            }
+
+            $packages = array();
+            $composerlock = json_decode(file_get_contents($file), true);
+
+            foreach ($composerlock['packages'] as $package) {
+                if ($package['type'] !== 'opis-colibri-module') {
+                    continue;
+                }
+
+                $name = substr($package['name'], strpos($package['name'], '/') + 1);
+                $packages[$name] = $package['version'];
+            }
+
+            $this->packages = $packages;
+        }
+
+        return $this->packages;
+    }
+
+    /**
      * Find all modules
      * 
      * @param   boolean $clear  (optional)
@@ -190,16 +230,24 @@ class ModuleManager
                 if ($module === '' || isset($this->moduleList[$module])) {
                     continue;
                 }
-                
+
                 $info = isset($composer['extra']['module']) ? $composer['extra']['module'] : array();
 
                 $info['name'] = $name;
                 $info['directory'] = $directory;
 
+                if (!isset($info['version']) && !isset($composer['version'])) {
+                    $packs = $this->getPackages();
+                    if (isset($packs[$name])) {
+                        $info['version'] = $packs[$name];
+                    }
+                }
+
                 $className = $this->toCamelCase($name);
 
                 $info += array(
                     'title' => $this->toModuleTitle($name),
+                    'version' => isset($composer['version']) ? $composer['version'] : '*',
                     'description' => isset($composer['description']) ? $composer['description'] : '',
                     'namespace' => 'Opis\\Colibri\\Module\\' . $className,
                     'include' => null,
@@ -212,7 +260,7 @@ class ModuleManager
                     'installerClass' => 'Opis\\Colibri\\ModuleInstaller\\' . $className,
                     'hidden' => false,
                 );
-                
+
                 // Handle `source`
                 if ($info['source'] === null) {
                     $info['source'] = $directory;
