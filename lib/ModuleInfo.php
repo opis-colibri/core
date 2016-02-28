@@ -61,7 +61,7 @@ class ModuleInfo
             $this->info = $this->app->getModuleManager()->info($this->module);
         }
         
-        return array_key_exists($property, $this->info) ? $this->info[$property] : null;
+        return isset($this->info[$property]) ? $this->info[$property] : null;
     }
 
     /**
