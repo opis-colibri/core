@@ -247,7 +247,7 @@ class ModuleManager
 
                 $info += array(
                     'title' => $this->toModuleTitle($name),
-                    'version' => isset($composer['version']) ? $composer['version'] : '*',
+                    'version' => isset($composer['version']) ? $composer['version'] : null,
                     'description' => isset($composer['description']) ? $composer['description'] : '',
                     'namespace' => 'Opis\\Colibri\\Module\\' . $className,
                     'include' => null,
