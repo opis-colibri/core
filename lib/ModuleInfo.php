@@ -60,7 +60,8 @@ class ModuleInfo
             }
             $this->info = $this->app->getModuleManager()->info($this->module);
         }
-        return $this->info[$property];
+        
+        return array_key_exists($property, $this->info) ? $this->info[$property] : null;
     }
 
     /**
