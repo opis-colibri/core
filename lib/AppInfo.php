@@ -34,6 +34,7 @@ class AppInfo
     const MAIN_APP_FILE = 10;
     const USER_APP_FILE = 11;
     const APP_CLASS = 12;
+    const VENDOR_PATH = 13;
 
     /**  @var   array */
     protected $info;
@@ -166,5 +167,19 @@ class AppInfo
     public function appClass()
     {
         return $this->info[static::APP_CLASS];
+    }
+
+    /**
+     * Vendor path
+     * 
+     * @return  string
+     */
+    public function vendorPath()
+    {
+        if (!isset($this->info[static::VENDOR_PATH])) {
+            $this->info[static::VENDOR_PATH] = $this->info[static::ROOT_PATH] . '/vendor';
+        }
+        
+        return $this->info[static::VENDOR_PATH];
     }
 }
