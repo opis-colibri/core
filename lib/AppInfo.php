@@ -157,7 +157,7 @@ class AppInfo
     public function installMode()
     {
         if (!isset($this->info[static::INSTALL_MODE])) {
-            $this->info[static::INSTALL_MODE] = false;
+            $this->info[static::INSTALL_MODE] = !file_exists($this->mainAppFile());
         }
 
         return $this->info[static::INSTALL_MODE];
@@ -171,7 +171,7 @@ class AppInfo
     public function cliMode()
     {
         if (!isset($this->info[static::CLI_MODE])) {
-            $this->info[static::CLI_MODE] = false;
+            $this->info[static::CLI_MODE] = php_sapi_name() === 'cli';
         }
 
         return $this->info[static::CLI_MODE];
