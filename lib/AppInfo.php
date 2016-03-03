@@ -20,6 +20,8 @@
 
 namespace Opis\Colibri;
 
+use Exception;
+
 class AppInfo
 {
     const ROOT_PATH = 1;
@@ -46,6 +48,10 @@ class AppInfo
      */
     public function __construct(array $info)
     {
+        if (!isset($this->info[static::ROOT_PATH])) {
+            throw new Exception('Root path must be set');
+        }
+        
         $this->info = $info;
     }
 
@@ -66,6 +72,10 @@ class AppInfo
      */
     public function publicPath()
     {
+        if (!isset($this->info[static::PUBLIC_PATH])) {
+            $this->info[static::PUBLIC_PATH] = $this->rootPath() . '/public';
+        }
+
         return $this->info[static::PUBLIC_PATH];
     }
 
@@ -76,6 +86,10 @@ class AppInfo
      */
     public function assetsPath()
     {
+        if (!isset($this->info[static::ASSETS_PATH])) {
+            $this->info[static::ASSETS_PATH] = $this->publicPath() . '/assets';
+        }
+
         return $this->info[static::ASSETS_PATH];
     }
 
@@ -86,6 +100,10 @@ class AppInfo
      */
     public function modulesPath()
     {
+        if (!isset($this->info[static::MODULES_PATH])) {
+            $this->info[static::MODULES_PATH] = $this->rootPath() . '/modules';
+        }
+
         return $this->info[static::MODULES_PATH];
     }
 
@@ -96,6 +114,10 @@ class AppInfo
      */
     public function storagesPath()
     {
+        if (!isset($this->info[static::STORAGES_PATH])) {
+            $this->info[static::STORAGES_PATH] = $this->rootPath() . '/storage';
+        }
+
         return $this->info[static::STORAGES_PATH];
     }
 
@@ -106,6 +128,10 @@ class AppInfo
      */
     public function systemPath()
     {
+        if (!isset($this->info[static::SYSTEM_PATH])) {
+            $this->info[static::SYSTEM_PATH] = $this->rootPath() . '/system';
+        }
+
         return $this->info[static::SYSTEM_PATH];
     }
 
@@ -116,6 +142,10 @@ class AppInfo
      */
     public function systemModulesPath()
     {
+        if (!isset($this->info[static::SYSTEM_MODULES_PATH])) {
+            $this->info[static::SYSTEM_MODULES_PATH] = $this->systemPath() . '/modules';
+        }
+
         return $this->info[static::SYSTEM_MODULES_PATH];
     }
 
@@ -126,6 +156,10 @@ class AppInfo
      */
     public function installMode()
     {
+        if (!isset($this->info[static::INSTALL_MODE])) {
+            $this->info[static::INSTALL_MODE] = false;
+        }
+
         return $this->info[static::INSTALL_MODE];
     }
 
@@ -136,6 +170,10 @@ class AppInfo
      */
     public function cliMode()
     {
+        if (!isset($this->info[static::CLI_MODE])) {
+            $this->info[static::CLI_MODE] = false;
+        }
+
         return $this->info[static::CLI_MODE];
     }
 
@@ -146,6 +184,10 @@ class AppInfo
      */
     public function mainAppFile()
     {
+        if (!isset($this->info[static::MAIN_APP_FILE])) {
+            $this->info[static::MAIN_APP_FILE] = $this->storagesPath() . '/app.php';
+        }
+
         return $this->info[static::MAIN_APP_FILE];
     }
 
@@ -156,6 +198,10 @@ class AppInfo
      */
     public function userAppFile()
     {
+        if (!isset($this->info[static::USER_APP_FILE])) {
+            $this->info[static::USER_APP_FILE] = $this->rootPath() . '/app.php';
+        }
+
         return $this->info[static::USER_APP_FILE];
     }
 
@@ -166,6 +212,10 @@ class AppInfo
      */
     public function appClass()
     {
+        if (!isset($this->info[static::APP_CLASS])) {
+            $this->info[static::APP_CLASS] = 'Opis\Colibri\App';
+        }
+
         return $this->info[static::APP_CLASS];
     }
 
@@ -177,9 +227,9 @@ class AppInfo
     public function vendorPath()
     {
         if (!isset($this->info[static::VENDOR_PATH])) {
-            $this->info[static::VENDOR_PATH] = $this->info[static::ROOT_PATH] . '/vendor';
+            $this->info[static::VENDOR_PATH] = $this->rootPath() . '/vendor';
         }
-        
+
         return $this->info[static::VENDOR_PATH];
     }
 }
