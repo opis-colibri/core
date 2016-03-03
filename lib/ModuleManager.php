@@ -139,7 +139,7 @@ class ModuleManager
     }
 
     /**
-     * Get module packs from composer.lock
+     * Get module packs
      * 
      * @param   bool    $clear  (optional)
      * 
@@ -152,19 +152,28 @@ class ModuleManager
         }
 
         if ($this->packages === null) {
-            $file = $this->app->info()->rootPath() . '/composer.lock';
+
+            $file = $this->app->info()->vendorPath() . '/composer/installed.json';
+
+            if (!file_exists($file)) {
+                $file = $this->app->info()->rootPath() . '/composer.lock';
+            }
+            
             if (!file_exists($file)) {
                 return $this->packages = array();
             }
-
+            
             $packages = array();
-            $composerlock = json_decode(file_get_contents($file), true);
-
-            foreach ($composerlock['packages'] as $package) {
+            $installed = json_decode(file_get_contents($file), true);
+            
+            if (isset($installed['packages'])) {
+                $installed = $installed['packages'];
+            }
+            
+            foreach ($installed as $package) {
                 if ($package['type'] !== 'opis-colibri-module') {
                     continue;
                 }
-
                 $name = substr($package['name'], strpos($package['name'], '/') + 1);
                 $packages[$name] = $package['version'];
             }
