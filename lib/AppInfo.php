@@ -48,10 +48,6 @@ class AppInfo
      */
     public function __construct(array $info)
     {
-        if (!isset($this->info[static::ROOT_PATH])) {
-            throw new Exception('Root path must be set');
-        }
-        
         $this->info = $info;
     }
 
@@ -62,6 +58,10 @@ class AppInfo
      */
     public function rootPath()
     {
+        if (!isset($this->info[static::ROOT_PATH])) {
+            throw new Exception('Root path must be set');
+        }
+        
         return $this->info[static::ROOT_PATH];
     }
 
