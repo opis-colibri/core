@@ -158,18 +158,18 @@ class ModuleManager
             if (!file_exists($file)) {
                 $file = $this->app->info()->rootPath() . '/composer.lock';
             }
-            
+
             if (!file_exists($file)) {
                 return $this->packages = array();
             }
-            
+
             $packages = array();
             $installed = json_decode(file_get_contents($file), true);
-            
+
             if (isset($installed['packages'])) {
                 $installed = $installed['packages'];
             }
-            
+
             foreach ($installed as $package) {
                 if ($package['type'] !== 'opis-colibri-module') {
                     continue;
@@ -255,19 +255,19 @@ class ModuleManager
                 $className = $this->toCamelCase($name);
 
                 $info += array(
-                    'title' => $this->toModuleTitle($name),
-                    'version' => isset($composer['version']) ? $composer['version'] : null,
-                    'description' => isset($composer['description']) ? $composer['description'] : '',
-                    'namespace' => 'Opis\\Colibri\\Module\\' . $className,
-                    'include' => null,
-                    'assets' => null,
-                    'source' => null,
-                    'dependencies' => array(),
-                    'collector' => 'collect.php',
-                    'installer' => 'install.php',
+                    'title'          => $this->toModuleTitle($name),
+                    'version'        => isset($composer['version']) ? $composer['version'] : null,
+                    'description'    => isset($composer['description']) ? $composer['description'] : '',
+                    'namespace'      => 'Opis\\Colibri\\Module\\' . $className,
+                    'include'        => null,
+                    'assets'         => null,
+                    'source'         => null,
+                    'dependencies'   => array(),
+                    'collector'      => 'collect.php',
+                    'installer'      => 'install.php',
                     'collectorClass' => 'Opis\\Colibri\\ModuleCollector\\' . $className,
                     'installerClass' => 'Opis\\Colibri\\ModuleInstaller\\' . $className,
-                    'hidden' => false,
+                    'hidden'         => false,
                 );
 
                 // Handle `source`
@@ -694,13 +694,14 @@ class ModuleManager
         if ($info['assets'] === null) {
             return true;
         }
-
-        $cwd = getcwd();
-        chdir($this->app->info()->assetsPath() . '/module');
-        $status = symlink($info['assets'], $module);
-        chdir($cwd);
-
-        return $status;
+        
+        $path = $this->app->info()->assetsPath() . '/module/' . $module;
+        
+        if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
+            return $this->copyDir($info['assets'], $path);
+        }
+        
+        return symlink($info['assets'], $path);
     }
 
     /**
@@ -720,10 +721,64 @@ class ModuleManager
 
         $path = $this->app->info()->assetsPath() . '/module/' . $module;
 
-        if (!file_exists($path) || !is_link($path)) {
+        if (!file_exists($path)) {
             return false;
         }
+        
+        if (is_link($path)) {
+            return unlink($path);
+        }
+        
+        return $this->removeDir($path);
+    }
 
-        return unlink($path);
+    protected function copyDir($source, $dest)
+    {
+        if (is_link($source)) {
+            return symlink(readlink($source), $dest);
+        }
+
+        if (is_file($source)) {
+            return copy($source, $dest);
+        }
+
+        if (!is_dir($dest)) {
+            mkdir($dest);
+        }
+
+        $dir = dir($source);
+        while (false !== $entry = $dir->read()) {
+            if ($entry == '.' || $entry == '..') {
+                continue;
+            }
+            $this->copyDir("$source/$entry", "$dest/$entry");
+        }
+
+        $dir->close();
+        return true;
+    }
+
+    protected function removeDir($dirname)
+    {
+        if (!is_dir($dirname)) {
+            return false;
+        }
+        
+        $dir = dir($dirname);
+        
+        while (false !== $entry = $dir->read()) {
+            if ($entry == '.' || $entry == '..') {
+                continue;
+            }
+            $item = $dirname . '/' . $entry;
+
+            if (is_dir($item)) {
+                $this->removeDir($item);
+            } else {
+                unlink($item);
+            }
+        }
+        
+        return rmdir($dirname);
     }
 }
