@@ -21,6 +21,7 @@
 namespace Opis\Colibri;
 
 use GlobIterator;
+use Opis\Utils\Dir;
 use ReflectionClass;
 
 class ModuleManager
@@ -694,13 +695,13 @@ class ModuleManager
         if ($info['assets'] === null) {
             return true;
         }
-        
+
         $path = $this->app->info()->assetsPath() . '/module/' . $module;
-        
+
         if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
-            return $this->copyDir($info['assets'], $path);
+            return Dir::copy($info['assets'], $path);
         }
-        
+
         return symlink($info['assets'], $path);
     }
 
@@ -724,61 +725,11 @@ class ModuleManager
         if (!file_exists($path)) {
             return false;
         }
-        
+
         if (is_link($path)) {
             return unlink($path);
         }
-        
-        return $this->removeDir($path);
-    }
 
-    protected function copyDir($source, $dest)
-    {
-        if (is_link($source)) {
-            return symlink(readlink($source), $dest);
-        }
-
-        if (is_file($source)) {
-            return copy($source, $dest);
-        }
-
-        if (!is_dir($dest)) {
-            mkdir($dest);
-        }
-
-        $dir = dir($source);
-        while (false !== $entry = $dir->read()) {
-            if ($entry == '.' || $entry == '..') {
-                continue;
-            }
-            $this->copyDir("$source/$entry", "$dest/$entry");
-        }
-
-        $dir->close();
-        return true;
-    }
-
-    protected function removeDir($dirname)
-    {
-        if (!is_dir($dirname)) {
-            return false;
-        }
-        
-        $dir = dir($dirname);
-        
-        while (false !== $entry = $dir->read()) {
-            if ($entry == '.' || $entry == '..') {
-                continue;
-            }
-            $item = $dirname . '/' . $entry;
-
-            if (is_dir($item)) {
-                $this->removeDir($item);
-            } else {
-                unlink($item);
-            }
-        }
-        
-        return rmdir($dirname);
+        return Dir::remove($path);
     }
 }
