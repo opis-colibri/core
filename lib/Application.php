@@ -21,7 +21,6 @@
 namespace Opis\Colibri;
 
 use Closure;
-use Monolog\Logger;
 use ReflectionClass;
 use ReflectionMethod;
 use Opis\Cache\Cache;
@@ -36,7 +35,6 @@ use SessionHandlerInterface;
 use Psr\Log\LoggerInterface;
 use Opis\Database\Connection;
 use Opis\HttpRouting\HttpError;
-use Monolog\Handler\NullHandler;
 use Opis\Http\Request as HttpRequest;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Opis\Cache\Storage\Memory as DefaultCacheStorage;
@@ -754,11 +752,11 @@ class Application
     {
         if ($logger === null) {
             if (!isset($this->instances['logger'])) {
-                $this->instances['logger'] = new Logger('opis-colibri', array(new NullHandler));
+                $this->instances['logger'] = $this->collect('Loggers')->get($this);
             }
             return $this->instances['logger'];
         }
-        return $this->collect('Loggers')->getLogger($this, $log);
+        return $this->collect('Loggers')->get($this, $logger);
     }
 
     /**
