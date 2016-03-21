@@ -880,7 +880,7 @@ class Application
      *
      * @return  string
      */
-    public function asset($module, $path, $full = true)
+    public function asset($module, $path, $full = false)
     {
         return $this->getURL('/assets/module/' . strtolower($module) . '/' . ltrim($path, '/'), $full);
     }
@@ -905,7 +905,7 @@ class Application
      *
      * @return  string
      */
-    public function getURL($path, $full = true)
+    public function getURL($path, $full = false)
     {
         $req = $this->request();
         return $full ? $req->uriForPath($path) : $req->baseUrl() . $path;
