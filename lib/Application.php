@@ -507,14 +507,14 @@ class Application
 
             return;
         }
-        
+
         Model::setApplication($this);
-        
+
         $file = $info->userAppFile();
         if (!file_exists($file)) {
             $file = $info->mainAppFile();
         }
-        
+
         $class = $info->appClass();
         $this->getClassLoader()->mapClass($class, $file);
 
@@ -1053,7 +1053,7 @@ class Application
     {
         return HttpError::accessDenied();
     }
-    
+
     /**
      * Generic http error
      * 
