@@ -35,6 +35,9 @@ class ModuleManager
     /** @var    array */
     protected $packages;
 
+    /** @var    array */
+    protected $enabledModules;
+
     /**
      * Constructor
      * 
@@ -302,6 +305,26 @@ class ModuleManager
 
         ksort($this->moduleList);
         return $this->moduleList;
+    }
+
+    /**
+     * Return a list with modules that are enabled
+     * 
+     * @return  array
+     */
+    public function getEnabledModules()
+    {
+        if ($this->enabledModules === null) {
+            $modules = array();
+            foreach ($this->app->config()->read('modules.enabled') as $module => $status) {
+                if ($status) {
+                    $modules[] = $module;
+                }
+            }
+            $this->enabledModules = $modules;
+        }
+
+        return $this->enabledModules;
     }
 
     /**
@@ -584,6 +607,7 @@ class ModuleManager
             return false;
         }
 
+        $this->enabledModules = null;
         $this->app->config()->write('modules.enabled.' . $module, true);
         $this->registerAssets($module);
         $this->app->loadModule($module);
@@ -613,6 +637,7 @@ class ModuleManager
             return false;
         }
 
+        $this->enabledModules = null;
         $this->executeInstallerAction($module, 'disable');
         $this->app->config()->write('modules.enabled.' . $module, false);
         $this->unregisterAssets($module);

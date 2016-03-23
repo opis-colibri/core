@@ -52,6 +52,9 @@ class Application
     /** @var    array */
     protected $instances = array();
 
+    /** @var    array */
+    protected $collectors = array();
+
     /** @var    AppInfo */
     protected $info;
 
@@ -78,9 +81,16 @@ class Application
         $manager = $this->getModuleManager();
         $reader = new AnnotationReader();
 
-        foreach ($this->config()->read('modules.enabled') as $module => $status) {
+        foreach ($manager->getEnabledModules() as $module) {
 
-            if (!$status || null === $collector = $this->config()->read("modules.list.$module.collector")) {
+            if (isset($this->collectors[$module])) {
+                continue;
+            }
+
+            $this->collectors[$module] = true;
+            $collector = $this->config()->read("modules.list.$module.collector");
+
+            if ($collector === null) {
                 continue;
             }
 
@@ -139,10 +149,8 @@ class Application
     {
         $list = $this->config()->read('modules.list');
 
-        foreach ($this->config()->read('modules.enabled') as $module => $status) {
-            if ($status) {
-                $this->loadModule($module, $list);
-            }
+        foreach ($this->getModuleManager()->getEnabledModules() as $module) {
+            $this->loadModule($module, $list);
         }
 
         $this->emit('system.init');
@@ -445,7 +453,7 @@ class Application
     public function recollect($fresh = true)
     {
         if ($this->cache()->clear()) {
-
+            unset($this->instances['includeCollectors']);
             foreach (array_keys($this->config()->read('collectors')) as $entry) {
                 $this->collect($entry, $fresh);
             }
@@ -498,14 +506,14 @@ class Application
 
             $this->config()->write('modules', array(
                 'enabled' => $enabled_modules,
-                'list' => $modules,
+                'list'    => $modules,
             ));
 
             $this->config()->write('collectors', $this->getCollectorManager()->getCollectors());
 
             return;
         }
-
+        
         Model::setApplication($this);
 
         $file = $info->userAppFile();
