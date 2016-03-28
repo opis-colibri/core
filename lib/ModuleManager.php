@@ -203,12 +203,8 @@ class ModuleManager
 
         $this->moduleList = array();
 
-        $search_paths = array(
-            $this->app->info()->modulesPath(),
-            $this->app->info()->systemModulesPath(),
-        );
-
-        foreach ($search_paths as $modules_path) {
+        foreach ($this->app->info()->modulesPaths() as $modules_path) {
+            
             $iterator = new GlobIterator($modules_path . '/*/composer.json');
 
             foreach ($iterator as $fileInfo) {

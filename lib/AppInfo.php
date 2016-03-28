@@ -27,16 +27,14 @@ class AppInfo
     const ROOT_PATH = 1;
     const PUBLIC_PATH = 2;
     const ASSETS_PATH = 3;
-    const MODULES_PATH = 4;
-    const STORAGES_PATH = 5;
-    const SYSTEM_PATH = 6;
-    const SYSTEM_MODULES_PATH = 7;
-    const INSTALL_MODE = 8;
-    const CLI_MODE = 9;
-    const MAIN_APP_FILE = 10;
-    const USER_APP_FILE = 11;
-    const APP_CLASS = 12;
-    const VENDOR_PATH = 13;
+    const STORAGES_PATH = 4;
+    const MODULES_PATHS = 5;
+    const INSTALL_MODE = 6;
+    const CLI_MODE = 7;
+    const MAIN_APP_FILE = 8;
+    const USER_APP_FILE = 9;
+    const APP_CLASS = 10;
+    const VENDOR_PATH = 11;
 
     /**  @var   array */
     protected $info;
@@ -61,7 +59,7 @@ class AppInfo
         if (!isset($this->info[static::ROOT_PATH])) {
             throw new Exception('Root path must be set');
         }
-        
+
         return $this->info[static::ROOT_PATH];
     }
 
@@ -94,20 +92,6 @@ class AppInfo
     }
 
     /**
-     * Get modules path
-     * 
-     * @return  string
-     */
-    public function modulesPath()
-    {
-        if (!isset($this->info[static::MODULES_PATH])) {
-            $this->info[static::MODULES_PATH] = $this->rootPath() . '/modules';
-        }
-
-        return $this->info[static::MODULES_PATH];
-    }
-
-    /**
      * Get storages path
      * 
      * @return  string
@@ -122,31 +106,20 @@ class AppInfo
     }
 
     /**
-     * Get system path
+     * Get a list of modules' paths
      * 
-     * @return  string
+     * @return  array
      */
-    public function systemPath()
+    public function modulesPaths()
     {
-        if (!isset($this->info[static::SYSTEM_PATH])) {
-            $this->info[static::SYSTEM_PATH] = $this->rootPath() . '/system';
+        if (!isset($this->info[static::MODULES_PATHS])) {
+            $this->info[static::MODULES_PATHS] = array(
+                $this->rootPath() . '/modules',
+                $this->rootPath() . '/system/modules',
+            );
         }
 
-        return $this->info[static::SYSTEM_PATH];
-    }
-
-    /**
-     * Get system modules path
-     * 
-     * @return  string
-     */
-    public function systemModulesPath()
-    {
-        if (!isset($this->info[static::SYSTEM_MODULES_PATH])) {
-            $this->info[static::SYSTEM_MODULES_PATH] = $this->systemPath() . '/modules';
-        }
-
-        return $this->info[static::SYSTEM_MODULES_PATH];
+        return $this->info[static::MODULES_PATHS];
     }
 
     /**
