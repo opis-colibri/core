@@ -139,14 +139,7 @@ class AppInfo
     public function installMode()
     {
         if (!isset($this->info[static::INSTALL_MODE])) {
-            
-            if(false === $mode = getenv(Env::INSTALLED)){
-                $mode = true;
-            } else {
-                $mode = trim(strtolower($mode)) === 'false';
-            }
-            
-            $this->info[static::INSTALL_MODE] = $mode;
+            $this->info[static::INSTALL_MODE] = $this->app->getEnv()->appInstalled();
         }
        
         return $this->info[static::INSTALL_MODE];

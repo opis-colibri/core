@@ -60,6 +60,9 @@ class Application
     /** @var    array */
     protected $collectors = array();
 
+    /** @var    Env */
+    protected $env;
+    
     /** @var    AppInfo */
     protected $info;
 
@@ -92,10 +95,6 @@ class Application
         $this->composer = $composer;
         $this->classLoader = $loader;
         $this->info->setApplication($this);
-        
-        $env = file_exists($info->writableDir() . '/.env') ? $info->writableDir() : $info->rootDir();
-        $dotenv = new Dotenv($env);
-        $dotenv->load();
     }
 
     /**
@@ -301,6 +300,20 @@ class Application
         $this->emit('module.disabled.' . $module->name());
 
         return true;
+    }
+    
+    /**
+     * Get enviroment
+     * 
+     * @return  Env
+     */
+    public function getEnv()
+    {
+        if ($this->env === null) {
+            $this->env = new Env($this);
+        }
+        
+        return $this->env;
     }
 
     /**
