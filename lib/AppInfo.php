@@ -24,43 +24,55 @@ use Exception;
 
 class AppInfo
 {
-    const ROOT_PATH = 1;
-    const PUBLIC_PATH = 2;
-    const ASSETS_PATH = 3;
-    const STORAGES_PATH = 4;
+    const ROOT_DIR = 1;
+    const PUBLIC_DIR = 2;
+    const ASSETS_DIR = 3;
+    const WRITABLE_DIR = 4;
     const MODULES_PATHS = 5;
     const INSTALL_MODE = 6;
     const CLI_MODE = 7;
     const MAIN_APP_FILE = 8;
     const USER_APP_FILE = 9;
     const APP_CLASS = 10;
-    const VENDOR_PATH = 11;
+    const VENDOR_DIR = 11;
 
-    /**  @var   array */
-    protected $info;
+    /** @var    Application */
+    protected $app;
+    
+    /**  @var   Composer */
+    protected $composer;
+
+    /** @var    array */
+    protected $info = array();
 
     /**
      * Constructor
      * 
-     * @param   array   $info   App info
+     * @param   array       $info     App root folder
+     * @param   Composer    $composer Composer instance
      */
-    public function __construct(array $info)
+    public function __construct($info, Composer $composer = null)
     {
         $this->info = $info;
+        $this->composer = $composer;
     }
-
+    
+    public function setApplication(Application $app)
+    {
+        $this->app = $app;
+    }
+    
     /**
      * Get root path
      * 
      * @return  string
      */
-    public function rootPath()
+    public function rootDir()
     {
-        if (!isset($this->info[static::ROOT_PATH])) {
-            throw new Exception('Root path must be set');
+        if (!isset($this->info[static::ROOT_DIR])) {
+            throw new Exception('Root directory must be set');
         }
-
-        return $this->info[static::ROOT_PATH];
+        return $this->info[static::ROOT_DIR];
     }
 
     /**
@@ -68,13 +80,13 @@ class AppInfo
      * 
      * @return  string
      */
-    public function publicPath()
+    public function publicDir()
     {
-        if (!isset($this->info[static::PUBLIC_PATH])) {
-            $this->info[static::PUBLIC_PATH] = $this->rootPath() . '/public';
+        if (!isset($this->info[static::PUBLIC_DIR])) {
+            $this->info[static::PUBLIC_PATH] = $this->rootDir() . '/public';
         }
 
-        return $this->info[static::PUBLIC_PATH];
+        return $this->info[static::PUBLIC_DIR];
     }
 
     /**
@@ -82,44 +94,41 @@ class AppInfo
      * 
      * @return  string
      */
-    public function assetsPath()
+    public function assetsDir()
     {
-        if (!isset($this->info[static::ASSETS_PATH])) {
-            $this->info[static::ASSETS_PATH] = $this->publicPath() . '/assets';
+        if (!isset($this->info[static::ASSETS_DIR])) {
+            $this->info[static::ASSETS_DIR] = $this->publicDir() . '/assets';
         }
 
-        return $this->info[static::ASSETS_PATH];
+        return $this->info[static::ASSETS_DIR];
     }
 
     /**
-     * Get storages path
+     * Get the path to the app's writable directory
      * 
      * @return  string
      */
-    public function storagesPath()
+    public function writableDir()
     {
-        if (!isset($this->info[static::STORAGES_PATH])) {
-            $this->info[static::STORAGES_PATH] = $this->rootPath() . '/storage';
+        if (!isset($this->info[static::WRITABLE_DIR])) {
+            $this->info[static::WRITABLE_DIR] = $this->rootDir() . '/.app';
         }
 
-        return $this->info[static::STORAGES_PATH];
+        return $this->info[static::WRITABLE_DIR];
     }
-
+    
     /**
-     * Get a list of modules' paths
+     * Vendor dir
      * 
-     * @return  array
+     * @return  string
      */
-    public function modulesPaths()
+    public function vendorDir()
     {
-        if (!isset($this->info[static::MODULES_PATHS])) {
-            $this->info[static::MODULES_PATHS] = array(
-                $this->rootPath() . '/modules',
-                $this->rootPath() . '/system/modules',
-            );
+        if (!isset($this->info[static::VENDOR_DIR])) {
+            $this->info[static::VENDOR_DIR] = $this->app->getComposer()->getConfig()->get('vendor-dir');;
         }
 
-        return $this->info[static::MODULES_PATHS];
+        return $this->info[static::VENDOR_DIR];
     }
 
     /**
@@ -130,9 +139,16 @@ class AppInfo
     public function installMode()
     {
         if (!isset($this->info[static::INSTALL_MODE])) {
-            $this->info[static::INSTALL_MODE] = !file_exists($this->mainAppFile());
+            
+            if(false === $mode = getenv(Env::INSTALLED)){
+                $mode = true;
+            } else {
+                $mode = trim(strtolower($mode)) === 'false';
+            }
+            
+            $this->info[static::INSTALL_MODE] = $mode;
         }
-
+       
         return $this->info[static::INSTALL_MODE];
     }
 
@@ -150,59 +166,4 @@ class AppInfo
         return $this->info[static::CLI_MODE];
     }
 
-    /**
-     * Main app file
-     * 
-     * @return  string
-     */
-    public function mainAppFile()
-    {
-        if (!isset($this->info[static::MAIN_APP_FILE])) {
-            $this->info[static::MAIN_APP_FILE] = $this->storagesPath() . '/app.php';
-        }
-
-        return $this->info[static::MAIN_APP_FILE];
-    }
-
-    /**
-     * User app file
-     * 
-     * @return  string
-     */
-    public function userAppFile()
-    {
-        if (!isset($this->info[static::USER_APP_FILE])) {
-            $this->info[static::USER_APP_FILE] = $this->rootPath() . '/app.php';
-        }
-
-        return $this->info[static::USER_APP_FILE];
-    }
-
-    /**
-     * App class
-     * 
-     * @return  string
-     */
-    public function appClass()
-    {
-        if (!isset($this->info[static::APP_CLASS])) {
-            $this->info[static::APP_CLASS] = 'Opis\Colibri\App';
-        }
-
-        return $this->info[static::APP_CLASS];
-    }
-
-    /**
-     * Vendor path
-     * 
-     * @return  string
-     */
-    public function vendorPath()
-    {
-        if (!isset($this->info[static::VENDOR_PATH])) {
-            $this->info[static::VENDOR_PATH] = $this->rootPath() . '/vendor';
-        }
-
-        return $this->info[static::VENDOR_PATH];
-    }
 }

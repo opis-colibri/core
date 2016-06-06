@@ -21,20 +21,25 @@
 namespace Opis\Colibri;
 
 use Closure;
+use Dotenv\Dotenv;
 use ReflectionClass;
 use ReflectionMethod;
 use Opis\Cache\Cache;
+use Composer\Factory;
+use Composer\Composer;
+use Composer\IO\NullIO;
 use Opis\Config\Config;
 use Opis\Session\Session;
 use Opis\HttpRouting\Path;
 use Opis\Utils\Placeholder;
 use Opis\Database\Database;
-use Opis\Utils\ClassLoader;
 use Opis\Events\EventTarget;
 use SessionHandlerInterface;
 use Psr\Log\LoggerInterface;
 use Opis\Database\Connection;
+use Opis\Colibri\Composer\CLI;
 use Opis\HttpRouting\HttpError;
+use Composer\Autoload\ClassLoader;
 use Opis\Http\Request as HttpRequest;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Opis\Cache\Storage\Memory as DefaultCacheStorage;
@@ -58,88 +63,244 @@ class Application
     /** @var    AppInfo */
     protected $info;
 
+    /** @var    Composer */
+    protected $composer;
+
+    /** @var    CLI */
+    protected $composerCLI;
+
+    /** @var    ClassLoader */
+    protected $classLoader;
+
+    /** @var    array|null */
+    protected $packages;
+
+    /** @var    array|null */
+    protected $modules;
+    
+    /** @var    boolean */
+    protected $collectorsIncluded = false;
+
     /**
      * Constructor
      * 
-     * @param   AppInfo $info   Application info
+     * @param  AppInfo  $info   Application info
      */
-    public function __construct(AppInfo $info)
+    public function __construct(AppInfo $info, ClassLoader $loader, Composer $composer = null)
     {
         $this->info = $info;
+        $this->composer = $composer;
+        $this->classLoader = $loader;
+        $this->info->setApplication($this);
+        
+        $env = file_exists($info->writableDir() . '/.env') ? $info->writableDir() : $info->rootDir();
+        $dotenv = new Dotenv($env);
+        $dotenv->load();
     }
 
     /**
-     * Include modules
+     * Get Composer instance
+     * 
+     * @return  Composer
      */
-    protected function includeCollectors()
+    public function getComposer()
     {
-        if (isset($this->instances['includeCollectors'])) {
-            return;
+        if ($this->composer === null) {
+            $io = new NullIO();
+            $config = Factory::createConfig($io, $this->info->rootDir());
+            $this->composer = Factory::create($io, $config->raw());
         }
 
-        $loader = $this->getClassLoader();
-        $manager = $this->getModuleManager();
-        $reader = new AnnotationReader();
+        return $this->composer;
+    }
 
-        foreach ($manager->getEnabledModules() as $module) {
-
-            if (isset($this->collectors[$module])) {
-                continue;
-            }
-
-            $this->collectors[$module] = true;
-            $collector = $this->config()->read("modules.list.$module.collector");
-
-            if ($collector === null) {
-                continue;
-            }
-
-            $class = $manager->collectorClass($module);
-            $loader->mapClass($class, $collector);
-
-            if (!class_exists($class)) {
-                continue;
-            }
-
-            $reflection = new ReflectionClass($class);
-
-            if (!$reflection->isSubclassOf('\\Opis\\Colibri\\ModuleCollector')) {
-                continue;
-            }
-
-            $instance = new $class();
-
-            foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-
-                $name = $method->getShortName();
-
-                if (substr($name, 0, 2) === '__') {
-                    if ($name === '__invoke') {
-                        $instance($this, $loader, $manager, $reader);
-                    }
-                    continue;
-                }
-
-                $annotation = $reader->getMethodAnnotation($method, 'Opis\\Colibri\\Annotations\\Collector');
-
-
-                if ($annotation == null) {
-                    $annotation = new CollectorAnnotation();
-                }
-
-                if ($annotation->name === null) {
-                    $annotation->name = $name;
-                }
-
-                $callback = function($collector, $app) use($instance, $name) {
-                    $instance->{$name}($collector, $app);
-                };
-
-                $this->define($annotation->name, $callback, $annotation->priority);
-            }
+    /**
+     * Get Composer CLI
+     * 
+     * @return  CLI
+     */
+    public function getComposerCLI()
+    {
+        if ($this->composerCLI === null) {
+            $this->composerCLI = new CLI($this);
         }
 
-        $this->instances['includeCollectors'] = true;
+        return $this->composerCLI;
+    }
+
+    /**
+     * @return  ClassLoader
+     */
+    public function getClassLoader()
+    {
+        return $this->classLoader;
+    }
+
+    /**
+     * Get module packs
+     * 
+     * @param   bool    $clear  (optional)
+     * 
+     * @return  array
+     */
+    public function getPackages($clear = false)
+    {
+        if (!$clear && $this->packages !== null) {
+            return $this->packages;
+        }
+
+        $packages = array();
+        $composer = $this->app->getComposer();
+        $repository = $composer->getRepositoryManager()->getLocalRepository();
+
+        foreach ($repository->getPackages() as $package) {
+            if (!$package instanceof CompletePackage || $package->getType() !== 'opis-colibri-module') {
+                continue;
+            }
+            $packages[$package->getName()] = $package;
+        }
+
+        return $this->packages = $packages;
+    }
+
+    /**
+     * Get a list with available modules
+     * 
+     * @param   bool    $clear  (optional)
+     * 
+     * @return  array
+     */
+    public function getModules($clear = false)
+    {
+        if (!$clear && $this->modules !== null) {
+            return $this->modules;
+        }
+
+        $modules = array();
+
+        foreach ($this->getPackages($clear) as $module => $package) {
+            $modules[$module] = new ModuleInfo($app, $module, $package);
+        }
+
+        return $this->modules = $modules;
+    }
+
+    /**
+     * Install a module
+     * 
+     * @param   Module  $module
+     * @param   boolean $recollect  (optional)
+     * 
+     * @return  boolean
+     */
+    public function install(Module $module, $recollect = true)
+    {
+        if (!$module->canBeInstalled()) {
+            return false;
+        }
+
+        $config = $this->config();
+        $modules = $config->read('app.modules.installed', array());
+        $modules[] = $module->name();
+        $config->write('app.modules.installed', $modules);
+
+        $this->executeInstallerAction($module, 'install');
+
+        if ($recollect) {
+            $this->recollect();
+        }
+
+        $this->emit('module.installed.' . $module->name());
+
+        return true;
+    }
+
+    /**
+     * Uninstall a module
+     * 
+     * @param   Module  $module
+     * @param   boolean $recollect  (optional)
+     * 
+     * @return  boolean
+     */
+    public function uninstall(Module $module, $recollect = true)
+    {
+        if (!$module->canBeUninstalled()) {
+            return false;
+        }
+
+        $config = $this->config();
+        $modules = $config->read('app.modules.installed', array());
+        $config->write('app.modules.installed', array_diff($modules, array($module->name())));
+
+        $this->executeInstallerAction($module, 'uninstall');
+
+        if ($recollect) {
+            $this->recollect();
+        }
+
+        $this->emit('module.uninstalled.' . $module->name());
+
+        return true;
+    }
+
+    /**
+     * Enable a module
+     * 
+     * @param   Module  $module
+     * @param   boolean $recollect  (optional)
+     * 
+     * @return  boolean
+     */
+    public function enable(Module $module, $recollect = true)
+    {
+        if (!$module->canBeEnabled()) {
+            return false;
+        }
+
+        $config = $this->config();
+        $modules = $config->read('app.modules.enabled', array());
+        $modules[] = $module->name();
+        $config->write('app.modules.enabled', $modules);
+
+        $this->executeInstallerAction($module, 'enable');
+
+        if ($recollect) {
+            $this->recollect();
+        }
+
+        $this->emit('module.enabled.' . $module->name());
+
+        return true;
+    }
+
+    /**
+     * Disable a module
+     * 
+     * @param   Module  $module
+     * @param   boolean $recollect  (optional)
+     * 
+     * @return  boolean
+     */
+    public function disable(Module $module, $recollect = true)
+    {
+        if (!$module->canBeDisabled()) {
+            return false;
+        }
+
+        $config = $this->config();
+        $modules = $config->read('app.modules.enabled', array());
+        $config->write('app.modules.enabled', array_diff($modules, array($module->name())));
+
+        $this->executeInstallerAction($module, 'disable');
+
+        if ($recollect) {
+            $this->recollect();
+        }
+
+        $this->emit('module.disabled.' . $module->name());
+
+        return true;
     }
 
     /**
@@ -365,17 +526,6 @@ class Application
     }
 
     /**
-     * @return  \Opis\Utils\ClassLoader
-     */
-    public function getClassLoader()
-    {
-        if (!isset($this->instances['classLoader'])) {
-            $this->instances['classLoader'] = new ClassLoader(array(), true);
-        }
-        return $this->instances['classLoader'];
-    }
-
-    /**
      * @return  \Opis\Colibri\Translator
      */
     public function getTranslator()
@@ -452,15 +602,17 @@ class Application
      */
     public function recollect($fresh = true)
     {
-        if ($this->cache()->clear()) {
-            unset($this->instances['includeCollectors']);
-            foreach (array_keys($this->config()->read('collectors')) as $entry) {
-                $this->collect($entry, $fresh);
-            }
-            $this->emit('system.collect');
-            return true;
+        if (!$this->cache()->clear()) {
+            return false;
         }
-        return false;
+        $this->collectorsIncluded = false;
+        
+        foreach (array_keys($this->config()->read('app.collectors')) as $entry) {
+            $this->collect($entry, $fresh);
+        }
+        
+        $this->emit('system.collect');
+        return true;
     }
 
     /**
@@ -513,7 +665,7 @@ class Application
 
             return;
         }
-        
+
         Model::setApplication($this);
 
         $file = $info->userAppFile();
@@ -896,11 +1048,11 @@ class Application
      * 
      * @param   string  $module
      * 
-     * @return  \Opis\Colibri\ModuleInfo
+     * @return  \Opis\Colibri\Module
      */
     public function module($module)
     {
-        return new ModuleInfo($this, $module);
+        return new Module($this, $module);
     }
 
     /**
@@ -1070,5 +1222,84 @@ class Application
     public function httpError($code)
     {
         return new HttpError($code);
+    }
+
+    /**
+     * Execute an action
+     * 
+     * @param \Opis\Colibri\Module $module
+     * @param string $action
+     */
+    protected function executeInstallerAction(Module $module, $action)
+    {
+        $this->getComposerCLI()->dumpAutoload();
+        $this->getClassLoader()->unregister();
+        $this->classLoader = require $this->info->vendorDir() . '/autoload.php';
+
+        if (null !== $installer = $module->installer()) {
+            $this->make($installer)->{$action}($this);
+        }
+    }
+
+    /**
+     * Include modules
+     */
+    protected function includeCollectors()
+    {
+        if ($this->collectorsIncluded) {
+            return;
+        }
+        
+        $this->collectorsIncluded = true;
+        $reader = new AnnotationReader();
+        
+        foreach ($this->getModules() as $module) {
+
+            if (isset($this->collectors[$module->name()]) || !$module->isEnabled()) {
+                continue;
+            }
+            
+            $this->collectors[$module->name()] = true;
+            
+            if ($module->collector() === null) {
+                continue;
+            }
+            
+            $instance = $this->make($module->collector());
+            
+            $reflection = new ReflectionClass($instance);
+
+            if (!$reflection->isSubclassOf('\\Opis\\Colibri\\ModuleCollector')) {
+                continue;
+            }
+            
+            foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+
+                $name = $method->getShortName();
+
+                if (substr($name, 0, 2) === '__') {
+                    if ($name === '__invoke') {
+                        $instance($this, $reader);
+                    }
+                    continue;
+                }
+
+                $annotation = $reader->getMethodAnnotation($method, 'Opis\\Colibri\\Annotations\\Collector');
+
+                if ($annotation == null) {
+                    $annotation = new CollectorAnnotation();
+                }
+
+                if ($annotation->name === null) {
+                    $annotation->name = $name;
+                }
+
+                $callback = function($collector, $app) use($instance, $name) {
+                    $instance->{$name}($collector, $app);
+                };
+                
+                $this->define($annotation->name, $callback, $annotation->priority);
+            }
+        }
     }
 }

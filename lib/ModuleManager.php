@@ -23,6 +23,7 @@ namespace Opis\Colibri;
 use GlobIterator;
 use Opis\Utils\Dir;
 use ReflectionClass;
+use Composer\Package\CompletePackage;
 
 class ModuleManager
 {
@@ -49,137 +50,29 @@ class ModuleManager
     }
 
     /**
-     * 
-     * @param   string  $module
-     * 
-     * @return  string
-     */
-    protected function toCamelCase($module)
-    {
-        $module = explode('-', $module);
-        $module = array_map(function($value) {
-            return ucfirst(strtolower($value));
-        }, $module);
-
-        return implode('', $module);
-    }
-
-    /**
-     * 
-     * @param   string  $module
-     * 
-     * @return  string
-     */
-    protected function toModuleTitle($module)
-    {
-        $module = explode('-', $module);
-        $module = array_map(function($value) {
-            return strtolower($value);
-        }, $module);
-
-        return ucfirst(implode(' ', $module));
-    }
-
-    /**
-     * 
-     * @param   string  $module
-     * 
-     * @return  string
-     */
-    protected function toModuleId($module)
-    {
-        return strtolower($module);
-    }
-
-    /**
-     * 
-     * @param   string  $module
-     * @param   array   $list   (optional)
-     * @param   boolean $return (optional)
-     * 
-     * @return  array
-     */
-    protected function recursiveDependencies($module, array &$list = array(), $return = true)
-    {
-        $module = $this->toModuleId($module);
-
-        if (!isset($list[$module])) {
-            $list[$module] = 1;
-
-            if (null !== $dependencies = $this->dependencies($module)) {
-                foreach ($dependencies as $dependency) {
-                    $this->recursiveDependencies($dependency, $list, false);
-                }
-            }
-        }
-
-        if ($return) {
-            $list = array_keys($list);
-            array_shift($list);
-            return $list;
-        }
-    }
-
-    /**
-     * 
-     * @param   string      $module
-     * @param   string      $action
-     * @param   array|null  $info
-     */
-    protected function executeInstallerAction($module, $action, $info = null)
-    {
-        if ($info === null) {
-            $info = $this->info($module);
-        }
-
-        if ($info['installer'] !== null) {
-            $installer = $info['installerClass'];
-            require_once $info['installer'];
-            $reflector = new ReflectionClass($installer);
-            if ($reflector->isSubclassOf('\\Opis\Colibri\\ModuleInstaller')) {
-                $installer::instance()->{$action}($this->app);
-            }
-        }
-    }
-
-    /**
      * Get module packs
      * 
      * @param   bool    $clear  (optional)
      * 
      * @return  array
      */
-    protected function getPackages($clear = false)
+    public function getPackages($clear = false)
     {
         if ($clear) {
             $this->packages = null;
         }
 
         if ($this->packages === null) {
-
-            $file = $this->app->info()->vendorPath() . '/composer/installed.json';
-
-            if (!file_exists($file)) {
-                $file = $this->app->info()->rootPath() . '/composer.lock';
-            }
-
-            if (!file_exists($file)) {
-                return $this->packages = array();
-            }
-
+            
             $packages = array();
-            $installed = json_decode(file_get_contents($file), true);
-
-            if (isset($installed['packages'])) {
-                $installed = $installed['packages'];
-            }
-
-            foreach ($installed as $package) {
-                if ($package['type'] !== 'opis-colibri-module') {
+            $composer = $this->app->getComposer();
+            $repository = $composer->getRepositoryManager()->getLocalRepository();
+            
+            foreach ($repository->getPackages() as $package) {
+                if (!$package instanceof CompletePackage || $package->getType() !== 'opis-colibri-module') {
                     continue;
                 }
-                $name = substr($package['name'], strpos($package['name'], '/') + 1);
-                $packages[$name] = $package['version'];
+                $packages[$package->getName()] = $package;
             }
 
             $this->packages = $packages;
@@ -200,9 +93,16 @@ class ModuleManager
         if (!$clear && $this->moduleList !== null) {
             return $this->moduleList;
         }
-
-        $this->moduleList = array();
-
+        
+        $modules = array();
+        
+        foreach($this->getPackages($clear) as $module => $package)
+        {
+            $modules[$module] = new ModuleInfo($app, $module, $package);
+        }
+        
+        return $this->moduleList = $modules;
+        
         foreach ($this->app->info()->modulesPaths() as $modules_path) {
             
             $iterator = new GlobIterator($modules_path . '/*/composer.json');
@@ -303,6 +203,12 @@ class ModuleManager
         return $this->moduleList;
     }
 
+    
+    public function getModule($name)
+    {
+        return new Module($this->app, $name);
+    }
+
     /**
      * Return a list with modules that are enabled
      * 
@@ -324,155 +230,75 @@ class ModuleManager
     }
 
     /**
-     * Check if a module exists
-     * 
-     * @param   string  $module Module's name
-     * 
-     * @return  boolean
-     */
-    public function exists($module)
-    {
-        $module = $this->toModuleId($module);
-
-        if ($this->app->config()->read('modules.list.' . $module, false) !== false) {
-            return true;
-        }
-
-        $list = $this->findAll();
-        return isset($list[$module]);
-    }
-
-    /**
      * Check if a module is installed
      * 
-     * @param   string  $module Module's name
+     * @param   Module  $module Module's instance
      * 
      * @return  boolean
      */
-    public function isInstalled($module)
+    public function isInstalled(Module $module)
     {
-        $module = $this->toModuleId($module);
-        return false !== $this->app->config()->read('modules.list.' . $module, false);
+        if (!$module->exists()) {
+            return false;
+        }
+        
+        $list = $this->app->config()->read('app.modules.installed');
+        return in_array($module->name(), $list);
     }
 
     /**
      * Check if a module is enabled
      * 
-     * @param   string  $module Module's name
+     * @param   Module  $module Module's instance
      * 
      * @return  boolean
      */
-    public function isEnabled($module)
+    public function isEnabled(Module $module)
     {
-        $module = $this->toModuleId($module);
-        return $this->app->config()->read('modules.enabled.' . $module, false);
-    }
-
-    /**
-     * Obtain information about a module
-     * 
-     * @param   string  $module Module's name
-     * 
-     * @return  array|null
-     */
-    public function info($module)
-    {
-        $module = $this->toModuleId($module);
-
-        if (!$this->exists($module)) {
-            return null;
-        } elseif ($this->isInstalled($module)) {
-            return $this->app->config()->read('modules.list.' . $module);
+        if (!$module->exists()) {
+            return false;
         }
-
-        $list = $this->findAll();
-        return $list[$module];
-    }
-
-    /**
-     * Find all dependencies of a module
-     * 
-     * @param   string  $module
-     * 
-     * @return  array|null
-     */
-    public function dependencies($module)
-    {
-        $module = $this->toModuleId($module);
-
-        if (null !== $info = $this->info($module)) {
-            return $info['dependencies'];
-        }
-
-        return null;
-    }
-
-    /**
-     * Find all the dependents of a module
-     * 
-     * @param   string  $module
-     * 
-     * @return  array|null
-     */
-    public function dependents($module)
-    {
-        $module = $this->toModuleId($module);
-
-        if (!$this->exists($module)) {
-            return null;
-        }
-
-        $list = array();
-
-        foreach ($this->findAll() as $target => $info) {
-            if ($module !== $target && in_array($module, $this->dependencies($target))) {
-                $list[] = $target;
-            }
-        }
-
-        return $list;
+        
+        $list = $this->app->config()->read('app.modules.enabled');
+        return in_array($module->name(), $list);
     }
 
     /**
      * Check if a module can be installed
      * 
-     * @param   string  $module Module's name
+     * @param   Module  $module Module's instance
      * 
      * @return  boolean
      */
-    public function canBeInstalled($module)
+    public function canBeInstalled(Module $module)
     {
-        $module = $this->toModuleId($module);
-
-        if ($this->isEnabled($module) || $this->isInstalled($module)) {
+        if ($this->isInstalled($module)) {
             return false;
         }
 
-        foreach ($this->recursiveDependencies($module) as $dependency) {
+        foreach ($module->dependencies() as $dependency) {
             if (!$this->isEnabled($dependency)) {
                 return false;
             }
         }
-
+        
         return true;
     }
 
     /**
      * Chack if a module can be uninstalled
      * 
-     * @param   string  $module Module's name
+     * @param   Module  $module Module's instance
      * 
      * @return  boolean
      */
-    public function canBeUninstalled($module)
+    public function canBeUninstalled(Module $module)
     {
-        $module = $this->toModuleId($module);
-
-        if (!$this->isInstalled($module) || $this->isEnabled($module)) {
+        if ($this->isEnabled($module) || !$this->isInstalled($module)) {
             return false;
         }
-
-        foreach ($this->dependents($module) as $dependent) {
+        
+        foreach ($module->dependents() as $dependent) {
             if ($this->isInstalled($dependent)) {
                 return false;
             }
@@ -484,20 +310,18 @@ class ModuleManager
     /**
      * Check if a module can be disabled
      * 
-     * @param   string  $module Module's name
+     * @param   Module  $module Module's instance
      * 
      * @return  boolean
      */
-    public function canBeDisabled($module)
+    public function canBeDisabled(Module $module)
     {
-        $module = $this->toModuleId($module);
-
         if (!$this->isEnabled($module)) {
             return false;
         }
-
-        foreach ($this->dependents($module) as $dependent) {
-            if ($this->isEnabled($dependent) || $this->isInstalled($dependent)) {
+        
+        foreach ($module->dependents() as $dependent) {
+            if ($this->isInstalled($dependent)) {
                 return false;
             }
         }
@@ -508,52 +332,53 @@ class ModuleManager
     /**
      * Check if a module can be enabled
      * 
-     * @param   string  $module Module's name
+     * @param   Module  $module Module's instance
      * 
      * @return  boolean
      */
-    public function canBeEnabled($module)
+    public function canBeEnabled(Module $module)
     {
-        $module = $this->toModuleId($module);
-
-        if ($this->isInstalled($module) && !$this->isEnabled($module)) {
-            foreach ($this->recursiveDependencies($module) as $dependency) {
-                if (!$this->isEnabled($dependency)) {
-                    return false;
-                }
-            }
-            return true;
+        if ($this->isEnabled($module) || !$this->isInstalled($module)) {
+            return false;
         }
-
-        return false;
+        
+        foreach ($module->dependencies() as $dependency) {
+            if (!$this->isEnabled($dependency)) {
+                return false;
+            }
+        }
+        
+        return true;
     }
 
     /**
      * Install a module
      * 
-     * @param   string  $module
+     * @param   Module  $module
      * @param   boolean $recollect  (optional)
      * 
      * @return  boolean
      */
-    public function install($module, $recollect = true)
+    public function install(Module $module, $recollect = true)
     {
-        $module = $this->toModuleId($module);
-
         if (!$this->canBeInstalled($module)) {
             return false;
         }
-
-        $info = $this->info($module);
-        $this->executeInstallerAction($module, 'install', $info);
-        $this->app->config()->write('modules.list.' . $module, $info);
-        $this->app->config()->write('modules.enabled.' . $module, false);
+        
+        $config = $this->app->config();
+        $modules = $config->read('app.modules.installed', array());
+        $modules[] = $module->name();
+        $config->write('app.modules.installed', $modules);
+        
+        if(null !== $installer = $module->installer()) {
+            $this->app->make($installer)->install($this->app);
+        }
 
         if ($recollect) {
             $this->app->recollect();
         }
 
-        $this->app->emit('module.installed.' . $module);
+        $this->app->emit('module.installed.' . $module->name());
 
         return true;
     }
@@ -561,59 +386,61 @@ class ModuleManager
     /**
      * Uninstall a module
      * 
-     * @param   string  $module
+     * @param   Module  $module
      * @param   boolean $recollect  (optional)
      * 
      * @return  boolean
      */
-    public function uninstall($module, $recollect = true)
+    public function uninstall(Module $module, $recollect = true)
     {
-        $module = $this->toModuleId($module);
-
         if (!$this->canBeUninstalled($module)) {
             return false;
         }
-
-        $this->executeInstallerAction($module, 'uninstall');
-        $this->app->config()->delete('modules.list.' . $module);
-        $this->app->config()->delete('modules.enabled.' . $module);
-
+        
+        $config = $this->app->config();
+        $modules = $config->read('app.modules.installed', array());
+        $config->write('app.modules.installed', array_diff($modules, array($module->name())));
+        
+        if(null !== $installer = $module->installer()) {
+            $this->app->make($installer)->uninstall($this->app);
+        }
+        
         if ($recollect) {
             $this->app->recollect();
         }
 
-        $this->app->emit('module.uninstalled.' . $module);
-
+        $this->app->emit('module.uninstalled.' . $module->name());
+        
         return true;
     }
 
     /**
      * Enable a module
      * 
-     * @param   string  $module
+     * @param   Module  $module
      * @param   boolean $recollect  (optional)
      * 
      * @return  boolean
      */
-    public function enable($module, $recollect = true)
+    public function enable(Module $module, $recollect = true)
     {
-        $module = $this->toModuleId($module);
-
         if (!$this->canBeEnabled($module)) {
             return false;
         }
 
-        $this->enabledModules = null;
-        $this->app->config()->write('modules.enabled.' . $module, true);
+        $config = $this->app->config();
+        $modules = $config->read('app.modules.enabled', array());
+        $modules[] = $module->name();
+        $config->write('app.modules.enabled', $modules);
         $this->registerAssets($module);
-        $this->app->loadModule($module);
+        
         $this->executeInstallerAction($module, 'enable');
 
         if ($recollect) {
             $this->app->recollect();
         }
 
-        $this->app->emit('module.enabled.' . $module);
+        $this->app->emit('module.enabled.' . $module->name());
         return true;
     }
 
@@ -644,18 +471,6 @@ class ModuleManager
 
         $this->app->emit('module.disabled.' . $module);
         return true;
-    }
-
-    /**
-     * To module class
-     * 
-     * @param   string  $module
-     * 
-     * @return  string
-     */
-    public function toModuleClass($module)
-    {
-        return $this->toCamelCase($module);
     }
 
     /**
@@ -699,11 +514,11 @@ class ModuleManager
     /**
      * Register module's assets
      * 
-     * @param   string  $module
+     * @param   Module  $module
      * 
      * @return  boolean
      */
-    public function registerAssets($module)
+    public function registerAssets(Module $module)
     {
         $module = $this->toModuleId($module);
 
@@ -729,11 +544,11 @@ class ModuleManager
     /**
      * Unregister module's assets
      * 
-     * @param   string   $module
+     * @param   Module   $module
      * 
      * @return  boolean
      */
-    public function unregisterAssets($module)
+    public function unregisterAssets(Module $module)
     {
         $module = $this->toModuleId($module);
 

@@ -20,29 +20,31 @@
 
 namespace Opis\Colibri\Composer;
 
+use Opis\Colibri\AppInfo;
 use Composer\Script\Event;
-use Composer\Installer\PackageEvent;
+use Opis\Colibri\Application;
 
 class Command
-{
-
-    public static function getModule(Event $event)
+{   
+    public static function handleDumpAutoload(Event $event)
     {
-        return InstallModule::instance($event, 
-                                       $event->getComposer(),
-                                       $event->getIO(),
-                                       $event->getArguments(),
-                                       $event->isDevMode())
-                                       ->execute();
-    }
-
-    public static function getPackage(Event $event)
-    {
-        return InstallPackage::instance($event, 
-                                        $event->getComposer(),
-                                        $event->getIO(),
-                                        $event->getArguments(),
-                                        $event->isDevMode())
-                                        ->execute();
+        $composer = $event->getComposer();
+        
+        $app = new Application(new AppInfo(array(
+            AppInfo::ROOT_DIR => $composer->getInstallationManager()
+                                          ->getInstallPath($composer->getPackage())
+        )), $composer);
+        
+        foreach ($app->getModuleManager()->findAll() as $module) {
+            
+            if ($module->isEnabled()) {
+                continue;
+            }
+            
+            if (!$module->isInstalled()) {
+                $module->getPackage()->setAutoload(array());
+                continue;
+            }
+        }
     }
 }
