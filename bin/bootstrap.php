@@ -18,19 +18,21 @@
  * limitations under the License.
  * ============================================================================ */
 
-require_once 'vendor/autoload.php';
-
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\Application;
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+ini_set('opcache.enable', 0);
+error_reporting(-1);
+
+$loader = require_once 'vendor/autoload.php';
+
 
 $appInfo = new AppInfo(array(
     AppInfo::ROOT_PATH => __DIR__,
 ));
 
-$app = new Application($appInfo);
+$app = new Application($appInfo, $loader);
 
-$app->bootstrap();
-
-$app->init();
-
-return $app;
+return $app->bootstrap();
