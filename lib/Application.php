@@ -352,18 +352,6 @@ class Application
     }
 
     /**
-     * Define a new collector
-     * 
-     * @param   string  $entry
-     * @param   Closure $callback
-     * @param   int     $priority
-     */
-    public function define($entry, Closure $callback, $priority = 0)
-    {
-        $this->getCollector()->handle(strtolower($entry), $callback, $priority);
-    }
-
-    /**
      * Get informations about this application
      * 
      * @return  AppInfo
@@ -528,17 +516,6 @@ class Application
     }
 
     /**
-     * @return  \Opis\Colibri\ModuleManager
-     */
-    public function getModuleManager()
-    {
-        if (!isset($this->instances['moduleManager'])) {
-            $this->instances['moduleManager'] = new ModuleManager($this);
-        }
-        return $this->instances['moduleManager'];
-    }
-
-    /**
      * @return  \Opis\Colibri\Translator
      */
     public function getTranslator()
@@ -633,12 +610,13 @@ class Application
      * 
      * @param   Closure $callback   Custom bootstrap
      * 
-     * @return  mixed|$this
+     * @return  $this
      */
     public function bootstrap(Closure $callback = null)
     {
         if ($callback !== null) {
-            return $callback($this);
+            $callback($this);
+            return $this;
         }
 
         $info = $this->info;
@@ -1311,7 +1289,7 @@ class Application
                     $instance->{$name}($collector, $app);
                 };
                 
-                $this->define($annotation->name, $callback, $annotation->priority);
+                $this->getCollector()->handle(strtolower($annotation->name), $callback, $annotation->priority);
             }
         }
     }
