@@ -30,7 +30,7 @@ $loader = require_once 'vendor/autoload.php';
 
 
 $appInfo = new AppInfo(array(
-    AppInfo::ROOT_PATH => __DIR__,
+    AppInfo::ROOT_DIR => __DIR__,
 ));
 
 $app = new Application($appInfo, $loader);

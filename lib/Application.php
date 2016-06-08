@@ -73,7 +73,7 @@ class Application
     /** @var    CLI */
     protected $composerCLI;
 
-    /** @var    ClassLoader */
+    /** @var ClassLoader */
     protected $classLoader;
 
     /** @var    array|null */
@@ -89,6 +89,8 @@ class Application
      * Constructor
      *
      * @param  AppInfo $info Application info
+     * @param ClassLoader $loader
+     * @param Composer $composer (optional)
      */
     public function __construct(AppInfo $info, ClassLoader $loader, Composer $composer = null)
     {
@@ -779,7 +781,7 @@ class Application
     }
 
     /**
-     * Returns a database shema abstraction layer
+     * Returns a database schema abstraction layer
      *
      * @param   string $connection (optional) Connection name
      *
@@ -888,9 +890,9 @@ class Application
     /**
      * Dispatch an event
      *
-     * @param   \Opis\Events\Event $event An event to be dispatched
+     * @param   Event $event An event to be dispatched
      *
-     * @return  \Opis\Events\Event The dispatched event
+     * @return  Event The dispatched event
      */
     public function dispatch(Event $event)
     {
@@ -969,13 +971,15 @@ class Application
      * Creates an path from a named route
      *
      * @param   string $route Route name
-     * @param   array $args (optional) Route wildecard's values
+     * @param   array $args (optional) Route wildcard's values
      *
      * @return  string
      */
     public function getPath($route, array $args = array())
     {
+        /** @var HttpRouteCollection $routes */
         $routes = $this->collect('Routes');
+
         if (!isset($routes[$route])) {
             return $route;
         }
@@ -1050,29 +1054,11 @@ class Application
      * @param   string $method
      * @param   boolean $static (optional)
      *
-     * @return  \Opis\Colibri\Controller
+     * @return  Controller
      */
     public function controller($class, $method, $static = false)
     {
-        if (strpos($class, ':') !== false) {
-            $info = explode(':', $class);
-            $class = $this->resolveClass($info[0], $info[1]);
-        }
-
         return new Controller($class, $method, $static);
-    }
-
-    /**
-     * Resolve a class
-     *
-     * @param   string $module
-     * @param   string $class
-     *
-     * @return  string
-     */
-    public function resolveClass($module, $class)
-    {
-        return $this->module($module)->nspace() . '\\' . trim($class, '\\');
     }
 
     /**
