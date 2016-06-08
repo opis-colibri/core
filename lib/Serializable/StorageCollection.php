@@ -116,9 +116,13 @@ class StorageCollection implements Serializable
         return $object;
     }
 
+    /**
+     * @param string $data
+     */
     public function unserialize($data)
     {
         $object = SerializableClosure::unserializeData($data);
+        /** @var SerializableClosure builder */
         $this->builder = $object['builder']->getClosure();
         $this->defaultStorage = $object['defaultStorage'];
         $this->storages = array_map(function ($value) {

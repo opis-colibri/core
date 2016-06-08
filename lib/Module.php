@@ -162,7 +162,7 @@ class Module
     protected function resolveDependencies($package, $extra)
     {
         $dependencies = array();
-        $modules = $this->app->getModuleManager()->findAll();
+        $modules = $this->app->getModules();
 
         foreach ($package->getRequires() as $dependency) {
             $target = $dependency->getTarget();
@@ -185,7 +185,7 @@ class Module
     protected function resolveDependants($package, $extra)
     {
         $dependants = array();
-        $modules = $this->app->getModuleManager()->findAll();
+        $modules = $this->app->getModules();
 
         foreach ($modules as $name => $module) {
             if ($name === $this->name) {

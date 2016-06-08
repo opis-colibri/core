@@ -90,12 +90,12 @@ class HttpRouter extends Router
     /**
      * Route path
      *
-     * @param   BasePath $path
-     *
-     * @return  mixed
+     * @param Path|BasePath $path
+     * @return mixed
      */
     public function route(BasePath $path)
     {
+
         $router = new AliasRouter($this->app->collect('RouteAliases'));
         $alias = $router->route(new AliasPath($path->path()));
 
@@ -107,7 +107,7 @@ class HttpRouter extends Router
 
         $this->path = $path;
         $result = parent::route($path);
-
+        
         $response = $path->request()->response();
         $response->body($result);
         $response->send();

@@ -38,6 +38,7 @@ class HttpRoute extends Route
         if ($this->resolvedAction === null) {
             if ($this->routeAction instanceof Controller) {
 
+                /** @var HttpRouter $router */
                 $router = $this->get('#collection')->getRouter();
                 $class = $className = $this->routeAction->getClass();
                 $method = $methodName = $this->routeAction->getMethod();
