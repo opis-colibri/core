@@ -38,7 +38,7 @@ class InstallModule extends AbstractScript
             return 1;
         }
 
-        $modules = array_map(function($value) {
+        $modules = array_map(function ($value) {
 
             if (strpos($value, '/') === false) {
                 $value = 'opis-colibri/' . $value;
@@ -62,7 +62,7 @@ class InstallModule extends AbstractScript
         $repos = $composer->getRepositoryManager()->getRepositories();
 
         $this->repos = new CompositeRepository(array_merge(
-                array(new PlatformRepository), $repos
+            array(new PlatformRepository), $repos
         ));
 
 

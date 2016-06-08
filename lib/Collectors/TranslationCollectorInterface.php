@@ -28,9 +28,9 @@ interface TranslationCollectorInterface
 
     /**
      * Add the sentences that will be translated from english to current used language
-     * 
-     * @param   string  $language   Language
-     * @param   array   $sentences  Trnslated sentences
+     *
+     * @param   string $language Language
+     * @param   array $sentences Trnslated sentences
      */
     public function translate($language, array $sentences);
 }

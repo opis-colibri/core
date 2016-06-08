@@ -20,7 +20,6 @@
 
 namespace Opis\Colibri\Collectors\Implementation;
 
-use Closure;
 use Opis\Colibri\Application;
 use Opis\HttpRouting\DispatcherResolver;
 use Opis\Colibri\Collectors\AbstractCollector;
@@ -31,8 +30,8 @@ class DispatcherCollector extends AbstractCollector implements DispatcherCollect
 
     /**
      * Constructor
-     * 
-     * @param   Opis\Colibri\Application    $app
+     *
+     * @param   Application $app
      */
     public function __construct(Application $app)
     {
@@ -42,10 +41,10 @@ class DispatcherCollector extends AbstractCollector implements DispatcherCollect
     /**
      * Register a new dispatcher
      *
-     * @param   string      $name       Dispatcher's name
-     * @param   callable    $builder    A callback that will return an instance of \Opis\Routing\Dispatcher
+     * @param   string $name Dispatcher's name
+     * @param   callable $builder A callback that will return an instance of \Opis\Routing\Dispatcher
      *
-     * @return  \Opis\Colibri\DispatcherCollectorInterface  Self reference
+     * @return  self  Self reference
      */
     public function register($name, $builder)
     {

@@ -47,9 +47,9 @@ class VariablesList implements Serializable
         if (is_array($value)) {
             return array_map(array($this, __FUNCTION__), $value);
         } elseif ($value instanceof \stdClass) {
-            $ret = (array) $value;
+            $ret = (array)$value;
             $ret = array_map(array($this, __FUNCTION__), $ret);
-            $ret = (object) $ret;
+            $ret = (object)$ret;
             return $ret;
         } elseif ($value instanceof Closure) {
             return SerializableClosure::from($value);
@@ -63,9 +63,9 @@ class VariablesList implements Serializable
         if (is_array($value)) {
             return array_map(array($this, __FUNCTION__), $value);
         } elseif ($value instanceof \stdClass) {
-            $ret = (array) $value;
+            $ret = (array)$value;
             $ret = array_map(array($this, __FUNCTION__), $ret);
-            $ret = (object) $ret;
+            $ret = (object)$ret;
             return $ret;
         } elseif ($value instanceof SerializableClosure) {
             return $value->getClosure();

@@ -38,10 +38,10 @@ class Translator
 
     /**
      * Constructor
-     * 
-     * @param   \Opis\Colibri\Application       $app
-     * @param   string                          $language       (optional)
-     * @param   \Opis\Utils\Placeholder|null    $placeholder    (optional)
+     *
+     * @param   \Opis\Colibri\Application $app
+     * @param   string $language (optional)
+     * @param   \Opis\Utils\Placeholder|null $placeholder (optional)
      */
     public function __construct(Application $app, $language = 'en', Placeholder $placeholder = null)
     {
@@ -55,7 +55,7 @@ class Translator
 
     /**
      * Get the current language
-     * 
+     *
      * @return  string
      */
     public function getLanguage()
@@ -65,9 +65,9 @@ class Translator
 
     /**
      * Set the current language
-     * 
-     * @param   string  $language
-     * 
+     *
+     * @param   string $language
+     *
      * @return  $this
      */
     public function setLanguage($language)
@@ -78,11 +78,11 @@ class Translator
 
     /**
      * Translate a sentence
-     * 
-     * @param   string      $sentence
-     * @param   array       $placeholders   (optional)
-     * @param   string|null $lang           (optional)
-     * 
+     *
+     * @param   string $sentence
+     * @param   array $placeholders (optional)
+     * @param   string|null $lang (optional)
+     *
      * @return  string
      */
     public function translate($sentence, $placeholders = array(), $lang = null)
@@ -106,11 +106,11 @@ class Translator
 
     /**
      * Translate a sentence
-     * 
-     * @param   string      $sentence
-     * @param   array       $placeholders   (optional)
-     * @param   string|null $lang           (optional)
-     * 
+     *
+     * @param   string $sentence
+     * @param   array $placeholders (optional)
+     * @param   string|null $lang (optional)
+     *
      * @return  string
      */
     public function __invoke($sentence, $placeholders = array(), $lang = null)

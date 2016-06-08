@@ -28,8 +28,8 @@ class Command extends ConsoleCommand
     protected $app;
 
     /**
-     * 
-     * @param   \Opis\Colibri\Application   $app
+     *
+     * @param   \Opis\Colibri\Application $app
      */
     public function setApp(Application $app)
     {

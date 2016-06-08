@@ -29,10 +29,10 @@ interface DispatcherCollectorInterface
     /**
      * Register a new dispatcher
      *
-     * @param   string      $name       Dispatcher's name
-     * @param   callable    $builder    A callback that will return an instance of \Opis\Routing\Dispatcher
+     * @param   string $name Dispatcher's name
+     * @param   callable $builder A callback that will return an instance of \Opis\Routing\Dispatcher
      *
-     * @return  \Opis\Colibri\DispatcherCollectorInterface  Self reference
+     * @return  self  Self reference
      */
     public function register($name, $builder);
 }

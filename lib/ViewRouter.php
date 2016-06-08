@@ -30,8 +30,8 @@ class ViewRouter extends BaseRouter
 
     /**
      * Constructor
-     * 
-     * @param   \Opis\Colibri\Application   $app
+     *
+     * @param   \Opis\Colibri\Application $app
      */
     public function __construct(Application $app)
     {
@@ -41,7 +41,7 @@ class ViewRouter extends BaseRouter
 
     /**
      * Get router (override)
-     * 
+     *
      * @return  \Opis\Routing\Router
      */
     protected function getRouter()
@@ -66,8 +66,8 @@ class ViewRouter extends BaseRouter
     /**
      * Returns an instance of the specified contract or class
      *
-     * @param   string  $name       Contract name or class name
-     * @param   array   $arguments  (optional) Arguments that will be passed to the contract constructor
+     * @param   string $name Contract name or class name
+     * @param   array $arguments (optional) Arguments that will be passed to the contract constructor
      *
      * @return  mixed
      */
@@ -78,7 +78,7 @@ class ViewRouter extends BaseRouter
 
     /**
      * Get the application
-     * 
+     *
      * @return  \Opis\Colibri\Application
      */
     public function app()
@@ -89,8 +89,8 @@ class ViewRouter extends BaseRouter
     /**
      * Creates a new view
      *
-     * @param   string  $name       View name
-     * @param   array   $arguments  (optional) View's arguments
+     * @param   string $name View name
+     * @param   array $arguments (optional) View's arguments
      *
      * @return  \Opis\Colibri\View
      */
@@ -102,9 +102,9 @@ class ViewRouter extends BaseRouter
     /**
      * Returns a path to a module's asset
      *
-     * @param   string  $module Module name
-     * @param   string  $path   Module's resource relative path
-     * @param   boolean $full   Full path flag
+     * @param   string $module Module name
+     * @param   string $path Module's resource relative path
+     * @param   boolean $full Full path flag
      *
      * @return  string
      */
@@ -116,8 +116,8 @@ class ViewRouter extends BaseRouter
     /**
      * Get the URI for a path
      *
-     * @param   string  $path   The path
-     * @param   boolean $full   (optional) Full URI flag
+     * @param   string $path The path
+     * @param   boolean $full (optional) Full URI flag
      *
      * @return  string
      */
@@ -129,8 +129,8 @@ class ViewRouter extends BaseRouter
     /**
      * Creates an path from a named route
      *
-     * @param   string  $route  Route name
-     * @param   array   $args   (optional) Route wildecard's values
+     * @param   string $route Route name
+     * @param   array $args (optional) Route wildcard's values
      *
      * @return  string
      */
@@ -142,8 +142,8 @@ class ViewRouter extends BaseRouter
     /**
      * Return a variable's value
      *
-     * @param   string  $name       Variable's name
-     * @param   mixed   $default    (optional) The value that will be returned if the variable doesn't exist
+     * @param   string $name Variable's name
+     * @param   mixed $default (optional) The value that will be returned if the variable doesn't exist
      *
      * @return  mixed
      */
@@ -155,9 +155,9 @@ class ViewRouter extends BaseRouter
     /**
      * Translate a text
      *
-     * @param   string  $sentence       The text that will be translated
-     * @param   array   $placeholders   (optional) An array of placeholders
-     * @param   string  $lang           (optional) Translation language
+     * @param   string $sentence The text that will be translated
+     * @param   array $placeholders (optional) An array of placeholders
+     * @param   string $lang (optional) Translation language
      *
      * @return  string  Translated text
      */

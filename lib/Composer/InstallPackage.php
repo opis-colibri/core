@@ -61,7 +61,7 @@ class InstallPackage extends AbstractScript
         $repos = $composer->getRepositoryManager()->getRepositories();
 
         $this->repos = new CompositeRepository(array_merge(
-                array(new PlatformRepository), $repos
+            array(new PlatformRepository), $repos
         ));
 
 

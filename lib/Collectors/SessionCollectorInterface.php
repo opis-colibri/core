@@ -31,9 +31,9 @@ interface SessionCollectorInterface
     /**
      * Register a new storage
      *
-     * @param   string      $storage        Storage name
-     * @param   \Closure    $constructor    Storage constructor callback
-     * @param   boolean     $default        (optional) Default flag
+     * @param   string $storage Storage name
+     * @param   \Closure $constructor Storage constructor callback
+     * @param   boolean $default (optional) Default flag
      *
      * @return  mixed
      */

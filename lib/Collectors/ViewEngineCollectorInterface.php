@@ -31,8 +31,8 @@ interface ViewEngineCollectorInterface
     /**
      * Defines a new view engine
      *
-     * @param   \Closure    $constructor    A callback that will return an instance of \Opis\View\EngineInterface
-     * @param   int         $priority       Engine's priority
+     * @param   \Closure $constructor A callback that will return an instance of \Opis\View\EngineInterface
+     * @param   int $priority Engine's priority
      *
      * @return  \Opis\View\EngineEntry
      */

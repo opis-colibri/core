@@ -24,14 +24,14 @@ use Opis\Events\Event as BaseEvent;
 
 class Event extends BaseEvent
 {
-    /** @var    \Opis\Colibri\Application */
+    /** @var    Application */
     protected $app;
 
     /**
-     * 
-     * @param   \Opis\Colibri\Application   $app
-     * @param   string                      $name
-     * @param   boolean                     $cancelable (optional)
+     *
+     * @param   Application $app
+     * @param   string $name
+     * @param   boolean $cancelable (optional)
      */
     public function __construct(Application $app, $name, $cancelable = false)
     {
@@ -41,7 +41,7 @@ class Event extends BaseEvent
 
     /**
      * Get the app
-     * 
+     *
      * @return  \Opis\Colibri\Application
      */
     public function app()

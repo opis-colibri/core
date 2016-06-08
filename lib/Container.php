@@ -26,10 +26,10 @@ class Container extends BaseContainer
 {
     /** @var    \Opis\Colibri\Application */
     protected $app;
-    
+
     /**
      * Set application
-     * 
+     *
      * @param   \Opis\Colibri\Application $app
      */
     public function setApplication(Application $app)
@@ -39,10 +39,10 @@ class Container extends BaseContainer
         $this->singleton($class, $class);
         $this->instances[$class] = $app;
     }
-    
+
     /**
      * Get application
-     * 
+     *
      * @return  \Opis\Colibri\Application
      */
     public function app()

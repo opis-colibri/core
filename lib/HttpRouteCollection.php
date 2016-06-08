@@ -29,9 +29,9 @@ class HttpRouteCollection extends RouteCollection
 
     /**
      * Set the router
-     * 
-     * @param   \Opis\Colibri\HttpRouter    $router
-     * 
+     *
+     * @param   \Opis\Colibri\HttpRouter $router
+     *
      * @return  $this
      */
     public function setRouter(HttpRouter $router)
@@ -42,7 +42,7 @@ class HttpRouteCollection extends RouteCollection
 
     /**
      * Get the router
-     * 
+     *
      * @return  \Opis\Colibri\HttpRouter
      */
     public function getRouter()

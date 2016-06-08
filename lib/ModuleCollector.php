@@ -27,6 +27,6 @@ abstract class ModuleCollector
      */
     final public function __construct()
     {
-        
+
     }
 }

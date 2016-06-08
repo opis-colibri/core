@@ -35,7 +35,7 @@ class Console
 
     /**
      *  Get a list of commands
-     * 
+     *
      * @return  array
      */
     public function commands()
@@ -51,11 +51,11 @@ class Console
                     $command->setApp($this->app);
                     $commands[$name] = $command;
                 }
-            } catch (Excepion $e) {
-                
+            } catch (Exception $e) {
+
             }
         }
-        
+
         return $commands;
     }
 

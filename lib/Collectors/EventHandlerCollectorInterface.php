@@ -29,9 +29,9 @@ interface EventHandlerCollectorInterface
     /**
      * Register a new event handler
      *
-     * @param   string      $event      Event name
-     * @param   callable    $callback   A callback that will be executed
-     * @param   int         $priority   Event handler's priority
+     * @param   string $event Event name
+     * @param   callable $callback A callback that will be executed
+     * @param   int $priority Event handler's priority
      *
      * @return  \Opis\Events\EventHandler
      */

@@ -28,9 +28,9 @@ class HttpRoute extends Route
 
     /**
      * Get the route's callback
-     * 
+     *
      * @return  callable
-     * 
+     *
      * @throws \RuntimeException
      */
     public function getAction()

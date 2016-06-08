@@ -42,12 +42,12 @@ class CallbackList implements Serializable
     {
         SerializableClosure::enterContext();
 
-        $object = serialize(array_map(function($value) {
-                if ($value instanceof Closure) {
-                    return SerializableClosure::from($value);
-                }
-                return $value;
-            }, $this->callbacks));
+        $object = serialize(array_map(function ($value) {
+            if ($value instanceof Closure) {
+                return SerializableClosure::from($value);
+            }
+            return $value;
+        }, $this->callbacks));
 
         SerializableClosure::exitContext();
 
@@ -58,7 +58,7 @@ class CallbackList implements Serializable
     {
         $object = SerializableClosure::unserializeData($data);
 
-        $this->callbacks = array_map(function($value) {
+        $this->callbacks = array_map(function ($value) {
             if ($value instanceof SerializableClosure) {
                 return $value->getClosure();
             }

@@ -31,8 +31,8 @@ class TranslationCollector extends AbstractCollector implements TranslationColle
 
     /**
      * Constructor
-     * 
-     * @param   Opis\Colibri\Application    $app
+     *
+     * @param   Application $app
      */
     public function __construct(Application $app)
     {
@@ -41,9 +41,9 @@ class TranslationCollector extends AbstractCollector implements TranslationColle
 
     /**
      * Add the sentences that will be translated from english to current used language
-     * 
-     * @param   string  $language   Language
-     * @param   array   $sentences  Trnslated sentences
+     *
+     * @param   string $language Language
+     * @param   array $sentences Trnslated sentences
      */
     public function translate($language, array $sentences)
     {

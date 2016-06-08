@@ -29,10 +29,10 @@ interface ValidatorCollectorInterface
     /**
      * Register a new validator
      *
-     * @param   string      $name       Validator's name
-     * @param   callable    $callback   Validator's implementation
+     * @param   string $name Validator's name
+     * @param   callable $callback Validator's implementation
      *
-     * @return  \Opis\Colibri\ValidatorCollectorInterface   Self reference
+     * @return  self
      */
     public function register($name, $callback);
 }

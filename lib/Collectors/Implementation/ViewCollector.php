@@ -31,8 +31,8 @@ class ViewCollector extends AbstractCollector implements ViewCollectorInterface
 
     /**
      * Constructor
-     * 
-     * @param   Opis\Colibri\Application    $app
+     *
+     * @param   Application $app
      */
     public function __construct(Application $app)
     {
@@ -42,9 +42,9 @@ class ViewCollector extends AbstractCollector implements ViewCollectorInterface
     /**
      * Defines a new view route
      *
-     * @param   string      $pattern    View's pattern
-     * @param   callable    $resolver   A callback that will resolve a view route into a path
-     * @param   int         $priority   Route's priority
+     * @param   string $pattern View's pattern
+     * @param   callable $resolver A callback that will resolve a view route into a path
+     * @param   int $priority Route's priority
      *
      * @return  \Opis\View\Route
      */

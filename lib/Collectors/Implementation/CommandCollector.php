@@ -31,8 +31,8 @@ class CommandCollector extends AbstractCollector implements CommandCollectorInte
 
     /**
      * Constructor
-     * 
-     * @param   Opis\Colibri\Application    $app
+     *
+     * @param   Application $app
      */
     public function __construct(Application $app)
     {
@@ -42,10 +42,10 @@ class CommandCollector extends AbstractCollector implements CommandCollectorInte
     /**
      * Register a new command
      *
-     * @param   string      $name       Command's name
-     * @param   callable    $callback   Callback
+     * @param   string $name Command's name
+     * @param   callable $callback Callback
      *
-     * @return  \Opis\Colibri\CommandCollectorInterface   Self reference
+     * @return  self   Self reference
      */
     public function register($name, $callback)
     {

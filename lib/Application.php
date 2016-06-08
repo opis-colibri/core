@@ -32,8 +32,8 @@ use Opis\Session\Session;
 use Opis\HttpRouting\Path;
 use Opis\Utils\Placeholder;
 use Opis\Database\Database;
-use Opis\Events\EventTarget;
 use SessionHandlerInterface;
+use Opis\Events\EventTarget;
 use Psr\Log\LoggerInterface;
 use Opis\Database\Connection;
 use Opis\Colibri\Composer\CLI;
@@ -129,7 +129,7 @@ class Application
     }
 
     /**
-     * @return  \Composer\Autoload\ClassLoader
+     * @return  ClassLoader
      */
     public function getClassLoader()
     {
@@ -315,41 +315,6 @@ class Application
         }
 
         return $this->env;
-    }
-
-    /**
-     * Init method
-     */
-    public function init()
-    {
-        $list = $this->config()->read('modules.list');
-
-        foreach ($this->getModuleManager()->getEnabledModules() as $module) {
-            $this->loadModule($module, $list);
-        }
-
-        $this->emit('system.init');
-    }
-
-    /**
-     * Load an existing module
-     *
-     * @param   string $module Module's name
-     * @param   array|null $list (optional) A list of available modules
-     */
-    public function loadModule($module, $list = null)
-    {
-        if ($list === null) {
-            $list = $this->config()->read('modules.list');
-        }
-
-        $module = $list[$module];
-
-        $this->getClassLoader()->registerNamespace($module['namespace'], $module['source']);
-
-        if ($module['include'] !== null) {
-            include_once($module['include']);
-        }
     }
 
     /**
@@ -619,69 +584,6 @@ class Application
             $callback($this);
             return $this;
         }
-
-        $info = $this->info;
-        $storagesPath = $info->storagesPath();
-        $rootPath = $info->rootPath();
-
-        if ($info->cliMode() &&
-            file_exists($storagesPath . '/config') &&
-            !is_writable($storagesPath . '/config')
-        ) {
-            die('Try running command with sudo' . PHP_EOL);
-        }
-
-        if ($info->installMode()) {
-            $enabled_modules = array();
-            $composer_json = $rootPath . '/composer.json';
-            $manager = $this->getModuleManager();
-
-            if (file_exists($composer_json) &&
-                null !== $composerContent = json_decode(file_get_contents($composer_json), true)
-            ) {
-                foreach ($composerContent['extra']['installer-modules'] as $module) {
-                    $enabled_modules[$module] = true;
-                }
-            }
-
-            $filter = function (&$value) use ($enabled_modules) {
-                return isset($enabled_modules[$value['name']]);
-            };
-
-            $modules = array_filter($this->getModuleManager()->findAll(), $filter);
-
-            $this->config()->write('modules', array(
-                'enabled' => $enabled_modules,
-                'list' => $modules,
-            ));
-
-            $this->config()->write('collectors', $this->getCollectorManager()->getCollectors());
-
-            return $this;
-        }
-
-        Model::setApplication($this);
-
-        $file = $info->userAppFile();
-        if (!file_exists($file)) {
-            $file = $info->mainAppFile();
-        }
-
-        $class = $info->appClass();
-        $this->getClassLoader()->mapClass($class, $file);
-
-        if (!class_exists($class)) {
-            throw new \RuntimeException("Unknown class '$class'");
-        }
-
-        $reflection = new ReflectionClass($class);
-
-        if (!$reflection->isSubclassOf('\\Opis\\Colibri\\Bootstrap')) {
-            throw new \RuntimeException("'$class' must inherit from '\\Opis\\Colibri\\Bootstrap'");
-        }
-
-        $instance = new $class();
-        $instance->boot($this);
 
         return $this;
     }

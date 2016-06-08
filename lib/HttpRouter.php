@@ -30,21 +30,21 @@ use Opis\Routing\Router as AliasRouter;
 
 class HttpRouter extends Router
 {
-    /** @var    \Opis\Colibri\Application */
+    /** @var    Application */
     protected $app;
 
     /** @var    \Opis\HttpRouting\Path */
     protected $path;
-    
+
     /**
      * Constructor
-     * 
-     * @param   \Opis\Colibri\Application $app
+     *
+     * @param   Application $app
      */
     public function __construct(Application $app)
     {
         $this->app = $app;
-        
+
         $specials = array(
             'app' => $app,
             'request' => $app->request(),
@@ -53,34 +53,34 @@ class HttpRouter extends Router
             'lang' => $app->getTranslator()->getLanguage(),
             'view' => $app->getViewRouter(),
         );
-        
+
         parent::__construct($app->collect('Routes'), $app->collect('Dispatchers'), null, $specials);
 
         $this->getRouteCollection()
-             ->notFound(function ($path) use ($app) {
+            ->notFound(function ($path) use ($app) {
                 return new NotFound($app->view('error.404', array('path' => $path)));
-             })
-             ->accessDenied(function ($path) use ($app) {
+            })
+            ->accessDenied(function ($path) use ($app) {
                 return new AccessDenied($app->view('error.403', array('path' => $path)));
-             });
-        
+            });
+
         $this->getRouteCollection()->setRouter($this);
     }
-    
+
     /**
      * Get the application
-     * 
-     * @return  \Opis\Colibri\Application
+     *
+     * @return  Application
      */
     public function app()
     {
         return $this->app;
     }
-    
+
     /**
      * Get current path
-     * 
-     * @return  \Opis\HttpRouting\Path
+     *
+     * @return  BasePath
      */
     public function getPath()
     {
@@ -89,9 +89,9 @@ class HttpRouter extends Router
 
     /**
      * Route path
-     * 
-     * @param   \Opis\HttpRouting\Path  $path
-     * 
+     *
+     * @param   BasePath $path
+     *
      * @return  mixed
      */
     public function route(BasePath $path)
@@ -101,10 +101,10 @@ class HttpRouter extends Router
 
         if ($alias !== null) {
             $path = new Path(
-                (string) $alias, $path->domain(), $path->method(), $path->isSecure(), $path->request()
+                (string)$alias, $path->domain(), $path->method(), $path->isSecure(), $path->request()
             );
         }
-        
+
         $this->path = $path;
         $result = parent::route($path);
 

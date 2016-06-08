@@ -29,8 +29,8 @@ class Validator extends BaseValidator
 
     /**
      * Constructor
-     * 
-     * @param   \Opis\Colibri\Application   $app
+     *
+     * @param   \Opis\Colibri\Application $app
      */
     public function __construct(Application $app)
     {
@@ -40,9 +40,9 @@ class Validator extends BaseValidator
 
     /**
      * Push a validator
-     * 
-     * @param   array   $item
-     * 
+     *
+     * @param   array $item
+     *
      * @return  $this
      */
     protected function push(array $item)
@@ -53,29 +53,29 @@ class Validator extends BaseValidator
 
     /**
      * Validate CSRF values
-     * 
-     * @param   string  $error  (optional)
-     * 
+     *
+     * @param   string $error (optional)
+     *
      * @return  $this
      */
     public function csrf($error = 'Invalid CSRF token')
     {
         return $this->push(array(
-                'validator' => array(
-                    'callback' => array($this, 'validate' . ucfirst(__FUNCTION__)),
-                    'arguments' => array(),
-                ),
-                'error' => array(
-                    'text' => $error,
-                    'variables' => array(),
-                ),
+            'validator' => array(
+                'callback' => array($this, 'validate' . ucfirst(__FUNCTION__)),
+                'arguments' => array(),
+            ),
+            'error' => array(
+                'text' => $error,
+                'variables' => array(),
+            ),
         ));
     }
 
     /**
      * Validator's callback
-     * 
-     * @param   string  $token
+     *
+     * @param   string $token
      * @return  boolean
      */
     protected function validateCsrf($token)

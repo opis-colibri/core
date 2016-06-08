@@ -28,12 +28,12 @@ abstract class ModuleInstaller
      */
     final protected function __construct()
     {
-        
+
     }
 
     /**
      * Factory
-     * 
+     *
      * @return  \static
      */
     final public static function instance()
@@ -43,41 +43,41 @@ abstract class ModuleInstaller
 
     /**
      * Install action
-     * 
-     * @param   \Opis\Colibri\Application   $app
+     *
+     * @param   \Opis\Colibri\Application $app
      */
     public function install(Application $app)
     {
-        
+
     }
 
     /**
      * Uninstall action
-     * 
-     * @param   \Opis\Colibri\Application   $app
+     *
+     * @param   \Opis\Colibri\Application $app
      */
     public function uninstall(Application $app)
     {
-        
+
     }
 
     /**
      * Enable action
-     * 
-     * @param   \Opis\Colibri\Application   $app
+     *
+     * @param   \Opis\Colibri\Application $app
      */
     public function enable(Application $app)
     {
-        
+
     }
 
     /**
      * Disable action
-     * 
-     * @param   \Opis\Colibri\Application   $app
+     *
+     * @param   \Opis\Colibri\Application $app
      */
     public function disable(Application $app)
     {
-        
+
     }
 }

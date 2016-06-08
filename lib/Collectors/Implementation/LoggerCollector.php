@@ -31,12 +31,12 @@ class LoggerCollector extends AbstractCollector implements LoggerCollectorInterf
 
     /**
      * Constructor
-     * 
-     * @param   Opis\Colibri\Application    $app
+     *
+     * @param   Application $app
      */
     public function __construct(Application $app)
     {
-        $collection = new StorageCollection(function($storage, Closure $constructor, $app) {
+        $collection = new StorageCollection(function ($storage, Closure $constructor, $app) {
             return $constructor($app, $storage);
         });
 
@@ -46,9 +46,9 @@ class LoggerCollector extends AbstractCollector implements LoggerCollectorInterf
     /**
      * Register a new storage
      *
-     * @param   string      $storage        Storage name
-     * @param   \Closure    $constructor    Storage constructor callback
-     * @param   boolean     $default        (optional) Default flag
+     * @param   string $storage Storage name
+     * @param   \Closure $constructor Storage constructor callback
+     * @param   boolean $default (optional) Default flag
      *
      * @return  mixed
      */

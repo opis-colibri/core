@@ -32,7 +32,7 @@ class Model extends BaseModel
 
     /**
      *  Set application
-     * 
+     *
      * @param   \Opis\Colibri\Application $app
      */
     public static function setApplication(Application $app)
@@ -42,7 +42,7 @@ class Model extends BaseModel
 
     /**
      *  Get application
-     * 
+     *
      * @return  \Opis\Colibri\Application
      */
     public static function getApplication()
@@ -52,7 +52,7 @@ class Model extends BaseModel
 
     /**
      * Get application instance
-     * 
+     *
      * @return  \Opis\Colibri\Application
      */
     public function app()

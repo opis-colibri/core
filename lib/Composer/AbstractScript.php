@@ -107,7 +107,7 @@ abstract class AbstractScript
             $versionParser->parseConstraints($constraint);
         }
     }
-    
+
     protected function updateFileCleanly(JsonFile $json, array $base, array $new, $requireKey, $removeKey, $sortPackages)
     {
         $contents = file_get_contents($json->getPath());

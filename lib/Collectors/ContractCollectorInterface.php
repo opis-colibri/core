@@ -31,8 +31,8 @@ interface ContractCollectorInterface
     /**
      * Register a binding with the container.
      *
-     * @param   string          $abstract   Class name or interface name
-     * @param   \Closure|string $concrete   (optional) Concrete class or interface implementation
+     * @param   string $abstract Class name or interface name
+     * @param   \Closure|string $concrete (optional) Concrete class or interface implementation
      *
      * @return  \Opis\Container\Dependency
      */
@@ -41,18 +41,18 @@ interface ContractCollectorInterface
     /**
      * Alias a type.
      *
-     * @param   string  $concrete   Concrete class or interface name
-     * @param   string  $alias      An alias for the specified class or interface
+     * @param   string $concrete Concrete class or interface name
+     * @param   string $alias An alias for the specified class or interface
      *
-     * @return  \Opis\Colibri\ContractCollectorInterface    Self reference
+     * @return  self    Self reference
      */
     public function alias($concrete, $alias);
 
     /**
      * Extends a registered type.
      *
-     * @param   string      $abstract
-     * @param   \Closure    $alias
+     * @param   string $abstract
+     * @param   Closure $extender
      *
      * @return  \Opis\Container\Extender
      */
@@ -61,8 +61,8 @@ interface ContractCollectorInterface
     /**
      * Register a singleton binding with the container.
      *
-     * @param   string          $abstract   Class name or interface name
-     * @param   \Closure|string $concrete   (optional) Concrete class or interface implementation
+     * @param   string $abstract Class name or interface name
+     * @param   Closure|string $concrete (optional) Concrete class or interface implementation
      *
      * @return  \Opis\Container\Dependency
      */

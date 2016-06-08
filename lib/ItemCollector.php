@@ -32,12 +32,12 @@ abstract class ItemCollector
      */
     final public function __construct()
     {
-        
+
     }
 
     /**
-     * Factory 
-     * 
+     * Factory
+     *
      * @return  \static
      */
     final public static function newInstance()
@@ -47,22 +47,23 @@ abstract class ItemCollector
 
     /**
      * Collect items
-     * 
-     * @param   \Opis\Colibri\Collectors\AbstractCollector  $collector
-     * @param   \Opis\Colibri\Application                   $app
-     * @param   mixed|null                                  $extra      (optional)
+     *
+     * @param   \Opis\Colibri\Collectors\AbstractCollector $collector
+     * @param   \Opis\Colibri\Application $app
+     * @param   mixed|null $extra (optional)
      */
     public function collect(AbstractCollector $collector, Application $app, $extra = null)
     {
         $reflection = new ReflectionObject($this);
         foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-            
-            if ($method->getShortName() == __FUNCTION__ || 
-                $method->isStatic() || 
-                $method->isConstructor() || $method->isDestructor()) {
+
+            if ($method->getShortName() == __FUNCTION__ ||
+                $method->isStatic() ||
+                $method->isConstructor() || $method->isDestructor()
+            ) {
                 continue;
             }
-            
+
             $method->invoke($this, $collector, $app, $extra);
         }
     }

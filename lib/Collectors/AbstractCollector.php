@@ -32,9 +32,9 @@ abstract class AbstractCollector
 
     /**
      * Constructor
-     * 
+     *
      * @param   Application $app
-     * @param   mixed       $dataObject
+     * @param   mixed $dataObject
      */
     public function __construct(Application $app, $dataObject)
     {

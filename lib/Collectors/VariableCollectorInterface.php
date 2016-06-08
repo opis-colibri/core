@@ -29,19 +29,19 @@ interface VariableCollectorInterface
     /**
      * Register a new variable
      *
-     * @param   string  $name       Variable's name
-     * @param   mixed   $value      Variable's value
+     * @param   string $name Variable's name
+     * @param   mixed $value Variable's value
      *
-     * @return  \Opis\Colibri\VariableCollectorInterface   Self reference
+     * @return  self   Self reference
      */
     public function register($name, $value);
 
     /**
      * Register multiple variable at once
      *
-     * @param   array   $variables  An array of variables that will be registered
+     * @param   array $variables An array of variables that will be registered
      *
-     * @return  \Opis\Colibri\VariableCollectorInterface   Self reference
+     * @return  self   Self reference
      */
     public function bulkRegister(array $variables);
 }

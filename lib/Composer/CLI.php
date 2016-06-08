@@ -15,7 +15,7 @@ class CLI
 {
     protected $app;
     protected $instance;
-    
+
     public function __construct(Application $app)
     {
         $this->app = $app;
@@ -26,7 +26,7 @@ class CLI
         if ($this->instance === null) {
             $this->instance = new ComposerConsole();
         }
-        
+
         return $this->instance;
     }
 
@@ -34,7 +34,7 @@ class CLI
     {
         $this->instance()->run(new ArrayInput($command));
     }
-    
+
     public function dumpAutoload()
     {
         $this->execute(array(

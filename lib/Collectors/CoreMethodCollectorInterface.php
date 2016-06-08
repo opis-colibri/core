@@ -29,10 +29,10 @@ interface CoreMethodCollectorInterface
     /**
      * Register a new command
      *
-     * @param   string      $name       Method's name
-     * @param   callable    $callback   Callback
+     * @param   string $name Method's name
+     * @param   callable $callback Callback
      *
-     * @return  \Opis\Colibri\CoreMethodCollectorInterface   Self reference
+     * @return  self   Self reference
      */
     public function register($name, $callback);
 }

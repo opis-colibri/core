@@ -21,6 +21,7 @@
 namespace Opis\Colibri;
 
 use Exception;
+use Composer\Composer;
 
 class AppInfo
 {
@@ -38,7 +39,7 @@ class AppInfo
 
     /** @var    Application */
     protected $app;
-    
+
     /**  @var   Composer */
     protected $composer;
 
@@ -47,25 +48,25 @@ class AppInfo
 
     /**
      * Constructor
-     * 
-     * @param   array       $info     App root folder
-     * @param   Composer    $composer Composer instance
+     *
+     * @param   array $info App root folder
+     * @param   Composer $composer Composer instance
      */
     public function __construct($info, Composer $composer = null)
     {
         $this->info = $info;
         $this->composer = $composer;
     }
-    
+
     public function setApplication(Application $app)
     {
         $this->app = $app;
     }
-    
+
     /**
      * Get root path
-     * 
-     * @return  string
+     * @return string
+     * @throws Exception
      */
     public function rootDir()
     {
@@ -77,13 +78,13 @@ class AppInfo
 
     /**
      * Get public path
-     * 
+     *
      * @return  string
      */
     public function publicDir()
     {
         if (!isset($this->info[static::PUBLIC_DIR])) {
-            $this->info[static::PUBLIC_PATH] = $this->rootDir() . '/public';
+            $this->info[static::PUBLIC_DIR] = $this->rootDir() . '/public';
         }
 
         return $this->info[static::PUBLIC_DIR];
@@ -91,7 +92,7 @@ class AppInfo
 
     /**
      * Get assets path
-     * 
+     *
      * @return  string
      */
     public function assetsDir()
@@ -105,7 +106,7 @@ class AppInfo
 
     /**
      * Get the path to the app's writable directory
-     * 
+     *
      * @return  string
      */
     public function writableDir()
@@ -116,10 +117,10 @@ class AppInfo
 
         return $this->info[static::WRITABLE_DIR];
     }
-    
+
     /**
      * Vendor dir
-     * 
+     *
      * @return  string
      */
     public function vendorDir()
@@ -133,7 +134,7 @@ class AppInfo
 
     /**
      * Install mode
-     * 
+     *
      * @return  boolean
      */
     public function installMode()
@@ -141,13 +142,13 @@ class AppInfo
         if (!isset($this->info[static::INSTALL_MODE])) {
             $this->info[static::INSTALL_MODE] = !$this->app->config()->read('app.installed', false);
         }
-       
+
         return $this->info[static::INSTALL_MODE];
     }
 
     /**
      * CLI mode
-     * 
+     *
      * @return  boolean
      */
     public function cliMode()

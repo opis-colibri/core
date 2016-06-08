@@ -25,22 +25,26 @@ use Composer\Script\Event;
 use Opis\Colibri\Application;
 
 class Command
-{   
+{
     public static function handleDumpAutoload(Event $event)
     {
         $composer = $event->getComposer();
-        
-        $app = new Application(new AppInfo(array(
+
+        $appInfo = new AppInfo(array(
             AppInfo::ROOT_DIR => $composer->getInstallationManager()
-                                          ->getInstallPath($composer->getPackage())
-        )), $composer);
-        
-        foreach ($app->getModuleManager()->findAll() as $module) {
-            
+                ->getInstallPath($composer->getPackage())
+        ));
+
+        $loader = require $appInfo->vendorDir() . '/autoload.php';
+
+        $app = new Application($appInfo, $loader, $composer);
+
+        foreach ($app->getModules() as $module) {
+
             if ($module->isEnabled()) {
                 continue;
             }
-            
+
             if (!$module->isInstalled()) {
                 $module->getPackage()->setAutoload(array());
                 continue;

@@ -31,8 +31,8 @@ class ContractCollector extends AbstractCollector implements ContractCollectorIn
 
     /**
      * Constructor
-     * 
-     * @param   Opis\Colibri\Application    $app
+     *
+     * @param   Application $app
      */
     public function __construct(Application $app)
     {
@@ -42,8 +42,8 @@ class ContractCollector extends AbstractCollector implements ContractCollectorIn
     /**
      * Register a binding with the container.
      *
-     * @param   string          $abstract   Class name or interface name
-     * @param   \Closure|string $concrete   (optional) Concrete class or interface implementation
+     * @param   string $abstract Class name or interface name
+     * @param   \Closure|string $concrete (optional) Concrete class or interface implementation
      *
      * @return  \Opis\Container\Dependency
      */
@@ -55,10 +55,10 @@ class ContractCollector extends AbstractCollector implements ContractCollectorIn
     /**
      * Alias a type.
      *
-     * @param   string  $concrete   Concrete class or interface name
-     * @param   string  $alias      An alias for the specified class or interface
+     * @param   string $concrete Concrete class or interface name
+     * @param   string $alias An alias for the specified class or interface
      *
-     * @return  \Opis\Colibri\ContractCollectorInterface    Self reference
+     * @return  self    Self reference
      */
     public function alias($concrete, $alias)
     {
@@ -69,8 +69,8 @@ class ContractCollector extends AbstractCollector implements ContractCollectorIn
     /**
      * Extends a registered type.
      *
-     * @param   string      $abstract
-     * @param   \Closure    $alias
+     * @param   string $abstract
+     * @param   \Closure $alias
      *
      * @return  \Opis\Container\Extender
      */
@@ -82,8 +82,8 @@ class ContractCollector extends AbstractCollector implements ContractCollectorIn
     /**
      * Register a singleton binding with the container.
      *
-     * @param   string          $abstract   Class name or interface name
-     * @param   \Closure|string $concrete   (optional) Concrete class or interface implementation
+     * @param   string $abstract Class name or interface name
+     * @param   \Closure|string $concrete (optional) Concrete class or interface implementation
      *
      * @return  \Opis\Container\Dependency
      */

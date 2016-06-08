@@ -29,9 +29,9 @@ interface ViewCollectorInterface
     /**
      * Defines a new view route
      *
-     * @param   string      $pattern    View's pattern
-     * @param   callable    $resolver   A callback that will resolve a view route into a path
-     * @param   int         $priority   Route's priority
+     * @param   string $pattern View's pattern
+     * @param   callable $resolver A callback that will resolve a view route into a path
+     * @param   int $priority Route's priority
      *
      * @return  \Opis\View\Route
      */

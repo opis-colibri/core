@@ -32,7 +32,7 @@ class CollectorManager
 
     /**
      * Constructor
-     * 
+     *
      * @param   Application $app
      */
     public function __construct(Application $app)
@@ -52,10 +52,10 @@ class CollectorManager
 
     /**
      * Register a new collector
-     * 
-     * @param   string  $name
-     * @param   string  $interface
-     * @param   string  $class
+     *
+     * @param   string $name
+     * @param   string $interface
+     * @param   string $class
      */
     public function registerCollector($name, $interface, $class)
     {
@@ -77,8 +77,8 @@ class CollectorManager
 
     /**
      * Unregister a collector
-     * 
-     * @param   string  $name
+     *
+     * @param   string $name
      */
     public function unregisterCollector($name)
     {
@@ -91,7 +91,7 @@ class CollectorManager
 
     /**
      * Get a list of default collectors
-     * 
+     *
      * @return  array
      */
     public function getCollectors()

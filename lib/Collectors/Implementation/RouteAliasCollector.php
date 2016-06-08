@@ -33,8 +33,8 @@ class RouteAliasCollector extends AbstractCollector implements RouteAliasCollect
 
     /**
      * Constructor
-     * 
-     * @param   Opis\Colibri\Application    $app
+     *
+     * @param   Application $app
      */
     public function __construct(Application $app)
     {
@@ -44,8 +44,8 @@ class RouteAliasCollector extends AbstractCollector implements RouteAliasCollect
     /**
      * Defines an alias for a route or a group of routes
      *
-     * @param   string      $path   The path to match
-     * @param   callable    $action An action that will be executed
+     * @param   string $path The path to match
+     * @param   callable $action An action that will be executed
      *
      * @return  \Opis\Routing\Route
      */

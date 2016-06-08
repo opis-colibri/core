@@ -30,8 +30,8 @@ class VariableCollector extends AbstractCollector implements VariableCollectorIn
 
     /**
      * Constructor
-     * 
-     * @param   Opis\Colibri\Application    $app
+     *
+     * @param   Application $app
      */
     public function __construct(Application $app)
     {
@@ -41,8 +41,8 @@ class VariableCollector extends AbstractCollector implements VariableCollectorIn
     /**
      * Register a new variable
      *
-     * @param   string  $name       Variable's name
-     * @param   mixed   $value      Variable's value
+     * @param   string $name Variable's name
+     * @param   mixed $value Variable's value
      *
      * @return  $this
      */
@@ -55,7 +55,7 @@ class VariableCollector extends AbstractCollector implements VariableCollectorIn
     /**
      * Register multiple variable at once
      *
-     * @param   array   $variables  An array of variables that will be registered
+     * @param   array $variables An array of variables that will be registered
      *
      * @return  $this
      */

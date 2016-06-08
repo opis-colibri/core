@@ -41,7 +41,7 @@ class Collector extends EventTarget
 
     /**
      * Get the container
-     * 
+     *
      * @return  \Opis\Colibri\Container
      */
     public function container()
@@ -63,11 +63,11 @@ class Collector extends EventTarget
 
     /**
      * Dispatch an event
-     * 
-     * @param   \Opis\Colibri\CollectorEntry    $event
-     * 
+     *
+     * @param   \Opis\Colibri\CollectorEntry $event
+     *
      * @return  \Opis\Colibri\Collectors\AbstractCollector
-     * 
+     *
      * @throws InvalidArgumentException
      */
     public function dispatch(BaseEvent $event)
@@ -89,11 +89,11 @@ class Collector extends EventTarget
 
     /**
      * Collect items
-     * 
-     * @param   string  $type
-     * 
+     *
+     * @param   string $type
+     *
      * @return  @return  \Opis\Colibri\Collectors\AbstractCollector
-     * 
+     *
      * @throws \Exception
      */
     public function collect($type)

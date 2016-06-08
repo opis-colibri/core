@@ -31,8 +31,8 @@ class ValidatorCollector extends AbstractCollector implements ValidatorCollector
 
     /**
      * Constructor
-     * 
-     * @param   Opis\Colibri\Application    $app
+     *
+     * @param   Application $app
      */
     public function __construct(Application $app)
     {
@@ -42,10 +42,10 @@ class ValidatorCollector extends AbstractCollector implements ValidatorCollector
     /**
      * Register a new validator
      *
-     * @param   string      $name       Validator's name
-     * @param   callable    $callback   Validator's implementation
+     * @param   string $name Validator's name
+     * @param   callable $callback Validator's implementation
      *
-     * @return  \Opis\Colibri\ValidatorCollectorInterface   Self reference
+     * @return  self   Self reference
      */
     public function register($name, $callback)
     {

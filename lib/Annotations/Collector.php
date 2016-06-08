@@ -28,14 +28,14 @@ class Collector
 {
     /**
      * Collector's name
-     * 
+     *
      * @var string
      */
     public $name;
 
     /**
      * Collector's priority
-     * 
+     *
      * @var int
      */
     public $priority = 0;

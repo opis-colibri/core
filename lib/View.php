@@ -33,33 +33,33 @@ class View extends OpisView
 
     /**
      * Constructor
-     * 
-     * @param   \Opis\Colibri\Application   $app
-     * @param   string                      $name
-     * @param   array                       $arguments  (optional)
+     *
+     * @param   \Opis\Colibri\Application $app
+     * @param   string $name
+     * @param   array $arguments (optional)
      */
     public function __construct(Application $app, $name, array $arguments = array())
     {
         $this->app = $app;
         parent::__construct($name, $arguments);
     }
-    
+
     /**
      * Get application
-     * 
+     *
      * @return  \Opis\Colibri\Application
      */
     public function app()
     {
         return $this->app;
     }
-    
+
     /**
      * Set a value
-     * 
-     * @param   string  $name
-     * @param   mixed   $value
-     * 
+     *
+     * @param   string $name
+     * @param   mixed $value
+     *
      * @return  $this
      */
     public function set($name, $value)
@@ -67,12 +67,12 @@ class View extends OpisView
         $this->arguments[$name] = $value;
         return $this;
     }
-    
+
     /**
      * Check if a value was setted
-     * 
-     * @param   string  $name
-     * 
+     *
+     * @param   string $name
+     *
      * @return  boolean
      */
     public function has($name)
@@ -82,10 +82,10 @@ class View extends OpisView
 
     /**
      * Get a value
-     * 
-     * @param   string  $name
-     * @param   mixed   $default    (optional)
-     * 
+     *
+     * @param   string $name
+     * @param   mixed $default (optional)
+     *
      * @return  mixed
      */
     public function get($name, $default = null)
@@ -95,7 +95,7 @@ class View extends OpisView
 
     /**
      * Stringify
-     * 
+     *
      * @return  string
      */
     public function __toString()
@@ -105,10 +105,10 @@ class View extends OpisView
                 $this->renderedContent = $this->app->render($this);
 
                 if (!is_string($this->renderedContent)) {
-                    $this->renderedContent = (string) $this->renderedContent;
+                    $this->renderedContent = (string)$this->renderedContent;
                 }
             } catch (Exception $e) {
-                $this->renderedContent = (string) $e;
+                $this->renderedContent = (string)$e;
             }
         }
         return $this->renderedContent;

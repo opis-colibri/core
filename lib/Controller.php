@@ -33,9 +33,9 @@ class Controller
 
     /**
      * Constructor
-     * 
-     * @param   string  $class
-     * @param   string  $method
+     *
+     * @param   string $class
+     * @param   string $method
      * @param   boolean $static (optional)
      */
     public function __construct($class, $method, $static = false)
@@ -50,12 +50,12 @@ class Controller
      */
     public function __invoke()
     {
-        
+
     }
 
     /**
      * Returns the class name
-     * 
+     *
      * @return  string
      */
     public function getClass()
@@ -65,7 +65,7 @@ class Controller
 
     /**
      * Returns the param's name that references the method
-     * 
+     *
      * @return  string
      */
     public function getMethod()
@@ -75,8 +75,8 @@ class Controller
 
     /**
      * Indicates if the referenced method is static or not
-     * 
-     * @return  boolan
+     *
+     * @return  boolean
      */
     public function isStatic()
     {

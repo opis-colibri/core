@@ -31,8 +31,8 @@ class CoreMethodCollector extends AbstractCollector implements CoreMethodCollect
 
     /**
      * Constructor
-     * 
-     * @param   Opis\Colibri\Application    $app
+     *
+     * @param   Application $app
      */
     public function __construct(Application $app)
     {
@@ -42,10 +42,10 @@ class CoreMethodCollector extends AbstractCollector implements CoreMethodCollect
     /**
      * Register a new command
      *
-     * @param   string      $name       Method's name
-     * @param   callable    $callback   Callback
+     * @param   string $name Method's name
+     * @param   callable $callback Callback
      *
-     * @return  \Opis\Colibri\CoreMethodCollectorInterface   Self reference
+     * @return  self   Self reference
      */
     public function register($name, $callback)
     {

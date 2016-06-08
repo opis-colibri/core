@@ -31,8 +31,8 @@ class ViewEngineCollector extends AbstractCollector implements ViewEngineCollect
 
     /**
      * Constructor
-     * 
-     * @param   Opis\Colibri\Application    $app
+     *
+     * @param   Application $app
      */
     public function __construct(Application $app)
     {
@@ -42,8 +42,8 @@ class ViewEngineCollector extends AbstractCollector implements ViewEngineCollect
     /**
      * Defines a new view engine
      *
-     * @param   \Closure    $constructor    A callback that will return an instance of \Opis\View\EngineInterface
-     * @param   int         $priority       Engine's priority
+     * @param   \Closure $constructor A callback that will return an instance of \Opis\View\EngineInterface
+     * @param   int $priority Engine's priority
      *
      * @return  \Opis\View\EngineEntry
      */

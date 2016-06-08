@@ -30,77 +30,77 @@ class Module
 
     /** @var    string */
     protected $name;
-    
-    /** @var    PackageInterface */
+
+    /** @var    CompletePackage */
     protected $package;
 
-    /** @var    \Opis\Colibri\Application */
+    /** @var    Application */
     protected $app;
-    
+
     protected $exists;
 
     /**
      * Constructor
-     * 
-     * @param   \Opis\Colibri\Application   $app
-     * @param   string                      $name
-     * @param   CompletePackage             $package    (optional)
+     *
+     * @param   Application $app
+     * @param   string $name
+     * @param   CompletePackage $package (optional)
      */
     public function __construct(Application $app, $name, CompletePackage $package = null)
     {
         $this->app = $app;
         $this->name = $name;
     }
-    
+
     /**
      * Get the associated package
-     * 
+     *
      * @return CompletePackage
-     * 
+     *
      * @throws Exception
      */
     public function getPackage()
     {
         if ($this->package === null) {
-            $packages = $this->app->getModuleManager()->getPackages();
+            $packages = $this->app->getPackages();
             if (!isset($packages[$this->name])) {
                 throw new Exception('Module "' . $this->name . '" doesn\'t exist');
             }
             $this->package = $packages[$this->name];
         }
-        
+
         return $this->package;
     }
-    
+
 
     /**
      * Check if the module exists
-     * 
+     *
      * @return  boolean
      */
     public function exists()
     {
         if ($this->exists === null) {
-            $packages = $this->app->getModuleManager()->findAll();
-            $this->exists =  isset($packages[$this->name]);
+            $packages = $this->app->getPackages();
+            $this->exists = isset($packages[$this->name]);
         }
-        
+
         return $this->exists;
     }
 
     /**
      * Get the module's name
-     * 
+     *
      * @return  string
      */
     public function name()
     {
         return $this->get(__FUNCTION__);
     }
-    
+
     /**
      * Get the module's version
-     * 
+     *
      * @return  string
      */
     public function version()
@@ -110,7 +110,7 @@ class Module
 
     /**
      * Get the module's title
-     * 
+     *
      * @return  string
      */
     public function title()
@@ -120,7 +120,7 @@ class Module
 
     /**
      * Get the module's description
-     * 
+     *
      * @return  string
      */
     public function description()
@@ -130,8 +130,8 @@ class Module
 
     /**
      * Get the module's dependencies
-     * 
-     * @return  string
+     *
+     * @return  Module[]
      */
     public function dependencies()
     {
@@ -140,8 +140,8 @@ class Module
 
     /**
      * Get the module's dependents
-     * 
-     * @return  string
+     *
+     * @return  Module[]
      */
     public function dependents()
     {
@@ -150,7 +150,7 @@ class Module
 
     /**
      * Get the module's location
-     * 
+     *
      * @return  string
      */
     public function directory()
@@ -160,17 +160,17 @@ class Module
 
     /**
      * Get the module's collector instance
-     * 
+     *
      * @return  string
      */
     public function collector()
     {
         return $this->get(__FUNCTION__);
     }
-    
+
     /**
      * Get the module's collector class
-     * 
+     *
      * @return  string
      */
     public function installer()
@@ -180,7 +180,7 @@ class Module
 
     /**
      * Get the module's assets folder
-     * 
+     *
      * @return  string
      */
     public function assets()
@@ -190,7 +190,7 @@ class Module
 
     /**
      * Checks if the module is hidden
-     * 
+     *
      * @return  boolean
      */
     public function isHidden()
@@ -200,7 +200,7 @@ class Module
 
     /**
      * Checks if the module is enabled
-     * 
+     *
      * @return  boolean
      */
     public function isEnabled()
@@ -208,14 +208,14 @@ class Module
         if (!$this->exists()) {
             return false;
         }
-        
+
         $list = $this->app->config()->read('app.modules.enabled', array());
         return in_array($this->name, $list);
     }
 
     /**
      * Checks if the module is installed
-     * 
+     *
      * @return  boolean
      */
     public function isInstalled()
@@ -223,14 +223,14 @@ class Module
         if (!$this->exists()) {
             return false;
         }
-        
+
         $list = $this->app->config()->read('app.modules.installed', array());
         return in_array($this->name, $list);
     }
 
     /**
      * Checks if the module can be enabled
-     * 
+     *
      * @return  boolean
      */
     public function canBeEnabled()
@@ -238,19 +238,19 @@ class Module
         if ($this->isEnabled() || !$this->isInstalled()) {
             return false;
         }
-        
+
         foreach ($this->dependencies() as $module) {
             if (!$module->isEnabled()) {
                 return false;
             }
         }
-        
+
         return true;
     }
 
     /**
      * Checks if the module can be disabled
-     * 
+     *
      * @return  boolean
      */
     public function canBeDisabled()
@@ -258,19 +258,19 @@ class Module
         if (!$this->isEnabled()) {
             return false;
         }
-        
-        foreach ($this->dependents() as $module){
+
+        foreach ($this->dependents() as $module) {
             if ($module->isInstalled()) {
                 return false;
             }
         }
-        
+
         return true;
     }
 
     /**
      * Checks if the module can be installed
-     * 
+     *
      * @return  boolean
      */
     public function canBeInstalled()
@@ -278,19 +278,19 @@ class Module
         if ($this->isInstalled()) {
             return false;
         }
-        
-        foreach ($this->dependencies() as $module){
+
+        foreach ($this->dependencies() as $module) {
             if (!$module->isEnabled()) {
                 return false;
             }
         }
-        
+
         return true;
     }
 
     /**
      * Checks if the module can be uninstalled
-     * 
+     *
      * @return  boolean
      */
     public function canBeUninstalled()
@@ -298,19 +298,19 @@ class Module
         if (!$this->isInstalled()) {
             return false;
         }
-        
-        foreach ($this->dependents() as $module){
+
+        foreach ($this->dependents() as $module) {
             if ($module->isInstalled()) {
                 return false;
             }
         }
-        
+
         return true;
     }
 
     /**
      * Enable the module
-     * 
+     *
      * @return  boolean
      */
     public function enable()
@@ -320,7 +320,7 @@ class Module
 
     /**
      * Disable the module
-     * 
+     *
      * @return  boolean
      */
     public function disable()
@@ -330,7 +330,7 @@ class Module
 
     /**
      * Install the module
-     * 
+     *
      * @return  boolean
      */
     public function install()
@@ -340,24 +340,24 @@ class Module
 
     /**
      * Uninstall the module
-     * 
+     *
      * @return  boolean
      */
     public function uninstall()
     {
         return $this->app->uninstall($this);
     }
-    
+
     protected function get($property)
     {
         if (array_key_exists($property, $this->info)) {
             return $this->info[$property];
         }
-        
+
         $value = null;
         $package = $this->getPackage();
         $extra = $package->getExtra();
-        
+
         switch ($property) {
             case 'name':
                 $value = $package->getName();
@@ -387,72 +387,72 @@ class Module
                 $value = $this->resolveInstaller($package, $extra);
                 break;
             case 'hidden':
-                $value = isset($extra['hidden']) ? (bool) $extra['hidden'] : false;
+                $value = isset($extra['hidden']) ? (bool)$extra['hidden'] : false;
                 break;
         }
-        
+
         return $this->info[$property] = $value;
     }
-    
+
     /**
      * Get title
-     * 
+     *
      * @param   CompletePackage $package
-     * @param   array           $extra
-     * 
+     * @param   array $extra
+     *
      * @return  string
      */
     protected function resolveTitle($package, $extra)
     {
         $title = isset($extra['title']) ? trim($extra['title']) : '';
-        
+
         if (empty($title)) {
             $name = substr($this->name, strpos($this->name, '/') + 1);
-            $name = array_map(function($value){
+            $name = array_map(function ($value) {
                 return strtolower($value);
             }, explode('-', $name));
             $title = ucfirst(implode(' ', $name));
         }
-        
+
         return $title;
     }
-    
+
     /**
      * Resolve dependencies
-     * 
+     *
      * @param   CompletePackage $package
-     * @param   array           $extra
-     * 
-     * @return  array
+     * @param   array $extra
+     *
+     * @return  Module[]
      */
     protected function resolveDependencies($package, $extra)
     {
         $dependencies = array();
         $modules = $this->app->getModuleManager()->findAll();
-        
+
         foreach ($package->getRequires() as $dependency) {
             $target = $dependency->getTarget();
             if (isset($modules[$target])) {
                 $dependencies[$target] = $modules[$target];
             }
         }
-        
+
         return $dependencies;
     }
-    
+
     /**
      * Resolve dependants
-     * 
+     *
      * @param   CompletePackage $package
-     * @param   array           $extra
-     * 
-     * @return  array
+     * @param   array $extra
+     *
+     * @return  Module[]
      */
     protected function resolveDependants($package, $extra)
     {
         $dependants = array();
         $modules = $this->app->getModuleManager()->findAll();
-        
+
         foreach ($modules as $name => $module) {
             if ($name === $this->name) {
                 continue;
@@ -462,31 +462,31 @@ class Module
                 $dependants[$name] = $module;
             }
         }
-        
+
         return $dependants;
     }
-    
+
     /**
      * Resolve directory
-     * 
+     *
      * @param   CompletePackage $package
-     * @param   array           $extra
-     * 
+     * @param   array $extra
+     *
      * @return  string
      */
     protected function resolveDirectory($package, $extra)
     {
         return $this->app->getComposer()
-                    ->getInstallationManager()
-                    ->getInstallPath($package);
+            ->getInstallationManager()
+            ->getInstallPath($package);
     }
-    
+
     /**
      * Resolve collector class
-     * 
+     *
      * @param   CompletePackage $package
-     * @param   array           $extra
-     * 
+     * @param   array $extra
+     *
      * @return  string
      */
     protected function resolveCollector($package, $extra)
@@ -494,19 +494,19 @@ class Module
         if (!isset($extra['collector'])) {
             return null;
         }
-        
+
         $subject = $extra['collector'];
         $pattern = '`^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$`';
-        
+
         return preg_match($pattern, $subject) ? $subject : null;
     }
-    
+
     /**
      * Resolve installer class
-     * 
+     *
      * @param   CompletePackage $package
-     * @param   array           $extra
-     * 
+     * @param   array $extra
+     *
      * @return  string
      */
     protected function resolveInstaller($package, $extra)
@@ -514,18 +514,18 @@ class Module
         if (!isset($extra['installer'])) {
             return null;
         }
-        
+
         $subject = $extra['installer'];
         $pattern = '`^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$`';
-        
+
         return preg_match($pattern, $subject) ? $subject : null;
     }
-    
+
     /**
      * Resolve assets
-     * 
+     *
      * @param   CompletePackage $package
-     * 
+     *
      * @return  string
      */
     protected function resolveAssets($package, $extra)
@@ -533,7 +533,7 @@ class Module
         if (!isset($extra['asstes'])) {
             return null;
         }
-        
+
         $directory = $this->directory() . '/' . trim($extra['assets'], '/');
         return is_dir($directory) ? $directory : null;
     }

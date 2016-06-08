@@ -36,10 +36,10 @@ class CSRFToken
 
     /**
      * Constructor
-     * 
+     *
      * @param   Application $app
-     * @param   string      $key    (optional)
-     * @param   int         $max    (optional) 
+     * @param   string $key (optional)
+     * @param   int $max (optional)
      */
     public function __construct(Application $app, $key = 'opis_colibri_csrf', $max = 10)
     {
@@ -73,7 +73,7 @@ class CSRFToken
     /**
      * Validate a CSRF token
      *
-     * @param   string  $value  Token
+     * @param   string $value Token
      *
      * @return  boolean
      */
@@ -94,9 +94,9 @@ class CSRFToken
 
     /**
      * Generate random token
-     * 
+     *
      * @param   int $length (optional) Token's lenght
-     * 
+     *
      * @return  string
      */
     protected function getRandomToken($length = 32)

@@ -29,10 +29,10 @@ interface CommandCollectorInterface
     /**
      * Register a new command
      *
-     * @param   string      $name       Command's name
-     * @param   callable    $callback   Callback
+     * @param   string $name Command's name
+     * @param   callable $callback Callback
      *
-     * @return  \Opis\Colibri\CommandCollectorInterface   Self reference
+     * @return  self   Self reference
      */
     public function register($name, $callback);
 }

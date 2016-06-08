@@ -29,8 +29,8 @@ interface RouteAliasCollectorInterface
     /**
      * Defines an alias for a route or a group of routes
      *
-     * @param   string      $path   The path to match
-     * @param   callable    $action An action that will be executed
+     * @param   string $path The path to match
+     * @param   callable $action An action that will be executed
      *
      * @return  \Opis\Routing\Route
      */

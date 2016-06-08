@@ -20,7 +20,6 @@
 
 namespace Opis\Colibri\Serializable;
 
-use Closure;
 use Serializable;
 use Opis\Database\Schema;
 use Opis\Database\Database;
@@ -68,6 +67,9 @@ class ConnectionList implements Serializable
         return $this->databases[$connection];
     }
 
+    /**
+     * @return string
+     */
     public function serialize()
     {
         return serialize(array(
@@ -76,6 +78,9 @@ class ConnectionList implements Serializable
         ));
     }
 
+    /**
+     * @param string $data
+     */
     public function unserialize($data)
     {
         $object = unserialize($data);

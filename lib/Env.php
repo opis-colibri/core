@@ -3,6 +3,7 @@
 namespace Opis\Colibri;
 
 use Dotenv\Dotenv;
+
 /**
  * Description of Env
  *
@@ -15,19 +16,19 @@ class Env
     public function __construct(Application $app)
     {
         $this->app = $app;
-        
+
         if (file_exists($app->info()->vendorDir() . '/.env')) {
             $env = new Dotenv($app->info()->vendorDir());
         } else {
             $env = new Dotenv($app->info()->rootDir());
         }
-        
+
         $env->load();
     }
-    
+
     /**
      * APP_INSTALLED
-     * 
+     *
      * @return boolean
      */
     public function appInstalled()
@@ -35,13 +36,13 @@ class Env
         if (false === $value = getenv('APP_INSTALLED')) {
             return false;
         }
-        
+
         return $value === 'true';
     }
-    
+
     /**
      * APP_DEBUG
-     * 
+     *
      * @return boolean
      */
     public function appDebug()
@@ -49,13 +50,13 @@ class Env
         if (false === $value = getenv('APP_DEBUG')) {
             return false;
         }
-        
+
         return $value === 'true';
     }
-    
+
     /**
      * APP_ENV
-     * 
+     *
      * @return string
      */
     public function appEnv()
@@ -63,14 +64,14 @@ class Env
         if (false === $value = getenv('APP_ENV')) {
             return 'local';
         }
-        
+
         return $value;
     }
-    
+
 
     /**
      * DB_DSN
-     * 
+     *
      * @return mixed
      */
     public function databaseDSN()
@@ -78,10 +79,10 @@ class Env
         if (false === $value = getenv('DB_DSN')) {
             return false;
         }
-        
+
         return $value;
     }
-    
+
     /**
      * DB_USER
      * @return string
@@ -91,10 +92,10 @@ class Env
         if (false === $value = getenv('DB_USER')) {
             return 'root';
         }
-        
+
         return $value;
     }
-    
+
     /**
      * DB_PASS
      * @return string
@@ -104,14 +105,14 @@ class Env
         if (false === $value = getenv('DB_PASS')) {
             return '';
         }
-        
+
         return $value;
     }
-    
-    
+
+
     /**
      * DB_STORAGE
-     * 
+     *
      * @return string
      */
     public function databaseStorage()
@@ -119,26 +120,26 @@ class Env
         if (false === $value = getenv('DB_STORAGE')) {
             return 'ephemeral';
         }
-        
+
         return $value;
     }
-    
+
     public function cacheStorage()
     {
         if (false === $value = getenv('CACHE_STORAGE')) {
             return 'ephemeral';
         }
-        
+
         return $value;
     }
-    
+
     public function configStorage()
     {
         if (false === $value = getenv('CONFIG_STORAGE')) {
             return 'ephemeral';
         }
-        
+
         return $value;
     }
-    
+
 }

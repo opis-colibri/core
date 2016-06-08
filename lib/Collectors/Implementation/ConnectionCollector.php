@@ -31,8 +31,8 @@ class ConnectionCollector extends AbstractCollector implements ConnectionCollect
 
     /**
      * Constructor
-     * 
-     * @param   Opis\Colibri\Application    $app
+     *
+     * @param   Application $app
      */
     public function __construct(Application $app)
     {
@@ -42,11 +42,11 @@ class ConnectionCollector extends AbstractCollector implements ConnectionCollect
     /**
      * Defines a new database connection
      *
-     * @param   string      $name       Connection name
-     * @param   \Closure    $callback   Connection constructor callback
-     * @param   boolean     $default    (optional) Default flag
+     * @param   string $name Connection name
+     * @param   \Closure $callback Connection constructor callback
+     * @param   boolean $default (optional) Default flag
      *
-     * @return  \Opis\Colibri\ConnectionCollectorInterface  Self reference
+     * @return  self Self reference
      */
     public function create($name, Closure $callback, $default = false)
     {

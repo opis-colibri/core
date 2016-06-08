@@ -28,12 +28,12 @@ abstract class Bootstrap
      */
     final public function __construct()
     {
-        
+
     }
 
     /**
      * Perform booting
-     * 
+     *
      * @param   \Opis\Colibri\Application
      */
     abstract public function boot(Application $app);
