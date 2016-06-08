@@ -64,11 +64,8 @@ class Collector extends EventTarget
     /**
      * Dispatch an event
      *
-     * @param   \Opis\Colibri\CollectorEntry $event
-     *
-     * @return  \Opis\Colibri\Collectors\AbstractCollector
-     *
-     * @throws InvalidArgumentException
+     * @param CollectorEntry|BaseEvent $event
+     * @return Collectors\AbstractCollector
      */
     public function dispatch(BaseEvent $event)
     {
@@ -91,8 +88,7 @@ class Collector extends EventTarget
      * Collect items
      *
      * @param   string $type
-     *
-     * @return  @return  \Opis\Colibri\Collectors\AbstractCollector
+     * @return Collectors\AbstractCollector
      *
      * @throws \Exception
      */

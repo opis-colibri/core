@@ -29,7 +29,7 @@ class Controller
     protected $className;
 
     /** @var    boolean */
-    protected $isstatic;
+    protected $isStatic;
 
     /**
      * Constructor
@@ -42,7 +42,7 @@ class Controller
     {
         $this->className = $class;
         $this->method = $method;
-        $this->isstatic = $static;
+        $this->isStatic = $static;
     }
 
     /**
@@ -80,6 +80,6 @@ class Controller
      */
     public function isStatic()
     {
-        return $this->isstatic;
+        return $this->isStatic;
     }
 }

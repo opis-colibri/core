@@ -70,9 +70,10 @@ class ContractCollector extends AbstractCollector implements ContractCollectorIn
      * Extends a registered type.
      *
      * @param   string $abstract
-     * @param   \Closure $alias
+     * @param Closure $extender
+     * @return \Opis\Container\Extender
+     * @internal param Closure $alias
      *
-     * @return  \Opis\Container\Extender
      */
     public function extend($abstract, Closure $extender)
     {

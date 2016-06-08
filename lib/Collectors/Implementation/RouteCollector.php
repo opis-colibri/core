@@ -169,7 +169,8 @@ class RouteCollector extends AbstractCollector implements RouteCollectorInterfac
      * Defines a new route that will intercept all POST requests
      *
      * @param   string $path The path to match
-     * @param   callable $value An action that will be executed
+     * @param   callable $action An action that will be executed
+     * @param   string|null $name
      *
      * @return  HttpRoute
      */

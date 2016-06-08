@@ -514,7 +514,8 @@ class Module
      * Resolve assets
      *
      * @param   CompletePackage $package
-     *
+     * @param   array           $extra
+     * 
      * @return  string
      */
     protected function resolveAssets($package, $extra)
