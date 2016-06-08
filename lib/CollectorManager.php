@@ -33,6 +33,7 @@ use ReflectionMethod;
  * @author mari
  *
  * @method  CollectorEntry  getRoutes($fresh = false)
+ * @method  \Opis\Colibri\Container getContracts($fresh = false)
  */
 class CollectorManager
 {
@@ -121,11 +122,35 @@ class CollectorManager
             });
 
             if ($hit) {
-                $this->emit('system.collect.' . strtolower($entry));
+                $this->app->emit('system.collect.' . strtolower($entry));
             }
         }
 
         return $this->cache[$entry];
+    }
+
+    /**
+     * Recollect all items
+     *
+     * @param bool $fresh (optional)
+     *
+     * @return boolean
+     */
+    public function recollect($fresh = true)
+    {
+        if (!$this->app->cache('app')->clear()) {
+            return false;
+        }
+
+        $this->collectorsIncluded = false;
+
+        foreach (array_keys($this->app->config('app')->read('collectors')) as $entry) {
+            $this->collect($entry, $fresh);
+        }
+
+        $this->app->emit('system.collect');
+
+        return true;
     }
 
     /**
@@ -180,7 +205,7 @@ class CollectorManager
                 continue;
             }
 
-            $instance = $this->make($module->collector());
+            $instance = $this->app->make($module->collector());
 
             $reflection = new ReflectionClass($instance);
 

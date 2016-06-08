@@ -26,17 +26,13 @@ use Composer\Composer;
 use Composer\Factory;
 use Composer\IO\NullIO;
 use Composer\Package\CompletePackage;
-use Doctrine\Common\Annotations\AnnotationReader;
 use Opis\Cache\Cache;
 use Opis\Cache\Storage\Memory as DefaultCacheStorage;
-use Opis\Cache\StorageInterface as CacheStorageInterface;
-use Opis\Colibri\Annotations\Collector as CollectorAnnotation;
 use Opis\Colibri\Composer\CLI;
 use Opis\Config\Config;
 use Opis\Config\Storage\Memory as DefaultConfigStorage;
 use Opis\Config\Storage\Memory as DefaultTranslateStorage;
-use Opis\Config\StorageInterface as ConfigStorageInterface;
-use Opis\Database\Connection;
+use Opis\Container\Container;
 use Opis\Database\Database;
 use Opis\Events\EventTarget;
 use Opis\Http\Request as HttpRequest;
@@ -45,16 +41,10 @@ use Opis\HttpRouting\Path;
 use Opis\Session\Session;
 use Opis\Utils\Placeholder;
 use Opis\View\ViewableInterface;
-use Psr\Log\LoggerInterface;
-use ReflectionClass;
-use ReflectionMethod;
 use SessionHandlerInterface;
 
 class Application
 {
-    /** @var    array */
-    protected $cache = array();
-
     /** @var    array */
     protected $instances = array();
 
@@ -85,8 +75,26 @@ class Application
     /** @var    boolean */
     protected $collectorsIncluded = false;
 
-    /** @var  array|null */
-    protected $collectorList;
+    /** @var  CollectorManager */
+    protected $collector;
+
+    /** @var  Container */
+    protected $containerInstance;
+
+    /** @var  Translator */
+    protected $translatorInstance;
+
+    /** @var  CSRFToken */
+    protected $csrfTokenInstance;
+
+    /** @var  Placeholder */
+    protected $placeholderInstance;
+
+    /** @var  HttpRequest */
+    protected $httpRequestInstance;
+
+    /** @var  \Opis\Http\Response */
+    protected $httpResponseInstance;
 
     /**
      * Constructor
@@ -212,7 +220,7 @@ class Application
         $this->executeInstallerAction($module, 'install');
 
         if ($recollect) {
-            $this->recollect();
+            $this->collector()->recollect();
         }
 
         $this->emit('module.installed.' . $module->name());
@@ -241,7 +249,7 @@ class Application
         $this->executeInstallerAction($module, 'uninstall');
 
         if ($recollect) {
-            $this->recollect();
+            $this->collector()->recollect();
         }
 
         $this->emit('module.uninstalled.' . $module->name());
@@ -271,7 +279,7 @@ class Application
         $this->executeInstallerAction($module, 'enable');
 
         if ($recollect) {
-            $this->recollect();
+            $this->collector()->recollect();
         }
 
         $this->emit('module.enabled.' . $module->name());
@@ -300,7 +308,7 @@ class Application
         $this->executeInstallerAction($module, 'disable');
 
         if ($recollect) {
-            $this->recollect();
+            $this->collector()->recollect();
         }
 
         $this->emit('module.disabled.' . $module->name());
@@ -320,107 +328,6 @@ class Application
         }
 
         return $this->env;
-    }
-
-    /**
-     * Get information about this application
-     *
-     * @return  AppInfo
-     */
-    public function info()
-    {
-        return $this->info;
-    }
-
-    /**
-     * Set the default database connection
-     *
-     * @param   Connection $connection
-     *
-     * @return  $this
-     */
-    public function setDefaultDatabaseConnection(Connection $connection)
-    {
-        $this->instances['connection'] = $connection;
-        return $this;
-    }
-
-    /**
-     * Set the default cache storage
-     *
-     * @param   \Opis\Cache\StorageInterface $storage
-     *
-     * @return  $this
-     */
-    public function setDefaultCacheStorage(CacheStorageInterface $storage)
-    {
-        $this->instances['cacheStorage'] = $storage;
-        return $this;
-    }
-
-    /**
-     * Set the default config storage
-     *
-     * @param   \Opis\Config\StorageInterface $storage
-     *
-     * @return  $this;
-     */
-    public function setDefaultConfigStorage(ConfigStorageInterface $storage)
-    {
-        $this->instances['configStorage'] = $storage;
-        return $this;
-    }
-
-    /**
-     * Set the default session storage
-     *
-     * @param   SessionHandlerInterface $storage
-     *
-     * @return  $this
-     */
-    public function setDefaultSessionStorage(SessionHandlerInterface $storage)
-    {
-        $this->instances['sessionStorage'] = $storage;
-        return $this;
-    }
-
-    /**
-     * Set the storage were the translations are kept
-     *
-     * @param   \Opis\Config\StorageInterface $storage
-     *
-     * @return  $this
-     */
-    public function setDefaultTranslateStorage(ConfigStorageInterface $storage)
-    {
-        $this->instances['translateStorage'] = $storage;
-        return $this;
-    }
-
-    /**
-     * Set the default logger
-     *
-     * @param   \Psr\Log\LoggerInterface
-     *
-     * @return  $this
-     */
-    public function setDefaultLogger(LoggerInterface $logger)
-    {
-        $this->instances['logger'] = $logger;
-        return $this;
-    }
-
-    /**
-     * Set the HTTP request object
-     *
-     * @param   HttpRequest|null $request (optional)
-     *
-     * @return  $this
-     */
-    public function setHttpRequestObject(HttpRequest $request)
-    {
-        $this->instances['request'] = $request;
-        return $this;
     }
 
     /**
@@ -452,38 +359,16 @@ class Application
     /**
      * Return the dependency injection container
      *
-     * @return  \Opis\Colibri\Container
+     * @return  Container
      */
     public function getContainer()
     {
-        if (!isset($this->instances['container'])) {
-            $container = $this->collect('Contracts');
+        if ($this->containerInstance === null) {
+            $container = $this->collector()->getContracts();
             $container->setApplication($this);
-            $this->instances['container'] = $container;
+            $this->containerInstance = $container;
         }
-        return $this->instances['container'];
-    }
-
-    /**
-     * @return  Collector
-     */
-    public function getCollector()
-    {
-        if (!isset($this->instances['collector'])) {
-            $this->instances['collector'] = new Collector($this);
-        }
-        return $this->instances['collector'];
-    }
-
-    /**
-     * @return  CollectorManager
-     */
-    public function getCollectorManager()
-    {
-        if (!isset($this->instances['collectorManager'])) {
-            $this->instances['collectorManager'] = new CollectorManager($this);
-        }
-        return $this->instances['collectorManager'];
+        return $this->containerInstance;
     }
 
     /**
@@ -491,10 +376,10 @@ class Application
      */
     public function getTranslator()
     {
-        if (!isset($this->instances['translator'])) {
-            $this->instances['translator'] = new Translator($this);
+        if ($this->translatorInstance === null){
+            $this->translatorInstance = new Translator($this);
         }
-        return $this->instances['translator'];
+        return $this->translatorInstance;
     }
 
     /**
@@ -503,10 +388,11 @@ class Application
      */
     public function getCSRFToken()
     {
-        if (!isset($this->instances['csrf'])) {
-            $this->instances['csrf'] = new CSRFToken($this);
+        if ($this->csrfTokenInstance === null) {
+            $this->csrfTokenInstance = new CSRFToken($this);
         }
-        return $this->instances['csrf'];
+
+        return $this->csrfTokenInstance;
     }
 
     /**
@@ -516,77 +402,13 @@ class Application
      */
     public function getPlaceholder()
     {
-        if (!isset($this->instances['placeholder'])) {
-            $this->instances['placeholder'] = new Placeholder();
+        if ($this->placeholderInstance === null){
+            $this->placeholderInstance = new Placeholder();
         }
-        return $this->instances['placeholder'];
+
+        return $this->placeholderInstance;
     }
 
-
-    /**
-     * Unregister a collector
-     *
-     * @param string    $name
-     */
-    public function unregisterCollector($name)
-    {
-        $this->config('app')->delete('collectors.' . $name);
-    }
-
-    /**
-     * Collect items
-     *
-     * @param   string $entry Item type
-     * @param   bool $fresh (optional)
-     *
-     * @return  mixed
-     */
-    public function collect($entry, $fresh = false)
-    {
-        $entry = strtolower($entry);
-
-        if ($fresh) {
-            unset($this->cache[$entry]);
-        }
-
-        if (!isset($this->cache[$entry])) {
-            $self = $this;
-            $hit = false;
-            $this->cache[$entry] = $this->cache('app')->load($entry, function ($entry) use ($self, &$hit) {
-                $self->includeCollectors();
-                $hit = true;
-                return $self->getCollector()->collect($entry)->data();
-            });
-            if ($hit) {
-                $this->emit('system.collect.' . strtolower($entry));
-            }
-        }
-
-        return $this->cache[$entry];
-    }
-
-    /**
-     * Recollect all items
-     *
-     * @param bool $fresh (optional)
-     *
-     * @return boolean
-     */
-    public function recollect($fresh = true)
-    {
-        if (!$this->cache('app')->clear()) {
-            return false;
-        }
-
-        $this->collectorsIncluded = false;
-
-        foreach (array_keys($this->config('app')->read('collectors')) as $entry) {
-            $this->collect($entry, $fresh);
-        }
-
-        $this->emit('system.collect');
-        return true;
-    }
 
     /**
      * Bootstrap method
@@ -618,7 +440,7 @@ class Application
             $request = HttpRequest::fromGlobals();
         }
 
-        $this->setHttpRequestObject($request);
+        $this->httpRequestInstance = $request;
 
         $path = new Path(
             $request->path(), $request->host(), $request->method(), $request->isSecure(), $request
@@ -663,6 +485,30 @@ class Application
         array_unshift($arguments, $this);
 
         return call_user_func_array($this->instances['methods'][$name], $arguments);
+    }
+
+    /**
+     * Get information about this application
+     *
+     * @return  AppInfo
+     */
+    public function info()
+    {
+        return $this->info;
+    }
+
+    /**
+     * Get collector
+     *
+     * @return CollectorManager
+     */
+    public function collector()
+    {
+        if ($this->collector === null) {
+            $this->collector = new CollectorManager($this);
+        }
+
+        return $this->collector;
     }
 
     /**
@@ -839,10 +685,11 @@ class Application
      */
     public function request()
     {
-        if (!isset($this->instances['request'])) {
-            $this->instances['request'] = HttpRequest::fromGlobals();
+        if ($this->httpRequestInstance === null){
+            $this->httpRequestInstance = HttpRequest::fromGlobals();
         }
-        return $this->instances['request'];
+
+        return $this->httpRequestInstance;
     }
 
     /**
@@ -852,10 +699,11 @@ class Application
      */
     public function response()
     {
-        if (!isset($this->instances['response'])) {
-            $this->instances['response'] = $this->request()->response();
+        if ($this->httpResponseInstance === null){
+            $this->httpResponseInstance = $this->request()->response();
         }
-        return $this->instances['response'];
+
+        return $this->httpResponseInstance;
     }
 
     /**
@@ -1138,65 +986,4 @@ class Application
         }
     }
 
-    /**
-     * Include modules
-     */
-    protected function includeCollectors()
-    {
-        if ($this->collectorsIncluded) {
-            return;
-        }
-
-        $this->collectorsIncluded = true;
-        $reader = new AnnotationReader();
-
-        foreach ($this->getModules() as $module) {
-
-            if (isset($this->collectors[$module->name()]) || !$module->isEnabled()) {
-                continue;
-            }
-
-            $this->collectors[$module->name()] = true;
-
-            if ($module->collector() === null) {
-                continue;
-            }
-
-            $instance = $this->make($module->collector());
-
-            $reflection = new ReflectionClass($instance);
-
-            if (!$reflection->isSubclassOf('\\Opis\\Colibri\\ModuleCollector')) {
-                continue;
-            }
-
-            foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-
-                $name = $method->getShortName();
-
-                if (substr($name, 0, 2) === '__') {
-                    if ($name === '__invoke') {
-                        $instance($this, $reader);
-                    }
-                    continue;
-                }
-
-                $annotation = $reader->getMethodAnnotation($method, 'Opis\\Colibri\\Annotations\\Collector');
-
-                if ($annotation == null) {
-                    $annotation = new CollectorAnnotation();
-                }
-
-                if ($annotation->name === null) {
-                    $annotation->name = $name;
-                }
-
-                $callback = function ($collector, $app) use ($instance, $name) {
-                    $instance->{$name}($collector, $app);
-                };
-
-                $this->getCollector()->handle(strtolower($annotation->name), $callback, $annotation->priority);
-            }
-        }
-    }
 }
