@@ -21,7 +21,6 @@
 namespace Opis\Colibri;
 
 use Closure;
-use Dotenv\Dotenv;
 use ReflectionClass;
 use ReflectionMethod;
 use Opis\Cache\Cache;
@@ -39,7 +38,9 @@ use Psr\Log\LoggerInterface;
 use Opis\Database\Connection;
 use Opis\Colibri\Composer\CLI;
 use Opis\HttpRouting\HttpError;
+use Opis\View\ViewableInterface;
 use Composer\Autoload\ClassLoader;
+use Composer\Package\CompletePackage;
 use Opis\Http\Request as HttpRequest;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Opis\Cache\Storage\Memory as DefaultCacheStorage;
@@ -62,7 +63,7 @@ class Application
 
     /** @var    Env */
     protected $env;
-    
+
     /** @var    AppInfo */
     protected $info;
 
@@ -80,14 +81,14 @@ class Application
 
     /** @var    array|null */
     protected $modules;
-    
+
     /** @var    boolean */
     protected $collectorsIncluded = false;
 
     /**
      * Constructor
-     * 
-     * @param  AppInfo  $info   Application info
+     *
+     * @param  AppInfo $info Application info
      */
     public function __construct(AppInfo $info, ClassLoader $loader, Composer $composer = null)
     {
@@ -99,7 +100,7 @@ class Application
 
     /**
      * Get Composer instance
-     * 
+     *
      * @return  Composer
      */
     public function getComposer()
@@ -115,7 +116,7 @@ class Application
 
     /**
      * Get Composer CLI
-     * 
+     *
      * @return  CLI
      */
     public function getComposerCLI()
@@ -128,7 +129,7 @@ class Application
     }
 
     /**
-     * @return  ClassLoader
+     * @return  \Composer\Autoload\ClassLoader
      */
     public function getClassLoader()
     {
@@ -137,10 +138,10 @@ class Application
 
     /**
      * Get module packs
-     * 
-     * @param   bool    $clear  (optional)
-     * 
-     * @return  array
+     *
+     * @param   bool $clear (optional)
+     *
+     * @return  CompletePackage[]
      */
     public function getPackages($clear = false)
     {
@@ -149,7 +150,7 @@ class Application
         }
 
         $packages = array();
-        $composer = $this->app->getComposer();
+        $composer = $this->getComposer();
         $repository = $composer->getRepositoryManager()->getLocalRepository();
 
         foreach ($repository->getPackages() as $package) {
@@ -164,10 +165,10 @@ class Application
 
     /**
      * Get a list with available modules
-     * 
-     * @param   bool    $clear  (optional)
-     * 
-     * @return  array
+     *
+     * @param   bool $clear (optional)
+     *
+     * @return  Module[]
      */
     public function getModules($clear = false)
     {
@@ -178,7 +179,7 @@ class Application
         $modules = array();
 
         foreach ($this->getPackages($clear) as $module => $package) {
-            $modules[$module] = new ModuleInfo($app, $module, $package);
+            $modules[$module] = new Module($this, $module, $package);
         }
 
         return $this->modules = $modules;
@@ -186,10 +187,10 @@ class Application
 
     /**
      * Install a module
-     * 
-     * @param   Module  $module
-     * @param   boolean $recollect  (optional)
-     * 
+     *
+     * @param   Module $module
+     * @param   boolean $recollect (optional)
+     *
      * @return  boolean
      */
     public function install(Module $module, $recollect = true)
@@ -216,10 +217,10 @@ class Application
 
     /**
      * Uninstall a module
-     * 
-     * @param   Module  $module
-     * @param   boolean $recollect  (optional)
-     * 
+     *
+     * @param   Module $module
+     * @param   boolean $recollect (optional)
+     *
      * @return  boolean
      */
     public function uninstall(Module $module, $recollect = true)
@@ -245,10 +246,10 @@ class Application
 
     /**
      * Enable a module
-     * 
-     * @param   Module  $module
-     * @param   boolean $recollect  (optional)
-     * 
+     *
+     * @param   Module $module
+     * @param   boolean $recollect (optional)
+     *
      * @return  boolean
      */
     public function enable(Module $module, $recollect = true)
@@ -275,10 +276,10 @@ class Application
 
     /**
      * Disable a module
-     * 
-     * @param   Module  $module
-     * @param   boolean $recollect  (optional)
-     * 
+     *
+     * @param   Module $module
+     * @param   boolean $recollect (optional)
+     *
      * @return  boolean
      */
     public function disable(Module $module, $recollect = true)
@@ -301,10 +302,10 @@ class Application
 
         return true;
     }
-    
+
     /**
-     * Get enviroment
-     * 
+     * Get environment
+     *
      * @return  Env
      */
     public function getEnv()
@@ -312,7 +313,7 @@ class Application
         if ($this->env === null) {
             $this->env = new Env($this);
         }
-        
+
         return $this->env;
     }
 
@@ -332,9 +333,9 @@ class Application
 
     /**
      * Load an existing module
-     * 
-     * @param   string      $module Module's name
-     * @param   array|null  $list   (optional) A list of available modules
+     *
+     * @param   string $module Module's name
+     * @param   array|null $list (optional) A list of available modules
      */
     public function loadModule($module, $list = null)
     {
@@ -352,8 +353,8 @@ class Application
     }
 
     /**
-     * Get informations about this application
-     * 
+     * Get information about this application
+     *
      * @return  AppInfo
      */
     public function info()
@@ -363,9 +364,9 @@ class Application
 
     /**
      * Set the default database connection
-     * 
-     * @param   Connection  $connection
-     * 
+     *
+     * @param   Connection $connection
+     *
      * @return  $this
      */
     public function setDefaultDatabaseConnection(Connection $connection)
@@ -376,9 +377,9 @@ class Application
 
     /**
      * Set the default cache storage
-     * 
-     * @param   \Opis\Cache\StorageInterface    $storage
-     * 
+     *
+     * @param   \Opis\Cache\StorageInterface $storage
+     *
      * @return  $this
      */
     public function setDefaultCacheStorage(CacheStorageInterface $storage)
@@ -389,9 +390,9 @@ class Application
 
     /**
      * Set the default config storage
-     * 
-     * @param   \Opis\Config\StorageInterface   $storage
-     * 
+     *
+     * @param   \Opis\Config\StorageInterface $storage
+     *
      * @return  $this;
      */
     public function setDefaultConfigStorage(ConfigStorageInterface $storage)
@@ -402,9 +403,9 @@ class Application
 
     /**
      * Set the default session storage
-     * 
-     * @param   \SessionHandlerInterface    $storage
-     * 
+     *
+     * @param   SessionHandlerInterface $storage
+     *
      * @return  $this
      */
     public function setDefaultSessionStorage(SessionHandlerInterface $storage)
@@ -415,9 +416,9 @@ class Application
 
     /**
      * Set the storage were the translations are kept
-     * 
-     * @param   \Opis\Config\StorageInterface   $storage
-     * 
+     *
+     * @param   \Opis\Config\StorageInterface $storage
+     *
      * @return  $this
      */
     public function setDefaultTranslateStorage(ConfigStorageInterface $storage)
@@ -427,10 +428,10 @@ class Application
     }
 
     /**
-     * Set the default loggger
-     * 
+     * Set the default logger
+     *
      * @param   \Psr\Log\LoggerInterface
-     * 
+     *
      * @return  $this
      */
     public function setDefaultLogger(LoggerInterface $logger)
@@ -441,9 +442,9 @@ class Application
 
     /**
      * Set the HTTP request object
-     * 
-     * @param   HttpRequest|null    $request    (optional)
-     * 
+     *
+     * @param   HttpRequest|null $request (optional)
+     *
      * @return  $this
      */
     public function setHttpRequestObject(HttpRequest $request)
@@ -454,8 +455,8 @@ class Application
 
     /**
      * Get the HTTP router
-     * 
-     * @return  \Opis\Colibri\Router
+     *
+     * @return  HttpRouter
      */
     public function getHttpRouter()
     {
@@ -467,8 +468,8 @@ class Application
 
     /**
      * Get the View router
-     * 
-     * @return  \Opis\Colibri\ViewRouter
+     *
+     * @return  ViewRouter
      */
     public function getViewRouter()
     {
@@ -480,7 +481,7 @@ class Application
 
     /**
      * Return the dependency injection container
-     * 
+     *
      * @return  \Opis\Colibri\Container
      */
     public function getContainer()
@@ -494,7 +495,7 @@ class Application
     }
 
     /**
-     * @return  \Opis\Colibri\Collectors\EventTarget
+     * @return  Collector
      */
     public function getCollector()
     {
@@ -505,7 +506,7 @@ class Application
     }
 
     /**
-     * @return  \Opis\Colibri\CollectorManager
+     * @return  CollectorManager
      */
     public function getCollectorManager()
     {
@@ -516,7 +517,7 @@ class Application
     }
 
     /**
-     * @return  \Opis\Colibri\Translator
+     * @return  Translator
      */
     public function getTranslator()
     {
@@ -527,8 +528,8 @@ class Application
     }
 
     /**
-     * 
-     * @return  \Opis\Colibri\CSRFToken
+     *
+     * @return  CSRFToken
      */
     public function getCSRFToken()
     {
@@ -540,8 +541,8 @@ class Application
 
     /**
      * Get a placeholder object
-     * 
-     * @return  \Opis\Utils\Placeholder
+     *
+     * @return  Placeholder
      */
     public function getPlaceholder()
     {
@@ -553,10 +554,10 @@ class Application
 
     /**
      * Collect items
-     * 
-     * @param   string  $entry  Item type
-     * @param   bool    $fresh  (optional)
-     * 
+     *
+     * @param   string $entry Item type
+     * @param   bool $fresh (optional)
+     *
      * @return  mixed
      */
     public function collect($entry, $fresh = false)
@@ -585,10 +586,10 @@ class Application
 
     /**
      * Recollect all items
-     * 
-     * @param   bool    $fresh  (optional)
-     * 
-     * @retunr  boolean
+     *
+     * @param bool $fresh (optional)
+     *
+     * @return boolean
      */
     public function recollect($fresh = true)
     {
@@ -596,20 +597,20 @@ class Application
             return false;
         }
         $this->collectorsIncluded = false;
-        
+
         foreach (array_keys($this->config()->read('app.collectors')) as $entry) {
             $this->collect($entry, $fresh);
         }
-        
+
         $this->emit('system.collect');
         return true;
     }
 
     /**
      * Bootstrap method
-     * 
-     * @param   Closure $callback   Custom bootstrap
-     * 
+     *
+     * @param   Closure $callback Custom bootstrap
+     *
      * @return  $this
      */
     public function bootstrap(Closure $callback = null)
@@ -625,7 +626,8 @@ class Application
 
         if ($info->cliMode() &&
             file_exists($storagesPath . '/config') &&
-            !is_writable($storagesPath . '/config')) {
+            !is_writable($storagesPath . '/config')
+        ) {
             die('Try running command with sudo' . PHP_EOL);
         }
 
@@ -635,7 +637,8 @@ class Application
             $manager = $this->getModuleManager();
 
             if (file_exists($composer_json) &&
-                null !== $composerContent = json_decode(file_get_contents($composer_json), true)) {
+                null !== $composerContent = json_decode(file_get_contents($composer_json), true)
+            ) {
                 foreach ($composerContent['extra']['installer-modules'] as $module) {
                     $enabled_modules[$module] = true;
                 }
@@ -649,12 +652,12 @@ class Application
 
             $this->config()->write('modules', array(
                 'enabled' => $enabled_modules,
-                'list'    => $modules,
+                'list' => $modules,
             ));
 
             $this->config()->write('collectors', $this->getCollectorManager()->getCollectors());
 
-            return;
+            return $this;
         }
 
         Model::setApplication($this);
@@ -685,9 +688,9 @@ class Application
 
     /**
      * Execute
-     * 
-     * @param   HttpRequest|null    $request
-     * 
+     *
+     * @param   HttpRequest|null $request
+     *
      * @return  mixed
      */
     public function run(HttpRequest $request = null)
@@ -708,8 +711,8 @@ class Application
     /**
      * Returns an instance of the specified contract or class
      *
-     * @param   string  $contract   Contract name or class name
-     * @param   array   $arguments  (optional) Arguments that will be passed to the contract constructor
+     * @param   string $contract Contract name or class name
+     * @param   array $arguments (optional) Arguments that will be passed to the contract constructor
      *
      * @return  mixed
      */
@@ -720,12 +723,12 @@ class Application
 
     /**
      * Call a user defined method
-     * 
-     * @param   string  $name       Method's name
-     * @param   array   $arguments  Method's arguments
-     * 
+     *
+     * @param   string $name Method's name
+     * @param   array $arguments Method's arguments
+     *
      * @return  mixed
-     * 
+     *
      * @throws \RuntimeException
      */
     public function __call($name, $arguments)
@@ -745,9 +748,9 @@ class Application
 
     /**
      * Returns a caching storage
-     * 
-     * @param   string|null $storage    (optional) Storage name
-     *    
+     *
+     * @param   string|null $storage (optional) Storage name
+     *
      * @return  \Opis\Cache\Cache
      */
     public function cache($storage = null)
@@ -768,7 +771,7 @@ class Application
     /**
      * Returns a session storage
      *
-     * @param   string|null $storage    (optional) Storage name
+     * @param   string|null $storage (optional) Storage name
      *
      * @return  \Opis\Session\Session
      */
@@ -790,7 +793,7 @@ class Application
     /**
      * Returns a config storage
      *
-     * @param   string|null $storage    (optional) Storage name
+     * @param   string|null $storage (optional) Storage name
      *
      * @return  \Opis\Config\Config
      */
@@ -826,7 +829,7 @@ class Application
     }
 
     /**
-     * 
+     *
      * @return  \Opis\Colibri\Console
      */
     public function console()
@@ -839,7 +842,7 @@ class Application
 
     /**
      * @throws  \RuntimeException
-     * 
+     *
      * @return  \Opis\Database\Connection
      */
     public function connection()
@@ -856,7 +859,7 @@ class Application
     /**
      * Returns a database abstraction layer
      *
-     * @param   string  $connection (optional) Connection name
+     * @param   string $connection (optional) Connection name
      *
      * @return  \Opis\Database\Database
      */
@@ -876,7 +879,7 @@ class Application
     /**
      * Returns a database shema abstraction layer
      *
-     * @param   string  $connection (optional) Connection name
+     * @param   string $connection (optional) Connection name
      *
      * @return  \Opis\Database\Schema
      */
@@ -894,9 +897,9 @@ class Application
 
     /**
      * Returns a logger
-     * 
+     *
      * @param   string|null $logger Logger's name
-     * 
+     *
      * @return  \Psr\Log\LoggerInterface
      */
     public function log($logger = null)
@@ -939,9 +942,9 @@ class Application
     /**
      * Redirects to a new locations
      *
-     * @param   string  $location   The new location
-     * @param   int     $code       Redirect status code
-     * @param   array   $query      (optional)  Query arguments
+     * @param   string $location The new location
+     * @param   int $code Redirect status code
+     * @param   array $query (optional)  Query arguments
      */
     public function redirect($location, $code = 302, array $query = array())
     {
@@ -957,8 +960,8 @@ class Application
     /**
      * Returns an instance of the specified contract or class
      *
-     * @param   string  $contract   Contract name or class name
-     * @param   array   $arguments  (optional) Arguments that will be passed to the contract constructor
+     * @param   string $contract Contract name or class name
+     * @param   array $arguments (optional) Arguments that will be passed to the contract constructor
      *
      * @return  mixed
      */
@@ -970,7 +973,7 @@ class Application
     /**
      * Emit a new event
      *
-     * @param   string  $name       Event name
+     * @param   string $name Event name
      * @param   boolean $cancelable (optional) Cancelable flag
      *
      * @return  \Opis\Events\Event
@@ -983,7 +986,7 @@ class Application
     /**
      * Dispatch an event
      *
-     * @param   \Opis\Events\Event $event  An event to be dispatched
+     * @param   \Opis\Events\Event $event An event to be dispatched
      *
      * @return  \Opis\Events\Event The dispatched event
      */
@@ -998,8 +1001,8 @@ class Application
     /**
      * Creates a new view
      *
-     * @param   string  $name       View name
-     * @param   array   $arguments  (optional) View's arguments
+     * @param   string $name View name
+     * @param   array $arguments (optional) View's arguments
      *
      * @return  \Opis\Colibri\View
      */
@@ -1011,7 +1014,7 @@ class Application
     /**
      * Renders a view
      *
-     * @param   string|\Opis\View\ViewInterface $view   The view that will be rendered
+     * @param   string|ViewableInterface $view The view that will be rendered
      *
      * @return  string
      */
@@ -1023,9 +1026,9 @@ class Application
     /**
      * Returns a path to a module's asset
      *
-     * @param   string  $module Module name
-     * @param   string  $path   Module's resource relative path
-     * @param   boolean $full   Full path flag
+     * @param   string $module Module name
+     * @param   string $path Module's resource relative path
+     * @param   boolean $full Full path flag
      *
      * @return  string
      */
@@ -1036,9 +1039,9 @@ class Application
 
     /**
      * Module info
-     * 
-     * @param   string  $module
-     * 
+     *
+     * @param   string $module
+     *
      * @return  \Opis\Colibri\Module
      */
     public function module($module)
@@ -1049,8 +1052,8 @@ class Application
     /**
      * Get the URI for a path
      *
-     * @param   string  $path   The path
-     * @param   boolean $full   (optional) Full URI flag
+     * @param   string $path The path
+     * @param   boolean $full (optional) Full URI flag
      *
      * @return  string
      */
@@ -1063,8 +1066,8 @@ class Application
     /**
      * Creates an path from a named route
      *
-     * @param   string  $route  Route name
-     * @param   array   $args   (optional) Route wildecard's values
+     * @param   string $route Route name
+     * @param   array $args (optional) Route wildecard's values
      *
      * @return  string
      */
@@ -1082,8 +1085,8 @@ class Application
     /**
      * Return a variable's value
      *
-     * @param   string  $name       Variable's name
-     * @param   mixed   $default    (optional) The value that will be returned if the variable doesn't exist
+     * @param   string $name Variable's name
+     * @param   mixed $default (optional) The value that will be returned if the variable doesn't exist
      *
      * @return  mixed
      */
@@ -1095,9 +1098,9 @@ class Application
     /**
      * Translate a text
      *
-     * @param   string  $sentence       The text that will be translated
-     * @param   array   $placeholders   (optional) An array of placeholders
-     * @param   string  $lang           (optional) Translation language
+     * @param   string $sentence The text that will be translated
+     * @param   array $placeholders (optional) An array of placeholders
+     * @param   string $lang (optional) Translation language
      *
      * @return  string  Translated text
      */
@@ -1119,7 +1122,7 @@ class Application
     /**
      * Validates a CSRF token
      *
-     * @param   string  $token  Token
+     * @param   string $token Token
      *
      * @return  boolean
      */
@@ -1130,7 +1133,7 @@ class Application
 
     /**
      * Crates a new validator
-     * 
+     *
      * @return  \Opis\Colibri\Validator
      */
     public function validator()
@@ -1140,11 +1143,11 @@ class Application
 
     /**
      * Creates a new controller
-     * 
-     * @param   string  $class
-     * @param   string  $method
+     *
+     * @param   string $class
+     * @param   string $method
      * @param   boolean $static (optional)
-     * 
+     *
      * @return  \Opis\Colibri\Controller
      */
     public function controller($class, $method, $static = false)
@@ -1159,10 +1162,10 @@ class Application
 
     /**
      * Resolve a class
-     * 
-     * @param   string  $module
-     * @param   string  $class
-     * 
+     *
+     * @param   string $module
+     * @param   string $class
+     *
      * @return  string
      */
     public function resolveClass($module, $class)
@@ -1172,10 +1175,10 @@ class Application
 
     /**
      * Replace placeholders
-     * 
-     * @param   string  $text
-     * @param   array   $placeholders
-     * 
+     *
+     * @param   string $text
+     * @param   array $placeholders
+     *
      * @return  string
      */
     public function replace($text, array $placeholders)
@@ -1185,7 +1188,7 @@ class Application
 
     /**
      * Page not found
-     * 
+     *
      * @return  \Opis\HttpRouting\HttpError
      */
     public function pageNotFound()
@@ -1195,7 +1198,7 @@ class Application
 
     /**
      * Access denied
-     * 
+     *
      * @return  \Opis\HttpRouting\HttpError
      */
     public function accessDenied()
@@ -1205,10 +1208,10 @@ class Application
 
     /**
      * Generic http error
-     * 
-     * @param   int Error code
-     * 
-     * @return  \Opis\HttpRouting\HttpError
+     *
+     * @param   int $code Error code
+     *
+     * @return  HttpError
      */
     public function httpError($code)
     {
@@ -1217,8 +1220,8 @@ class Application
 
     /**
      * Execute an action
-     * 
-     * @param \Opis\Colibri\Module $module
+     *
+     * @param Module $module
      * @param string $action
      */
     protected function executeInstallerAction(Module $module, $action)
@@ -1240,30 +1243,30 @@ class Application
         if ($this->collectorsIncluded) {
             return;
         }
-        
+
         $this->collectorsIncluded = true;
         $reader = new AnnotationReader();
-        
+
         foreach ($this->getModules() as $module) {
 
             if (isset($this->collectors[$module->name()]) || !$module->isEnabled()) {
                 continue;
             }
-            
+
             $this->collectors[$module->name()] = true;
-            
+
             if ($module->collector() === null) {
                 continue;
             }
-            
+
             $instance = $this->make($module->collector());
-            
+
             $reflection = new ReflectionClass($instance);
 
             if (!$reflection->isSubclassOf('\\Opis\\Colibri\\ModuleCollector')) {
                 continue;
             }
-            
+
             foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
 
                 $name = $method->getShortName();
@@ -1285,10 +1288,10 @@ class Application
                     $annotation->name = $name;
                 }
 
-                $callback = function($collector, $app) use($instance, $name) {
+                $callback = function ($collector, $app) use ($instance, $name) {
                     $instance->{$name}($collector, $app);
                 };
-                
+
                 $this->getCollector()->handle(strtolower($annotation->name), $callback, $annotation->priority);
             }
         }
