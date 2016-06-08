@@ -26,6 +26,10 @@ use Opis\Colibri\Application;
 
 class Command
 {
+    /**
+     * @param Event $event
+     * @throws \Exception
+     */
     public static function handleDumpAutoload(Event $event)
     {
         $composer = $event->getComposer();
@@ -34,7 +38,7 @@ class Command
             AppInfo::ROOT_DIR => $composer->getInstallationManager()
                 ->getInstallPath($composer->getPackage())
         ));
-
+        
         $loader = require $appInfo->vendorDir() . '/autoload.php';
 
         $app = new Application($appInfo, $loader, $composer);

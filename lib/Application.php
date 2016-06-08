@@ -85,6 +85,9 @@ class Application
     /** @var    boolean */
     protected $collectorsIncluded = false;
 
+    /** @var  array|null */
+    protected $collectorList;
+
     /**
      * Constructor
      *
@@ -201,10 +204,10 @@ class Application
             return false;
         }
 
-        $config = $this->config();
-        $modules = $config->read('app.modules.installed', array());
+        $config = $this->config('app');
+        $modules = $config->read('modules.installed', array());
         $modules[] = $module->name();
-        $config->write('app.modules.installed', $modules);
+        $config->write('modules.installed', $modules);
 
         $this->executeInstallerAction($module, 'install');
 
@@ -231,9 +234,9 @@ class Application
             return false;
         }
 
-        $config = $this->config();
-        $modules = $config->read('app.modules.installed', array());
-        $config->write('app.modules.installed', array_diff($modules, array($module->name())));
+        $config = $this->config('app');
+        $modules = $config->read('modules.installed', array());
+        $config->write('modules.installed', array_diff($modules, array($module->name())));
 
         $this->executeInstallerAction($module, 'uninstall');
 
@@ -260,10 +263,10 @@ class Application
             return false;
         }
 
-        $config = $this->config();
+        $config = $this->config('app');
         $modules = $config->read('app.modules.enabled', array());
         $modules[] = $module->name();
-        $config->write('app.modules.enabled', $modules);
+        $config->write('modules.enabled', $modules);
 
         $this->executeInstallerAction($module, 'enable');
 
@@ -290,9 +293,9 @@ class Application
             return false;
         }
 
-        $config = $this->config();
-        $modules = $config->read('app.modules.enabled', array());
-        $config->write('app.modules.enabled', array_diff($modules, array($module->name())));
+        $config = $this->config('app');
+        $modules = $config->read('modules.enabled', array());
+        $config->write('modules.enabled', array_diff($modules, array($module->name())));
 
         $this->executeInstallerAction($module, 'disable');
 
@@ -519,6 +522,17 @@ class Application
         return $this->instances['placeholder'];
     }
 
+
+    /**
+     * Unregister a collector
+     *
+     * @param string    $name
+     */
+    public function unregisterCollector($name)
+    {
+        $this->config('app')->delete('collectors.' . $name);
+    }
+
     /**
      * Collect items
      *
@@ -538,7 +552,7 @@ class Application
         if (!isset($this->cache[$entry])) {
             $self = $this;
             $hit = false;
-            $this->cache[$entry] = $this->cache()->load($entry, function ($entry) use ($self, &$hit) {
+            $this->cache[$entry] = $this->cache('app')->load($entry, function ($entry) use ($self, &$hit) {
                 $self->includeCollectors();
                 $hit = true;
                 return $self->getCollector()->collect($entry)->data();
@@ -560,12 +574,13 @@ class Application
      */
     public function recollect($fresh = true)
     {
-        if (!$this->cache()->clear()) {
+        if (!$this->cache('app')->clear()) {
             return false;
         }
+
         $this->collectorsIncluded = false;
 
-        foreach (array_keys($this->config()->read('app.collectors')) as $entry) {
+        foreach (array_keys($this->config('app')->read('collectors')) as $entry) {
             $this->collect($entry, $fresh);
         }
 
