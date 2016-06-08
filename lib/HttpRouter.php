@@ -20,12 +20,12 @@
 
 namespace Opis\Colibri;
 
+use Opis\Http\Error\AccessDenied;
+use Opis\Http\Error\NotFound;
 use Opis\HttpRouting\Path;
 use Opis\HttpRouting\Router;
-use Opis\Http\Error\NotFound;
-use Opis\Http\Error\AccessDenied;
-use Opis\Routing\Path as BasePath;
 use Opis\Routing\Path as AliasPath;
+use Opis\Routing\Path as BasePath;
 use Opis\Routing\Router as AliasRouter;
 
 class HttpRouter extends Router

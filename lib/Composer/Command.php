@@ -20,8 +20,8 @@
 
 namespace Opis\Colibri\Composer;
 
-use Opis\Colibri\AppInfo;
 use Composer\Script\Event;
+use Opis\Colibri\AppInfo;
 use Opis\Colibri\Application;
 
 class Command

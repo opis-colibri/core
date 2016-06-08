@@ -21,9 +21,9 @@
 namespace Opis\Colibri\Collectors\Implementation;
 
 use Opis\Colibri\Application;
-use Opis\Colibri\Serializable\Translations;
 use Opis\Colibri\Collectors\AbstractCollector;
 use Opis\Colibri\Collectors\TranslationCollectorInterface;
+use Opis\Colibri\Serializable\Translations;
 
 class TranslationCollector extends AbstractCollector implements TranslationCollectorInterface
 {

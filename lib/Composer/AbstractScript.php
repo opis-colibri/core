@@ -20,12 +20,12 @@
 
 namespace Opis\Colibri\Composer;
 
-use Composer\Factory;
 use Composer\Composer;
-use Composer\Json\JsonFile;
-use Composer\IO\IOInterface;
-use Composer\Json\JsonManipulator;
 use Composer\EventDispatcher\Event;
+use Composer\Factory;
+use Composer\IO\IOInterface;
+use Composer\Json\JsonFile;
+use Composer\Json\JsonManipulator;
 use Composer\Package\Version\VersionParser;
 
 abstract class AbstractScript

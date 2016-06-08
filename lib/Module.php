@@ -20,8 +20,8 @@
 
 namespace Opis\Colibri;
 
-use Exception;
 use Composer\Package\CompletePackage;
+use Exception;
 
 class Module
 {
@@ -53,42 +53,6 @@ class Module
     }
 
     /**
-     * Get the associated package
-     *
-     * @return CompletePackage
-     *
-     * @throws Exception
-     */
-    public function getPackage()
-    {
-        if ($this->package === null) {
-            $packages = $this->app->getPackages();
-            if (!isset($packages[$this->name])) {
-                throw new Exception('Module "' . $this->name . '" doesn\'t exist');
-            }
-            $this->package = $packages[$this->name];
-        }
-
-        return $this->package;
-    }
-
-
-    /**
-     * Check if the module exists
-     *
-     * @return  boolean
-     */
-    public function exists()
-    {
-        if ($this->exists === null) {
-            $packages = $this->app->getPackages();
-            $this->exists = isset($packages[$this->name]);
-        }
-
-        return $this->exists;
-    }
-
-    /**
      * Get the module's name
      *
      * @return  string
@@ -96,256 +60,6 @@ class Module
     public function name()
     {
         return $this->get(__FUNCTION__);
-    }
-
-    /**
-     * Get the module's version
-     *
-     * @return  string
-     */
-    public function version()
-    {
-        return $this->get(__FUNCTION__);
-    }
-
-    /**
-     * Get the module's title
-     *
-     * @return  string
-     */
-    public function title()
-    {
-        return $this->get(__FUNCTION__);
-    }
-
-    /**
-     * Get the module's description
-     *
-     * @return  string
-     */
-    public function description()
-    {
-        return $this->get(__FUNCTION__);
-    }
-
-    /**
-     * Get the module's dependencies
-     *
-     * @return  Module[]
-     */
-    public function dependencies()
-    {
-        return $this->get(__FUNCTION__);
-    }
-
-    /**
-     * Get the module's dependents
-     *
-     * @return  Module[]
-     */
-    public function dependents()
-    {
-        return $this->get(__FUNCTION__);
-    }
-
-    /**
-     * Get the module's location
-     *
-     * @return  string
-     */
-    public function directory()
-    {
-        return $this->get(__FUNCTION__);
-    }
-
-    /**
-     * Get the module's collector instance
-     *
-     * @return  string
-     */
-    public function collector()
-    {
-        return $this->get(__FUNCTION__);
-    }
-
-    /**
-     * Get the module's collector class
-     *
-     * @return  string
-     */
-    public function installer()
-    {
-        return $this->get(__FUNCTION__);
-    }
-
-    /**
-     * Get the module's assets folder
-     *
-     * @return  string
-     */
-    public function assets()
-    {
-        return $this->get(__FUNCTION__);
-    }
-
-    /**
-     * Checks if the module is hidden
-     *
-     * @return  boolean
-     */
-    public function isHidden()
-    {
-        return $this->get('hidden');
-    }
-
-    /**
-     * Checks if the module is enabled
-     *
-     * @return  boolean
-     */
-    public function isEnabled()
-    {
-        if (!$this->exists()) {
-            return false;
-        }
-
-        $list = $this->app->config()->read('app.modules.enabled', array());
-        return in_array($this->name, $list);
-    }
-
-    /**
-     * Checks if the module is installed
-     *
-     * @return  boolean
-     */
-    public function isInstalled()
-    {
-        if (!$this->exists()) {
-            return false;
-        }
-
-        $list = $this->app->config()->read('app.modules.installed', array());
-        return in_array($this->name, $list);
-    }
-
-    /**
-     * Checks if the module can be enabled
-     *
-     * @return  boolean
-     */
-    public function canBeEnabled()
-    {
-        if ($this->isEnabled() || !$this->isInstalled()) {
-            return false;
-        }
-
-        foreach ($this->dependencies() as $module) {
-            if (!$module->isEnabled()) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Checks if the module can be disabled
-     *
-     * @return  boolean
-     */
-    public function canBeDisabled()
-    {
-        if (!$this->isEnabled()) {
-            return false;
-        }
-
-        foreach ($this->dependents() as $module) {
-            if ($module->isInstalled()) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Checks if the module can be installed
-     *
-     * @return  boolean
-     */
-    public function canBeInstalled()
-    {
-        if ($this->isInstalled()) {
-            return false;
-        }
-
-        foreach ($this->dependencies() as $module) {
-            if (!$module->isEnabled()) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Checks if the module can be uninstalled
-     *
-     * @return  boolean
-     */
-    public function canBeUninstalled()
-    {
-        if (!$this->isInstalled()) {
-            return false;
-        }
-
-        foreach ($this->dependents() as $module) {
-            if ($module->isInstalled()) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Enable the module
-     *
-     * @return  boolean
-     */
-    public function enable()
-    {
-        return $this->app->enable($this);
-    }
-
-    /**
-     * Disable the module
-     *
-     * @return  boolean
-     */
-    public function disable()
-    {
-        return $this->app->disable($this);
-    }
-
-    /**
-     * Install the module
-     *
-     * @return  boolean
-     */
-    public function install()
-    {
-        return $this->app->install($this);
-    }
-
-    /**
-     * Uninstall the module
-     *
-     * @return  boolean
-     */
-    public function uninstall()
-    {
-        return $this->app->uninstall($this);
     }
 
     protected function get($property)
@@ -392,6 +106,26 @@ class Module
         }
 
         return $this->info[$property] = $value;
+    }
+
+    /**
+     * Get the associated package
+     *
+     * @return CompletePackage
+     *
+     * @throws Exception
+     */
+    public function getPackage()
+    {
+        if ($this->package === null) {
+            $packages = $this->app->getPackages();
+            if (!isset($packages[$this->name])) {
+                throw new Exception('Module "' . $this->name . '" doesn\'t exist');
+            }
+            $this->package = $packages[$this->name];
+        }
+
+        return $this->package;
     }
 
     /**
@@ -522,6 +256,261 @@ class Module
     }
 
     /**
+     * Get the module's version
+     *
+     * @return  string
+     */
+    public function version()
+    {
+        return $this->get(__FUNCTION__);
+    }
+
+    /**
+     * Get the module's title
+     *
+     * @return  string
+     */
+    public function title()
+    {
+        return $this->get(__FUNCTION__);
+    }
+
+    /**
+     * Get the module's description
+     *
+     * @return  string
+     */
+    public function description()
+    {
+        return $this->get(__FUNCTION__);
+    }
+
+    /**
+     * Get the module's collector instance
+     *
+     * @return  string
+     */
+    public function collector()
+    {
+        return $this->get(__FUNCTION__);
+    }
+
+    /**
+     * Get the module's collector class
+     *
+     * @return  string
+     */
+    public function installer()
+    {
+        return $this->get(__FUNCTION__);
+    }
+
+    /**
+     * Get the module's assets folder
+     *
+     * @return  string
+     */
+    public function assets()
+    {
+        return $this->get(__FUNCTION__);
+    }
+
+    /**
+     * Checks if the module is hidden
+     *
+     * @return  boolean
+     */
+    public function isHidden()
+    {
+        return $this->get('hidden');
+    }
+
+    /**
+     * Checks if the module can be enabled
+     *
+     * @return  boolean
+     */
+    public function canBeEnabled()
+    {
+        if ($this->isEnabled() || !$this->isInstalled()) {
+            return false;
+        }
+
+        foreach ($this->dependencies() as $module) {
+            if (!$module->isEnabled()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if the module is enabled
+     *
+     * @return  boolean
+     */
+    public function isEnabled()
+    {
+        if (!$this->exists()) {
+            return false;
+        }
+
+        $list = $this->app->config()->read('app.modules.enabled', array());
+        return in_array($this->name, $list);
+    }
+
+    /**
+     * Check if the module exists
+     *
+     * @return  boolean
+     */
+    public function exists()
+    {
+        if ($this->exists === null) {
+            $packages = $this->app->getPackages();
+            $this->exists = isset($packages[$this->name]);
+        }
+
+        return $this->exists;
+    }
+
+    /**
+     * Checks if the module is installed
+     *
+     * @return  boolean
+     */
+    public function isInstalled()
+    {
+        if (!$this->exists()) {
+            return false;
+        }
+
+        $list = $this->app->config()->read('app.modules.installed', array());
+        return in_array($this->name, $list);
+    }
+
+    /**
+     * Get the module's dependencies
+     *
+     * @return  Module[]
+     */
+    public function dependencies()
+    {
+        return $this->get(__FUNCTION__);
+    }
+
+    /**
+     * Checks if the module can be disabled
+     *
+     * @return  boolean
+     */
+    public function canBeDisabled()
+    {
+        if (!$this->isEnabled()) {
+            return false;
+        }
+
+        foreach ($this->dependents() as $module) {
+            if ($module->isInstalled()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Get the module's dependents
+     *
+     * @return  Module[]
+     */
+    public function dependents()
+    {
+        return $this->get(__FUNCTION__);
+    }
+
+    /**
+     * Checks if the module can be installed
+     *
+     * @return  boolean
+     */
+    public function canBeInstalled()
+    {
+        if ($this->isInstalled()) {
+            return false;
+        }
+
+        foreach ($this->dependencies() as $module) {
+            if (!$module->isEnabled()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if the module can be uninstalled
+     *
+     * @return  boolean
+     */
+    public function canBeUninstalled()
+    {
+        if (!$this->isInstalled()) {
+            return false;
+        }
+
+        foreach ($this->dependents() as $module) {
+            if ($module->isInstalled()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Enable the module
+     *
+     * @return  boolean
+     */
+    public function enable()
+    {
+        return $this->app->enable($this);
+    }
+
+    /**
+     * Disable the module
+     *
+     * @return  boolean
+     */
+    public function disable()
+    {
+        return $this->app->disable($this);
+    }
+
+    /**
+     * Install the module
+     *
+     * @return  boolean
+     */
+    public function install()
+    {
+        return $this->app->install($this);
+    }
+
+    /**
+     * Uninstall the module
+     *
+     * @return  boolean
+     */
+    public function uninstall()
+    {
+        return $this->app->uninstall($this);
+    }
+
+    /**
      * Resolve assets
      *
      * @param   CompletePackage $package
@@ -536,5 +525,15 @@ class Module
 
         $directory = $this->directory() . '/' . trim($extra['assets'], '/');
         return is_dir($directory) ? $directory : null;
+    }
+
+    /**
+     * Get the module's location
+     *
+     * @return  string
+     */
+    public function directory()
+    {
+        return $this->get(__FUNCTION__);
     }
 }

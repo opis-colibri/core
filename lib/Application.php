@@ -21,34 +21,34 @@
 namespace Opis\Colibri;
 
 use Closure;
-use ReflectionClass;
-use ReflectionMethod;
-use Opis\Cache\Cache;
-use Composer\Factory;
-use Composer\Composer;
-use Composer\IO\NullIO;
-use Opis\Config\Config;
-use Opis\Session\Session;
-use Opis\HttpRouting\Path;
-use Opis\Utils\Placeholder;
-use Opis\Database\Database;
-use SessionHandlerInterface;
-use Opis\Events\EventTarget;
-use Psr\Log\LoggerInterface;
-use Opis\Database\Connection;
-use Opis\Colibri\Composer\CLI;
-use Opis\HttpRouting\HttpError;
-use Opis\View\ViewableInterface;
 use Composer\Autoload\ClassLoader;
+use Composer\Composer;
+use Composer\Factory;
+use Composer\IO\NullIO;
 use Composer\Package\CompletePackage;
-use Opis\Http\Request as HttpRequest;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Opis\Cache\Cache;
 use Opis\Cache\Storage\Memory as DefaultCacheStorage;
-use Opis\Config\Storage\Memory as DefaultConfigStorage;
 use Opis\Cache\StorageInterface as CacheStorageInterface;
+use Opis\Colibri\Annotations\Collector as CollectorAnnotation;
+use Opis\Colibri\Composer\CLI;
+use Opis\Config\Config;
+use Opis\Config\Storage\Memory as DefaultConfigStorage;
 use Opis\Config\Storage\Memory as DefaultTranslateStorage;
 use Opis\Config\StorageInterface as ConfigStorageInterface;
-use Opis\Colibri\Annotations\Collector as CollectorAnnotation;
+use Opis\Database\Connection;
+use Opis\Database\Database;
+use Opis\Events\EventTarget;
+use Opis\Http\Request as HttpRequest;
+use Opis\HttpRouting\HttpError;
+use Opis\HttpRouting\Path;
+use Opis\Session\Session;
+use Opis\Utils\Placeholder;
+use Opis\View\ViewableInterface;
+use Psr\Log\LoggerInterface;
+use ReflectionClass;
+use ReflectionMethod;
+use SessionHandlerInterface;
 
 class Application
 {

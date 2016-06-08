@@ -21,10 +21,10 @@
 namespace Opis\Colibri\Collectors\Implementation;
 
 use Closure;
-use Opis\Colibri\Container;
 use Opis\Colibri\Application;
 use Opis\Colibri\Collectors\AbstractCollector;
 use Opis\Colibri\Collectors\ContractCollectorInterface;
+use Opis\Colibri\Container;
 
 class ContractCollector extends AbstractCollector implements ContractCollectorInterface
 {

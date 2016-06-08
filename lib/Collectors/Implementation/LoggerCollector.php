@@ -23,8 +23,8 @@ namespace Opis\Colibri\Collectors\Implementation;
 use Closure;
 use Opis\Colibri\Application;
 use Opis\Colibri\Collectors\AbstractCollector;
-use Opis\Colibri\Serializable\StorageCollection;
 use Opis\Colibri\Collectors\LoggerCollectorInterface;
+use Opis\Colibri\Serializable\StorageCollection;
 
 class LoggerCollector extends AbstractCollector implements LoggerCollectorInterface
 {

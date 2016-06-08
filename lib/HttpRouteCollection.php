@@ -28,6 +28,16 @@ class HttpRouteCollection extends RouteCollection
     protected $router;
 
     /**
+     * Get the router
+     *
+     * @return  \Opis\Colibri\HttpRouter
+     */
+    public function getRouter()
+    {
+        return $this->router;
+    }
+
+    /**
      * Set the router
      *
      * @param   \Opis\Colibri\HttpRouter $router
@@ -38,15 +48,5 @@ class HttpRouteCollection extends RouteCollection
     {
         $this->router = $router;
         return $this;
-    }
-
-    /**
-     * Get the router
-     *
-     * @return  \Opis\Colibri\HttpRouter
-     */
-    public function getRouter()
-    {
-        return $this->router;
     }
 }

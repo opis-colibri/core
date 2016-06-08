@@ -40,30 +40,6 @@ class ViewRouter extends BaseRouter
     }
 
     /**
-     * Get router (override)
-     *
-     * @return  \Opis\Routing\Router
-     */
-    protected function getRouter()
-    {
-        if ($this->router === null) {
-
-            $specials = array(
-                'app' => $this->app,
-                'request' => $this->app->request(),
-                'response' => $this->app->response(),
-                't' => $this->app->getTranslator(),
-                'lang' => $this->app->getTranslator()->getLanguage(),
-                'view' => $this,
-            );
-
-            $this->router = new Router($this->collection, null, $this->getFilters(), $specials);
-        }
-
-        return $this->router;
-    }
-
-    /**
      * Returns an instance of the specified contract or class
      *
      * @param   string $name Contract name or class name
@@ -174,5 +150,29 @@ class ViewRouter extends BaseRouter
     public function csrfToken()
     {
         return $this->app->csrfToken();
+    }
+
+    /**
+     * Get router (override)
+     *
+     * @return  \Opis\Routing\Router
+     */
+    protected function getRouter()
+    {
+        if ($this->router === null) {
+
+            $specials = array(
+                'app' => $this->app,
+                'request' => $this->app->request(),
+                'response' => $this->app->response(),
+                't' => $this->app->getTranslator(),
+                'lang' => $this->app->getTranslator()->getLanguage(),
+                'view' => $this,
+            );
+
+            $this->router = new Router($this->collection, null, $this->getFilters(), $specials);
+        }
+
+        return $this->router;
     }
 }

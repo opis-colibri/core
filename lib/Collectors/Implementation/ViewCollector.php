@@ -20,11 +20,11 @@
 
 namespace Opis\Colibri\Collectors\Implementation;
 
-use Opis\View\Route;
 use Opis\Colibri\Application;
-use Opis\View\RouteCollection;
 use Opis\Colibri\Collectors\AbstractCollector;
 use Opis\Colibri\Collectors\ViewCollectorInterface;
+use Opis\View\Route;
+use Opis\View\RouteCollection;
 
 class ViewCollector extends AbstractCollector implements ViewCollectorInterface
 {

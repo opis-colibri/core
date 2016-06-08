@@ -21,9 +21,9 @@
 namespace Opis\Colibri\Collectors\Implementation;
 
 use Opis\Colibri\Application;
-use Opis\Colibri\Serializable\VariablesList;
 use Opis\Colibri\Collectors\AbstractCollector;
 use Opis\Colibri\Collectors\VariableCollectorInterface;
+use Opis\Colibri\Serializable\VariablesList;
 
 class VariableCollector extends AbstractCollector implements VariableCollectorInterface
 {

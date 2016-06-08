@@ -20,8 +20,8 @@
 
 namespace Opis\Colibri;
 
-use Exception;
 use Composer\Composer;
+use Exception;
 
 class AppInfo
 {
@@ -64,16 +64,17 @@ class AppInfo
     }
 
     /**
-     * Get root path
-     * @return string
-     * @throws Exception
+     * Get assets path
+     *
+     * @return  string
      */
-    public function rootDir()
+    public function assetsDir()
     {
-        if (!isset($this->info[static::ROOT_DIR])) {
-            throw new Exception('Root directory must be set');
+        if (!isset($this->info[static::ASSETS_DIR])) {
+            $this->info[static::ASSETS_DIR] = $this->publicDir() . '/assets';
         }
-        return $this->info[static::ROOT_DIR];
+
+        return $this->info[static::ASSETS_DIR];
     }
 
     /**
@@ -91,17 +92,16 @@ class AppInfo
     }
 
     /**
-     * Get assets path
-     *
-     * @return  string
+     * Get root path
+     * @return string
+     * @throws Exception
      */
-    public function assetsDir()
+    public function rootDir()
     {
-        if (!isset($this->info[static::ASSETS_DIR])) {
-            $this->info[static::ASSETS_DIR] = $this->publicDir() . '/assets';
+        if (!isset($this->info[static::ROOT_DIR])) {
+            throw new Exception('Root directory must be set');
         }
-
-        return $this->info[static::ASSETS_DIR];
+        return $this->info[static::ROOT_DIR];
     }
 
     /**

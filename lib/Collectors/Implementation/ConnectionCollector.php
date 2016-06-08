@@ -22,9 +22,9 @@ namespace Opis\Colibri\Collectors\Implementation;
 
 use Closure;
 use Opis\Colibri\Application;
-use Opis\Colibri\Serializable\ConnectionList;
 use Opis\Colibri\Collectors\AbstractCollector;
 use Opis\Colibri\Collectors\ConnectionCollectorInterface;
+use Opis\Colibri\Serializable\ConnectionList;
 
 class ConnectionCollector extends AbstractCollector implements ConnectionCollectorInterface
 {

@@ -20,10 +20,10 @@
 
 namespace Opis\Colibri\Serializable;
 
-use Serializable;
-use Opis\Database\Schema;
-use Opis\Database\Database;
 use Opis\Database\Connection;
+use Opis\Database\Database;
+use Opis\Database\Schema;
+use Serializable;
 
 class ConnectionList implements Serializable
 {

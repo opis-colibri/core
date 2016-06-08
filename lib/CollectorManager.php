@@ -51,45 +51,6 @@ class CollectorManager
     }
 
     /**
-     * Register a new collector
-     *
-     * @param   string $name
-     * @param   string $interface
-     * @param   string $class
-     */
-    public function registerCollector($name, $interface, $class)
-    {
-        $name = strtolower($name);
-        $collectors = $this->app->config()->read('collectors');
-        $collectors += $this->getCollectors();
-
-        $collectors[$name] = array(
-            'interface' => $interface,
-            'class' => $class,
-        );
-
-        $this->app->config()->write('collectors', $collectors);
-
-        $container = $this->app->getCollector()->container();
-        $container->alias($interface, $name);
-        $container->singleton($interface, $class);
-    }
-
-    /**
-     * Unregister a collector
-     *
-     * @param   string $name
-     */
-    public function unregisterCollector($name)
-    {
-        $name = strtolower($name);
-        $collectors = $this->app->config()->read('collectors');
-        $collectors += $this->getCollectors();
-        unset($collectors[$name]);
-        $this->app->config()->write('collectors', $collectors);
-    }
-
-    /**
      * Get a list of default collectors
      *
      * @return  array
@@ -166,5 +127,44 @@ class CollectorManager
                 'class' => 'Opis\\Colibri\\Collectors\\Implementation\\LoggerCollector',
             ),
         );
+    }
+
+    /**
+     * Register a new collector
+     *
+     * @param   string $name
+     * @param   string $interface
+     * @param   string $class
+     */
+    public function registerCollector($name, $interface, $class)
+    {
+        $name = strtolower($name);
+        $collectors = $this->app->config()->read('collectors');
+        $collectors += $this->getCollectors();
+
+        $collectors[$name] = array(
+            'interface' => $interface,
+            'class' => $class,
+        );
+
+        $this->app->config()->write('collectors', $collectors);
+
+        $container = $this->app->getCollector()->container();
+        $container->alias($interface, $name);
+        $container->singleton($interface, $class);
+    }
+
+    /**
+     * Unregister a collector
+     *
+     * @param   string $name
+     */
+    public function unregisterCollector($name)
+    {
+        $name = strtolower($name);
+        $collectors = $this->app->config()->read('collectors');
+        $collectors += $this->getCollectors();
+        unset($collectors[$name]);
+        $this->app->config()->write('collectors', $collectors);
     }
 }

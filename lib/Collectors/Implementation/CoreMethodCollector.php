@@ -22,9 +22,9 @@ namespace Opis\Colibri\Collectors\Implementation;
 
 use InvalidArgumentException;
 use Opis\Colibri\Application;
-use Opis\Colibri\Serializable\CallbackList;
 use Opis\Colibri\Collectors\AbstractCollector;
 use Opis\Colibri\Collectors\CoreMethodCollectorInterface;
+use Opis\Colibri\Serializable\CallbackList;
 
 class CoreMethodCollector extends AbstractCollector implements CoreMethodCollectorInterface
 {

@@ -21,10 +21,10 @@
 namespace Opis\Colibri\Serializable;
 
 use Closure;
-use Serializable;
-use RuntimeException;
-use Opis\Colibri\Application;
 use Opis\Closure\SerializableClosure;
+use Opis\Colibri\Application;
+use RuntimeException;
+use Serializable;
 
 class StorageCollection implements Serializable
 {

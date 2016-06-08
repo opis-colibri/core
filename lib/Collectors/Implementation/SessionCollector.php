@@ -23,8 +23,8 @@ namespace Opis\Colibri\Collectors\Implementation;
 use Closure;
 use Opis\Colibri\Application;
 use Opis\Colibri\Collectors\AbstractCollector;
-use Opis\Colibri\Serializable\StorageCollection;
 use Opis\Colibri\Collectors\SessionCollectorInterface;
+use Opis\Colibri\Serializable\StorageCollection;
 
 class SessionCollector extends AbstractCollector implements SessionCollectorInterface
 {

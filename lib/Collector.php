@@ -20,10 +20,10 @@
 
 namespace Opis\Colibri;
 
-use Opis\Events\EventTarget;
 use InvalidArgumentException;
-use Opis\Events\RouteCollection;
 use Opis\Events\Event as BaseEvent;
+use Opis\Events\EventTarget;
+use Opis\Events\RouteCollection;
 
 class Collector extends EventTarget
 {

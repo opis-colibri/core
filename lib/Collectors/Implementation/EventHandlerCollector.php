@@ -20,12 +20,12 @@
 
 namespace Opis\Colibri\Collectors\Implementation;
 
-use Opis\Routing\Pattern;
 use Opis\Colibri\Application;
-use Opis\Events\EventHandler;
-use Opis\Events\RouteCollection;
 use Opis\Colibri\Collectors\AbstractCollector;
 use Opis\Colibri\Collectors\EventHandlerCollectorInterface;
+use Opis\Events\EventHandler;
+use Opis\Events\RouteCollection;
+use Opis\Routing\Pattern;
 
 class EventHandlerCollector extends AbstractCollector implements EventHandlerCollectorInterface
 {

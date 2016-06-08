@@ -34,6 +34,20 @@ class Console
     }
 
     /**
+     * Run a command
+     */
+    public function run()
+    {
+        $application = new ConsoleApplication();
+
+        foreach ($this->commands() as $command) {
+            $application->add($command);
+        }
+
+        $application->run();
+    }
+
+    /**
      *  Get a list of commands
      *
      * @return  array
@@ -57,19 +71,5 @@ class Console
         }
 
         return $commands;
-    }
-
-    /**
-     * Run a command
-     */
-    public function run()
-    {
-        $application = new ConsoleApplication();
-
-        foreach ($this->commands() as $command) {
-            $application->add($command);
-        }
-
-        $application->run();
     }
 }

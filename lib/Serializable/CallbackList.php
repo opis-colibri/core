@@ -21,8 +21,8 @@
 namespace Opis\Colibri\Serializable;
 
 use Closure;
-use Serializable;
 use Opis\Closure\SerializableClosure;
+use Serializable;
 
 class CallbackList implements Serializable
 {

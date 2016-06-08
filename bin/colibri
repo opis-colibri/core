@@ -21,8 +21,7 @@
 
 $app = require_once 'bootstrap.php';
 
-if(!$app->info()->cliMode())
-{
+if (!$app->info()->cliMode()) {
     die('CLI Mode only' . PHP_EOL);
 }
 

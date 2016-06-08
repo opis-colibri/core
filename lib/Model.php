@@ -51,16 +51,6 @@ class Model extends BaseModel
     }
 
     /**
-     * Get application instance
-     *
-     * @return  \Opis\Colibri\Application
-     */
-    public function app()
-    {
-        return static::$app;
-    }
-
-    /**
      * Returns the active database connection
      *
      * @return  \Opis\Database\Connection
@@ -72,5 +62,15 @@ class Model extends BaseModel
         }
 
         return static::$app->collect('Connections')->get(static::$connection);
+    }
+
+    /**
+     * Get application instance
+     *
+     * @return  \Opis\Colibri\Application
+     */
+    public function app()
+    {
+        return static::$app;
     }
 }

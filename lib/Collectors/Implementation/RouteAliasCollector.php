@@ -20,12 +20,12 @@
 
 namespace Opis\Colibri\Collectors\Implementation;
 
-use Opis\Routing\Route;
-use Opis\Routing\Pattern;
 use Opis\Colibri\Application;
-use Opis\Routing\Collections\RouteCollection;
 use Opis\Colibri\Collectors\AbstractCollector;
 use Opis\Colibri\Collectors\RouteAliasCollectorInterface;
+use Opis\Routing\Collections\RouteCollection;
+use Opis\Routing\Pattern;
+use Opis\Routing\Route;
 
 class RouteAliasCollector extends AbstractCollector implements RouteAliasCollectorInterface
 {

@@ -23,8 +23,8 @@ namespace Opis\Colibri\Composer;
 use Composer\Factory;
 use Composer\Installer;
 use Composer\Json\JsonFile;
-use Composer\Repository\PlatformRepository;
 use Composer\Repository\CompositeRepository;
+use Composer\Repository\PlatformRepository;
 
 class InstallModule extends AbstractScript
 {

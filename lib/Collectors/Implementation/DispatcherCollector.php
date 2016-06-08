@@ -21,9 +21,9 @@
 namespace Opis\Colibri\Collectors\Implementation;
 
 use Opis\Colibri\Application;
-use Opis\HttpRouting\DispatcherResolver;
 use Opis\Colibri\Collectors\AbstractCollector;
 use Opis\Colibri\Collectors\DispatcherCollectorInterface;
+use Opis\HttpRouting\DispatcherResolver;
 
 class DispatcherCollector extends AbstractCollector implements DispatcherCollectorInterface
 {

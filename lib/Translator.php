@@ -85,6 +85,20 @@ class Translator
      *
      * @return  string
      */
+    public function __invoke($sentence, $placeholders = array(), $lang = null)
+    {
+        return $this->translate($sentence, $placeholders, $lang);
+    }
+
+    /**
+     * Translate a sentence
+     *
+     * @param   string $sentence
+     * @param   array $placeholders (optional)
+     * @param   string|null $lang (optional)
+     *
+     * @return  string
+     */
     public function translate($sentence, $placeholders = array(), $lang = null)
     {
         if ($lang === null) {
@@ -102,19 +116,5 @@ class Translator
         }
 
         return $this->placeholder->replace($sentence, $placeholders);
-    }
-
-    /**
-     * Translate a sentence
-     *
-     * @param   string $sentence
-     * @param   array $placeholders (optional)
-     * @param   string|null $lang (optional)
-     *
-     * @return  string
-     */
-    public function __invoke($sentence, $placeholders = array(), $lang = null)
-    {
-        return $this->translate($sentence, $placeholders, $lang);
     }
 }

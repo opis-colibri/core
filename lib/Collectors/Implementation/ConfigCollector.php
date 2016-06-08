@@ -22,8 +22,8 @@ namespace Opis\Colibri\Collectors\Implementation;
 
 use Closure;
 use Opis\Colibri\Application;
-use Opis\Colibri\Collectors\ConfigCollectorInterface;
 use Opis\Colibri\Collectors\AbstractCollector;
+use Opis\Colibri\Collectors\ConfigCollectorInterface;
 use Opis\Colibri\Serializable\StorageCollection;
 
 class ConfigCollector extends AbstractCollector implements ConfigCollectorInterface

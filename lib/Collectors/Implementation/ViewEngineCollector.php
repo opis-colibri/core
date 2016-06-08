@@ -22,9 +22,9 @@ namespace Opis\Colibri\Collectors\Implementation;
 
 use Closure;
 use Opis\Colibri\Application;
-use Opis\View\EngineResolver;
 use Opis\Colibri\Collectors\AbstractCollector;
 use Opis\Colibri\Collectors\ViewEngineCollectorInterface;
+use Opis\View\EngineResolver;
 
 class ViewEngineCollector extends AbstractCollector implements ViewEngineCollectorInterface
 {

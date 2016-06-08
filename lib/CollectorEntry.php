@@ -20,8 +20,8 @@
 
 namespace Opis\Colibri;
 
-use Opis\Events\Event as BaseEvent;
 use Opis\Colibri\Collectors\AbstractCollector;
+use Opis\Events\Event as BaseEvent;
 
 class CollectorEntry extends BaseEvent
 {

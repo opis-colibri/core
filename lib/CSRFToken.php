@@ -71,6 +71,25 @@ class CSRFToken
     }
 
     /**
+     * Generate random token
+     *
+     * @param   int $length (optional) Token's lenght
+     *
+     * @return  string
+     */
+    protected function getRandomToken($length = 32)
+    {
+        $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $token = '';
+
+        for ($i = 0, $l = strlen($chars); $i < $length; $i++) {
+            $token .= $chars[rand(0, $l - 1)];
+        }
+
+        return $token;
+    }
+
+    /**
      * Validate a CSRF token
      *
      * @param   string $value Token
@@ -90,24 +109,5 @@ class CSRFToken
         }
 
         return false;
-    }
-
-    /**
-     * Generate random token
-     *
-     * @param   int $length (optional) Token's lenght
-     *
-     * @return  string
-     */
-    protected function getRandomToken($length = 32)
-    {
-        $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $token = '';
-
-        for ($i = 0, $l = strlen($chars); $i < $length; $i++) {
-            $token .= $chars[rand(0, $l - 1)];
-        }
-
-        return $token;
     }
 }

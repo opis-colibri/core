@@ -39,19 +39,6 @@ class Validator extends BaseValidator
     }
 
     /**
-     * Push a validator
-     *
-     * @param   array $item
-     *
-     * @return  $this
-     */
-    protected function push(array $item)
-    {
-        $item['error']['text'] = $this->app->t($item['error']['text']);
-        return parent::push($item);
-    }
-
-    /**
      * Validate CSRF values
      *
      * @param   string $error (optional)
@@ -70,6 +57,19 @@ class Validator extends BaseValidator
                 'variables' => array(),
             ),
         ));
+    }
+
+    /**
+     * Push a validator
+     *
+     * @param   array $item
+     *
+     * @return  $this
+     */
+    protected function push(array $item)
+    {
+        $item['error']['text'] = $this->app->t($item['error']['text']);
+        return parent::push($item);
     }
 
     /**

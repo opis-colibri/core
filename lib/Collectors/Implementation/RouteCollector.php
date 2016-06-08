@@ -20,11 +20,11 @@
 
 namespace Opis\Colibri\Collectors\Implementation;
 
-use Opis\Colibri\HttpRoute;
 use Opis\Colibri\Application;
-use Opis\Colibri\HttpRouteCollection;
 use Opis\Colibri\Collectors\AbstractCollector;
 use Opis\Colibri\Collectors\RouteCollectorInterface;
+use Opis\Colibri\HttpRoute;
+use Opis\Colibri\HttpRouteCollection;
 
 class RouteCollector extends AbstractCollector implements RouteCollectorInterface
 {

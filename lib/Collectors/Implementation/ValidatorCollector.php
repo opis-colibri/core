@@ -22,9 +22,9 @@ namespace Opis\Colibri\Collectors\Implementation;
 
 use InvalidArgumentException;
 use Opis\Colibri\Application;
-use Opis\Colibri\Serializable\CallbackList;
 use Opis\Colibri\Collectors\AbstractCollector;
 use Opis\Colibri\Collectors\ValidatorCollectorInterface;
+use Opis\Colibri\Serializable\CallbackList;
 
 class ValidatorCollector extends AbstractCollector implements ValidatorCollectorInterface
 {

@@ -20,9 +20,9 @@
 
 namespace Opis\Colibri;
 
-use ReflectionObject;
-use ReflectionMethod;
 use Opis\Colibri\Collectors\AbstractCollector;
+use ReflectionMethod;
+use ReflectionObject;
 
 abstract class ItemCollector
 {

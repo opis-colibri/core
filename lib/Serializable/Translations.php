@@ -20,8 +20,8 @@
 
 namespace Opis\Colibri\Serializable;
 
-use Serializable;
 use Opis\Colibri\Application;
+use Serializable;
 
 class Translations implements Serializable
 {

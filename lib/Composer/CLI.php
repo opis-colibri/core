@@ -2,9 +2,9 @@
 
 namespace Opis\Colibri\Composer;
 
+use Composer\Console\Application as ComposerConsole;
 use Opis\Colibri\Application;
 use Symfony\Component\Console\Input\ArrayInput;
-use Composer\Console\Application as ComposerConsole;
 
 /**
  * Description of Composer
