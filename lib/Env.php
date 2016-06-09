@@ -13,6 +13,15 @@ class Env
 {
     protected $app;
 
+    const APP_INSTALLED = 'APP_INSTALLED';
+    const APP_DEBUG = 'APP_DEBUG';
+    const APP_ENV = 'APP_ENV';
+    const DB_CONNECTION = 'DB_CONNECTION';
+    const CACHE_STORAGE = 'CACHE_STORAGE';
+    const CONFIG_STORAGE = 'CONFIG_STORAGE';
+    const SESSION_STORAGE = 'SESSION_STORAGE';
+    const TRANSLATIONS_STORAGE = 'TRANSLATIONS_STORAGE';
+
     public function __construct(Application $app)
     {
         $this->app = $app;

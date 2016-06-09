@@ -27,13 +27,11 @@ use Composer\Factory;
 use Composer\IO\NullIO;
 use Composer\Package\CompletePackage;
 use Opis\Cache\Cache;
-use Opis\Cache\Storage\Memory as DefaultCacheStorage;
+use Opis\Cache\Storage\Memory as EphemeralCacheStorage;
 use Opis\Colibri\Composer\CLI;
 use Opis\Config\Config;
-use Opis\Config\Storage\Memory as DefaultConfigStorage;
-use Opis\Config\Storage\Memory as DefaultTranslateStorage;
+use Opis\Config\Storage\Memory as EphemeralConfigStorage;
 use Opis\Container\Container;
-use Opis\Database\Database;
 use Opis\Events\EventTarget;
 use Opis\Http\Request as HttpRequest;
 use Opis\HttpRouting\HttpError;
@@ -95,6 +93,24 @@ class Application
 
     /** @var  \Opis\Http\Response */
     protected $httpResponseInstance;
+
+    /** @var  \Opis\Cache\Cache[] */
+    protected $cache = array();
+
+    /** @var  Config */
+    protected $config = array();
+
+    /** @var  \Opis\Database\Connection[] */
+    protected $connection = array();
+
+    /** @var  \Opis\Database\Database[] */
+    protected $database = array();
+
+    /** @var  Session */
+    protected $session = array();
+
+    /** @var  Config */
+    protected $translations;
 
     /**
      * Constructor
@@ -166,7 +182,7 @@ class Application
         $composer = $this->getComposer();
         $repository = $composer->getRepositoryManager()->getLocalRepository();
 
-        foreach ($repository->getPackages() as $package) {
+        foreach ($repository->getCanonicalPackages() as $package) {
             if (!$package instanceof CompletePackage || $package->getType() !== 'opis-colibri-module') {
                 continue;
             }
@@ -212,7 +228,7 @@ class Application
             return false;
         }
 
-        $config = $this->config('app');
+        $config = $this->config();
         $modules = $config->read('modules.installed', array());
         $modules[] = $module->name();
         $config->write('modules.installed', $modules);
@@ -242,7 +258,7 @@ class Application
             return false;
         }
 
-        $config = $this->config('app');
+        $config = $this->config();
         $modules = $config->read('modules.installed', array());
         $config->write('modules.installed', array_diff($modules, array($module->name())));
 
@@ -271,7 +287,7 @@ class Application
             return false;
         }
 
-        $config = $this->config('app');
+        $config = $this->config();
         $modules = $config->read('app.modules.enabled', array());
         $modules[] = $module->name();
         $config->write('modules.enabled', $modules);
@@ -301,7 +317,7 @@ class Application
             return false;
         }
 
-        $config = $this->config('app');
+        $config = $this->config();
         $modules = $config->read('modules.enabled', array());
         $config->write('modules.enabled', array_diff($modules, array($module->name())));
 
@@ -421,9 +437,46 @@ class Application
     {
         if ($callback !== null) {
             $callback($this);
+            $this->emit('system.init');
             return $this;
         }
 
+        if($this->info->installMode()) {
+            $composer = $this->getComposer();
+            $generator = $composer->getAutoloadGenerator();
+            $extra = $composer->getPackage()->getExtra();
+            $enabled = array();
+            $canonicalPacks = array();
+
+            if(!isset($extra['installer-modules']) || !is_array($extra['installer-modules'])) {
+                $extra['installer-modules'] = array();
+            }
+
+
+            foreach ($composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages() as $package){
+                if($package->getType() !== 'opis-colibri-module'){
+                    $canonicalPacks[] = $package;
+                    continue;
+                }
+                if (in_array($package->getName(), $extra['installer-modules'])){
+                    $canonicalPacks[] = $package;
+                    $enabled[] = $package->getName();
+                }
+            }
+
+            $packMap = $generator->buildPackageMap($composer->getInstallationManager(), $composer->getPackage(), $canonicalPacks);
+            $autoload = $generator->parseAutoloads($packMap, $composer->getPackage());
+            $loader = $generator->createLoader($autoload);
+
+            $this->classLoader->unregister();
+            $this->classLoader = $loader;
+            $this->classLoader->register();
+
+            $this->config()->write('modules.installed', $enabled);
+            $this->config()->write('modules.enabled', $enabled);
+
+        }
+        $this->emit('system.init');
         return $this;
     }
 
@@ -520,17 +573,15 @@ class Application
      */
     public function cache($storage = null)
     {
-        if ($storage === null) {
-            if (!isset($this->instances['cache'])) {
-                if (!isset($this->instances['cacheStorage'])) {
-                    $this->instances['cacheStorage'] = new DefaultCacheStorage();
-                }
-                $this->instances['cache'] = new Cache($this->instances['cacheStorage']);
-            }
-            return $this->instances['cache'];
+        if ($storage === null && false === $storage = getenv(Env::CACHE_STORAGE)) {
+            $this->cache[$storage = ''] = new Cache(new EphemeralCacheStorage());
         }
 
-        return $this->collect('CacheStorages')->get($this, $storage);
+        if(!isset($this->cache[$storage])) {
+            $this->cache[$storage] = new Cache($this->collector()->getCacheStorage($storage));
+        }
+
+        return $this->cache[$storage];
     }
 
     /**
@@ -542,17 +593,15 @@ class Application
      */
     public function session($storage = null)
     {
-        if ($storage === null) {
-            if (!isset($this->instances['session'])) {
-                if (!isset($this->instances['sessionStorage'])) {
-                    $this->instances['sessionStorage'] = null;
-                }
-                $this->instances['session'] = new Session($this->instances['sessionStorage']);
-            }
-            return $this->instances['session'];
+        if ($storage === null && false === $storage = getenv(Env::SESSION_STORAGE)) {
+            $this->session[$storage = ''] = new Session();
         }
 
-        return $this->collect('SessionStorages')->get($this, $storage);
+        if(!isset($this->config[$storage])) {
+            $this->session[$storage] = new Session($this->collector()->getSessionStorage($storage));
+        }
+
+        return $this->session[$storage];
     }
 
     /**
@@ -564,33 +613,32 @@ class Application
      */
     public function config($storage = null)
     {
-        if ($storage === null) {
-            if (!isset($this->instances['config'])) {
-                if (!isset($this->instances['configStorage'])) {
-                    $this->instances['configStorage'] = new DefaultConfigStorage();
-                }
-                $this->instances['config'] = new Config($this->instances['configStorage']);
-            }
-            return $this->instances['config'];
+        if ($storage === null && false === $storage = getenv(Env::CONFIG_STORAGE)) {
+            $this->config[$storage = ''] = new Config(new EphemeralConfigStorage());
         }
 
-        return $this->collect('ConfigStorages')->get($this, $storage);
+        if(!isset($this->config[$storage])) {
+            $this->config[$storage] = new Config($this->collector()->getConfigStorage($storage));
+        }
+
+        return $this->config[$storage];
     }
 
     /**
-     * Returns a translate storage
+     * Returns a translation storage
      *
      * @return  \Opis\Config\Config
      */
     public function translations()
     {
-        if (!isset($this->instances['translations'])) {
-            if (!isset($this->instances['translateStorage'])) {
-                $this->instances['translateStorage'] = new DefaultTranslateStorage();
+        if ($this->translations === null) {
+            if (false === $storage = getenv(Env::TRANSLATIONS_STORAGE)) {
+                $storage = null;
             }
-            $this->instances['translations'] = new Config($this->instances['translateStorage']);
+            $this->translations = $this->config($storage);
         }
-        return $this->instances['translations'];
+
+        return $this->translations;
     }
 
     /**
@@ -606,57 +654,48 @@ class Application
     }
 
     /**
+     * @param string|null $name
      * @throws  \RuntimeException
-     *
      * @return  \Opis\Database\Connection
      */
-    public function connection()
+    public function connection($name = null)
     {
-        if (!isset($this->instances['connection'])) {
-            $this->instances['connection'] = $this->collect('Connections')->get();
-            if (is_null($this->instances['connection'])) {
-                throw new \RuntimeException("No database connection was defined");
-            }
+        if ($name === null && false === $name = getenv(Env::DB_CONNECTION)) {
+            throw new \RuntimeException("No database connection defined");
         }
-        return $this->instances['connection'];
+
+        if (!isset($this->connection[$name])) {
+            $this->connection[$name] = $this->collector()->getConnection($name);
+        }
+
+        return $this->connection[$name];
     }
 
     /**
      * Returns a database abstraction layer
      *
-     * @param   string $connection (optional) Connection name
+     * @param   string|null $connection (optional) Connection name
      *
      * @return  \Opis\Database\Database
      */
     public function database($connection = null)
     {
-        if ($connection === null) {
-            if (!isset($this->instances['database'])) {
-                $connection = $this->connection();
-                $this->instances['database'] = new Database($connection);
-            }
-            return $this->instances['database'];
+        if(!isset($this->database[$connection])) {
+            $this->database[$connection] = $this->collector()->getDatabase($connection);
         }
 
-        return $this->collect('Connections')->database($connection);
+        return $this->database[$connection];
     }
 
     /**
      * Returns a database schema abstraction layer
      *
-     * @param   string $connection (optional) Connection name
+     * @param   string|null $connection (optional) Connection name
      *
      * @return  \Opis\Database\Schema
      */
     public function schema($connection = null)
     {
-        if ($connection === null) {
-            if (!isset($this->instances['schema'])) {
-                $this->instances['schema'] = $this->database()->schema();
-            }
-            return $this->instances['schema'];
-        }
-
         return $this->database($connection)->schema();
     }
 
@@ -977,9 +1016,11 @@ class Application
      */
     protected function executeInstallerAction(Module $module, $action)
     {
-        $this->getComposerCLI()->dumpAutoload();
-        $this->getClassLoader()->unregister();
-        $this->classLoader = require $this->info->vendorDir() . '/autoload.php';
+        if (!$this->info->installMode()) {
+            $this->getComposerCLI()->dumpAutoload();
+            $this->getClassLoader()->unregister();
+            $this->classLoader = require $this->info->vendorDir() . '/autoload.php';
+        }
 
         if (null !== $installer = $module->installer()) {
             $this->make($installer)->{$action}($this);

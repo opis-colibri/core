@@ -68,7 +68,7 @@ class CollectorManager
         $this->collectorTarget =new CollectorTarget($app);
 
         $default = require __DIR__ . '../bin/collectors.php';
-        $this->collectorList = $this->app->config('app')->read('collectors', array()) + $default;
+        $this->collectorList = $this->app->config()->read('collectors', array()) + $default;
 
         foreach ($this->collectorList as $name => $collector) {
             $container->singleton($collector['class']);
@@ -295,7 +295,7 @@ class CollectorManager
 
         $this->collectorsIncluded = false;
 
-        foreach (array_keys($this->app->config('app')->read('collectors')) as $entry) {
+        foreach (array_keys($this->app->config()->read('collectors')) as $entry) {
             $this->collect($entry, $fresh);
         }
 
@@ -313,7 +313,7 @@ class CollectorManager
      */
     public function register($name, $class, $description)
     {
-        $this->app->config('app')->write('collectors.' . $name, array(
+        $this->app->config()->write('collectors.' . $name, array(
             'class' => $class,
             'description' => $description,
         ));
@@ -329,7 +329,7 @@ class CollectorManager
      */
     public function unregister($name)
     {
-        $this->app->config('app')->delete('collectors.' . $name);
+        $this->app->config()->delete('collectors.' . $name);
     }
 
     /**
