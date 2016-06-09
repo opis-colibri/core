@@ -140,7 +140,7 @@ class AppInfo
     public function installMode()
     {
         if (!isset($this->info[static::INSTALL_MODE])) {
-            $this->info[static::INSTALL_MODE] = !$this->app->config('app')->read('info.installed', false);
+            $this->info[static::INSTALL_MODE] = !$this->app->getEnv()->appInstalled();
         }
 
         return $this->info[static::INSTALL_MODE];

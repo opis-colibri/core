@@ -17,13 +17,11 @@ class Env
     {
         $this->app = $app;
 
-        if (file_exists($app->info()->vendorDir() . '/.env')) {
-            $env = new Dotenv($app->info()->vendorDir());
-        } else {
-            $env = new Dotenv($app->info()->rootDir());
+        if (file_exists($app->info()->rootDir() . '/.env')) {
+            (new Dotenv($app->info()->rootDir()))->load();
+        } elseif(file_exists($app->info()->vendorDir() . '/.env')){
+            (new Dotenv($app->info()->vendorDir()))->load();
         }
-
-        $env->load();
     }
 
     /**
@@ -118,7 +116,7 @@ class Env
     public function databaseStorage()
     {
         if (false === $value = getenv('DB_STORAGE')) {
-            return 'ephemeral';
+            return false;
         }
 
         return $value;
