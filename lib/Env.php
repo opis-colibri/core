@@ -68,47 +68,6 @@ class Env
 
 
     /**
-     * DB_DSN
-     *
-     * @return mixed
-     */
-    public function databaseDSN()
-    {
-        if (false === $value = getenv('DB_DSN')) {
-            return false;
-        }
-
-        return $value;
-    }
-
-    /**
-     * DB_USER
-     * @return string
-     */
-    public function databaseUser()
-    {
-        if (false === $value = getenv('DB_USER')) {
-            return 'root';
-        }
-
-        return $value;
-    }
-
-    /**
-     * DB_PASS
-     * @return string
-     */
-    public function databasePass()
-    {
-        if (false === $value = getenv('DB_PASS')) {
-            return '';
-        }
-
-        return $value;
-    }
-
-
-    /**
      * DB_STORAGE
      *
      * @return string
@@ -122,19 +81,27 @@ class Env
         return $value;
     }
 
+    /**
+     * CACHE_STORAGE
+     * @return bool|string
+     */
     public function cacheStorage()
     {
         if (false === $value = getenv('CACHE_STORAGE')) {
-            return 'ephemeral';
+            return false;
         }
 
         return $value;
     }
 
+    /**
+     * CONFIG_STORAGE
+     * @return bool|string
+     */
     public function configStorage()
     {
         if (false === $value = getenv('CONFIG_STORAGE')) {
-            return 'ephemeral';
+            return false;
         }
 
         return $value;
