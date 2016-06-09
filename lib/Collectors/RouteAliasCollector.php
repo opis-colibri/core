@@ -18,16 +18,20 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors\Implementation;
+namespace Opis\Colibri\Collectors;
 
 use Opis\Colibri\Application;
-use Opis\Colibri\Collectors\AbstractCollector;
-use Opis\Colibri\Collectors\RouteAliasCollectorInterface;
+use Opis\Colibri\Collector;
 use Opis\Routing\Collections\RouteCollection;
 use Opis\Routing\Pattern;
 use Opis\Routing\Route;
 
-class RouteAliasCollector extends AbstractCollector implements RouteAliasCollectorInterface
+/**
+ * Class RouteAliasCollector
+ * @package Opis\Colibri\Collectors
+ * @method RouteCollection data()
+ */
+class RouteAliasCollector extends Collector
 {
     protected $compiler;
 

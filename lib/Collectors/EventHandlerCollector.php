@@ -18,16 +18,21 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors\Implementation;
+namespace Opis\Colibri\Collectors;
 
 use Opis\Colibri\Application;
-use Opis\Colibri\Collectors\AbstractCollector;
-use Opis\Colibri\Collectors\TranslationCollectorInterface;
-use Opis\Colibri\Serializable\Translations;
+use Opis\Colibri\Collector;
+use Opis\Events\EventHandler;
+use Opis\Events\RouteCollection;
+use Opis\Routing\Pattern;
 
-class TranslationCollector extends AbstractCollector implements TranslationCollectorInterface
+/**
+ * Class EventHandlerCollector
+ * @package Opis\Colibri\Collectors
+ * @method RouteCollection data()
+ */
+class EventHandlerCollector extends Collector
 {
-    protected $language;
 
     /**
      * Constructor
@@ -36,21 +41,23 @@ class TranslationCollector extends AbstractCollector implements TranslationColle
      */
     public function __construct(Application $app)
     {
-        parent::__construct($app, new Translations($app));
+        parent::__construct($app, new RouteCollection());
     }
 
     /**
-     * Add the sentences that will be translated from english to current used language
+     * Register a new event handler
      *
-     * @param   string $language Language
-     * @param   array $sentences Trnslated sentences
+     * @param   string $event Event name
+     * @param   callable $callback A callback that will be executed
+     * @param   int $priority Event handler's priority
+     *
+     * @return  \Opis\Events\EventHandler
      */
-    public function translate($language, array $sentences)
+    public function handle($event, callable $callback, $priority = 0)
     {
-        if (empty($sentences)) {
-            return;
-        }
-
-        $this->dataObject->translate($language, $sentences);
+        $handler = new EventHandler(new Pattern($event), $callback);
+        $this->dataObject[] = $handler;
+        $this->dataObject->sort();
+        return $handler->set('priority', $priority);
     }
 }

@@ -20,7 +20,6 @@
 
 namespace Opis\Colibri;
 
-use Opis\Colibri\Collectors\AbstractCollector;
 use ReflectionMethod;
 use ReflectionObject;
 
@@ -48,11 +47,11 @@ abstract class ItemCollector
     /**
      * Collect items
      *
-     * @param   \Opis\Colibri\Collectors\AbstractCollector $collector
-     * @param   \Opis\Colibri\Application $app
+     * @param   Collector $collector
+     * @param   Application $app
      * @param   mixed|null $extra (optional)
      */
-    public function collect(AbstractCollector $collector, Application $app, $extra = null)
+    public function collect(Collector $collector, Application $app, $extra = null)
     {
         $reflection = new ReflectionObject($this);
         foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {

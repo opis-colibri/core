@@ -32,8 +32,6 @@ use ReflectionMethod;
  *
  * @author mari
  *
- * @method  CollectorEntry  getRoutes($fresh = false)
- * @method  \Opis\Colibri\Container getContracts($fresh = false)
  */
 class CollectorManager
 {
@@ -76,37 +74,95 @@ class CollectorManager
             $container->singleton($collector['class']);
             $container->alias($collector['class'], $name);
         }
-
     }
 
     /**
-     * Get collector
-     *
-     * @param $name
-     * @param $arguments
-     * @throws RuntimeException
-     * @return Collectors\AbstractCollector
-     */
-    public function __call($name, $arguments)
-    {
-        $entry = strtolower(substr($name, 3));
-
-        if (!isset($this->collectorList[$entry])) {
-            throw new RuntimeException("Invalid method `$name`");
-        }
-
-        $fresh = isset($arguments[0]) ? (bool) $arguments[0] : false;
-
-        return $this->collect($entry, $fresh);
-    }
-
-    /**
-     * @param $entry
+     * @param string $name
      * @param bool $fresh
-     * @return Collectors\AbstractCollector
+     * @return \Opis\Cache\StorageInterface
      */
-    public function collect($entry, $fresh = false)
+    public function getCacheStorage($name, $fresh = false)
     {
+        return $this->collect('CacheStorages', $fresh)->get($this->app, $name);
+    }
+
+    /**
+     * @param bool $fresh
+     * @return Container
+     */
+    public function getContracts($fresh = false)
+    {
+        return $this->collect('Contracts', $fresh);
+    }
+
+
+    /**
+     * @param bool $fresh
+     * @return Command[]
+     */
+    public function getCommands($fresh = false)
+    {
+        return $this->collect('Commands', $fresh);
+    }
+
+    /**
+     * @param string $name
+     * @param bool $fresh
+     * @return \Opis\Config\StorageInterface
+     */
+    public function getConfigStorage($name, $fresh = false)
+    {
+        return $this->collect('ConfigStorages', $fresh)->get($this->app, $name);
+    }
+
+    /**
+     * @param string $name
+     * @param bool $fresh
+     * @return \Opis\Database\Connection
+     */
+    public function getConnection($name, $fresh = false)
+    {
+        return $this->collect('Connections', $fresh)->get($name);
+    }
+
+    /**
+     * @param string $name
+     * @param bool $fresh
+     * @return \Opis\Database\Database
+     */
+    public function getDatabase($name, $fresh = false)
+    {
+        return $this->collect('Connections', $fresh)->database($name);
+    }
+
+
+    /**
+     * @param bool $fresh
+     * @return callable[]
+     */
+    public function getCoreMethods($fresh = false)
+    {
+        return $this->collect('CoreMethods', $fresh)->getList();
+    }
+
+    /**
+     * @param bool $fresh
+     * @return \Opis\HttpRouting\DispatcherResolver
+     */
+    public function getDispatcherResolver($fresh = false)
+    {
+        return $this->collect('Dispatchers', $fresh);
+    }
+    
+    /**
+     * @param string $type
+     * @param bool   $fresh
+     * @return mixed
+     */
+    public function collect($type, $fresh = false)
+    {
+        $entry = strtolower($type);
+
         if($fresh) {
             unset($this->cache[$entry]);
         }
@@ -114,6 +170,9 @@ class CollectorManager
         if(!isset($this->cache[$entry])) {
             $hit = false;
             $self = $this;
+            if (!isset($this->collectorList[$entry])) {
+                throw new RuntimeException("Unknown collector type `$type`");
+            }
             $this->cache[$entry] = $this->app->cache('app')->load($entry, function ($entry) use ($self, &$hit) {
                 $hit = true;
                 $self->includeCollectors();
@@ -122,7 +181,7 @@ class CollectorManager
             });
 
             if ($hit) {
-                $this->app->emit('system.collect.' . strtolower($entry));
+                $this->app->emit('system.collect.' . $entry);
             }
         }
 

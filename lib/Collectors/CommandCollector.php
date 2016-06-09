@@ -20,22 +20,39 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Closure;
+use Opis\Colibri\Application;
+use Opis\Colibri\Collector;
+use Opis\Colibri\Serializable\CallbackList;
 
 /**
- * Collects config storages
+ * Class CommandCollector
+ * @package Opis\Colibri\Collectors
+ * @method  CallbackList    data()
  */
-interface ConfigCollectorInterface
+class CommandCollector extends Collector
 {
 
     /**
-     * Register a new storage
+     * Constructor
      *
-     * @param   string $storage Storage name
-     * @param   \Closure $constructor Storage constructor callback
-     * @param   boolean $default (optional) Default flag
-     *
-     * @return  mixed
+     * @param   Application $app
      */
-    public function register($storage, Closure $constructor, $default = false);
+    public function __construct(Application $app)
+    {
+        parent::__construct($app, new CallbackList());
+    }
+
+    /**
+     * Register a new command
+     *
+     * @param   string $name Command's name
+     * @param   callable $callback Callback
+     *
+     * @return  self   Self reference
+     */
+    public function register($name, callable $callback)
+    {
+        $this->dataObject->add($name, $callback);
+        return $this;
+    }
 }

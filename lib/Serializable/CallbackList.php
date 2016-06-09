@@ -28,11 +28,11 @@ class CallbackList implements Serializable
 {
     protected $callbacks = array();
 
-    public function add($name, $callback)
+    public function add($name, callable $callback)
     {
         $this->callbacks[$name] = $callback;
     }
-
+    
     public function getList()
     {
         return $this->callbacks;

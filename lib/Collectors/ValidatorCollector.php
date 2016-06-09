@@ -18,15 +18,19 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors\Implementation;
+namespace Opis\Colibri\Collectors;
 
 use InvalidArgumentException;
 use Opis\Colibri\Application;
-use Opis\Colibri\Collectors\AbstractCollector;
-use Opis\Colibri\Collectors\ValidatorCollectorInterface;
+use Opis\Colibri\Collector;
 use Opis\Colibri\Serializable\CallbackList;
 
-class ValidatorCollector extends AbstractCollector implements ValidatorCollectorInterface
+/**
+ * Class ValidatorCollector
+ * @package Opis\Colibri\Collectors
+ * @method CallbackList data()
+ */
+class ValidatorCollector extends Collector
 {
 
     /**
@@ -39,22 +43,15 @@ class ValidatorCollector extends AbstractCollector implements ValidatorCollector
         parent::__construct($app, new CallbackList());
     }
 
+
     /**
-     * Register a new validator
-     *
-     * @param   string $name Validator's name
-     * @param   callable $callback Validator's implementation
-     *
-     * @return  self   Self reference
+     * @param string $name
+     * @param callable $callback
+     * @return $this
      */
-    public function register($name, $callback)
+    public function register($name, callable $callback)
     {
-        if (!is_callable($callback)) {
-            throw new InvalidArgumentException();
-        }
-
         $this->dataObject->add($name, $callback);
-
         return $this;
     }
 }

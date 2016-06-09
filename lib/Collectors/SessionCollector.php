@@ -20,33 +20,42 @@
 
 namespace Opis\Colibri\Collectors;
 
+use Closure;
 use Opis\Colibri\Application;
+use Opis\Colibri\Collector;
+use Opis\Colibri\Serializable\StorageCollection;
 
-abstract class AbstractCollector
+/**
+ * Class SessionCollector
+ * @package Opis\Colibri\Collectors
+ * @method StorageCollection data()
+ */
+class SessionCollector extends Collector
 {
-    /** @var    \Opis\Colibri\Application */
-    protected $app;
-
-    /** @var    mixed */
-    protected $dataObject;
 
     /**
      * Constructor
      *
      * @param   Application $app
-     * @param   mixed $dataObject
      */
-    public function __construct(Application $app, $dataObject)
+    public function __construct(Application $app)
     {
-        $this->app = $app;
-        $this->dataObject = $dataObject;
+        $collection = new StorageCollection(function ($storage, Closure $constructor, $app) {
+            return new \Opis\Session\Session($constructor($app), array('name' => $storage));
+        });
+
+        parent::__construct($app, $collection);
     }
 
+
     /**
-     * @return  mixed
+     * @param string $storage
+     * @param Closure $constructor
+     * @return $this
      */
-    public function data()
+    public function register($storage, Closure $constructor)
     {
-        return $this->dataObject;
+        $this->dataObject->add($storage, $constructor);
+        return $this;
     }
 }

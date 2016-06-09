@@ -20,20 +20,37 @@
 
 namespace Opis\Colibri\Collectors;
 
+use Opis\Colibri\Application;
+use Opis\Colibri\Collector;
+use Opis\Colibri\Serializable\ConnectionList;
+
 /**
- * Collects event handlers
+ * Class ConnectionCollector
+ * @package Opis\Colibri\Collectors
+ * @method ConnectionList   data()
  */
-interface EventHandlerCollectorInterface
+class ConnectionCollector extends Collector
 {
 
     /**
-     * Register a new event handler
+     * Constructor
      *
-     * @param   string $event Event name
-     * @param   callable $callback A callback that will be executed
-     * @param   int $priority Event handler's priority
-     *
-     * @return  \Opis\Events\EventHandler
+     * @param   Application $app
      */
-    public function handle($event, $callback, $priority = 0);
+    public function __construct(Application $app)
+    {
+        parent::__construct($app, new ConnectionList());
+    }
+
+
+    /**
+     * @param string $name
+     * @param callable $callback
+     * @return $this
+     */
+    public function create($name, callable $callback)
+    {
+        $this->dataObject->set($name, call_user_func($callback, $this->app));
+        return $this;
+    }
 }

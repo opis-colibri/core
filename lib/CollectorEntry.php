@@ -20,22 +20,21 @@
 
 namespace Opis\Colibri;
 
-use Opis\Colibri\Collectors\AbstractCollector;
 use Opis\Events\Event as BaseEvent;
 
 class CollectorEntry extends BaseEvent
 {
-    /** @var \Opis\Colibri\Collectors\AbstractCollector */
+    /** @var Collector */
     protected $collector;
 
-    public function __construct($name, AbstractCollector $collector)
+    public function __construct($name, Collector $collector)
     {
         $this->collector = $collector;
         parent::__construct($name);
     }
 
     /**
-     * @return  \Opis\Colibri\Collectors\AbstractCollector
+     * @return  Collector
      */
     public function getCollector()
     {

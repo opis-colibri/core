@@ -18,14 +18,20 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors\Implementation;
+namespace Opis\Colibri\Collectors;
 
 use Opis\Colibri\Application;
-use Opis\Colibri\Collectors\AbstractCollector;
-use Opis\Colibri\Collectors\VariableCollectorInterface;
+use Opis\Colibri\Collector;
 use Opis\Colibri\Serializable\VariablesList;
 
-class VariableCollector extends AbstractCollector implements VariableCollectorInterface
+/**
+ * Class VariableCollector
+ *
+ * @package Opis\Colibri\Collectors
+ *
+ * @method VariablesList    data()
+ */
+class VariableCollector extends Collector
 {
 
     /**
@@ -44,7 +50,7 @@ class VariableCollector extends AbstractCollector implements VariableCollectorIn
      * @param   string $name Variable's name
      * @param   mixed $value Variable's value
      *
-     * @return  $this
+     * @return  self
      */
     public function register($name, $value)
     {
@@ -57,7 +63,7 @@ class VariableCollector extends AbstractCollector implements VariableCollectorIn
      *
      * @param   array $variables An array of variables that will be registered
      *
-     * @return  $this
+     * @return  self
      */
     public function bulkRegister(array $variables)
     {

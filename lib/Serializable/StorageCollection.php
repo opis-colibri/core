@@ -38,58 +38,28 @@ class StorageCollection implements Serializable
         $this->builder = $builder;
     }
 
-    public function add($storage, Closure $constructor, $default = false)
+    /**
+     * @param string  $storage
+     * @param Closure $constructor
+     * @return $this
+     */
+    public function add($storage, Closure $constructor)
     {
-        if ($this->defaultStorage === null) {
-            $default = true;
-        }
-
-        if ($default) {
-            $this->defaultStorage = $storage;
-        }
-
         $this->storages[$storage] = $constructor;
         unset($this->instances[$storage]);
 
         return $this;
     }
 
-    public function remove($storage)
+
+    /**
+     * @param Application $app
+     * @param string $storage
+     * @return mixed
+     */
+    public function get(Application $app, $storage)
     {
-        unset($this->storages[$storage]);
-        unset($this->instances[$storage]);
-
-        if ($this->defaultStorage === $storage) {
-            $this->defaultStorage = null;
-            if (!empty($this->storages)) {
-                $this->defaultStorage = array_shift(array_keys($this->storages));
-            }
-        }
-
-        return $this;
-    }
-
-    public function has($storage)
-    {
-        return isset($this->storages[$storage]);
-    }
-
-    public function setDefault($storage)
-    {
-        if ($this->has($storage)) {
-            $this->defaultStorage = $storage;
-        }
-
-        return $this;
-    }
-
-    public function get(Application $app, $storage = null)
-    {
-        if ($storage === null) {
-            $storage = $this->defaultStorage;
-        }
-
-        if (!$this->has($storage)) {
+        if (!isset($this->storages[$storage])) {
             throw new RuntimeException('Unknown storage ' . $storage);
         }
 
@@ -102,6 +72,9 @@ class StorageCollection implements Serializable
         return $this->instances[$storage];
     }
 
+    /**
+     * @return string
+     */
     public function serialize()
     {
         SerializableClosure::enterContext();
@@ -122,7 +95,6 @@ class StorageCollection implements Serializable
     public function unserialize($data)
     {
         $object = SerializableClosure::unserializeData($data);
-        /** @var SerializableClosure builder */
         $this->builder = $object['builder']->getClosure();
         $this->defaultStorage = $object['defaultStorage'];
         $this->storages = array_map(function ($value) {

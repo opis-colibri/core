@@ -20,22 +20,41 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Closure;
+use Opis\Colibri\Application;
+use Opis\Colibri\Collector;
+use Opis\Colibri\Serializable\Translations;
 
 /**
- * Collects cache storages
+ * Class TranslationCollector
+ * @package Opis\Colibri\Collectors
+ * @method Translations data()
  */
-interface CacheCollectorInterface
+class TranslationCollector extends Collector
 {
+    protected $language;
 
     /**
-     * Register a new storage
+     * Constructor
      *
-     * @param   string $storage Storage name
-     * @param   \Closure $constructor Storage constructor callback
-     * @param   boolean $default (optional) Default flag
-     *
-     * @return  mixed
+     * @param   Application $app
      */
-    public function register($storage, Closure $constructor, $default = false);
+    public function __construct(Application $app)
+    {
+        parent::__construct($app, new Translations($app));
+    }
+
+    /**
+     * Add the sentences that will be translated from english to current used language
+     *
+     * @param   string $language Language
+     * @param   array $sentences Trnslated sentences
+     */
+    public function translate($language, array $sentences)
+    {
+        if (empty($sentences)) {
+            return;
+        }
+
+        $this->dataObject->translate($language, $sentences);
+    }
 }

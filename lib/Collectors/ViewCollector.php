@@ -18,15 +18,21 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors\Implementation;
+namespace Opis\Colibri\Collectors;
 
-use Closure;
 use Opis\Colibri\Application;
-use Opis\Colibri\Collectors\AbstractCollector;
-use Opis\Colibri\Collectors\LoggerCollectorInterface;
-use Opis\Colibri\Serializable\StorageCollection;
+use Opis\Colibri\Collector;
+use Opis\View\Route;
+use Opis\View\RouteCollection;
 
-class LoggerCollector extends AbstractCollector implements LoggerCollectorInterface
+/**
+ * Class ViewCollector
+ *
+ * @package Opis\Colibri\Collectors
+ *
+ * @method RouteCollection  data()
+ */
+class ViewCollector extends Collector
 {
 
     /**
@@ -36,25 +42,22 @@ class LoggerCollector extends AbstractCollector implements LoggerCollectorInterf
      */
     public function __construct(Application $app)
     {
-        $collection = new StorageCollection(function ($storage, Closure $constructor, $app) {
-            return $constructor($app, $storage);
-        });
-
-        parent::__construct($app, $collection);
+        parent::__construct($app, new RouteCollection());
     }
 
     /**
-     * Register a new storage
+     * Defines a new view route
      *
-     * @param   string $storage Storage name
-     * @param   \Closure $constructor Storage constructor callback
-     * @param   boolean $default (optional) Default flag
+     * @param   string $pattern View's pattern
+     * @param   callable $resolver A callback that will resolve a view route into a path
+     * @param   int $priority Route's priority
      *
-     * @return  mixed
+     * @return  Route
      */
-    public function register($storage, Closure $constructor, $default = false)
+    public function handle($pattern, $resolver, $priority = 0)
     {
-        $this->dataObject->add($storage, $constructor, $default);
-        return $this;
+        $route = new Route($pattern, $resolver, $priority);
+        $this->dataObject[] = $route;
+        return $route;
     }
 }

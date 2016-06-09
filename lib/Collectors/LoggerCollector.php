@@ -18,16 +18,19 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors\Implementation;
+namespace Opis\Colibri\Collectors;
 
+use Closure;
 use Opis\Colibri\Application;
-use Opis\Colibri\Collectors\AbstractCollector;
-use Opis\Colibri\Collectors\EventHandlerCollectorInterface;
-use Opis\Events\EventHandler;
-use Opis\Events\RouteCollection;
-use Opis\Routing\Pattern;
+use Opis\Colibri\Collector;
+use Opis\Colibri\Serializable\StorageCollection;
 
-class EventHandlerCollector extends AbstractCollector implements EventHandlerCollectorInterface
+/**
+ * Class LoggerCollector
+ * @package Opis\Colibri\Collectors
+ * @method StorageCollection data()
+ */
+class LoggerCollector extends Collector
 {
 
     /**
@@ -37,23 +40,21 @@ class EventHandlerCollector extends AbstractCollector implements EventHandlerCol
      */
     public function __construct(Application $app)
     {
-        parent::__construct($app, new RouteCollection());
+        $collection = new StorageCollection(function ($storage, Closure $constructor, $app) {
+            return $constructor($app, $storage);
+        });
+
+        parent::__construct($app, $collection);
     }
 
     /**
-     * Register a new event handler
-     *
-     * @param   string $event Event name
-     * @param   callable $callback A callback that will be executed
-     * @param   int $priority Event handler's priority
-     *
-     * @return  \Opis\Events\EventHandler
+     * @param string $storage
+     * @param Closure $constructor
+     * @return $this
      */
-    public function handle($event, $callback, $priority = 0)
+    public function register($storage, Closure $constructor)
     {
-        $handler = new EventHandler(new Pattern($event), $callback);
-        $this->dataObject[] = $handler;
-        $this->dataObject->sort();
-        return $handler->set('priority', $priority);
+        $this->dataObject->add($storage, $constructor);
+        return $this;
     }
 }

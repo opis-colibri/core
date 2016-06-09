@@ -18,15 +18,21 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors\Implementation;
+namespace Opis\Colibri\Collectors;
 
 use Closure;
 use Opis\Colibri\Application;
-use Opis\Colibri\Collectors\AbstractCollector;
-use Opis\Colibri\Collectors\ConfigCollectorInterface;
+use Opis\Colibri\Collector;
 use Opis\Colibri\Serializable\StorageCollection;
 
-class ConfigCollector extends AbstractCollector implements ConfigCollectorInterface
+/**
+ * Class CacheCollector
+ *
+ * @package Opis\Colibri\Collectors
+ *
+ * @method  StorageCollection   data()
+ */
+class CacheCollector extends Collector
 {
 
     /**
@@ -37,7 +43,7 @@ class ConfigCollector extends AbstractCollector implements ConfigCollectorInterf
     public function __construct(Application $app)
     {
         $collection = new StorageCollection(function ($storage, Closure $constructor, $app) {
-            return new \Opis\Config\Config($constructor($app));
+            return new \Opis\Cache\Cache($constructor($app));
         });
 
         parent::__construct($app, $collection);
@@ -47,14 +53,13 @@ class ConfigCollector extends AbstractCollector implements ConfigCollectorInterf
      * Register a new storage
      *
      * @param   string $storage Storage name
-     * @param   \Closure $constructor Storage constructor callback
-     * @param   boolean $default (optional) Default flag
+     * @param   Closure $constructor Storage constructor callback
      *
-     * @return  mixed
+     * @return  self
      */
-    public function register($storage, Closure $constructor, $default = false)
+    public function register($storage, Closure $constructor)
     {
-        $this->dataObject->add($storage, $constructor, $default);
+        $this->dataObject->add($storage, $constructor);
         return $this;
     }
 }

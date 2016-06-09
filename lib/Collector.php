@@ -20,86 +20,32 @@
 
 namespace Opis\Colibri;
 
-use InvalidArgumentException;
-use Opis\Events\Event as BaseEvent;
-use Opis\Events\EventTarget;
-use Opis\Events\RouteCollection;
 
-class Collector extends EventTarget
+abstract class Collector
 {
-    /** @var    \Opis\Colibri\Application */
+    /** @var    Application */
     protected $app;
 
-    /** @var \Opis\Colibri\Container */
-    protected $container;
+    /** @var  mixed */
+    protected $dataObject;
 
-    public function __construct(Application $app, RouteCollection $collection = null)
+    /**
+     * Collector constructor.
+     * @param Application $app
+     * @param mixed $dataObject
+     */
+    public function __construct(Application $app, $dataObject)
     {
         $this->app = $app;
-        parent::__construct($collection);
+        $this->dataObject = $dataObject;
     }
 
     /**
-     * Get the container
-     *
-     * @return  \Opis\Colibri\Container
+     * @return mixed
      */
-    public function container()
+    public function data()
     {
-        if ($this->container === null) {
-            $app = $this->app;
-            $container = new Container();
-
-            foreach ($app->config()->read('collectors') as $type => $collector) {
-                $container->alias($collector['interface'], $type);
-                $container->singleton($collector['interface'], $collector['class']);
-            }
-
-            $this->container = $container;
-        }
-
-        return $this->container;
+        return $this->dataObject;
     }
 
-    /**
-     * Dispatch an event
-     *
-     * @param CollectorEntry|BaseEvent $event
-     * @return Collectors\AbstractCollector
-     */
-    public function dispatch(BaseEvent $event)
-    {
-        if (!$event instanceof CollectorEntry) {
-            throw new InvalidArgumentException('Invalid event type. Expected \Opis\Colibri\CollectorEntry');
-        }
-
-        $this->collection->sort();
-        $handlers = $this->router->route($event);
-        $collector = $event->getCollector();
-
-        foreach ($handlers as $callback) {
-            $callback($collector, $this->app);
-        }
-
-        return $collector;
-    }
-
-    /**
-     * Collect items
-     *
-     * @param   string $type
-     * @return Collectors\AbstractCollector
-     *
-     * @throws \Exception
-     */
-    public function collect($type)
-    {
-        if (null === $this->app->config()->read("collectors.$type")) {
-            throw new \Exception('Unknown collector type "' . $type . '"');
-        }
-
-        $collector = $this->container()->make($type, array($this->app));
-
-        return $this->dispatch(new CollectorEntry($type, $collector));
-    }
 }

@@ -21,18 +21,45 @@
 namespace Opis\Colibri\Collectors;
 
 use Closure;
+use Opis\Colibri\Application;
+use Opis\Colibri\Collector;
+use Opis\Colibri\Serializable\StorageCollection;
 
-interface LoggerCollectorInterface
+/**
+ * Class ConfigCollector
+ *
+ * @package Opis\Colibri\Collectors
+ *
+ * @method StorageCollection    data()
+ */
+class ConfigCollector extends Collector
 {
+
+    /**
+     * Constructor
+     *
+     * @param   Application $app
+     */
+    public function __construct(Application $app)
+    {
+        $collection = new StorageCollection(function ($storage, Closure $constructor, $app) {
+            return new \Opis\Config\Config($constructor($app));
+        });
+
+        parent::__construct($app, $collection);
+    }
 
     /**
      * Register a new storage
      *
      * @param   string $storage Storage name
-     * @param   \Closure $constructor Storage constructor callback
-     * @param   boolean $default (optional) Default flag
+     * @param   Closure $constructor Storage constructor callback
      *
-     * @return  mixed
+     * @return  self
      */
-    public function register($storage, Closure $constructor, $default = false);
+    public function register($storage, Closure $constructor)
+    {
+        $this->dataObject->add($storage, $constructor);
+        return $this;
+    }
 }

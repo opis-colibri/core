@@ -18,15 +18,18 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors\Implementation;
+namespace Opis\Colibri\Collectors;
 
-use Closure;
 use Opis\Colibri\Application;
-use Opis\Colibri\Collectors\AbstractCollector;
-use Opis\Colibri\Collectors\CacheCollectorInterface;
-use Opis\Colibri\Serializable\StorageCollection;
+use Opis\Colibri\Collector;
+use Opis\HttpRouting\DispatcherResolver;
 
-class CacheCollector extends AbstractCollector implements CacheCollectorInterface
+/**
+ * Class DispatcherCollector
+ * @package Opis\Colibri\Collectors
+ * @method DispatcherResolver data()
+ */
+class DispatcherCollector extends Collector
 {
 
     /**
@@ -36,25 +39,18 @@ class CacheCollector extends AbstractCollector implements CacheCollectorInterfac
      */
     public function __construct(Application $app)
     {
-        $collection = new StorageCollection(function ($storage, Closure $constructor, $app) {
-            return new \Opis\Cache\Cache($constructor($app));
-        });
-
-        parent::__construct($app, $collection);
+        parent::__construct($app, new DispatcherResolver());
     }
 
+
     /**
-     * Register a new storage
-     *
-     * @param   string $storage Storage name
-     * @param   \Closure $constructor Storage constructor callback
-     * @param   boolean $default (optional) Default flag
-     *
-     * @return  mixed
+     * @param string $name
+     * @param callable $builder
+     * @return $this
      */
-    public function register($storage, Closure $constructor, $default = false)
+    public function register($name, callable $builder)
     {
-        $this->dataObject->add($storage, $constructor, $default);
+        $this->dataObject->register($name, $builder);
         return $this;
     }
 }

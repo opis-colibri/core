@@ -18,15 +18,21 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors\Implementation;
+namespace Opis\Colibri\Collectors;
 
-use InvalidArgumentException;
+use Closure;
 use Opis\Colibri\Application;
-use Opis\Colibri\Collectors\AbstractCollector;
-use Opis\Colibri\Collectors\CommandCollectorInterface;
-use Opis\Colibri\Serializable\CallbackList;
+use Opis\Colibri\Collector;
+use Opis\View\EngineResolver;
 
-class CommandCollector extends AbstractCollector implements CommandCollectorInterface
+/**
+ * Class ViewEngineCollector
+ *
+ * @package Opis\Colibri\Collectors
+ *
+ * @method EngineResolver   data()
+ */
+class ViewEngineCollector extends Collector
 {
 
     /**
@@ -36,25 +42,19 @@ class CommandCollector extends AbstractCollector implements CommandCollectorInte
      */
     public function __construct(Application $app)
     {
-        parent::__construct($app, new CallbackList());
+        parent::__construct($app, new EngineResolver());
     }
 
     /**
-     * Register a new command
+     * Defines a new view engine
      *
-     * @param   string $name Command's name
-     * @param   callable $callback Callback
+     * @param   Closure $constructor A callback that will return an instance of \Opis\View\EngineInterface
+     * @param   int $priority Engine's priority
      *
-     * @return  self   Self reference
+     * @return  \Opis\View\EngineEntry
      */
-    public function register($name, $callback)
+    public function register(Closure $constructor, $priority = 0)
     {
-        if (!is_callable($callback)) {
-            throw new InvalidArgumentException();
-        }
-
-        $this->dataObject->add($name, $callback);
-
-        return $this;
+        return $this->dataObject->register($constructor, $priority);
     }
 }

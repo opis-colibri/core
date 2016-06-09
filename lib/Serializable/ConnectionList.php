@@ -23,6 +23,7 @@ namespace Opis\Colibri\Serializable;
 use Opis\Database\Connection;
 use Opis\Database\Database;
 use Opis\Database\Schema;
+use RuntimeException;
 use Serializable;
 
 class ConnectionList implements Serializable
@@ -32,39 +33,28 @@ class ConnectionList implements Serializable
     protected $schemas = array();
     protected $defaultConnection;
 
-    public function set($name, Connection $connection, $default = false)
+    public function set($name, Connection $connection)
     {
-        if ($this->defaultConnection === null) {
-            $default = true;
-        }
-
-        if ($default === true) {
-            $this->defaultConnection = $name;
-        }
-
         $this->connections[$name] = $connection;
     }
 
-    public function get($connection = null)
+    public function get($name)
     {
-        if ($connection === null) {
-            $connection = $this->defaultConnection;
+        if (!isset($this->connections[$name])){
+            throw new RuntimeException("Invalid connection name `$name`");
         }
 
-        return $this->connections[$connection];
+        return $this->connections[$name];
     }
 
-    public function database($connection = null)
+    public function database($name)
     {
-        if ($connection === null) {
-            $connection = $this->defaultConnection;
+
+        if (!isset($this->databases[$name])) {
+            $this->databases[$name] = new Database($this->get($name));
         }
 
-        if (!isset($this->databases[$connection])) {
-            $this->databases[$connection] = new Database($this->get($connection));
-        }
-
-        return $this->databases[$connection];
+        return $this->databases[$name];
     }
 
     /**
@@ -72,10 +62,7 @@ class ConnectionList implements Serializable
      */
     public function serialize()
     {
-        return serialize(array(
-            'connections' => $this->connections,
-            'defaultConnection' => $this->defaultConnection,
-        ));
+        return serialize($this->connections);
     }
 
     /**
@@ -83,8 +70,6 @@ class ConnectionList implements Serializable
      */
     public function unserialize($data)
     {
-        $object = unserialize($data);
-        $this->connections = $object['connections'];
-        $this->defaultConnection = $object['defaultConnection'];
+        $this->connections = $this->unserialize($data);
     }
 }

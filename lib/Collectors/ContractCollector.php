@@ -18,15 +18,21 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors\Implementation;
+namespace Opis\Colibri\Collectors;
 
 use Closure;
 use Opis\Colibri\Application;
-use Opis\Colibri\Collectors\AbstractCollector;
-use Opis\Colibri\Collectors\ContractCollectorInterface;
+use Opis\Colibri\Collector;
 use Opis\Colibri\Container;
 
-class ContractCollector extends AbstractCollector implements ContractCollectorInterface
+/**
+ * Class ContractCollector
+ *
+ * @package Opis\Colibri\Collectors
+ *
+ * @method Container    data()
+ */
+class ContractCollector extends Collector
 {
 
     /**
@@ -72,8 +78,6 @@ class ContractCollector extends AbstractCollector implements ContractCollectorIn
      * @param   string $abstract
      * @param Closure $extender
      * @return \Opis\Container\Extender
-     * @internal param Closure $alias
-     *
      */
     public function extend($abstract, Closure $extender)
     {
@@ -84,7 +88,7 @@ class ContractCollector extends AbstractCollector implements ContractCollectorIn
      * Register a singleton binding with the container.
      *
      * @param   string $abstract Class name or interface name
-     * @param   \Closure|string $concrete (optional) Concrete class or interface implementation
+     * @param   Closure|string $concrete (optional) Concrete class or interface implementation
      *
      * @return  \Opis\Container\Dependency
      */

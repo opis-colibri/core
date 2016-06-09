@@ -18,15 +18,21 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors\Implementation;
+namespace Opis\Colibri\Collectors;
 
 use Opis\Colibri\Application;
-use Opis\Colibri\Collectors\AbstractCollector;
-use Opis\Colibri\Collectors\RouteCollectorInterface;
+use Opis\Colibri\Collector;
 use Opis\Colibri\HttpRoute;
 use Opis\Colibri\HttpRouteCollection;
 
-class RouteCollector extends AbstractCollector implements RouteCollectorInterface
+/**
+ * Class RouteCollector
+ *
+ * @package Opis\Colibri\Collectors
+ *
+ * @method HttpRouteCollection  data()
+ */
+class RouteCollector extends Collector
 {
 
     /**

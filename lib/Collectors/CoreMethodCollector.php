@@ -20,17 +20,36 @@
 
 namespace Opis\Colibri\Collectors;
 
+use Opis\Colibri\Application;
+use Opis\Colibri\Collector;
+use Opis\Colibri\Serializable\CallbackList;
+
 /**
- * Collect translations
+ * Class CoreMethodCollector
+ * @package Opis\Colibri\Collectors
+ * @method CallbackList data()
  */
-interface TranslationCollectorInterface
+class CoreMethodCollector extends Collector
 {
 
     /**
-     * Add the sentences that will be translated from english to current used language
+     * Constructor
      *
-     * @param   string $language Language
-     * @param   array $sentences Translated sentences
+     * @param   Application $app
      */
-    public function translate($language, array $sentences);
+    public function __construct(Application $app)
+    {
+        parent::__construct($app, new CallbackList());
+    }
+
+    /**
+     * @param $name
+     * @param callable $callback
+     * @return $this
+     */
+    public function register($name, callable $callback)
+    {
+        $this->dataObject->add($name, $callback);
+        return $this;
+    }
 }
