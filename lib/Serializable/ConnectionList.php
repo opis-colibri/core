@@ -70,6 +70,6 @@ class ConnectionList implements Serializable
      */
     public function unserialize($data)
     {
-        $this->connections = $this->unserialize($data);
+        $this->connections = unserialize($data);
     }
 }
