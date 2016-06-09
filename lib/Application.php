@@ -460,21 +460,38 @@ class Application
         $extra = $composer->getPackage()->getExtra();
         $enabled = array();
         $canonicalPacks = array();
-
+        $modules = array();
+        $installer = null;
 
         if (!isset($extra['installer-modules']) || !is_array($extra['installer-modules'])) {
             $extra['installer-modules'] = array();
         }
 
         foreach ($composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages() as $package) {
+
             if ($package->getType() !== 'opis-colibri-module') {
                 $canonicalPacks[] = $package;
                 continue;
             }
 
-            if (in_array($package->getName(), $extra['installer-modules'])) {
-                $canonicalPacks[] = $package;
-                $enabled[] = $package->getName();
+            $modules[$package->getName()] = $package;
+            $extra = $package->getExtra();
+
+            if(isset($extra['opis-colibri-installer']) && $extra['opis-colibri-installer']){
+                $installer = $package;
+            }
+        }
+
+        if ($installer === null) {
+            throw new \RuntimeException("No installer found");
+        }
+
+        $canonicalPacks[] = $installer;
+
+        foreach ($installer->getRequires() as $require){
+            $target = $require->getTarget();
+            if (isset($modules[$target])) {
+                $canonicalPacks[] = $modules[$target];
             }
         }
 
