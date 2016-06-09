@@ -153,7 +153,99 @@ class CollectorManager
     {
         return $this->collect('Dispatchers', $fresh);
     }
-    
+
+    /**
+     * @param bool $fresh
+     * @return \Opis\Events\RouteCollection
+     */
+    public function getEventHandlers($fresh = false)
+    {
+        return $this->collect('EventHandlers', $fresh);
+    }
+
+    /**
+     * @param string $name
+     * @param bool $fresh
+     * @return \Psr\Log\LoggerInterface
+     */
+    public function getLogger($name, $fresh = false)
+    {
+        return $this->collect('Loggers', $fresh)->get($name);
+    }
+
+    /**
+     * @param bool $fresh
+     * @return \Opis\Routing\Collections\RouteCollection
+     */
+    public function getRouteAliases($fresh = false)
+    {
+        return $this->collect('RouteAliases', $fresh);
+    }
+
+    /**
+     * @param bool $fresh
+     * @return HttpRouteCollection
+     */
+    public function getRoutes($fresh = false)
+    {
+        return $this->collect('Routes', $fresh);
+    }
+
+    /**
+     * @param string $name
+     * @param bool $fresh
+     * @return \SessionHandlerInterface
+     */
+    public function getSessionStorage($name, $fresh = false)
+    {
+        return $this->collect('SessionStorages', $fresh)->get($name);
+    }
+
+    /**
+     * @param bool $fresh
+     * @return callable[]
+     */
+    public function getValidators($fresh = false)
+    {
+        return $this->collect('Validators', $fresh)->getList();
+    }
+
+    /**
+     * @param bool $fresh
+     * @return array
+     */
+    public function getVariables($fresh = false)
+    {
+        return $this->collect('Variables', $fresh)->getList();
+    }
+
+    /**
+     * @param bool $fresh
+     * @return \Opis\View\RouteCollection
+     */
+    public function getViews($fresh = false)
+    {
+        return $this->collect('Views');
+    }
+
+    /**
+     * @param bool $fresh
+     * @return \Opis\View\EngineResolver
+     */
+    public function getViewEngineResolver($fresh = false)
+    {
+        return $this->collect('ViewEngines', $fresh);
+    }
+
+    /**
+     * @param bool $fresh
+     * @return mixed
+     */
+    public function getTranslations($fresh = true)
+    {
+        return $this->collect('Translations', $fresh);
+    }
+
     /**
      * @param string $type
      * @param bool   $fresh

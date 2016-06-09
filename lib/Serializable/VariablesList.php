@@ -33,13 +33,9 @@ class VariablesList implements Serializable
         $this->variables[$name] = $value;
     }
 
-    public function get($key, $default = null)
+    public function getList()
     {
-        if (isset($this->variables[$key])) {
-            return $this->variables[$key];
-        }
-
-        return $default;
+        return $this->variables;
     }
 
     protected function mapFunction1($value)

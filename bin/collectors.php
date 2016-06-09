@@ -4,71 +4,71 @@
 
 return array(
     'routes' => array(
-        'interface' => 'Opis\\Colibri\\Collectors\\RouteCollectorInterface',
-        'class' => 'Opis\\Colibri\\Collectors\\Implementation\\RouteCollector',
+        'class' => 'Opis\\Colibri\\Collectors\\RouteCollector',
+        'description' => 'Collects web routes',
     ),
     'routealiases' => array(
-        'interface' => 'Opis\\Colibri\\Collectors\\RouteAliasCollectorInterface',
-        'class' => 'Opis\\Colibri\\Collectors\\Implementation\\RouteAliasCollector',
+        'class' => 'Opis\\Colibri\\Collectors\\RouteAliasCollector',
+        'description' => 'Collects aliases for web routes',
     ),
     'views' => array(
-        'interface' => 'Opis\\Colibri\\Collectors\\ViewCollectorInterface',
-        'class' => 'Opis\\Colibri\\Collectors\\Implementation\\ViewCollector',
+        'class' => 'Opis\\Colibri\\Collectors\\ViewCollector',
+        'description' => 'Collects views',
     ),
     'dispatchers' => array(
-        'interface' => 'Opis\\Colibri\\Collectors\\DispatcherCollectorInterface',
-        'class' => 'Opis\\Colibri\\Collectors\\Implementation\\DispatcherCollector',
+        'class' => 'Opis\\Colibri\\Collectors\\DispatcherCollector',
+        'description' => 'Collects dispatchers',
     ),
     'contracts' => array(
-        'interface' => 'Opis\\Colibri\\Collectors\\ContractCollectorInterface',
-        'class' => 'Opis\\Colibri\\Collectors\\Implementation\\ContractCollector',
+        'class' => 'Opis\\Colibri\\Collectors\\ContractCollector',
+        'description' => 'Collects contracts',
     ),
     'connections' => array(
-        'interface' => 'Opis\\Colibri\\Collectors\\ConnectionCollectorInterface',
-        'class' => 'Opis\\Colibri\\Collectors\\Implementation\\ConnectionCollector',
+        'class' => 'Opis\\Colibri\\Collectors\\ConnectionCollector',
+        'description' => 'Collects database connections',
     ),
     'eventhandlers' => array(
-        'interface' => 'Opis\\Colibri\\Collectors\\EventHandlerCollectorInterface',
-        'class' => 'Opis\\Colibri\\Collectors\\Implementation\\EventHandlerCollector',
+        'class' => 'Opis\\Colibri\\Collectors\\EventHandlerCollector',
+        'description' => 'Collects event handlers',
     ),
     'viewengines' => array(
-        'interface' => 'Opis\\Colibri\\Collectors\\ViewEngineCollectorInterface',
-        'class' => 'Opis\\Colibri\\Collectors\\Implementation\\ViewEngineCollector',
+        'class' => 'Opis\\Colibri\\Collectors\\ViewEngineCollector',
+        'description' => 'Collects view engines',
     ),
     'cachestorages' => array(
-        'interface' => 'Opis\\Colibri\\Collectors\\CacheCollectorInterface',
-        'class' => 'Opis\\Colibri\\Collectors\\Implementation\\CacheCollector',
+        'class' => 'Opis\\Colibri\\Collectors\\CacheCollector',
+        'description' => 'Collects cache storages',
     ),
     'sessionstorages' => array(
-        'interface' => 'Opis\\Colibri\\Collectors\\SessionCollectorInterface',
-        'class' => 'Opis\\Colibri\\Collectors\\Implementation\\SessionCollector',
+        'class' => 'Opis\\Colibri\\Collectors\\SessionCollector',
+        'description' => 'Collects session storages',
     ),
     'configstorages' => array(
-        'interface' => 'Opis\\Colibri\\Collectors\\ConfigCollectorInterface',
-        'class' => 'Opis\\Colibri\\Collectors\\Implementation\\ConfigCollector',
+        'class' => 'Opis\\Colibri\\Collectors\\ConfigCollector',
+        'description' => 'Collects config storages'
     ),
     'validators' => array(
-        'interface' => 'Opis\\Colibri\\Collectors\\ValidatorCollectorInterface',
-        'class' => 'Opis\\Colibri\\Collectors\\Implementation\\ValidatorCollector',
+        'class' => 'Opis\\Colibri\\Collectors\\ValidatorCollector',
+        'description' => 'Collects validators',
     ),
     'translations' => array(
-        'interface' => 'Opis\\Colibri\\Collectors\\TranslationCollectorInterface',
-        'class' => 'Opis\\Colibri\\Collectors\\Implementation\\TranslationCollector',
+        'class' => 'Opis\\Colibri\\Collectors\\TranslationCollector',
+        'description' => 'Collects translations',
     ),
     'variables' => array(
-        'interface' => 'Opis\\Colibri\\Collectors\\VariableCollectorInterface',
-        'class' => 'Opis\\Colibri\\Collectors\\Implementation\\VariableCollector',
+        'class' => 'Opis\\Colibri\\Collectors\\VariableCollector',
+        'description' => 'Collects variables',
     ),
     'commands' => array(
-        'interface' => 'Opis\\Colibri\\Collectors\\CommandCollectorInterface',
-        'class' => 'Opis\\Colibri\\Collectors\\Implementation\\CommandCollector',
+        'class' => 'Opis\\Colibri\\Collectors\\CommandCollector',
+        'description' => 'Collects commands',
     ),
     'coremethods' => array(
-        'interface' => 'Opis\\Colibri\\Collectors\\CoreMethodCollectorInterface',
-        'class' => 'Opis\\Colibri\\Collectors\\Implementation\\CoreMethodCollector',
+        'class' => 'Opis\\Colibri\\Collectors\\CoreMethodCollector',
+        'description' => 'Collects core methods',
     ),
     'loggers' => array(
-        'interface' => 'Opis\\Colibri\\Collectors\\LoggerCollectorInterface',
-        'class' => 'Opis\\Colibri\\Collectors\\Implementation\\LoggerCollector',
+        'class' => 'Opis\\Colibri\\Collectors\\LoggerCollector',
+        'description' => 'Collects log storages',
     ),
 );
