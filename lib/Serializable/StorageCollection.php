@@ -39,7 +39,7 @@ class StorageCollection implements Serializable
     }
 
     /**
-     * @param string  $storage
+     * @param string $storage
      * @param Closure $constructor
      * @return $this
      */

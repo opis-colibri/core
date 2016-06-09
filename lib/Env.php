@@ -11,8 +11,6 @@ use Dotenv\Dotenv;
  */
 class Env
 {
-    protected $app;
-
     const APP_INSTALLED = 'APP_INSTALLED';
     const APP_DEBUG = 'APP_DEBUG';
     const APP_ENV = 'APP_ENV';
@@ -21,6 +19,8 @@ class Env
     const CONFIG_STORAGE = 'CONFIG_STORAGE';
     const SESSION_STORAGE = 'SESSION_STORAGE';
     const TRANSLATIONS_STORAGE = 'TRANSLATIONS_STORAGE';
+    const LOG_STORAGE = 'LOG_STORAGE';
+    protected $app;
 
     public function __construct(Application $app)
     {
@@ -28,7 +28,7 @@ class Env
 
         if (file_exists($app->info()->rootDir() . '/.env')) {
             (new Dotenv($app->info()->rootDir()))->load();
-        } elseif(file_exists($app->info()->vendorDir() . '/.env')){
+        } elseif (file_exists($app->info()->vendorDir() . '/.env')) {
             (new Dotenv($app->info()->vendorDir()))->load();
         }
     }

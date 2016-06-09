@@ -39,7 +39,7 @@ class Command
         $appInfo = new AppInfo(array(
             AppInfo::ROOT_DIR => $rootDir
         ), $composer);
-        
+
         $loader = require $composer->getConfig()->get('vendor-dir') . '/autoload.php';
 
         $app = new Application($appInfo, $loader, $composer);
@@ -48,13 +48,13 @@ class Command
         foreach ($app->getModules() as $module) {
             if ($installMode || !$module->isInstalled()) {
                 $module->getPackage()->setAutoload(array());
-            } elseif ($module->isEnabled()){
+            } elseif ($module->isEnabled()) {
                 continue;
             }
 
             $autoload = $module->getPackage()->getAutoload();
 
-            if(!isset($autoload['classmap'])){
+            if (!isset($autoload['classmap'])) {
                 $module->getPackage()->setAutoload(array());
                 continue;
             }
@@ -66,7 +66,7 @@ class Command
                 }
             }
 
-            if (!empty($result)){
+            if (!empty($result)) {
                 $result = array('classmap' => $result);
             } else {
                 $result = array();

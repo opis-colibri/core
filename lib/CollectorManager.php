@@ -21,11 +21,11 @@
 namespace Opis\Colibri;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Opis\Container\Container;
 use Opis\Colibri\Annotations\Collector as CollectorAnnotation;
-use RuntimeException;
+use Opis\Container\Container;
 use ReflectionClass;
 use ReflectionMethod;
+use RuntimeException;
 
 /**
  * Description of CollectorManager
@@ -65,7 +65,7 @@ class CollectorManager
     {
         $this->app = $app;
         $this->container = $container = new Container();
-        $this->collectorTarget =new CollectorTarget($app);
+        $this->collectorTarget = new CollectorTarget($app);
 
         $default = require __DIR__ . '../bin/collectors.php';
         $this->collectorList = $this->app->config()->read('collectors', array()) + $default;
@@ -248,18 +248,18 @@ class CollectorManager
 
     /**
      * @param string $type
-     * @param bool   $fresh
+     * @param bool $fresh
      * @return mixed
      */
     public function collect($type, $fresh = false)
     {
         $entry = strtolower($type);
 
-        if($fresh) {
+        if ($fresh) {
             unset($this->cache[$entry]);
         }
 
-        if(!isset($this->cache[$entry])) {
+        if (!isset($this->cache[$entry])) {
             $hit = false;
             $self = $this;
             if (!isset($this->collectorList[$entry])) {
@@ -307,9 +307,9 @@ class CollectorManager
     /**
      * Register a new collector
      *
-     * @param string    $name
-     * @param string    $class
-     * @param string    $description
+     * @param string $name
+     * @param string $class
+     * @param string $description
      */
     public function register($name, $class, $description)
     {
@@ -325,7 +325,7 @@ class CollectorManager
     /**
      * Unregister an existing collector
      *
-     * @param string    $name
+     * @param string $name
      */
     public function unregister($name)
     {

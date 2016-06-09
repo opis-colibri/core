@@ -73,7 +73,7 @@ class CSRFToken
     /**
      * Generate random token
      *
-     * @param   int $length (optional) Token's lenght
+     * @param   int $length (optional) Token's length
      *
      * @return  string
      */

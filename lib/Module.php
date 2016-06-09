@@ -120,7 +120,7 @@ class Module
         if ($this->package === null) {
             $packages = $this->app->getPackages();
             if (!isset($packages[$this->name])) {
-                throw new Exception('Module "' . $this->name . '" doesn\'t exist');
+                throw new Exception('Module `' . $this->name . "` doesn't exist");
             }
             $this->package = $packages[$this->name];
         }
@@ -514,13 +514,13 @@ class Module
      * Resolve assets
      *
      * @param   CompletePackage $package
-     * @param   array           $extra
-     * 
+     * @param   array $extra
+     *
      * @return  string
      */
     protected function resolveAssets($package, $extra)
     {
-        if (!isset($extra['asstes'])) {
+        if (!isset($extra['assetes'])) {
             return null;
         }
 

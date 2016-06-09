@@ -40,7 +40,7 @@ class ConnectionList implements Serializable
 
     public function get($name)
     {
-        if (!isset($this->connections[$name])){
+        if (!isset($this->connections[$name])) {
             throw new RuntimeException("Invalid connection name `$name`");
         }
 

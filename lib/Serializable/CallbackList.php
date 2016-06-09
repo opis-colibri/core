@@ -32,7 +32,7 @@ class CallbackList implements Serializable
     {
         $this->callbacks[$name] = $callback;
     }
-    
+
     public function getList()
     {
         return $this->callbacks;

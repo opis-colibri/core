@@ -20,7 +20,6 @@
 
 namespace Opis\Colibri;
 
-use Closure;
 use Composer\Autoload\ClassLoader;
 use Composer\Composer;
 use Composer\Factory;
@@ -39,16 +38,11 @@ use Opis\HttpRouting\Path;
 use Opis\Session\Session;
 use Opis\Utils\Placeholder;
 use Opis\View\ViewableInterface;
+use Psr\Log\NullLogger;
 use SessionHandlerInterface;
 
 class Application
 {
-    /** @var    array */
-    protected $instances = array();
-
-    /** @var    array */
-    protected $collectors = array();
-
     /** @var    Env */
     protected $env;
 
@@ -111,6 +105,27 @@ class Application
 
     /** @var  Config */
     protected $translations;
+
+    /** @var  HttpRouter */
+    protected $httpRouter;
+
+    /** @var  ViewRouter */
+    protected $viewRouter;
+
+    /** @var  callable[] */
+    protected $coreMethods;
+
+    /** @var  Console */
+    protected $consoleInstance;
+
+    /** @var \Psr\Log\LoggerInterface[] */
+    protected $loggers = array();
+
+    /** @var  EventTarget */
+    protected $eventTarget;
+
+    /** @var  array */
+    protected $variables;
 
     /**
      * Constructor
@@ -353,10 +368,10 @@ class Application
      */
     public function getHttpRouter()
     {
-        if (!isset($this->instances['httpRouter'])) {
-            $this->instances['httpRouter'] = new HttpRouter($this);
+        if ($this->httpRouter === null) {
+            $this->httpRouter = new HttpRouter($this);
         }
-        return $this->instances['httpRouter'];
+        return $this->httpRouter;
     }
 
     /**
@@ -366,10 +381,10 @@ class Application
      */
     public function getViewRouter()
     {
-        if (!isset($this->instances['viewRouter'])) {
-            $this->instances['viewRouter'] = new ViewRouter($this);
+        if ($this->viewRouter === null) {
+            $this->viewRouter = new ViewRouter($this);
         }
-        return $this->instances['viewRouter'];
+        return $this->viewRouter;
     }
 
     /**
@@ -392,7 +407,7 @@ class Application
      */
     public function getTranslator()
     {
-        if ($this->translatorInstance === null){
+        if ($this->translatorInstance === null) {
             $this->translatorInstance = new Translator($this);
         }
         return $this->translatorInstance;
@@ -418,7 +433,7 @@ class Application
      */
     public function getPlaceholder()
     {
-        if ($this->placeholderInstance === null){
+        if ($this->placeholderInstance === null) {
             $this->placeholderInstance = new Placeholder();
         }
 
@@ -433,7 +448,7 @@ class Application
      */
     public function bootstrap()
     {
-        if(!$this->info->installMode()) {
+        if (!$this->info->installMode()) {
             $this->emit('system.init');
             return $this;
         }
@@ -444,17 +459,17 @@ class Application
         $enabled = array();
         $canonicalPacks = array();
 
-        if(!isset($extra['installer-modules']) || !is_array($extra['installer-modules'])) {
+        if (!isset($extra['installer-modules']) || !is_array($extra['installer-modules'])) {
             $extra['installer-modules'] = array();
         }
 
 
-        foreach ($composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages() as $package){
-            if($package->getType() !== 'opis-colibri-module'){
+        foreach ($composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages() as $package) {
+            if ($package->getType() !== 'opis-colibri-module') {
                 $canonicalPacks[] = $package;
                 continue;
             }
-            if (in_array($package->getName(), $extra['installer-modules'])){
+            if (in_array($package->getName(), $extra['installer-modules'])) {
                 $canonicalPacks[] = $package;
                 $enabled[] = $package->getName();
             }
@@ -522,17 +537,17 @@ class Application
      */
     public function __call($name, $arguments)
     {
-        if (!isset($this->instances['methods'])) {
-            $this->instances['methods'] = $this->collector()->getCoreMethods();
+        if ($this->coreMethods === null) {
+            $this->coreMethods = $this->collector()->getCoreMethods();
         }
 
-        if (!isset($this->instances['methods'][$name])) {
-            throw new \RuntimeException("Unknown method " . $name);
+        if (!isset($this->coreMethods[$name])) {
+            throw new \RuntimeException("Unknown core method `$name`");
         }
 
-        array_unshift($arguments, $this);
+        $arguments[] = $this;
 
-        return call_user_func_array($this->instances['methods'][$name], $arguments);
+        return call_user_func_array($this->coreMethods[$name], $arguments);
     }
 
     /**
@@ -572,7 +587,7 @@ class Application
             $this->cache[$storage = ''] = new Cache(new EphemeralCacheStorage());
         }
 
-        if(!isset($this->cache[$storage])) {
+        if (!isset($this->cache[$storage])) {
             $this->cache[$storage] = new Cache($this->collector()->getCacheStorage($storage));
         }
 
@@ -592,7 +607,7 @@ class Application
             $this->session[$storage = ''] = new Session();
         }
 
-        if(!isset($this->config[$storage])) {
+        if (!isset($this->config[$storage])) {
             $this->session[$storage] = new Session($this->collector()->getSessionStorage($storage));
         }
 
@@ -612,7 +627,7 @@ class Application
             $this->config[$storage = ''] = new Config(new EphemeralConfigStorage());
         }
 
-        if(!isset($this->config[$storage])) {
+        if (!isset($this->config[$storage])) {
             $this->config[$storage] = new Config($this->collector()->getConfigStorage($storage));
         }
 
@@ -642,10 +657,10 @@ class Application
      */
     public function console()
     {
-        if (!isset($this->instances['console'])) {
-            $this->instances['console'] = new Console($this);
+        if ($this->consoleInstance === null) {
+            $this->consoleInstance = new Console($this);
         }
-        return $this->instances['console'];
+        $this->consoleInstance;
     }
 
     /**
@@ -675,7 +690,7 @@ class Application
      */
     public function database($connection = null)
     {
-        if(!isset($this->database[$connection])) {
+        if (!isset($this->database[$connection])) {
             $this->database[$connection] = $this->collector()->getDatabase($connection);
         }
 
@@ -703,13 +718,15 @@ class Application
      */
     public function log($logger = null)
     {
-        if ($logger === null) {
-            if (!isset($this->instances['logger'])) {
-                $this->instances['logger'] = $this->collect('Loggers')->get($this);
-            }
-            return $this->instances['logger'];
+        if ($logger === null && false === $logger = getenv(Env::LOG_STORAGE)) {
+            $this->loggers[''] = new NullLogger();
         }
-        return $this->collect('Loggers')->get($this, $logger);
+
+        if (!isset($this->loggers[$logger])) {
+            $this->loggers[$logger] = $this->collector()->getLogger($logger);
+        }
+
+        return $this->cache[$logger];
     }
 
     /**
@@ -719,7 +736,7 @@ class Application
      */
     public function request()
     {
-        if ($this->httpRequestInstance === null){
+        if ($this->httpRequestInstance === null) {
             $this->httpRequestInstance = HttpRequest::fromGlobals();
         }
 
@@ -733,7 +750,7 @@ class Application
      */
     public function response()
     {
-        if ($this->httpResponseInstance === null){
+        if ($this->httpResponseInstance === null) {
             $this->httpResponseInstance = $this->request()->response();
         }
 
@@ -793,10 +810,10 @@ class Application
      */
     public function dispatch(Event $event)
     {
-        if (!isset($this->instances['eventTarget'])) {
-            $this->instances['eventTarget'] = new EventTarget($this->collect('EventHandlers'));
+        if ($this->eventTarget === null) {
+            $this->eventTarget = new EventTarget($this->collector()->getEventHandlers());
         }
-        return $this->instances['eventTarget']->dispatch($event);
+        return $this->eventTarget->dispatch($event);
     }
 
     /**
@@ -874,8 +891,8 @@ class Application
      */
     public function getPath($route, array $args = array())
     {
-        /** @var HttpRouteCollection $routes */
-        $routes = $this->collect('Routes');
+
+        $routes = $this->collector()->getRoutes();
 
         if (!isset($routes[$route])) {
             return $route;
@@ -895,7 +912,10 @@ class Application
      */
     public function variable($name, $default = null)
     {
-        return $this->collect('Variables')->get($name, $default);
+        if ($this->variables === null) {
+            $this->variables = $this->collector()->getVariables();
+        }
+        return array_key_exists($name, $this->variables) ? $this->variables[$name] : $default;
     }
 
     /**

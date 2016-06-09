@@ -107,7 +107,7 @@ class HttpRouter extends Router
 
         $this->path = $path;
         $result = parent::route($path);
-        
+
         $response = $path->request()->response();
         $response->body($result);
         $response->send();
