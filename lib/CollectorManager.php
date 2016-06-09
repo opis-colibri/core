@@ -67,7 +67,7 @@ class CollectorManager
         $this->container = $container = new Container();
         $this->collectorTarget = new CollectorTarget($app);
 
-        $default = require __DIR__ . '../bin/collectors.php';
+        $default = require __DIR__ . '/../bin/collectors.php';
         $this->collectorList = $this->app->config()->read('collectors', array()) + $default;
 
         foreach ($this->collectorList as $name => $collector) {

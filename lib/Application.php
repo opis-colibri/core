@@ -459,10 +459,10 @@ class Application
         $enabled = array();
         $canonicalPacks = array();
 
+
         if (!isset($extra['installer-modules']) || !is_array($extra['installer-modules'])) {
             $extra['installer-modules'] = array();
         }
-
 
         foreach ($composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages() as $package) {
             if ($package->getType() !== 'opis-colibri-module') {
@@ -486,7 +486,7 @@ class Application
         $this->config()->write('modules.installed', $enabled);
         $this->config()->write('modules.enabled', $enabled);
 
-        $this->emit('system.init');
+        //$this->emit('system.init');
         return $this;
     }
 
