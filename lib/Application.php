@@ -429,53 +429,48 @@ class Application
     /**
      * Bootstrap method
      *
-     * @param   Closure $callback Custom bootstrap
-     *
      * @return  $this
      */
-    public function bootstrap(Closure $callback = null)
+    public function bootstrap()
     {
-        if ($callback !== null) {
-            $callback($this);
+        if(!$this->info->installMode()) {
             $this->emit('system.init');
             return $this;
         }
 
-        if($this->info->installMode()) {
-            $composer = $this->getComposer();
-            $generator = $composer->getAutoloadGenerator();
-            $extra = $composer->getPackage()->getExtra();
-            $enabled = array();
-            $canonicalPacks = array();
+        $composer = $this->getComposer();
+        $generator = $composer->getAutoloadGenerator();
+        $extra = $composer->getPackage()->getExtra();
+        $enabled = array();
+        $canonicalPacks = array();
 
-            if(!isset($extra['installer-modules']) || !is_array($extra['installer-modules'])) {
-                $extra['installer-modules'] = array();
-            }
-
-
-            foreach ($composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages() as $package){
-                if($package->getType() !== 'opis-colibri-module'){
-                    $canonicalPacks[] = $package;
-                    continue;
-                }
-                if (in_array($package->getName(), $extra['installer-modules'])){
-                    $canonicalPacks[] = $package;
-                    $enabled[] = $package->getName();
-                }
-            }
-
-            $packMap = $generator->buildPackageMap($composer->getInstallationManager(), $composer->getPackage(), $canonicalPacks);
-            $autoload = $generator->parseAutoloads($packMap, $composer->getPackage());
-            $loader = $generator->createLoader($autoload);
-
-            $this->classLoader->unregister();
-            $this->classLoader = $loader;
-            $this->classLoader->register();
-
-            $this->config()->write('modules.installed', $enabled);
-            $this->config()->write('modules.enabled', $enabled);
-
+        if(!isset($extra['installer-modules']) || !is_array($extra['installer-modules'])) {
+            $extra['installer-modules'] = array();
         }
+
+
+        foreach ($composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages() as $package){
+            if($package->getType() !== 'opis-colibri-module'){
+                $canonicalPacks[] = $package;
+                continue;
+            }
+            if (in_array($package->getName(), $extra['installer-modules'])){
+                $canonicalPacks[] = $package;
+                $enabled[] = $package->getName();
+            }
+        }
+
+        $packMap = $generator->buildPackageMap($composer->getInstallationManager(), $composer->getPackage(), $canonicalPacks);
+        $autoload = $generator->parseAutoloads($packMap, $composer->getPackage());
+        $loader = $generator->createLoader($autoload);
+
+        $this->classLoader->unregister();
+        $this->classLoader = $loader;
+        $this->classLoader->register();
+
+        $this->config()->write('modules.installed', $enabled);
+        $this->config()->write('modules.enabled', $enabled);
+
         $this->emit('system.init');
         return $this;
     }
