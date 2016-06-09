@@ -109,7 +109,7 @@ class AppInfo
     public function writableDir()
     {
         if (!isset($this->info[static::WRITABLE_DIR])) {
-            $this->info[static::WRITABLE_DIR] = $this->rootDir() . '/.app';
+            $this->info[static::WRITABLE_DIR] = $this->rootDir() . '/storage';
         }
 
         return $this->info[static::WRITABLE_DIR];
@@ -152,7 +152,7 @@ class AppInfo
     public function installMode()
     {
         if (!isset($this->info[static::INSTALL_MODE])) {
-            $this->info[static::INSTALL_MODE] = !$this->app->getEnv()->appInstalled();
+            $this->info[static::INSTALL_MODE] = !$this->app->config()->read('app.installed', false);
         }
 
         return $this->info[static::INSTALL_MODE];
