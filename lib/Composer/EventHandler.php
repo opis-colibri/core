@@ -24,13 +24,13 @@ use Composer\Script\Event;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\Application;
 
-class Command
+class EventHandler
 {
     /**
      * @param Event $event
      * @throws \Exception
      */
-    public static function handleDumpAutoload(Event $event)
+    public static function onDumpAutoload(Event $event)
     {
         $composer = $event->getComposer();
         $autoloadFile = $composer->getConfig()->get('vendor-dir') . '/autoload.php';
