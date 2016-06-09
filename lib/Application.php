@@ -486,7 +486,7 @@ class Application
         $this->config()->write('modules.installed', $enabled);
         $this->config()->write('modules.enabled', $enabled);
 
-        //$this->emit('system.init');
+        $this->emit('system.init');
         return $this;
     }
 

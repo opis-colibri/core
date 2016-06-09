@@ -22,7 +22,6 @@ namespace Opis\Colibri;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Opis\Colibri\Annotations\Collector as CollectorAnnotation;
-use Opis\Container\Container;
 use ReflectionClass;
 use ReflectionMethod;
 use RuntimeException;
@@ -65,14 +64,15 @@ class CollectorManager
     {
         $this->app = $app;
         $this->container = $container = new Container();
+        $container->setApplication($app);
         $this->collectorTarget = new CollectorTarget($app);
 
         $default = require __DIR__ . '/../bin/collectors.php';
         $this->collectorList = $this->app->config()->read('collectors', array()) + $default;
 
         foreach ($this->collectorList as $name => $collector) {
-            $container->singleton($collector['class']);
             $container->alias($collector['class'], $name);
+            $container->singleton($collector['class']);
         }
     }
 
@@ -88,7 +88,7 @@ class CollectorManager
 
     /**
      * @param bool $fresh
-     * @return \Opis\Colibri\Container
+     * @return Container
      */
     public function getContracts($fresh = false)
     {
@@ -265,10 +265,10 @@ class CollectorManager
             if (!isset($this->collectorList[$entry])) {
                 throw new RuntimeException("Unknown collector type `$type`");
             }
-            $this->cache[$entry] = $this->app->cache('app')->load($entry, function ($entry) use ($self, &$hit) {
+            $this->cache[$entry] = $this->app->cache()->load($entry, function ($entry) use ($self, &$hit) {
                 $hit = true;
                 $self->includeCollectors();
-                $instance = $self->container->make($self->collectorList[$entry]);
+                $instance = $self->container->make($entry);
                 return $self->collectorTarget->dispatch(new CollectorEntry($entry, $instance))->data();
             });
 
