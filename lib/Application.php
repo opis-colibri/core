@@ -150,9 +150,7 @@ class Application
     public function getComposer()
     {
         if ($this->composer === null) {
-            $io = new NullIO();
-            $config = Factory::createConfig($io, $this->info->rootDir());
-            $this->composer = Factory::create($io, $config->raw());
+            $this->composer = Factory::create(new NullIO(), $this->info->composerFile());
         }
 
         return $this->composer;
@@ -453,6 +451,7 @@ class Application
             return $this;
         }
 
+
         $composer = $this->getComposer();
         $generator = $composer->getAutoloadGenerator();
         $extra = $composer->getPackage()->getExtra();
@@ -469,6 +468,7 @@ class Application
                 $canonicalPacks[] = $package;
                 continue;
             }
+
             if (in_array($package->getName(), $extra['installer-modules'])) {
                 $canonicalPacks[] = $package;
                 $enabled[] = $package->getName();

@@ -31,11 +31,8 @@ class AppInfo
     const WRITABLE_DIR = 4;
     const MODULES_PATHS = 5;
     const INSTALL_MODE = 6;
-    const CLI_MODE = 7;
-    const MAIN_APP_FILE = 8;
-    const USER_APP_FILE = 9;
-    const APP_CLASS = 10;
-    const VENDOR_DIR = 11;
+    const VENDOR_DIR = 7;
+    const COMPOSER_FILE = 8;
 
     /** @var    Application */
     protected $app;
@@ -130,6 +127,21 @@ class AppInfo
         }
 
         return $this->info[static::VENDOR_DIR];
+    }
+
+    /**
+     * Composer file
+     *
+     * @return string
+     * @throws Exception
+     */
+    public function composerFile()
+    {
+        if(!isset($this->info[static::COMPOSER_FILE])) {
+            $this->info[static::COMPOSER_FILE] = $this->rootDir() . '/composer.json';
+        }
+
+        return $this->info[static::COMPOSER_FILE];
     }
 
     /**

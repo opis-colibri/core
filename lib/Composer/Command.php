@@ -32,22 +32,29 @@ class Command
      */
     public static function handleDumpAutoload(Event $event)
     {
-
         $composer = $event->getComposer();
-        $rootDir = $composer->getInstallationManager()->getInstallPath($composer->getPackage());
+        $autoloadFile = $composer->getConfig()->get('vendor-dir') . '/autoload.php';
+        $installManager = $composer->getInstallationManager();
+        $rootDir = $installManager->getInstallPath($composer->getPackage());
+
+        if(!file_exists($autoloadFile)){
+            $loader = $composer->getAutoloadGenerator()->createLoader(array());
+        } else {
+            $loader = require $autoloadFile;
+        }
 
         $appInfo = new AppInfo(array(
             AppInfo::ROOT_DIR => $rootDir
-        ), $composer);
-
-        $loader = require $composer->getConfig()->get('vendor-dir') . '/autoload.php';
+        ));
 
         $app = new Application($appInfo, $loader, $composer);
         $installMode = $app->info()->installMode();
 
         foreach ($app->getModules() as $module) {
+
             if ($installMode || !$module->isInstalled()) {
                 $module->getPackage()->setAutoload(array());
+                continue;
             } elseif ($module->isEnabled()) {
                 continue;
             }
@@ -60,20 +67,15 @@ class Command
             }
 
             $result = array();
+
             foreach (array('collect.php', 'install.php') as $item) {
                 if (in_array($item, $autoload['classmap'])) {
                     $result[] = $item;
                 }
             }
 
-            if (!empty($result)) {
-                $result = array('classmap' => $result);
-            } else {
-                $result = array();
-            }
-
+            $result = empty($result) ? array() : array('classmap' => $result);
             $module->getPackage()->setAutoload($result);
-
         }
     }
 }
