@@ -24,18 +24,18 @@ use Opis\Utils\Validator as BaseValidator;
 
 class Validator extends BaseValidator
 {
-    /** @var    \Opis\Colibri\Application */
+    /** @var    Application */
     protected $app;
 
     /**
      * Constructor
      *
-     * @param   \Opis\Colibri\Application $app
+     * @param   Application $app
      */
     public function __construct(Application $app)
     {
         $this->app = $app;
-        parent::__construct($app->collect('Validators')->getList());
+        parent::__construct($app->collector()->getValidators());
     }
 
     /**

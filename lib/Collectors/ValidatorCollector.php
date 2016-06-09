@@ -20,7 +20,6 @@
 
 namespace Opis\Colibri\Collectors;
 
-use InvalidArgumentException;
 use Opis\Colibri\Application;
 use Opis\Colibri\Collector;
 use Opis\Colibri\Serializable\CallbackList;

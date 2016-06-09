@@ -55,12 +55,10 @@ class Console
     public function commands()
     {
         $commands = array();
-        $list = $this->app->collect('Commands')->getList();
 
-        foreach ($list as $name => $builder) {
+        foreach ($this->app->collector()->getCommands() as $name => $builder) {
             try {
-                $command = call_user_func_array($builder, array());
-
+                $command = call_user_func($builder);
                 if ($command instanceof Command) {
                     $command->setApp($this->app);
                     $commands[$name] = $command;

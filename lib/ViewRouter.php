@@ -25,18 +25,18 @@ use Opis\View\ViewRouter as BaseRouter;
 
 class ViewRouter extends BaseRouter
 {
-    /** @var    \Opis\Colibri\Application */
+    /** @var    Application */
     protected $app;
 
     /**
      * Constructor
      *
-     * @param   \Opis\Colibri\Application $app
+     * @param   Application $app
      */
     public function __construct(Application $app)
     {
         $this->app = $this->param = $app;
-        parent::__construct($app->collect('Views'), $app->collect('ViewEngines'));
+        parent::__construct($app->collector()->getViews(), $app->collector()->getViewEngineResolver());
     }
 
     /**

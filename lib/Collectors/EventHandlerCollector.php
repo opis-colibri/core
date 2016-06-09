@@ -30,6 +30,7 @@ use Opis\Routing\Pattern;
  * Class EventHandlerCollector
  * @package Opis\Colibri\Collectors
  * @method RouteCollection data()
+ * @property RouteCollection $dataObject
  */
 class EventHandlerCollector extends Collector
 {

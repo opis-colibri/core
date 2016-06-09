@@ -88,7 +88,7 @@ class CollectorManager
 
     /**
      * @param bool $fresh
-     * @return Container
+     * @return \Opis\Colibri\Container
      */
     public function getContracts($fresh = false)
     {
@@ -98,11 +98,11 @@ class CollectorManager
 
     /**
      * @param bool $fresh
-     * @return Command[]
+     * @return callable[]
      */
     public function getCommands($fresh = false)
     {
-        return $this->collect('Commands', $fresh);
+        return $this->collect('Commands', $fresh)->getList();
     }
 
     /**
@@ -225,7 +225,7 @@ class CollectorManager
      */
     public function getViews($fresh = false)
     {
-        return $this->collect('Views');
+        return $this->collect('Views', $fresh);
     }
 
     /**

@@ -475,7 +475,7 @@ class Application
     public function __call($name, $arguments)
     {
         if (!isset($this->instances['methods'])) {
-            $this->instances['methods'] = $this->collect('CoreMethods')->getList();
+            $this->instances['methods'] = $this->collector()->getCoreMethods();
         }
 
         if (!isset($this->instances['methods'][$name])) {
