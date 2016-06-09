@@ -15,7 +15,7 @@
             "Opis\\Colibri\\": "lib/"
         }
     },
-    "bin": ["bin/bootstrap.php", "bin/colibri"],
+    "bin": ["bin/colibri"],
     "require": {
         "opis/database": "^3.5.1",
         "opis/container": "^2.3.1",
