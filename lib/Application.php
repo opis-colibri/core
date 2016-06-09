@@ -36,6 +36,7 @@ use Opis\Http\Request as HttpRequest;
 use Opis\HttpRouting\HttpError;
 use Opis\HttpRouting\Path;
 use Opis\Session\Session;
+use Opis\Utils\Dir;
 use Opis\Utils\Placeholder;
 use Opis\View\ViewableInterface;
 use Psr\Log\NullLogger;
@@ -306,6 +307,7 @@ class Application
         $config->write('modules.enabled', $modules);
 
         $this->executeInstallerAction($module, 'enable');
+        $this->registerAssets($module);
 
         if ($recollect) {
             $this->collector()->recollect();
@@ -335,6 +337,7 @@ class Application
         $config->write('modules.enabled', array_diff($modules, array($module->name())));
 
         $this->executeInstallerAction($module, 'disable');
+        $this->unregisterAssets($module);
 
         if ($recollect) {
             $this->collector()->recollect();
@@ -1040,6 +1043,49 @@ class Application
         if (null !== $installer = $module->installer()) {
             $this->make($installer)->{$action}($this);
         }
+    }
+
+    /**
+     * @param Module $module
+     * @return bool
+     */
+    protected function registerAssets(Module $module)
+    {
+        if (null === $assets = $module->assets()){
+            return false;
+        }
+
+        list($dirname, $target) = explode('/', $module->name());
+        $dirpath = $this->info->assetsDir() . '/' . $dirname;
+
+        if(!file_exists($dirpath) || !is_dir($dirpath)){
+            mkdir($dirpath, 0775);
+        }
+
+        if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
+            return Dir::copy($assets, $dirpath . '/' . $target);
+        }
+
+        return symlink($assets, $dirpath . '/' . $target);
+    }
+
+    /**
+     * @param Module $module
+     * @return bool
+     */
+    protected function unregisterAssets(Module $module)
+    {
+        $path = $this->info->assetsDir() . '/' . $module->name();
+
+        if (!file_exists($path)){
+            return false;
+        }
+
+        if (is_link($path)){
+            return unlink($path);
+        }
+
+        return Dir::remove($path);
     }
 
 }
