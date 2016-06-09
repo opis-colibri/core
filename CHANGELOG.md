@@ -27,7 +27,7 @@ framework is in install mode.
 
 ### v0.14.2, 2015.10.26
 
-* Addes support for PHP's built in server
+* Added support for PHP's built in server
 
 ### v0.14.1, 2015.09.24
 
@@ -46,7 +46,7 @@ framework is in install mode.
 
 ### v0.12.0, 2015.08.16
 
-* Updated dependnencies
+* Updated dependencies
 
 ### v0.11.0, 2015.08.10
 
@@ -119,7 +119,7 @@ into `opis-colibri/framework` library.
 
 ### v0.5.0, 2014.11.11
 
-* Changed welcome page desing
+* Changed welcome page design
 * Modified `Opis\Colibri\ClassLoader` class. The autoload function is now prepended.
 * Added `Opis\Colibri\Serialize\ClosureList` class
 * Overwritten the `Opis\Closure\SerializableClosure` class and altered the way closures are
