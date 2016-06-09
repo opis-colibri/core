@@ -718,7 +718,7 @@ class Application
      */
     public function log($logger = null)
     {
-        if ($logger === null && false === $logger = getenv(Env::LOG_STORAGE)) {
+        if ($logger === null && false === $logger = getenv(Env::LOGGER_STORAGE)) {
             $this->loggers[''] = new NullLogger();
         }
 

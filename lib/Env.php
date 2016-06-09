@@ -19,7 +19,8 @@ class Env
     const CONFIG_STORAGE = 'CONFIG_STORAGE';
     const SESSION_STORAGE = 'SESSION_STORAGE';
     const TRANSLATIONS_STORAGE = 'TRANSLATIONS_STORAGE';
-    const LOG_STORAGE = 'LOG_STORAGE';
+    const LOGGER_STORAGE = 'LOGGER_STORAGE';
+
     protected $app;
 
     public function __construct(Application $app)
