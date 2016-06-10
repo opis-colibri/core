@@ -53,62 +53,6 @@ class Module
     }
 
     /**
-     * Get the module's name
-     *
-     * @return  string
-     */
-    public function name()
-    {
-        return $this->get(__FUNCTION__);
-    }
-
-    protected function get($property)
-    {
-        if (array_key_exists($property, $this->info)) {
-            return $this->info[$property];
-        }
-
-        $value = null;
-        $package = $this->getPackage();
-        $extra = $package->getExtra();
-
-        switch ($property) {
-            case 'name':
-                $value = $package->getName();
-                break;
-            case 'version':
-                $value = $package->getName();
-                break;
-            case 'title':
-                $value = $this->resolveTitle($package, $extra);
-                break;
-            case 'description':
-                $value = $package->getDescription();
-                break;
-            case 'dependencies':
-                $value = $this->resolveDependencies($package, $extra);
-                break;
-            case 'dependants':
-                $value = $this->resolveDependants($package, $extra);
-                break;
-            case 'directory':
-                $value = $this->resolveDirectory($package, $extra);
-                break;
-            case 'collector':
-                $value = $this->resolveCollector($package, $extra);
-                break;
-            case 'installer':
-                $value = $this->resolveInstaller($package, $extra);
-                break;
-            case 'hidden':
-                $value = isset($extra['hidden']) ? (bool)$extra['hidden'] : false;
-                break;
-        }
-
-        return $this->info[$property] = $value;
-    }
-
-    /**
      * Get the associated package
      *
      * @return CompletePackage
@@ -129,131 +73,15 @@ class Module
     }
 
     /**
-     * Get title
-     *
-     * @param   CompletePackage $package
-     * @param   array $extra
+     * Get the module's name
      *
      * @return  string
      */
-    protected function resolveTitle($package, $extra)
+    public function name()
     {
-        $title = isset($extra['title']) ? trim($extra['title']) : '';
-
-        if (empty($title)) {
-            $name = substr($this->name, strpos($this->name, '/') + 1);
-            $name = array_map(function ($value) {
-                return strtolower($value);
-            }, explode('-', $name));
-            $title = ucfirst(implode(' ', $name));
-        }
-
-        return $title;
+        return $this->get(__FUNCTION__);
     }
 
-    /**
-     * Resolve dependencies
-     *
-     * @param   CompletePackage $package
-     * @param   array $extra
-     *
-     * @return  Module[]
-     */
-    protected function resolveDependencies($package, $extra)
-    {
-        $dependencies = array();
-        $modules = $this->app->getModules();
-
-        foreach ($package->getRequires() as $dependency) {
-            $target = $dependency->getTarget();
-            if (isset($modules[$target])) {
-                $dependencies[$target] = $modules[$target];
-            }
-        }
-
-        return $dependencies;
-    }
-
-    /**
-     * Resolve dependants
-     *
-     * @param   CompletePackage $package
-     * @param   array $extra
-     *
-     * @return  Module[]
-     */
-    protected function resolveDependants($package, $extra)
-    {
-        $dependants = array();
-        $modules = $this->app->getModules();
-
-        foreach ($modules as $name => $module) {
-            if ($name === $this->name) {
-                continue;
-            }
-            $dependencies = $module->dependencies();
-            if (isset($dependencies[$this->name])) {
-                $dependants[$name] = $module;
-            }
-        }
-
-        return $dependants;
-    }
-
-    /**
-     * Resolve directory
-     *
-     * @param   CompletePackage $package
-     * @param   array $extra
-     *
-     * @return  string
-     */
-    protected function resolveDirectory($package, $extra)
-    {
-        return $this->app->getComposer()
-            ->getInstallationManager()
-            ->getInstallPath($package);
-    }
-
-    /**
-     * Resolve collector class
-     *
-     * @param   CompletePackage $package
-     * @param   array $extra
-     *
-     * @return  string
-     */
-    protected function resolveCollector($package, $extra)
-    {
-        if (!isset($extra['collector'])) {
-            return null;
-        }
-
-        $subject = $extra['collector'];
-        $pattern = '`^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$`';
-
-        return preg_match($pattern, $subject) ? $subject : null;
-    }
-
-    /**
-     * Resolve installer class
-     *
-     * @param   CompletePackage $package
-     * @param   array $extra
-     *
-     * @return  string
-     */
-    protected function resolveInstaller($package, $extra)
-    {
-        if (!isset($extra['installer'])) {
-            return null;
-        }
-
-        $subject = $extra['installer'];
-        $pattern = '`^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$`';
-
-        return preg_match($pattern, $subject) ? $subject : null;
-    }
 
     /**
      * Get the module's version
@@ -281,6 +109,16 @@ class Module
      * @return  string
      */
     public function description()
+    {
+        return $this->get(__FUNCTION__);
+    }
+
+    /**
+     * Get the module's location
+     *
+     * @return  string
+     */
+    public function directory()
     {
         return $this->get(__FUNCTION__);
     }
@@ -511,6 +349,184 @@ class Module
     }
 
     /**
+     * @param string $property
+     * @return bool|mixed|null|Module[]|string
+     * @throws Exception
+     */
+    protected function get($property)
+    {
+        if (array_key_exists($property, $this->info)) {
+            return $this->info[$property];
+        }
+
+        $value = null;
+        $package = $this->getPackage();
+        $extra = $package->getExtra();
+
+        switch ($property) {
+            case 'name':
+                $value = $package->getName();
+                break;
+            case 'version':
+                $value = $package->getName();
+                break;
+            case 'title':
+                $value = $this->resolveTitle($package, $extra);
+                break;
+            case 'description':
+                $value = $package->getDescription();
+                break;
+            case 'dependencies':
+                $value = $this->resolveDependencies($package, $extra);
+                break;
+            case 'dependants':
+                $value = $this->resolveDependants($package, $extra);
+                break;
+            case 'directory':
+                $value = $this->resolveDirectory($package, $extra);
+                break;
+            case 'collector':
+                $value = $this->resolveCollector($package, $extra);
+                break;
+            case 'installer':
+                $value = $this->resolveInstaller($package, $extra);
+                break;
+            case 'hidden':
+                $value = isset($extra['hidden']) ? (bool)$extra['hidden'] : false;
+                break;
+        }
+
+        return $this->info[$property] = $value;
+    }
+
+    /**
+     * Get title
+     *
+     * @param   CompletePackage $package
+     * @param   array $extra
+     *
+     * @return  string
+     */
+    protected function resolveTitle($package, $extra)
+    {
+        $title = isset($extra['title']) ? trim($extra['title']) : '';
+
+        if (empty($title)) {
+            $name = substr($this->name, strpos($this->name, '/') + 1);
+            $name = array_map(function ($value) {
+                return strtolower($value);
+            }, explode('-', $name));
+            $title = ucfirst(implode(' ', $name));
+        }
+
+        return $title;
+    }
+
+    /**
+     * Resolve dependencies
+     *
+     * @param   CompletePackage $package
+     * @param   array $extra
+     *
+     * @return  Module[]
+     */
+    protected function resolveDependencies($package, $extra)
+    {
+        $dependencies = array();
+        $modules = $this->app->getModules();
+
+        foreach ($package->getRequires() as $dependency) {
+            $target = $dependency->getTarget();
+            if (isset($modules[$target])) {
+                $dependencies[$target] = $modules[$target];
+            }
+        }
+
+        return $dependencies;
+    }
+
+    /**
+     * Resolve dependants
+     *
+     * @param   CompletePackage $package
+     * @param   array $extra
+     *
+     * @return  Module[]
+     */
+    protected function resolveDependants($package, $extra)
+    {
+        $dependants = array();
+        $modules = $this->app->getModules();
+
+        foreach ($modules as $name => $module) {
+            if ($name === $this->name) {
+                continue;
+            }
+            $dependencies = $module->dependencies();
+            if (isset($dependencies[$this->name])) {
+                $dependants[$name] = $module;
+            }
+        }
+
+        return $dependants;
+    }
+
+    /**
+     * Resolve directory
+     *
+     * @param   CompletePackage $package
+     * @param   array $extra
+     *
+     * @return  string
+     */
+    protected function resolveDirectory($package, $extra)
+    {
+        return $this->app->getComposer()
+            ->getInstallationManager()
+            ->getInstallPath($package);
+    }
+
+    /**
+     * Resolve collector class
+     *
+     * @param   CompletePackage $package
+     * @param   array $extra
+     *
+     * @return  string
+     */
+    protected function resolveCollector($package, $extra)
+    {
+        if (!isset($extra['collector'])) {
+            return null;
+        }
+
+        $subject = $extra['collector'];
+        $pattern = '`^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$`';
+
+        return preg_match($pattern, $subject) ? $subject : null;
+    }
+
+    /**
+     * Resolve installer class
+     *
+     * @param   CompletePackage $package
+     * @param   array $extra
+     *
+     * @return  string
+     */
+    protected function resolveInstaller($package, $extra)
+    {
+        if (!isset($extra['installer'])) {
+            return null;
+        }
+
+        $subject = $extra['installer'];
+        $pattern = '`^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$`';
+
+        return preg_match($pattern, $subject) ? $subject : null;
+    }
+
+    /**
      * Resolve assets
      *
      * @param   CompletePackage $package
@@ -528,13 +544,4 @@ class Module
         return is_dir($directory) ? $directory : null;
     }
 
-    /**
-     * Get the module's location
-     *
-     * @return  string
-     */
-    public function directory()
-    {
-        return $this->get(__FUNCTION__);
-    }
 }
