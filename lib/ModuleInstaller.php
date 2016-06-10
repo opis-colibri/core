@@ -26,19 +26,9 @@ abstract class ModuleInstaller
     /**
      * Constructor
      */
-    final protected function __construct()
+    final public function __construct()
     {
 
-    }
-
-    /**
-     * Factory
-     *
-     * @return  \static
-     */
-    final public static function instance()
-    {
-        return new static();
     }
 
     /**
