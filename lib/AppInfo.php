@@ -29,7 +29,7 @@ class AppInfo
     const PUBLIC_DIR = 2;
     const ASSETS_DIR = 3;
     const WRITABLE_DIR = 4;
-    const MODULES_PATHS = 5;
+    const CLI_MODE = 5;
     const INSTALL_MODE = 6;
     const VENDOR_DIR = 7;
     const COMPOSER_FILE = 8;
