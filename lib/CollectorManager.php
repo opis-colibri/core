@@ -203,11 +203,11 @@ class CollectorManager
 
     /**
      * @param bool $fresh
-     * @return callable[]
+     * @return string[]
      */
     public function getValidators($fresh = false)
     {
-        return $this->collect('Validators', $fresh)->getList();
+        return $this->collect('Validators', $fresh);
     }
 
     /**

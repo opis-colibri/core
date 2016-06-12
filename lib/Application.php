@@ -37,7 +37,7 @@ use Opis\HttpRouting\HttpError;
 use Opis\HttpRouting\Path;
 use Opis\Session\Session;
 use Opis\Utils\Dir;
-use Opis\Utils\Placeholder;
+use Opis\Validation\Placeholder;
 use Opis\View\ViewableInterface;
 use Psr\Log\NullLogger;
 use SessionHandlerInterface;
@@ -127,6 +127,9 @@ class Application
 
     /** @var  array */
     protected $variables;
+
+    /** @var  Validator */
+    protected $validator;
 
     /**
      * Constructor
@@ -439,6 +442,20 @@ class Application
         }
 
         return $this->placeholderInstance;
+    }
+
+    /**
+     * Returns validator instance
+     *
+     * @return  Validator
+     */
+    public function getValidator()
+    {
+        if ($this->validator === null){
+            $this->validator = new Validator($this);
+        }
+
+        return $this->validator;
     }
 
 
@@ -972,16 +989,6 @@ class Application
     public function csrfValidate($token)
     {
         return $this->getCSRFToken()->validate($token);
-    }
-
-    /**
-     * Crates a new validator
-     *
-     * @return  \Opis\Colibri\Validator
-     */
-    public function validator()
-    {
-        return new Validator($this);
     }
 
     /**

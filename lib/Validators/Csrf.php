@@ -18,55 +18,59 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri;
+namespace Opis\Colibri\Validators;
 
-use Opis\Colibri\Validators\ValidatorCollection;
-use Opis\Validation\Validator as BaseValidator;
-use Opis\Validation\DefaultValidatorTrait;
+use Opis\Colibri\Application;
+use Opis\Validation\ValidatorInterface;
 
-class Validator extends BaseValidator
+class Csrf implements ValidatorInterface
 {
-    use DefaultValidatorTrait;
 
-    /** @var    Application */
+    /** @var Application */
     protected $app;
 
-    /**
-     * Constructor
-     *
-     * @param   Application $app
-     */
     public function __construct(Application $app)
     {
         $this->app = $app;
-        parent::__construct(new ValidatorCollection($app), $app->getPlaceholder());
     }
 
     /**
+     * Validator's name
+     *
+     * @return string
+     */
+    public function name()
+    {
+        return 'csrf';
+    }
+
+    /**
+     * @return string
+     */
+    public function getError()
+    {
+        return 'Invalid CSRF token';
+    }
+
+    /**
+     * @param array $arguments
      * @return array
      */
-    public function getErrors()
+    public function getFormattedArgs(array $arguments)
     {
-        $errors = array();
-
-        foreach (parent::getErrors() as $key => $value) {
-            $errors[$key] = $this->app->t($value);
-        }
-
-        return $errors;
+        return array();
     }
 
-
     /**
-     * @return $this
+     * Validate
+     *
+     * @param mixed $value
+     * @param array $arguments
+     * @return bool
      */
-    public function csrf()
+    public function validate($value, array $arguments)
     {
-        $this->stack[] = array(
-            'name' => __FUNCTION__,
-            'arguments' => array(),
-        );
-        return $this;
+        return $this->app->csrfValidate($value);
     }
 
 }

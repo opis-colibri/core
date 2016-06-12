@@ -39,18 +39,21 @@ class ValidatorCollector extends Collector
      */
     public function __construct(Application $app)
     {
-        parent::__construct($app, new CallbackList());
+        parent::__construct($app, array());
     }
 
 
     /**
      * @param string $name
-     * @param callable $callback
+     * @param string $class
      * @return $this
      */
-    public function register($name, callable $callback)
+    public function register($name, $class)
     {
-        $this->dataObject->add($name, $callback);
+        if (class_exists($class)) {
+            $this->dataObject[$name] = $class;
+        }
+
         return $this;
     }
 }
