@@ -52,7 +52,6 @@ class ValidatorCollection extends  BaseCollection
     /**
      * ValidatorCollection constructor.
      * @param Application $app
-     * @param array $classes
      */
     public function __construct(Application $app)
     {
