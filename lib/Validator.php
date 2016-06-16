@@ -20,12 +20,14 @@
 
 namespace Opis\Colibri;
 
+use Opis\Colibri\Components\ApplicationTrait;
 use Opis\Colibri\Validators\ValidatorCollection;
 use Opis\Validation\Validator as BaseValidator;
 use Opis\Validation\DefaultValidatorTrait;
 
 class Validator extends BaseValidator
 {
+    use ApplicationTrait;
     use DefaultValidatorTrait;
 
     /** @var    Application */
@@ -43,6 +45,14 @@ class Validator extends BaseValidator
     }
 
     /**
+     * @return Application
+     */
+    public function getApp(): Application
+    {
+        return $this->app;
+    }
+
+    /**
      * @return array
      */
     public function getErrors()
@@ -56,11 +66,10 @@ class Validator extends BaseValidator
         return $errors;
     }
 
-
     /**
-     * @return $this
+     * @return self
      */
-    public function csrf()
+    public function csrf(): self
     {
         $this->stack[] = array(
             'name' => __FUNCTION__,
