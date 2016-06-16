@@ -18,20 +18,21 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Stubs;
+namespace Opis\Colibri\Components;
 
-use Opis\Config\Config;
+use Opis\Cache\Cache;
 
-trait ConfigTrait
+trait CacheTrait
 {
     use ApplicationTrait;
 
     /**
      * @param string|null $storage
-     * @return Config
+     * @return Cache
      */
-    public function config(string $storage = null): Config
+    public function cache(string $storage = null): Cache
     {
-        return $this->getApp()->config($storage);
+        return $this->getApp()->cache($storage);
     }
+
 }

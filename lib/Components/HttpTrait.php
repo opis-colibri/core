@@ -18,7 +18,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Stubs;
+namespace Opis\Colibri\Components;
 
 
 use Opis\Http\Request;

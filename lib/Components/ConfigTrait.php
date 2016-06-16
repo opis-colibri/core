@@ -18,20 +18,20 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Stubs;
+namespace Opis\Colibri\Components;
 
+use Opis\Config\Config;
 
-trait ContractTrait
+trait ConfigTrait
 {
     use ApplicationTrait;
 
     /**
-     * @param string $contract
-     * @param array $arguments
-     * @return mixed
+     * @param string|null $storage
+     * @return Config
      */
-    public function make(string $contract, array $arguments = array())
+    public function config(string $storage = null): Config
     {
-        return $this->getApp()->make($contract, $arguments);
+        return $this->getApp()->config($storage);
     }
 }

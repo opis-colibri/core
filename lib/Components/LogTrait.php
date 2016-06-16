@@ -18,14 +18,20 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Stubs;
+namespace Opis\Colibri\Components;
 
-use Opis\Colibri\Application;
+use Psr\Log\LoggerInterface;
 
-trait ApplicationTrait
+trait LogTrait
 {
+    use ApplicationTrait;
+
     /**
-     * @return Application
+     * @param string|null $logger
+     * @return LoggerInterface
      */
-    abstract public function getApp(): Application;
+    public function log(string $logger = null): LoggerInterface
+    {
+        return $this->getApp()->log($logger);
+    }
 }

@@ -18,21 +18,20 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Stubs;
+namespace Opis\Colibri\Components;
 
 
-use Opis\Session\Session;
-
-trait SessionTrait
+trait ContractTrait
 {
     use ApplicationTrait;
 
     /**
-     * @param string|null $storage
-     * @return Session
+     * @param string $contract
+     * @param array $arguments
+     * @return mixed
      */
-    public function session(string $storage = null): Session
+    public function make(string $contract, array $arguments = array())
     {
-        return $this->getApp()->session($storage);
+        return $this->getApp()->make($contract, $arguments);
     }
 }

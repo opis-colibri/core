@@ -18,20 +18,21 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Stubs;
+namespace Opis\Colibri\Components;
 
-use Psr\Log\LoggerInterface;
 
-trait LogTrait
+use Opis\Session\Session;
+
+trait SessionTrait
 {
     use ApplicationTrait;
 
     /**
-     * @param string|null $logger
-     * @return LoggerInterface
+     * @param string|null $storage
+     * @return Session
      */
-    public function log(string $logger = null): LoggerInterface
+    public function session(string $storage = null): Session
     {
-        return $this->getApp()->log($logger);
+        return $this->getApp()->session($storage);
     }
 }

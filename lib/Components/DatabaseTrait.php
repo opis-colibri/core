@@ -18,31 +18,40 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Stubs;
+namespace Opis\Colibri\Components;
 
+use Opis\Database\Connection;
+use Opis\Database\Database;
+use Opis\Database\Schema;
 
-use Opis\Colibri\Event;
-
-trait EventTrait
+trait DatabaseTrait
 {
     use ApplicationTrait;
 
     /**
-     * @param string $event
-     * @param bool $cancelable
-     * @return Event
+     * @param string|null $name
+     * @return Connection
      */
-    public function emit(string $event, bool $cancelable = false): Event
+    public function connection(string $name = null): Connection
     {
-        return $this->getApp()->emit($event, $cancelable);
+        return $this->getApp()->connection($name);
     }
 
     /**
-     * @param Event $event
-     * @return Event
+     * @param string|null $connection
+     * @return Database
      */
-    public function dispatch(Event $event): Event
+    public function db(string $connection = null): Database
     {
-        return $this->getApp()->dispatch($event);
+        return $this->getApp()->database($connection);
+    }
+
+    /**
+     * @param string|null $connection
+     * @return Schema
+     */
+    public function schema(string $connection = null): Schema
+    {
+        return $this->getApp()->schema($connection);
     }
 }
