@@ -15,7 +15,6 @@
             "Opis\\Colibri\\": "lib/"
         }
     },
-    "bin": ["bin/colibri"],
     "require": {
         "php": ">=7.0.0",
         "opis/database": "^3.5.1",
