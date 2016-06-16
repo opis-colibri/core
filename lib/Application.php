@@ -131,6 +131,9 @@ class Application
     /** @var  Validator */
     protected $validator;
 
+    /** @var  static */
+    protected static $instance;
+
     /**
      * Constructor
      *
@@ -144,6 +147,15 @@ class Application
         $this->composer = $composer;
         $this->classLoader = $loader;
         $this->info->setApplication($this);
+        static::$instance = $this;
+    }
+
+    /**
+     * @return Application
+     */
+    public static function getGlobal()
+    {
+        return static::$instance;
     }
 
     /**

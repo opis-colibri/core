@@ -20,7 +20,6 @@
 
 namespace Opis\Colibri;
 
-
 abstract class Collector
 {
     /** @var    Application */
