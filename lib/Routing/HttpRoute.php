@@ -18,8 +18,9 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri;
+namespace Opis\Colibri\Routing;
 
+use Opis\Colibri\Controller;
 use Opis\HttpRouting\Route;
 
 class HttpRoute extends Route

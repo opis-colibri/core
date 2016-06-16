@@ -18,19 +18,19 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri;
+namespace Opis\Colibri\Routing;
 
 use Opis\HttpRouting\RouteCollection;
 
 class HttpRouteCollection extends RouteCollection
 {
-    /** @var    \Opis\Colibri\HttpRouter */
+    /** @var    HttpRouter */
     protected $router;
 
     /**
      * Get the router
      *
-     * @return  \Opis\Colibri\HttpRouter
+     * @return  HttpRouter
      */
     public function getRouter()
     {
@@ -40,7 +40,7 @@ class HttpRouteCollection extends RouteCollection
     /**
      * Set the router
      *
-     * @param   \Opis\Colibri\HttpRouter $router
+     * @param   HttpRouter $router
      *
      * @return  $this
      */

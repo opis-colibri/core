@@ -18,8 +18,9 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri;
+namespace Opis\Colibri\Routing;
 
+use Opis\Colibri\Application;
 use Opis\Http\Error\AccessDenied;
 use Opis\Http\Error\NotFound;
 use Opis\HttpRouting\Path;

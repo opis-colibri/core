@@ -22,6 +22,7 @@ namespace Opis\Colibri;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Opis\Colibri\Annotations\Collector as CollectorAnnotation;
+use Opis\Colibri\Routing\HttpRouteCollection;
 use ReflectionClass;
 use ReflectionMethod;
 use RuntimeException;

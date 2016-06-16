@@ -28,6 +28,8 @@ use Composer\Package\CompletePackage;
 use Opis\Cache\Cache;
 use Opis\Cache\Storage\Memory as EphemeralCacheStorage;
 use Opis\Colibri\Composer\CLI;
+use Opis\Colibri\Routing\HttpRouter;
+use Opis\Colibri\Routing\ViewRouter;
 use Opis\Config\Config;
 use Opis\Config\Storage\Memory as EphemeralConfigStorage;
 use Opis\Container\Container;
