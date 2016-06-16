@@ -21,11 +21,14 @@
 namespace Opis\Colibri;
 
 use Exception;
+use Opis\Colibri\Components\ApplicationTrait;
 use Opis\View\View as OpisView;
 
 class View extends OpisView
 {
-    /** @var    \Opis\Colibri\Application */
+    use ApplicationTrait;
+
+    /** @var    Application */
     protected $app;
 
     /** @var    string */
@@ -34,22 +37,21 @@ class View extends OpisView
     /**
      * Constructor
      *
-     * @param   \Opis\Colibri\Application $app
+     * @param   Application $app
      * @param   string $name
      * @param   array $arguments (optional)
      */
-    public function __construct(Application $app, $name, array $arguments = array())
+    public function __construct(Application $app, string $name, array $arguments = array())
     {
         $this->app = $app;
         parent::__construct($name, $arguments);
     }
 
+
     /**
-     * Get application
-     *
-     * @return  \Opis\Colibri\Application
+     * @return Application
      */
-    public function app()
+    public function getApp(): Application
     {
         return $this->app;
     }
@@ -60,9 +62,9 @@ class View extends OpisView
      * @param   string $name
      * @param   mixed $value
      *
-     * @return  $this
+     * @return  self
      */
-    public function set($name, $value)
+    public function set(string $name, $value): self
     {
         $this->arguments[$name] = $value;
         return $this;
@@ -75,7 +77,7 @@ class View extends OpisView
      *
      * @return  boolean
      */
-    public function has($name)
+    public function has(string $name): bool
     {
         return isset($this->arguments[$name]);
     }
@@ -88,9 +90,9 @@ class View extends OpisView
      *
      * @return  mixed
      */
-    public function get($name, $default = null)
+    public function get(string $name, $default = null)
     {
-        return isset($this->arguments[$name]) ? $this->arguments[$name] : $default;
+        return $this->arguments[$name] ?? $default;
     }
 
     /**
@@ -102,15 +104,13 @@ class View extends OpisView
     {
         if ($this->renderedContent === null) {
             try {
-                $this->renderedContent = $this->app->render($this);
+                $this->renderedContent = (string) $this->app->render($this);
 
-                if (!is_string($this->renderedContent)) {
-                    $this->renderedContent = (string)$this->renderedContent;
-                }
             } catch (Exception $e) {
-                $this->renderedContent = (string)$e;
+                $this->renderedContent = (string) $e;
             }
         }
+
         return $this->renderedContent;
     }
 }

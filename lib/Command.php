@@ -20,19 +20,30 @@
 
 namespace Opis\Colibri;
 
+use Opis\Colibri\Components\ApplicationTrait;
 use Symfony\Component\Console\Command\Command as ConsoleCommand;
 
 class Command extends ConsoleCommand
 {
-    /** @var    \Opis\Colibri\Application */
+    use ApplicationTrait;
+
+    /** @var Application*/
     protected $app;
 
     /**
      *
-     * @param   \Opis\Colibri\Application $app
+     * @param Application $app
      */
     public function setApp(Application $app)
     {
         $this->app = $app;
+    }
+
+    /**
+     * @return Application
+     */
+    public function getApp(): Application
+    {
+        return $this->app;
     }
 }

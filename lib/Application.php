@@ -552,44 +552,6 @@ class Application
     }
 
     /**
-     * Returns an instance of the specified contract or class
-     *
-     * @param   string $contract Contract name or class name
-     * @param   array $arguments (optional) Arguments that will be passed to the contract constructor
-     *
-     * @return  mixed
-     */
-    public function __invoke($contract, array $arguments = array())
-    {
-        return $this->getContainer()->make($contract, $arguments);
-    }
-
-    /**
-     * Call a user defined method
-     *
-     * @param   string $name Method's name
-     * @param   array $arguments Method's arguments
-     *
-     * @return  mixed
-     *
-     * @throws \RuntimeException
-     */
-    public function __call($name, $arguments)
-    {
-        if ($this->coreMethods === null) {
-            $this->coreMethods = $this->collector()->getCoreMethods();
-        }
-
-        if (!isset($this->coreMethods[$name])) {
-            throw new \RuntimeException("Unknown core method `$name`");
-        }
-
-        $arguments[] = $this;
-
-        return call_user_func_array($this->coreMethods[$name], $arguments);
-    }
-
-    /**
      * Get information about this application
      *
      * @return  AppInfo

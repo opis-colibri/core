@@ -21,8 +21,18 @@
 namespace Opis\Colibri;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Opis\Cache\StorageInterface as CacheStorageInterface;
 use Opis\Colibri\Annotations\Collector as CollectorAnnotation;
 use Opis\Colibri\Routing\HttpRouteCollection;
+use Opis\Config\StorageInterface as ConfigStorageInterface;
+use Opis\Database\Connection;
+use Opis\Database\Database;
+use Opis\Events\RouteCollection as EventsRouteCollection;
+use Opis\Routing\Collections\RouteCollection as AliasRouteCollection;
+use Opis\Routing\Collections\RouteCollection as ViewRouteCollection;
+use Opis\Routing\DispatcherResolver;
+use Opis\View\EngineResolver;
+use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use RuntimeException;
@@ -80,9 +90,9 @@ class CollectorManager
     /**
      * @param string $name
      * @param bool $fresh
-     * @return \Opis\Cache\StorageInterface
+     * @return CacheStorageInterface
      */
-    public function getCacheStorage($name, $fresh = false)
+    public function getCacheStorage(string $name, bool $fresh = false): CacheStorageInterface
     {
         return $this->collect('CacheStorages', $fresh)->get($this->app, $name);
     }
@@ -91,7 +101,7 @@ class CollectorManager
      * @param bool $fresh
      * @return Container
      */
-    public function getContracts($fresh = false)
+    public function getContracts(bool $fresh = false): Container
     {
         return $this->collect('Contracts', $fresh);
     }
@@ -101,7 +111,7 @@ class CollectorManager
      * @param bool $fresh
      * @return callable[]
      */
-    public function getCommands($fresh = false)
+    public function getCommands(bool $fresh = false): array
     {
         return $this->collect('Commands', $fresh)->getList();
     }
@@ -109,9 +119,9 @@ class CollectorManager
     /**
      * @param string $name
      * @param bool $fresh
-     * @return \Opis\Config\StorageInterface
+     * @return ConfigStorageInterface
      */
-    public function getConfigStorage($name, $fresh = false)
+    public function getConfigStorage(string $name, bool $fresh = false): ConfigStorageInterface
     {
         return $this->collect('ConfigStorages', $fresh)->get($this->app, $name);
     }
@@ -119,9 +129,9 @@ class CollectorManager
     /**
      * @param string $name
      * @param bool $fresh
-     * @return \Opis\Database\Connection
+     * @return Connection
      */
-    public function getConnection($name, $fresh = false)
+    public function getConnection(string $name, bool $fresh = false): Connection
     {
         return $this->collect('Connections', $fresh)->get($name);
     }
@@ -129,37 +139,27 @@ class CollectorManager
     /**
      * @param string $name
      * @param bool $fresh
-     * @return \Opis\Database\Database
+     * @return Database
      */
-    public function getDatabase($name, $fresh = false)
+    public function getDatabase(string $name, bool $fresh = false): Database
     {
         return $this->collect('Connections', $fresh)->database($name);
     }
 
-
     /**
      * @param bool $fresh
-     * @return callable[]
+     * @return DispatcherResolver
      */
-    public function getCoreMethods($fresh = false)
-    {
-        return $this->collect('CoreMethods', $fresh)->getList();
-    }
-
-    /**
-     * @param bool $fresh
-     * @return \Opis\HttpRouting\DispatcherResolver
-     */
-    public function getDispatcherResolver($fresh = false)
+    public function getDispatcherResolver(bool $fresh = false): DispatcherResolver
     {
         return $this->collect('Dispatchers', $fresh);
     }
 
     /**
      * @param bool $fresh
-     * @return \Opis\Events\RouteCollection
+     * @return EventsRouteCollection
      */
-    public function getEventHandlers($fresh = false)
+    public function getEventHandlers(bool $fresh = false): EventsRouteCollection
     {
         return $this->collect('EventHandlers', $fresh);
     }
@@ -167,18 +167,18 @@ class CollectorManager
     /**
      * @param string $name
      * @param bool $fresh
-     * @return \Psr\Log\LoggerInterface
+     * @return LoggerInterface
      */
-    public function getLogger($name, $fresh = false)
+    public function getLogger(string $name, bool $fresh = false): LoggerInterface
     {
         return $this->collect('Loggers', $fresh)->get($name);
     }
 
     /**
      * @param bool $fresh
-     * @return \Opis\Routing\Collections\RouteCollection
+     * @return AliasRouteCollection
      */
-    public function getRouteAliases($fresh = false)
+    public function getRouteAliases(bool $fresh = false): AliasRouteCollection
     {
         return $this->collect('RouteAliases', $fresh);
     }
@@ -187,7 +187,7 @@ class CollectorManager
      * @param bool $fresh
      * @return HttpRouteCollection
      */
-    public function getRoutes($fresh = false)
+    public function getRoutes(bool $fresh = false): HttpRouteCollection
     {
         return $this->collect('Routes', $fresh);
     }
@@ -197,7 +197,7 @@ class CollectorManager
      * @param bool $fresh
      * @return \SessionHandlerInterface
      */
-    public function getSessionStorage($name, $fresh = false)
+    public function getSessionStorage(string $name, bool $fresh = false): \SessionHandlerInterface
     {
         return $this->collect('SessionStorages', $fresh)->get($name);
     }
@@ -206,7 +206,7 @@ class CollectorManager
      * @param bool $fresh
      * @return string[]
      */
-    public function getValidators($fresh = false)
+    public function getValidators(bool $fresh = false): array
     {
         return $this->collect('Validators', $fresh);
     }
@@ -215,25 +215,25 @@ class CollectorManager
      * @param bool $fresh
      * @return array
      */
-    public function getVariables($fresh = false)
+    public function getVariables(bool $fresh = false): array
     {
         return $this->collect('Variables', $fresh)->getList();
     }
 
     /**
      * @param bool $fresh
-     * @return \Opis\View\RouteCollection
+     * @return ViewRouteCollection
      */
-    public function getViews($fresh = false)
+    public function getViews(bool $fresh = false): ViewRouteCollection
     {
         return $this->collect('Views', $fresh);
     }
 
     /**
      * @param bool $fresh
-     * @return \Opis\View\EngineResolver
+     * @return EngineResolver
      */
-    public function getViewEngineResolver($fresh = false)
+    public function getViewEngineResolver(bool $fresh = false): EngineResolver
     {
         return $this->collect('ViewEngines', $fresh);
     }
@@ -242,7 +242,7 @@ class CollectorManager
      * @param bool $fresh
      * @return mixed
      */
-    public function getTranslations($fresh = true)
+    public function getTranslations(bool $fresh = true)
     {
         return $this->collect('Translations', $fresh);
     }
@@ -252,7 +252,7 @@ class CollectorManager
      * @param bool $fresh
      * @return mixed
      */
-    public function collect($type, $fresh = false)
+    public function collect(string $type, bool $fresh = false)
     {
         $entry = strtolower($type);
 
@@ -286,9 +286,9 @@ class CollectorManager
      *
      * @param bool $fresh (optional)
      *
-     * @return boolean
+     * @return bool
      */
-    public function recollect($fresh = true)
+    public function recollect(bool $fresh = true): bool
     {
         if (!$this->app->cache('app')->clear()) {
             return false;
@@ -312,7 +312,7 @@ class CollectorManager
      * @param string $class
      * @param string $description
      */
-    public function register($name, $class, $description)
+    public function register(string $name, string $class, string $description)
     {
         $this->app->config()->write('collectors.' . $name, array(
             'class' => $class,
@@ -328,7 +328,7 @@ class CollectorManager
      *
      * @param string $name
      */
-    public function unregister($name)
+    public function unregister(string $name)
     {
         $this->app->config()->delete('collectors.' . $name);
     }

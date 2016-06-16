@@ -38,7 +38,7 @@ class Controller
      * @param   string $method
      * @param   boolean $static (optional)
      */
-    public function __construct($class, $method, $static = false)
+    public function __construct(string $class, string $method, bool $static = false)
     {
         $this->className = $class;
         $this->method = $method;
@@ -58,7 +58,7 @@ class Controller
      *
      * @return  string
      */
-    public function getClass()
+    public function getClass(): string
     {
         return $this->className;
     }
@@ -68,7 +68,7 @@ class Controller
      *
      * @return  string
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
@@ -78,7 +78,7 @@ class Controller
      *
      * @return  boolean
      */
-    public function isStatic()
+    public function isStatic(): bool 
     {
         return $this->isStatic;
     }

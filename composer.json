@@ -18,7 +18,7 @@
     "bin": ["bin/colibri"],
     "require": {
         "opis/database": "^3.5.1",
-        "opis/container": "^2.3.1",
+        "opis/container": "3.0.x-dev",
         "opis/http": "^2.0.0",
         "opis/http-routing": "^4.0.0",
         "opis/view": "^4.1.1",

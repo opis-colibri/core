@@ -20,31 +20,34 @@
 
 namespace Opis\Colibri;
 
+use Opis\Colibri\Components\ApplicationTrait;
 use Opis\Events\Event as BaseEvent;
 
 class Event extends BaseEvent
 {
+    use ApplicationTrait;
+
     /** @var    Application */
     protected $app;
 
+
     /**
+     * Event constructor
      *
-     * @param   Application $app
-     * @param   string $name
-     * @param   boolean $cancelable (optional)
+     * @param Application $app
+     * @param string $name
+     * @param bool $cancelable
      */
-    public function __construct(Application $app, $name, $cancelable = false)
+    public function __construct(Application $app, string $name, bool $cancelable = false)
     {
         $this->app = $app;
         parent::__construct($name, $cancelable);
     }
 
     /**
-     * Get the app
-     *
-     * @return  \Opis\Colibri\Application
+     * @return Application
      */
-    public function app()
+    public function getApp(): Application
     {
         return $this->app;
     }

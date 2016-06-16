@@ -27,7 +27,7 @@ class CollectorEntry extends BaseEvent
     /** @var Collector */
     protected $collector;
 
-    public function __construct($name, Collector $collector)
+    public function __construct(string $name, Collector $collector)
     {
         $this->collector = $collector;
         parent::__construct($name);
@@ -36,7 +36,7 @@ class CollectorEntry extends BaseEvent
     /**
      * @return  Collector
      */
-    public function getCollector()
+    public function getCollector(): Collector
     {
         return $this->collector;
     }
