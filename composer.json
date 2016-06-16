@@ -17,6 +17,7 @@
     },
     "bin": ["bin/colibri"],
     "require": {
+        "php": ">=7.0.0",
         "opis/database": "^3.5.1",
         "opis/container": "3.0.x-dev",
         "opis/http": "^2.0.0",
