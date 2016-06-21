@@ -30,6 +30,7 @@ use Opis\Cache\Storage\Memory as EphemeralCacheStorage;
 use Opis\Colibri\Composer\CLI;
 use Opis\Colibri\Routing\HttpRouter;
 use Opis\Colibri\Routing\ViewApp;
+use Opis\Colibri\Serializable\ControllerCallback;
 use Opis\Config\Config;
 use Opis\Config\Storage\Memory as EphemeralConfigStorage;
 use Opis\Container\Container;
@@ -962,11 +963,11 @@ class Application
      * @param   string $method
      * @param   boolean $static (optional)
      *
-     * @return  Controller
+     * @return  ControllerCallback
      */
     public function controller($class, $method, $static = false)
     {
-        return new Controller($class, $method, $static);
+        return new ControllerCallback($class, $method, $static);
     }
 
     /**

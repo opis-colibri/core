@@ -20,69 +20,56 @@
 
 namespace Opis\Colibri\Routing;
 
-use Opis\Colibri\Controller;
+use Opis\Colibri\Serializable\ControllerCallback;
 use Opis\Routing\Route;
 
+/**
+ * Class HttpRoute
+ * @package Opis\Colibri\Routing
+ *
+ * @method  \Opis\Colibri\Routing\HttpRouteCollection getRouteCollection(): RouteCollection
+ */
 class HttpRoute extends Route
 {
     protected $resolvedAction;
 
-    /**
-     * Get the route's callback
-     *
-     * @return  callable
-     *
-     * @throws \RuntimeException
-     */
-    public function getAction()
+    public function getAction(): callable
     {
-        if ($this->resolvedAction === null) {
-            if ($this->routeAction instanceof Controller) {
-
-                /** @var HttpRouter $router */
-                $router = $this->get('#collection')->getRouter();
-                $class = $className = $this->routeAction->getClass();
-                $method = $methodName = $this->routeAction->getMethod();
-
-                $values = $this->compile()->bind($router->getPath(), $router->getSpecialValues());
-
-
-                if ($method[0] === '@') {
-                    $method = substr($method, 1);
-                    if (!isset($values[$method])) {
-                        throw new \RuntimeException("Unknown controller variable `$method`");
-                    }
-
-                    $method = $values[$method]->value();
-
-                    if (!is_string($method)) {
-                        throw new \RuntimeException("`$methodName` must be resolved to a string");
-                    }
-                }
-
-                if ($class[0] === '@') {
-                    $class = substr($class, 1);
-                    if (!isset($values[$class])) {
-                        throw new \RuntimeException("Unknown controller variable `$class`");
-                    }
-
-                    $class = $values[$class]->value();
-
-                    if (!is_string($class)) {
-                        throw new \RuntimeException("`$className` must be resolved to a string");
-                    }
-                }
-
-                if (!$this->routeAction->isStatic()) {
-                    $class = $router->app()->make($class);
-                }
-
-                $this->resolvedAction = array($class, $method);
-            } else {
-                $this->resolvedAction = $this->routeAction;
-            }
+        if($this->resolvedAction !== null){
+            return $this->resolvedAction;
         }
 
-        return $this->resolvedAction;
+        if(!($this->routeAction instanceof ControllerCallback)){
+            return $this->resolvedAction = $this->routeAction;
+        }
+
+        /** @var ControllerCallback $callback */
+        $callback = $this->routeAction;
+        $router = $this->getRouteCollection()->getRouter();
+        $values = $router->bind($router->extract($router->getPath(), $this), $this->getBindings());
+        $method = $callback->getMethod();
+        $class = $callback->getClass();
+
+        if($class[0] === '@'){
+            $class = substr($class, 1);
+            if(!isset($values[$class])){
+                throw new \RuntimeException("Unknown controller variable `$class`");
+            }
+            $class = $values[$class]->value();
+        }
+
+        if($method[0] === '@'){
+            $method = substr($method, 1);
+            if(!isset($values[$method])){
+                throw new \RuntimeException("Unknown controller variable `$method`");
+            }
+            $method = $values[$method]->value();
+        }
+
+        if(!$callback->isStatic()){
+            $class = $router->getApp()->getContainer()->make($class);
+        }
+
+        return $this->resolvedAction = [$class, $method];
     }
 }
