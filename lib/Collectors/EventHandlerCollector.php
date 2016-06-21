@@ -22,9 +22,8 @@ namespace Opis\Colibri\Collectors;
 
 use Opis\Colibri\Application;
 use Opis\Colibri\Collector;
-use Opis\Events\EventHandler;
 use Opis\Events\RouteCollection;
-use Opis\Routing\Pattern;
+use Opis\Routing\Route;
 
 /**
  * Class EventHandlerCollector
@@ -52,13 +51,12 @@ class EventHandlerCollector extends Collector
      * @param   callable $callback A callback that will be executed
      * @param   int $priority Event handler's priority
      *
-     * @return  \Opis\Events\EventHandler
+     * @return  Route
      */
-    public function handle($event, callable $callback, $priority = 0)
+    public function handle(string $event, callable $callback, int $priority = 0): Route
     {
-        $handler = new EventHandler(new Pattern($event), $callback);
-        $this->dataObject[] = $handler;
-        $this->dataObject->sort();
+        $handler = new Route($event, $callback);
+        $this->dataObject->addRoute($handler)->sort();
         return $handler->set('priority', $priority);
     }
 }

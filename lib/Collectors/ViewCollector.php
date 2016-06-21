@@ -22,7 +22,7 @@ namespace Opis\Colibri\Collectors;
 
 use Opis\Colibri\Application;
 use Opis\Colibri\Collector;
-use Opis\View\Route;
+use Opis\Routing\Route;
 use Opis\View\RouteCollection;
 
 /**
@@ -54,10 +54,10 @@ class ViewCollector extends Collector
      *
      * @return  Route
      */
-    public function handle($pattern, $resolver, $priority = 0)
+    public function handle(string $pattern, callable $resolver, int $priority = 0)
     {
-        $route = new Route($pattern, $resolver, $priority);
-        $this->dataObject[] = $route;
-        return $route;
+        $route = new Route($pattern, $resolver);
+        $this->dataObject->addRoute($route);
+        return $route->set('priority', $priority);
     }
 }

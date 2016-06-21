@@ -32,7 +32,7 @@ class HttpRouteCollection extends RouteCollection
      *
      * @return  HttpRouter
      */
-    public function getRouter()
+    public function getRouter(): HttpRouter
     {
         return $this->router;
     }
@@ -44,7 +44,7 @@ class HttpRouteCollection extends RouteCollection
      *
      * @return  $this
      */
-    public function setRouter(HttpRouter $router)
+    public function setRouter(HttpRouter $router): self
     {
         $this->router = $router;
         return $this;

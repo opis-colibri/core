@@ -21,12 +21,14 @@
 namespace Opis\Colibri\Routing;
 
 use Opis\Colibri\Application;
+use Opis\Colibri\Components\ApplicationTrait;
 use Opis\Colibri\View;
 use Opis\Routing\Router;
 use Opis\View\ViewRouter as BaseRouter;
 
 class ViewRouter extends BaseRouter
 {
+    use ApplicationTrait;
     /** @var    Application */
     protected $app;
 
@@ -39,6 +41,14 @@ class ViewRouter extends BaseRouter
     {
         $this->app = $this->param = $app;
         parent::__construct($app->collector()->getViews(), $app->collector()->getViewEngineResolver());
+    }
+
+    /**
+     * @return Application
+     */
+    public function getApp(): Application
+    {
+        return $this->app;
     }
 
     /**

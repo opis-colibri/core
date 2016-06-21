@@ -23,6 +23,7 @@ namespace Opis\Colibri\Collectors;
 use Closure;
 use Opis\Colibri\Application;
 use Opis\Colibri\Collector;
+use Opis\View\EngineEntry;
 use Opis\View\EngineResolver;
 
 /**
@@ -31,6 +32,7 @@ use Opis\View\EngineResolver;
  * @package Opis\Colibri\Collectors
  *
  * @method EngineResolver   data()
+ * @property EngineResolver $dataObject
  */
 class ViewEngineCollector extends Collector
 {
@@ -51,10 +53,10 @@ class ViewEngineCollector extends Collector
      * @param   Closure $constructor A callback that will return an instance of \Opis\View\EngineInterface
      * @param   int $priority Engine's priority
      *
-     * @return  \Opis\View\EngineEntry
+     * @return  EngineEntry
      */
-    public function register(Closure $constructor, $priority = 0)
+    public function register(callable $factory, $priority = 0): EngineEntry
     {
-        return $this->dataObject->register($constructor, $priority);
+        return $this->dataObject->register($factory, $priority);
     }
 }

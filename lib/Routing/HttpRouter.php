@@ -21,6 +21,7 @@
 namespace Opis\Colibri\Routing;
 
 use Opis\Colibri\Application;
+use Opis\Colibri\Components\ApplicationTrait;
 use Opis\Http\Error\AccessDenied;
 use Opis\Http\Error\NotFound;
 use Opis\HttpRouting\Path;
@@ -29,8 +30,15 @@ use Opis\Routing\Path as AliasPath;
 use Opis\Routing\Path as BasePath;
 use Opis\Routing\Router as AliasRouter;
 
+/**
+ * Class HttpRouter
+ * @package Opis\Colibri\Routing
+ * @method HttpRouteCollection getRouteCollection()
+ */
 class HttpRouter extends Router
 {
+    use ApplicationTrait;
+
     /** @var    Application */
     protected $app;
 
@@ -64,16 +72,14 @@ class HttpRouter extends Router
             ->accessDenied(function ($path) use ($app) {
                 return new AccessDenied($app->view('error.403', array('path' => $path)));
             });
-
+        
         $this->getRouteCollection()->setRouter($this);
     }
 
     /**
-     * Get the application
-     *
-     * @return  Application
+     * @return Application
      */
-    public function app()
+    public function getApp(): Application
     {
         return $this->app;
     }

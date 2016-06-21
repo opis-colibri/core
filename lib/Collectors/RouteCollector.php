@@ -22,14 +22,15 @@ namespace Opis\Colibri\Collectors;
 
 use Opis\Colibri\Application;
 use Opis\Colibri\Collector;
-use Opis\Colibri\HttpRoute;
-use Opis\Colibri\HttpRouteCollection;
+use Opis\Colibri\Routing\HttpRoute;
+use Opis\Colibri\Routing\HttpRouteCollection;
 
 /**
  * Class RouteCollector
  *
  * @package Opis\Colibri\Collectors
  *
+ * @property HttpRouteCollection $dataObject
  * @method HttpRouteCollection  data()
  */
 class RouteCollector extends Collector

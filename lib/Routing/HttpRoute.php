@@ -21,7 +21,7 @@
 namespace Opis\Colibri\Routing;
 
 use Opis\Colibri\Controller;
-use Opis\HttpRouting\Route;
+use Opis\Routing\Route;
 
 class HttpRoute extends Route
 {

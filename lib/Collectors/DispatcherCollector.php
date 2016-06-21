@@ -28,6 +28,7 @@ use Opis\HttpRouting\DispatcherResolver;
  * Class DispatcherCollector
  * @package Opis\Colibri\Collectors
  * @method DispatcherResolver data()
+ * @property DispatcherResolver $dataObject;
  */
 class DispatcherCollector extends Collector
 {
@@ -42,15 +43,14 @@ class DispatcherCollector extends Collector
         parent::__construct($app, new DispatcherResolver());
     }
 
-
     /**
      * @param string $name
-     * @param callable $builder
-     * @return $this
+     * @param callable $factory
+     * @return DispatcherCollector
      */
-    public function register($name, callable $builder)
+    public function register(string $name, callable $factory): self
     {
-        $this->dataObject->register($name, $builder);
+        $this->dataObject->getDispatcherCollection()->register($name, $factory);
         return $this;
     }
 }
