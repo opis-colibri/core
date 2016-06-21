@@ -20,7 +20,6 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Closure;
 use Opis\Colibri\Application;
 use Opis\Colibri\Collector;
 use Opis\View\EngineEntry;
@@ -50,10 +49,9 @@ class ViewEngineCollector extends Collector
     /**
      * Defines a new view engine
      *
-     * @param   Closure $constructor A callback that will return an instance of \Opis\View\EngineInterface
-     * @param   int $priority Engine's priority
-     *
-     * @return  EngineEntry
+     * @param callable $factory
+     * @param int $priority Engine's priority
+     * @return EngineEntry
      */
     public function register(callable $factory, $priority = 0): EngineEntry
     {

@@ -67,7 +67,7 @@ class Validator extends BaseValidator
     }
 
     /**
-     * @return self
+     * @return Validator|static
      */
     public function csrf(): self
     {

@@ -41,8 +41,7 @@ class HttpRouteCollection extends RouteCollection
      * Set the router
      *
      * @param   HttpRouter $router
-     *
-     * @return  $this
+     * @return $this|HttpRouteCollection
      */
     public function setRouter(HttpRouter $router): self
     {

@@ -22,7 +22,6 @@ namespace Opis\Colibri\Routing;
 
 use Opis\Colibri\Application;
 use Opis\Colibri\Components\ApplicationTrait;
-use Opis\Colibri\View;
 use Opis\Routing\Router;
 use Opis\View\ViewApp as BaseViewApp;
 

@@ -61,8 +61,7 @@ class View extends OpisView
      *
      * @param   string $name
      * @param   mixed $value
-     *
-     * @return  self
+     * @return View|static
      */
     public function set(string $name, $value): self
     {

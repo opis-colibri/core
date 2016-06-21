@@ -27,7 +27,7 @@ use Opis\Routing\Route;
  * Class HttpRoute
  * @package Opis\Colibri\Routing
  *
- * @method  \Opis\Colibri\Routing\HttpRouteCollection getRouteCollection(): RouteCollection
+ * @method  HttpRouteCollection getRouteCollection(): RouteCollection
  */
 class HttpRoute extends Route
 {

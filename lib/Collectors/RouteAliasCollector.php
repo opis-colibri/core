@@ -22,19 +22,17 @@ namespace Opis\Colibri\Collectors;
 
 use Opis\Colibri\Application;
 use Opis\Colibri\Collector;
-use Opis\Routing\Collections\RouteCollection;
-use Opis\Routing\Pattern;
+use Opis\Routing\RouteCollection;
 use Opis\Routing\Route;
 
 /**
  * Class RouteAliasCollector
  * @package Opis\Colibri\Collectors
  * @method RouteCollection data()
+ * @property \Opis\Routing\RouteCollection $dataObject
  */
 class RouteAliasCollector extends Collector
 {
-    protected $compiler;
-
     /**
      * Constructor
      *
@@ -51,12 +49,12 @@ class RouteAliasCollector extends Collector
      * @param   string $path The path to match
      * @param   callable $action An action that will be executed
      *
-     * @return  \Opis\Routing\Route
+     * @return  Route
      */
-    public function alias($path, $action)
+    public function alias(string $path, callable $action): Route
     {
-        $route = new Route(new Pattern($path), $action);
-        $this->dataObject[] = $route;
+        $route = new Route($path, $action);
+        $this->dataObject->addRoute($route);
         return $route;
     }
 }
