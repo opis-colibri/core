@@ -60,7 +60,7 @@ class HttpRouter extends Router
             'response' => $app->response(),
             't' => $app->getTranslator(),
             'lang' => $app->getTranslator()->getLanguage(),
-            'view' => $app->getViewRouter(),
+            'view' => $app->getViewApp(),
         );
 
         parent::__construct($app->collector()->getRoutes(), $app->collector()->getDispatcherResolver(), null, $specials);

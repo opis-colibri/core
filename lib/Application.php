@@ -29,7 +29,7 @@ use Opis\Cache\Cache;
 use Opis\Cache\Storage\Memory as EphemeralCacheStorage;
 use Opis\Colibri\Composer\CLI;
 use Opis\Colibri\Routing\HttpRouter;
-use Opis\Colibri\Routing\ViewRouter;
+use Opis\Colibri\Routing\ViewApp;
 use Opis\Config\Config;
 use Opis\Config\Storage\Memory as EphemeralConfigStorage;
 use Opis\Container\Container;
@@ -112,8 +112,8 @@ class Application
     /** @var  HttpRouter */
     protected $httpRouter;
 
-    /** @var  ViewRouter */
-    protected $viewRouter;
+    /** @var  ViewApp */
+    protected $viewApp;
 
     /** @var  callable[] */
     protected $coreMethods;
@@ -383,14 +383,14 @@ class Application
     /**
      * Get the View router
      *
-     * @return  ViewRouter
+     * @return  ViewApp
      */
-    public function getViewRouter()
+    public function getViewApp()
     {
-        if ($this->viewRouter === null) {
-            $this->viewRouter = new ViewRouter($this);
+        if ($this->viewApp === null) {
+            $this->viewApp = new ViewApp($this);
         }
-        return $this->viewRouter;
+        return $this->viewApp;
     }
 
     /**
@@ -827,7 +827,7 @@ class Application
      */
     public function view($name, array $arguments = array())
     {
-        return $this->getViewRouter()->view($name, $arguments);
+        return $this->getViewApp()->view($name, $arguments);
     }
 
     /**
@@ -839,7 +839,7 @@ class Application
      */
     public function render($view)
     {
-        return $this->getViewRouter()->render($view);
+        return $this->getViewApp()->render($view);
     }
 
     /**
