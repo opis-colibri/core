@@ -20,66 +20,29 @@
 
 namespace Opis\Colibri;
 
-class Controller
+use Opis\Colibri\Components\ApplicationTrait;
+
+abstract class Controller
 {
-    /** @var    string */
-    protected $method;
+    use ApplicationTrait;
 
-    /** @var    string */
-    protected $className;
-
-    /** @var    boolean */
-    protected $isStatic;
+    /** @var  Application */
+    protected $app;
 
     /**
-     * Constructor
-     *
-     * @param   string $class
-     * @param   string $method
-     * @param   boolean $static (optional)
+     * Controller constructor.
+     * @param Application $app
      */
-    public function __construct(string $class, string $method, bool $static = false)
+    public function __construct(Application $app)
     {
-        $this->className = $class;
-        $this->method = $method;
-        $this->isStatic = $static;
+        $this->app = $app;
     }
 
     /**
-     * Make the instances of this class being a valid callable value
+     * @return Application
      */
-    public function __invoke()
+    public function getApp(): Application
     {
-
-    }
-
-    /**
-     * Returns the class name
-     *
-     * @return  string
-     */
-    public function getClass(): string
-    {
-        return $this->className;
-    }
-
-    /**
-     * Returns the param's name that references the method
-     *
-     * @return  string
-     */
-    public function getMethod(): string
-    {
-        return $this->method;
-    }
-
-    /**
-     * Indicates if the referenced method is static or not
-     *
-     * @return  boolean
-     */
-    public function isStatic(): bool 
-    {
-        return $this->isStatic;
+        return $this->app;
     }
 }
