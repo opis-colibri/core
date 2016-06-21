@@ -22,11 +22,11 @@ namespace Opis\Colibri\Routing;
 
 use Opis\Colibri\Application;
 use Opis\Colibri\Components\ApplicationTrait;
+use Opis\Colibri\Components\ViewTrait;
 use Opis\Http\Error\AccessDenied;
 use Opis\Http\Error\NotFound;
 use Opis\HttpRouting\Path;
 use Opis\HttpRouting\Router;
-use Opis\Routing\Path as AliasPath;
 use Opis\Routing\Path as BasePath;
 use Opis\Routing\Router as AliasRouter;
 
@@ -38,6 +38,7 @@ use Opis\Routing\Router as AliasRouter;
 class HttpRouter extends Router
 {
     use ApplicationTrait;
+    use ViewTrait;
 
     /** @var    Application */
     protected $app;
@@ -66,11 +67,11 @@ class HttpRouter extends Router
         parent::__construct($app->collector()->getRoutes(), $app->collector()->getDispatcherResolver(), null, $specials);
 
         $this->getRouteCollection()
-            ->notFound(function ($path) use ($app) {
-                return new NotFound($app->view('error.404', array('path' => $path)));
+            ->notFound(function ($path) {
+                return new NotFound($this->view('error.404', array('path' => $path)));
             })
-            ->accessDenied(function ($path) use ($app) {
-                return new AccessDenied($app->view('error.403', array('path' => $path)));
+            ->accessDenied(function ($path) {
+                return new AccessDenied($this->view('error.403', array('path' => $path)));
             });
         
         $this->getRouteCollection()->setRouter($this);
@@ -97,18 +98,17 @@ class HttpRouter extends Router
     /**
      * Route path
      *
-     * @param Path|BasePath $path
+     * @param Path $path
      * @return mixed
      */
     public function route(BasePath $path)
     {
-
         $router = new AliasRouter($this->app->collector()->getRouteAliases());
-        $alias = $router->route(new AliasPath($path->path()));
+        $alias = $router->route(new BasePath($path->path()));
 
         if ($alias !== null) {
             $path = new Path(
-                (string)$alias, $path->domain(), $path->method(), $path->isSecure(), $path->request()
+                (string) $alias, $path->domain(), $path->method(), $path->isSecure(), $path->request()
             );
         }
 
