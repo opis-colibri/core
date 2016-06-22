@@ -57,8 +57,8 @@ class HttpRouter extends Router
 
         $specials = array(
             'app' => $app,
-            'request' => $app->request(),
-            'response' => $app->response(),
+            'request' => $app->getHttpRequest(),
+            'response' => $app->getHttpResponse(),
             't' => $app->getTranslator(),
             'lang' => $app->getTranslator()->getLanguage(),
             'view' => $app->getViewApp(),

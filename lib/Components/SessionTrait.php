@@ -33,6 +33,6 @@ trait SessionTrait
      */
     public function session(string $storage = null): Session
     {
-        return $this->getApp()->session($storage);
+        return $this->getApp()->getSession($storage);
     }
 }

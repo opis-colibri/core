@@ -248,7 +248,7 @@ class Application
             return false;
         }
 
-        $config = $this->config();
+        $config = $this->getConfig();
         $modules = $config->read('modules.installed', array());
         $modules[] = $module->name();
         $config->write('modules.installed', $modules);
@@ -278,7 +278,7 @@ class Application
             return false;
         }
 
-        $config = $this->config();
+        $config = $this->getConfig();
         $modules = $config->read('modules.installed', array());
         $config->write('modules.installed', array_diff($modules, array($module->name())));
 
@@ -307,7 +307,7 @@ class Application
             return false;
         }
 
-        $config = $this->config();
+        $config = $this->getConfig();
         $modules = $config->read('app.modules.enabled', array());
         $modules[] = $module->name();
         $config->write('modules.enabled', $modules);
@@ -338,7 +338,7 @@ class Application
             return false;
         }
 
-        $config = $this->config();
+        $config = $this->getConfig();
         $modules = $config->read('modules.enabled', array());
         $config->write('modules.enabled', array_diff($modules, array($module->name())));
 
@@ -461,6 +461,201 @@ class Application
         return $this->validator;
     }
 
+    /**
+     * Returns a caching storage
+     *
+     * @param   string|null $storage (optional) Storage name
+     *
+     * @return  \Opis\Cache\Cache
+     */
+    public function getCache($storage = null)
+    {
+        if ($storage === null && false === $storage = getenv(Env::CACHE_STORAGE)) {
+            $this->cache[$storage = ''] = new Cache(new EphemeralCacheStorage());
+        }
+
+        if (!isset($this->cache[$storage])) {
+            $this->cache[$storage] = new Cache($this->collector()->getCacheStorage($storage));
+        }
+
+        return $this->cache[$storage];
+    }
+
+    /**
+     * Returns a session storage
+     *
+     * @param   string|null $storage (optional) Storage name
+     *
+     * @return  \Opis\Session\Session
+     */
+    public function getSession($storage = null)
+    {
+        if ($storage === null && false === $storage = getenv(Env::SESSION_STORAGE)) {
+            $this->session[$storage = ''] = new Session();
+        }
+
+        if (!isset($this->config[$storage])) {
+            $this->session[$storage] = new Session($this->collector()->getSessionStorage($storage));
+        }
+
+        return $this->session[$storage];
+    }
+
+    /**
+     * Returns a config storage
+     *
+     * @param   string|null $storage (optional) Storage name
+     *
+     * @return  \Opis\Config\Config
+     */
+    public function getConfig($storage = null)
+    {
+        if ($storage === null && false === $storage = getenv(Env::CONFIG_STORAGE)) {
+            $this->config[$storage = ''] = new Config(new EphemeralConfigStorage());
+        }
+
+        if (!isset($this->config[$storage])) {
+            $this->config[$storage] = new Config($this->collector()->getConfigStorage($storage));
+        }
+
+        return $this->config[$storage];
+    }
+
+    /**
+     * Returns a translation storage
+     *
+     * @return  \Opis\Config\Config
+     */
+    public function getTranslations()
+    {
+        if ($this->translations === null) {
+            if (false === $storage = getenv(Env::TRANSLATIONS_STORAGE)) {
+                $storage = null;
+            }
+            $this->translations = $this->getConfig($storage);
+        }
+
+        return $this->translations;
+    }
+
+    /**
+     *
+     * @return  \Opis\Colibri\Console
+     */
+    public function getConsole()
+    {
+        if ($this->consoleInstance === null) {
+            $this->consoleInstance = new Console($this);
+        }
+        $this->consoleInstance;
+    }
+
+    /**
+     * @param string|null $name
+     * @throws  \RuntimeException
+     * @return  \Opis\Database\Connection
+     */
+    public function getConnection($name = null)
+    {
+        if ($name === null && false === $name = getenv(Env::DB_CONNECTION)) {
+            throw new \RuntimeException("No database connection defined");
+        }
+
+        if (!isset($this->connection[$name])) {
+            $this->connection[$name] = $this->collector()->getConnection($name);
+        }
+
+        return $this->connection[$name];
+    }
+
+    /**
+     * Returns a database abstraction layer
+     *
+     * @param   string|null $connection (optional) Connection name
+     *
+     * @return  \Opis\Database\Database
+     */
+    public function getDatabase($connection = null)
+    {
+        if (!isset($this->database[$connection])) {
+            $this->database[$connection] = $this->collector()->getDatabase($connection);
+        }
+
+        return $this->database[$connection];
+    }
+
+    /**
+     * Returns a database schema abstraction layer
+     *
+     * @param   string|null $connection (optional) Connection name
+     *
+     * @return  \Opis\Database\Schema
+     */
+    public function getSchema($connection = null)
+    {
+        return $this->getDatabase($connection)->schema();
+    }
+
+    /**
+     * Returns a logger
+     *
+     * @param   string|null $logger Logger's name
+     *
+     * @return  \Psr\Log\LoggerInterface
+     */
+    public function getLog($logger = null)
+    {
+        if ($logger === null && false === $logger = getenv(Env::LOGGER_STORAGE)) {
+            $this->loggers[''] = new NullLogger();
+        }
+
+        if (!isset($this->loggers[$logger])) {
+            $this->loggers[$logger] = $this->collector()->getLogger($logger);
+        }
+
+        return $this->cache[$logger];
+    }
+
+    /**
+     * Return the underlying HTTP request object
+     *
+     * @return  \Opis\Http\Request
+     */
+    public function getHttpRequest()
+    {
+        if ($this->httpRequestInstance === null) {
+            $this->httpRequestInstance = HttpRequest::fromGlobals();
+        }
+
+        return $this->httpRequestInstance;
+    }
+
+    /**
+     * Return the underlying HTTP response object
+     *
+     * @return  \Opis\Http\Response
+     */
+    public function getHttpResponse()
+    {
+        if ($this->httpResponseInstance === null) {
+            $this->httpResponseInstance = $this->getHttpRequest()->response();
+        }
+
+        return $this->httpResponseInstance;
+    }
+
+    /**
+     * Get variables list
+     *
+     * @return array
+     */
+    public function getVariables()
+    {
+        if($this->variables === null){
+            $this->variables = $this->collector()->getVariables();
+        }
+        return $this->variables;
+    }
 
     /**
      * Bootstrap method
@@ -523,8 +718,8 @@ class Application
         $this->classLoader = $loader;
         $this->classLoader->register();
 
-        $this->config()->write('modules.installed', $enabled);
-        $this->config()->write('modules.enabled', $enabled);
+        $this->getConfig()->write('modules.installed', $enabled);
+        $this->getConfig()->write('modules.enabled', $enabled);
 
         $this->emit('system.init');
         return $this;
@@ -577,189 +772,6 @@ class Application
     }
 
     /**
-     * Returns a caching storage
-     *
-     * @param   string|null $storage (optional) Storage name
-     *
-     * @return  \Opis\Cache\Cache
-     */
-    public function cache($storage = null)
-    {
-        if ($storage === null && false === $storage = getenv(Env::CACHE_STORAGE)) {
-            $this->cache[$storage = ''] = new Cache(new EphemeralCacheStorage());
-        }
-
-        if (!isset($this->cache[$storage])) {
-            $this->cache[$storage] = new Cache($this->collector()->getCacheStorage($storage));
-        }
-
-        return $this->cache[$storage];
-    }
-
-    /**
-     * Returns a session storage
-     *
-     * @param   string|null $storage (optional) Storage name
-     *
-     * @return  \Opis\Session\Session
-     */
-    public function session($storage = null)
-    {
-        if ($storage === null && false === $storage = getenv(Env::SESSION_STORAGE)) {
-            $this->session[$storage = ''] = new Session();
-        }
-
-        if (!isset($this->config[$storage])) {
-            $this->session[$storage] = new Session($this->collector()->getSessionStorage($storage));
-        }
-
-        return $this->session[$storage];
-    }
-
-    /**
-     * Returns a config storage
-     *
-     * @param   string|null $storage (optional) Storage name
-     *
-     * @return  \Opis\Config\Config
-     */
-    public function config($storage = null)
-    {
-        if ($storage === null && false === $storage = getenv(Env::CONFIG_STORAGE)) {
-            $this->config[$storage = ''] = new Config(new EphemeralConfigStorage());
-        }
-
-        if (!isset($this->config[$storage])) {
-            $this->config[$storage] = new Config($this->collector()->getConfigStorage($storage));
-        }
-
-        return $this->config[$storage];
-    }
-
-    /**
-     * Returns a translation storage
-     *
-     * @return  \Opis\Config\Config
-     */
-    public function translations()
-    {
-        if ($this->translations === null) {
-            if (false === $storage = getenv(Env::TRANSLATIONS_STORAGE)) {
-                $storage = null;
-            }
-            $this->translations = $this->config($storage);
-        }
-
-        return $this->translations;
-    }
-
-    /**
-     *
-     * @return  \Opis\Colibri\Console
-     */
-    public function console()
-    {
-        if ($this->consoleInstance === null) {
-            $this->consoleInstance = new Console($this);
-        }
-        $this->consoleInstance;
-    }
-
-    /**
-     * @param string|null $name
-     * @throws  \RuntimeException
-     * @return  \Opis\Database\Connection
-     */
-    public function connection($name = null)
-    {
-        if ($name === null && false === $name = getenv(Env::DB_CONNECTION)) {
-            throw new \RuntimeException("No database connection defined");
-        }
-
-        if (!isset($this->connection[$name])) {
-            $this->connection[$name] = $this->collector()->getConnection($name);
-        }
-
-        return $this->connection[$name];
-    }
-
-    /**
-     * Returns a database abstraction layer
-     *
-     * @param   string|null $connection (optional) Connection name
-     *
-     * @return  \Opis\Database\Database
-     */
-    public function database($connection = null)
-    {
-        if (!isset($this->database[$connection])) {
-            $this->database[$connection] = $this->collector()->getDatabase($connection);
-        }
-
-        return $this->database[$connection];
-    }
-
-    /**
-     * Returns a database schema abstraction layer
-     *
-     * @param   string|null $connection (optional) Connection name
-     *
-     * @return  \Opis\Database\Schema
-     */
-    public function schema($connection = null)
-    {
-        return $this->database($connection)->schema();
-    }
-
-    /**
-     * Returns a logger
-     *
-     * @param   string|null $logger Logger's name
-     *
-     * @return  \Psr\Log\LoggerInterface
-     */
-    public function log($logger = null)
-    {
-        if ($logger === null && false === $logger = getenv(Env::LOGGER_STORAGE)) {
-            $this->loggers[''] = new NullLogger();
-        }
-
-        if (!isset($this->loggers[$logger])) {
-            $this->loggers[$logger] = $this->collector()->getLogger($logger);
-        }
-
-        return $this->cache[$logger];
-    }
-
-    /**
-     * Return the underlying HTTP request object
-     *
-     * @return  \Opis\Http\Request
-     */
-    public function request()
-    {
-        if ($this->httpRequestInstance === null) {
-            $this->httpRequestInstance = HttpRequest::fromGlobals();
-        }
-
-        return $this->httpRequestInstance;
-    }
-
-    /**
-     * Return the underlying HTTP response object
-     *
-     * @return  \Opis\Http\Response
-     */
-    public function response()
-    {
-        if ($this->httpResponseInstance === null) {
-            $this->httpResponseInstance = $this->request()->response();
-        }
-
-        return $this->httpResponseInstance;
-    }
-
-    /**
      * Redirects to a new locations
      *
      * @param   string $location The new location
@@ -774,7 +786,7 @@ class Application
             }
             $location = rtrim($location) . '?' . implode('&', $query);
         }
-        $this->response()->redirect($location, $code);
+        $this->getHttpResponse()->redirect($location, $code);
     }
 
     /**
@@ -819,31 +831,6 @@ class Application
     }
 
     /**
-     * Creates a new view
-     *
-     * @param   string $name View name
-     * @param   array $arguments (optional) View's arguments
-     *
-     * @return  \Opis\Colibri\View
-     */
-    public function view($name, array $arguments = array())
-    {
-        return $this->getViewApp()->view($name, $arguments);
-    }
-
-    /**
-     * Renders a view
-     *
-     * @param   string|ViewableInterface $view The view that will be rendered
-     *
-     * @return  string
-     */
-    public function render($view)
-    {
-        return $this->getViewApp()->render($view);
-    }
-
-    /**
      * Returns a path to a module's asset
      *
      * @param   string $module Module name
@@ -879,7 +866,7 @@ class Application
      */
     public function getURL($path, $full = false)
     {
-        $req = $this->request();
+        $req = $this->getHttpRequest();
         return $full ? $req->uriForPath($path) : $req->baseUrl() . $path;
     }
 

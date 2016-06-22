@@ -32,7 +32,7 @@ trait CacheTrait
      */
     public function cache(string $storage = null): Cache
     {
-        return $this->getApp()->cache($storage);
+        return $this->getApp()->getCache($storage);
     }
 
 }

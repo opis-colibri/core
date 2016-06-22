@@ -106,7 +106,7 @@ class Translator
         }
 
         if (!isset($this->translations[$lang])) {
-            $this->translations[$lang] = $this->app->translations()->read($lang, array());
+            $this->translations[$lang] = $this->app->getTranslations()->read($lang, array());
         }
 
         $translation = &$this->translations[$lang];

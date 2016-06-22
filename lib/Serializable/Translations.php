@@ -45,7 +45,7 @@ class Translations implements Serializable
 
     public function serialize()
     {
-        $storage = $this->app->translations();
+        $storage = $this->app->getTranslations();
 
         foreach ($this->oldTranslations as $translation) {
             $storage->delete($translation);

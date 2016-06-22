@@ -32,6 +32,6 @@ trait ContractTrait
      */
     public function make(string $contract, array $arguments = array())
     {
-        return $this->getApp()->make($contract, $arguments);
+        return $this->getApp()->getContainer()->make($contract, $arguments);
     }
 }

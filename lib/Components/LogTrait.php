@@ -32,6 +32,6 @@ trait LogTrait
      */
     public function log(string $logger = null): LoggerInterface
     {
-        return $this->getApp()->log($logger);
+        return $this->getApp()->getLog($logger);
     }
 }

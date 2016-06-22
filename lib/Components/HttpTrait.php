@@ -34,7 +34,7 @@ trait HttpTrait
      */
     public function request(): Request
     {
-        return $this->getApp()->request();
+        return $this->getApp()->getHttpRequest();
     }
 
     /**
@@ -42,7 +42,7 @@ trait HttpTrait
      */
     public function response(): Response
     {
-        return $this->getApp()->response();
+        return $this->getApp()->getHttpResponse();
     }
 
     /**

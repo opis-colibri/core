@@ -194,7 +194,7 @@ class Module
             return false;
         }
 
-        $list = $this->app->config()->read('modules.enabled', array());
+        $list = $this->app->getConfig()->read('modules.enabled', array());
         return in_array($this->name, $list);
     }
 
@@ -224,7 +224,7 @@ class Module
             return false;
         }
 
-        $list = $this->app->config()->read('modules.installed', array());
+        $list = $this->app->getConfig()->read('modules.installed', array());
         return in_array($this->name, $list);
     }
 

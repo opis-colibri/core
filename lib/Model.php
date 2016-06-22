@@ -47,7 +47,7 @@ class Model extends BaseModel
      */
     public static function getConnection()
     {
-        return static::getApplication()->connection(static::$connection);
+        return static::getApplication()->getConnection(static::$connection);
     }
 
     /**

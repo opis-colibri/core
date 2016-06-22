@@ -32,6 +32,6 @@ trait ConfigTrait
      */
     public function config(string $storage = null): Config
     {
-        return $this->getApp()->config($storage);
+        return $this->getApp()->getConfig($storage);
     }
 }

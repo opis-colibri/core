@@ -79,7 +79,7 @@ class CollectorManager
         $this->collectorTarget = new CollectorTarget($app);
 
         $default = require __DIR__ . '/../bin/collectors.php';
-        $this->collectorList = $this->app->config()->read('collectors', array()) + $default;
+        $this->collectorList = $this->app->getConfig()->read('collectors', array()) + $default;
 
         foreach ($this->collectorList as $name => $collector) {
             $container->alias($collector['class'], $name);
@@ -266,7 +266,7 @@ class CollectorManager
             if (!isset($this->collectorList[$entry])) {
                 throw new RuntimeException("Unknown collector type `$type`");
             }
-            $this->cache[$entry] = $this->app->cache()->load($entry, function ($entry) use ($self, &$hit) {
+            $this->cache[$entry] = $this->app->getCache()->load($entry, function ($entry) use ($self, &$hit) {
                 $hit = true;
                 $self->includeCollectors();
                 $instance = $self->container->make($entry);
@@ -290,13 +290,13 @@ class CollectorManager
      */
     public function recollect(bool $fresh = true): bool
     {
-        if (!$this->app->cache('app')->clear()) {
+        if (!$this->app->getCache('app')->clear()) {
             return false;
         }
 
         $this->collectorsIncluded = false;
 
-        foreach (array_keys($this->app->config()->read('collectors')) as $entry) {
+        foreach (array_keys($this->app->getConfig()->read('collectors')) as $entry) {
             $this->collect($entry, $fresh);
         }
 
@@ -314,7 +314,7 @@ class CollectorManager
      */
     public function register(string $name, string $class, string $description)
     {
-        $this->app->config()->write('collectors.' . $name, array(
+        $this->app->getConfig()->write('collectors.' . $name, array(
             'class' => $class,
             'description' => $description,
         ));
@@ -330,7 +330,7 @@ class CollectorManager
      */
     public function unregister(string $name)
     {
-        $this->app->config()->delete('collectors.' . $name);
+        $this->app->getConfig()->delete('collectors.' . $name);
     }
 
     /**

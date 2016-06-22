@@ -34,7 +34,7 @@ trait DatabaseTrait
      */
     public function connection(string $name = null): Connection
     {
-        return $this->getApp()->connection($name);
+        return $this->getApp()->getConnection($name);
     }
 
     /**
@@ -43,7 +43,7 @@ trait DatabaseTrait
      */
     public function db(string $connection = null): Database
     {
-        return $this->getApp()->database($connection);
+        return $this->getApp()->getDatabase($connection);
     }
 
     /**
@@ -52,6 +52,6 @@ trait DatabaseTrait
      */
     public function schema(string $connection = null): Schema
     {
-        return $this->getApp()->schema($connection);
+        return $this->getApp()->getSchema($connection);
     }
 }

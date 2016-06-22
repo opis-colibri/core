@@ -55,7 +55,7 @@ class CSRFToken
      */
     public function generate()
     {
-        $tokens = $this->app->session()->get($this->sessionKey, array());
+        $tokens = $this->app->getSession()->get($this->sessionKey, array());
 
         if (!empty($tokens)) {
             $tokens = array_slice($tokens, 0, $this->maxNumber - 1);
@@ -65,7 +65,7 @@ class CSRFToken
 
         array_unshift($tokens, $token);
 
-        $this->app->session()->set($this->sessionKey, $tokens);
+        $this->app->getSession()->set($this->sessionKey, $tokens);
 
         return $token;
     }
@@ -98,13 +98,13 @@ class CSRFToken
      */
     public function validate($value)
     {
-        $tokens = $this->app->session()->get($this->sessionKey, array());
+        $tokens = $this->app->getSession()->get($this->sessionKey, array());
 
         $key = array_search($value, $tokens);
 
         if ($key !== false) {
             unset($tokens[$key]);
-            $this->app->session()->set($this->sessionKey, $tokens);
+            $this->app->getSession()->set($this->sessionKey, $tokens);
             return true;
         }
 

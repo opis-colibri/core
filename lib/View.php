@@ -22,6 +22,7 @@ namespace Opis\Colibri;
 
 use Exception;
 use Opis\Colibri\Components\ApplicationTrait;
+use Opis\Colibri\Components\ViewTrait;
 use Opis\View\View as OpisView;
 
 class View extends OpisView
@@ -103,7 +104,7 @@ class View extends OpisView
     {
         if ($this->renderedContent === null) {
             try {
-                $this->renderedContent = (string) $this->app->render($this);
+                $this->renderedContent = (string) $this->app->getViewApp()->render($this);
 
             } catch (Exception $e) {
                 $this->renderedContent = (string) $e;

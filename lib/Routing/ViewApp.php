@@ -63,8 +63,8 @@ class ViewApp extends BaseViewApp
 
             $specials = array(
                 'app' => $this->app,
-                'request' => $this->app->request(),
-                'response' => $this->app->response(),
+                'request' => $this->app->getHttpRequest(),
+                'response' => $this->app->getHttpResponse(),
                 't' => $this->app->getTranslator(),
                 'lang' => $this->app->getTranslator()->getLanguage(),
                 'view' => $this,
