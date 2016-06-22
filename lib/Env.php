@@ -27,10 +27,10 @@ class Env
     {
         $this->app = $app;
 
-        if (file_exists($app->info()->rootDir() . '/.env')) {
-            (new Dotenv($app->info()->rootDir()))->load();
-        } elseif (file_exists($app->info()->vendorDir() . '/.env')) {
-            (new Dotenv($app->info()->vendorDir()))->load();
+        if (file_exists($app->getAppInfo()->rootDir() . '/.env')) {
+            (new Dotenv($app->getAppInfo()->rootDir()))->load();
+        } elseif (file_exists($app->getAppInfo()->vendorDir() . '/.env')) {
+            (new Dotenv($app->getAppInfo()->vendorDir()))->load();
         }
     }
 

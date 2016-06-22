@@ -32,7 +32,7 @@ trait HttpTrait
     /**
      * @return Request
      */
-    public function request(): Request
+    protected function request(): Request
     {
         return $this->getApp()->getHttpRequest();
     }
@@ -40,7 +40,7 @@ trait HttpTrait
     /**
      * @return Response
      */
-    public function response(): Response
+    protected function response(): Response
     {
         return $this->getApp()->getHttpResponse();
     }
@@ -50,46 +50,22 @@ trait HttpTrait
      * @param int $code
      * @param array $query
      */
-    public function redirect(string $location, int $code = 302, array $query = array())
+    protected function redirect(string $location, int $code = 302, array $query = array())
     {
+        if (!empty($query)) {
+            foreach ($query as $key => $value) {
+                $query[$key] = $key . '=' . urlencode($value);
+            }
+            $location = rtrim($location) . '?' . implode('&', $query);
+        }
 
-    }
-
-    /**
-     * @param string $module
-     * @param string $path
-     * @param bool $full
-     * @return string
-     */
-    public function asset(string $module, string $path, bool $full = false): string
-    {
-
-    }
-
-    /**
-     * @param string $path
-     * @param bool $full
-     * @return string
-     */
-    public function getURL(string $path, bool $full = false): string
-    {
-
-    }
-
-    /**
-     * @param string $name
-     * @param array $args
-     * @return string
-     */
-    public function getPath(string $name, array $args = array()): string
-    {
-
+        $this->response()->redirect($location, $code);
     }
 
     /**
      * @return HttpError
      */
-    public function pageNotFound(): HttpError
+    protected function pageNotFound(): HttpError
     {
         $this->httpError(404);
     }
@@ -97,7 +73,7 @@ trait HttpTrait
     /**
      * @return HttpError
      */
-    public function accessDenied(): HttpError
+    protected function accessDenied(): HttpError
     {
         return $this->httpError(403);
     }
@@ -106,7 +82,7 @@ trait HttpTrait
      * @param int $code
      * @return HttpError
      */
-    public function httpError(int $code): HttpError
+    protected function httpError(int $code): HttpError
     {
         return new HttpError($code);
     }

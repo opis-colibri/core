@@ -33,6 +33,7 @@ class AppInfo
     const INSTALL_MODE = 6;
     const VENDOR_DIR = 7;
     const COMPOSER_FILE = 8;
+    const ASSETS_PATH = 9;
 
     /** @var    Application */
     protected $app;
@@ -127,6 +128,17 @@ class AppInfo
         }
 
         return $this->info[static::VENDOR_DIR];
+    }
+
+    /**
+     * @return string
+     */
+    public function assetsPath()
+    {
+        if(!isset($this->info[static::ASSETS_PATH])){
+            $this->info[static::ASSETS_PATH] = '/assets';
+        }
+        return $this->info[static::ASSETS_PATH];
     }
 
     /**

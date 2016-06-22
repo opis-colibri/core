@@ -20,7 +20,6 @@
 
 namespace Opis\Colibri\Components;
 
-
 use Opis\Colibri\Event;
 
 trait EventTrait
@@ -32,17 +31,17 @@ trait EventTrait
      * @param bool $cancelable
      * @return Event
      */
-    public function emit(string $event, bool $cancelable = false): Event
+    protected function emit(string $event, bool $cancelable = false): Event
     {
-        return $this->getApp()->emit($event, $cancelable);
+        return $this->dispatch(new Event($this->getApp(), $event, $cancelable));
     }
 
     /**
      * @param Event $event
      * @return Event
      */
-    public function dispatch(Event $event): Event
+    protected function dispatch(Event $event): Event
     {
-        return $this->getApp()->dispatch($event);
+        return $this->getApp()->getEventTarget()->dispatch($event);
     }
 }

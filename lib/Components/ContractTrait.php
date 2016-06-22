@@ -30,7 +30,7 @@ trait ContractTrait
      * @param array $arguments
      * @return mixed
      */
-    public function make(string $contract, array $arguments = array())
+    protected function make(string $contract, array $arguments = array())
     {
         return $this->getApp()->getContainer()->make($contract, $arguments);
     }

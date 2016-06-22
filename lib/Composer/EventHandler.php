@@ -48,7 +48,7 @@ class EventHandler
         ));
 
         $app = new Application($appInfo, $loader, $composer);
-        $installMode = $app->info()->installMode();
+        $installMode = $app->getAppInfo()->installMode();
 
         foreach ($app->getModules() as $module) {
 

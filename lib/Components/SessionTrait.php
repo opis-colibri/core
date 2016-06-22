@@ -31,7 +31,7 @@ trait SessionTrait
      * @param string|null $storage
      * @return Session
      */
-    public function session(string $storage = null): Session
+    protected function session(string $storage = null): Session
     {
         return $this->getApp()->getSession($storage);
     }

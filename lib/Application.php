@@ -658,6 +658,27 @@ class Application
     }
 
     /**
+     * @return EventTarget
+     */
+    public function getEventTarget()
+    {
+        if($this->eventTarget === null){
+            $this->eventTarget = new EventTarget($this->collector()->getEventHandlers());
+        }
+        return $this->eventTarget;
+    }
+
+    /**
+     * Get information about this application
+     *
+     * @return  AppInfo
+     */
+    public function getAppInfo()
+    {
+        return $this->info;
+    }
+
+    /**
      * Bootstrap method
      *
      * @return  $this
@@ -748,16 +769,6 @@ class Application
     }
 
     /**
-     * Get information about this application
-     *
-     * @return  AppInfo
-     */
-    public function info()
-    {
-        return $this->info;
-    }
-
-    /**
      * Get collector
      *
      * @return CollectorManager
@@ -769,24 +780,6 @@ class Application
         }
 
         return $this->collector;
-    }
-
-    /**
-     * Redirects to a new locations
-     *
-     * @param   string $location The new location
-     * @param   int $code Redirect status code
-     * @param   array $query (optional)  Query arguments
-     */
-    public function redirect($location, $code = 302, array $query = array())
-    {
-        if (!empty($query)) {
-            foreach ($query as $key => $value) {
-                $query[$key] = $key . '=' . $value;
-            }
-            $location = rtrim($location) . '?' . implode('&', $query);
-        }
-        $this->getHttpResponse()->redirect($location, $code);
     }
 
     /**
@@ -831,20 +824,6 @@ class Application
     }
 
     /**
-     * Returns a path to a module's asset
-     *
-     * @param   string $module Module name
-     * @param   string $path Module's resource relative path
-     * @param   boolean $full Full path flag
-     *
-     * @return  string
-     */
-    public function asset($module, $path, $full = false)
-    {
-        return $this->getURL('/assets/module/' . strtolower($module) . '/' . ltrim($path, '/'), $full);
-    }
-
-    /**
      * Module info
      *
      * @param   string $module
@@ -854,57 +833,6 @@ class Application
     public function module($module)
     {
         return new Module($this, $module);
-    }
-
-    /**
-     * Get the URI for a path
-     *
-     * @param   string $path The path
-     * @param   boolean $full (optional) Full URI flag
-     *
-     * @return  string
-     */
-    public function getURL($path, $full = false)
-    {
-        $req = $this->getHttpRequest();
-        return $full ? $req->uriForPath($path) : $req->baseUrl() . $path;
-    }
-
-    /**
-     * Creates an path from a named route
-     *
-     * @param   string $route Route name
-     * @param   array $args (optional) Route wildcard's values
-     *
-     * @return  string
-     */
-    public function getPath($route, array $args = array())
-    {
-
-        $routes = $this->collector()->getRoutes();
-
-        if (!isset($routes[$route])) {
-            return $route;
-        }
-        $route = $routes[$route];
-        $args = $args + $route->getDefaults();
-        return $route->getCompiler()->build($route->getPattern(), $args);
-    }
-
-    /**
-     * Return a variable's value
-     *
-     * @param   string $name Variable's name
-     * @param   mixed $default (optional) The value that will be returned if the variable doesn't exist
-     *
-     * @return  mixed
-     */
-    public function variable($name, $default = null)
-    {
-        if ($this->variables === null) {
-            $this->variables = $this->collector()->getVariables();
-        }
-        return array_key_exists($name, $this->variables) ? $this->variables[$name] : $default;
     }
 
     /**
@@ -941,65 +869,6 @@ class Application
     public function csrfValidate($token)
     {
         return $this->getCSRFToken()->validate($token);
-    }
-
-    /**
-     * Creates a new controller
-     *
-     * @param   string $class
-     * @param   string $method
-     * @param   boolean $static (optional)
-     *
-     * @return  ControllerCallback
-     */
-    public function controller($class, $method, $static = false)
-    {
-        return new ControllerCallback($class, $method, $static);
-    }
-
-    /**
-     * Replace placeholders
-     *
-     * @param   string $text
-     * @param   array $placeholders
-     *
-     * @return  string
-     */
-    public function replace($text, array $placeholders)
-    {
-        return $this->getPlaceholder()->replace($text, $placeholders);
-    }
-
-    /**
-     * Page not found
-     *
-     * @return  \Opis\HttpRouting\HttpError
-     */
-    public function pageNotFound()
-    {
-        return HttpError::pageNotFound();
-    }
-
-    /**
-     * Access denied
-     *
-     * @return  \Opis\HttpRouting\HttpError
-     */
-    public function accessDenied()
-    {
-        return HttpError::accessDenied();
-    }
-
-    /**
-     * Generic http error
-     *
-     * @param   int $code Error code
-     *
-     * @return  HttpError
-     */
-    public function httpError($code)
-    {
-        return new HttpError($code);
     }
 
     /**

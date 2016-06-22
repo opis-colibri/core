@@ -32,7 +32,7 @@ trait ViewTrait
      * @param array $arguments
      * @return View
      */
-    public function view(string $name, array $arguments = []): View
+    protected function view(string $name, array $arguments = []): View
     {
         return new View($this->getApp(), $name, $arguments);
     }
@@ -41,7 +41,7 @@ trait ViewTrait
      * @param mixed|ViewableInterface $view
      * @return string
      */
-    public function render($view): string
+    protected function render($view): string
     {
         return $this->getApp()->getViewApp()->render($view);
     }

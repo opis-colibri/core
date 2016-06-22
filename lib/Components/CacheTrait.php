@@ -30,7 +30,7 @@ trait CacheTrait
      * @param string|null $storage
      * @return Cache
      */
-    public function cache(string $storage = null): Cache
+    protected function cache(string $storage = null): Cache
     {
         return $this->getApp()->getCache($storage);
     }

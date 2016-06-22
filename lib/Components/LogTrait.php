@@ -30,7 +30,7 @@ trait LogTrait
      * @param string|null $logger
      * @return LoggerInterface
      */
-    public function log(string $logger = null): LoggerInterface
+    protected function log(string $logger = null): LoggerInterface
     {
         return $this->getApp()->getLog($logger);
     }
