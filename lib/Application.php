@@ -27,26 +27,30 @@ use Composer\IO\NullIO;
 use Composer\Package\CompletePackage;
 use Opis\Cache\Cache;
 use Opis\Cache\Storage\Memory as EphemeralCacheStorage;
+use Opis\Colibri\Components\ApplicationTrait;
+use Opis\Colibri\Components\ContractTrait;
+use Opis\Colibri\Components\EventTrait;
 use Opis\Colibri\Composer\CLI;
 use Opis\Colibri\Routing\HttpRouter;
 use Opis\Colibri\Routing\ViewApp;
-use Opis\Colibri\Serializable\ControllerCallback;
 use Opis\Config\Config;
 use Opis\Config\Storage\Memory as EphemeralConfigStorage;
 use Opis\Container\Container;
 use Opis\Events\EventTarget;
 use Opis\Http\Request as HttpRequest;
-use Opis\HttpRouting\HttpError;
 use Opis\HttpRouting\Path;
 use Opis\Session\Session;
 use Opis\Utils\Dir;
 use Opis\Validation\Placeholder;
-use Opis\View\ViewableInterface;
 use Psr\Log\NullLogger;
 use SessionHandlerInterface;
 
 class Application
 {
+    use ApplicationTrait;
+    use ContractTrait;
+    use EventTrait;
+
     /** @var    Env */
     protected $env;
 
@@ -150,6 +154,14 @@ class Application
     }
 
     /**
+     * @return Application
+     */
+    public function getApp(): Application
+    {
+        return $this;
+    }
+
+    /**
      * Get Composer instance
      *
      * @return  Composer
@@ -235,126 +247,6 @@ class Application
     }
 
     /**
-     * Install a module
-     *
-     * @param   Module $module
-     * @param   boolean $recollect (optional)
-     *
-     * @return  boolean
-     */
-    public function install(Module $module, $recollect = true)
-    {
-        if (!$module->canBeInstalled()) {
-            return false;
-        }
-
-        $config = $this->getConfig();
-        $modules = $config->read('modules.installed', array());
-        $modules[] = $module->name();
-        $config->write('modules.installed', $modules);
-
-        $this->executeInstallerAction($module, 'install');
-
-        if ($recollect) {
-            $this->collector()->recollect();
-        }
-
-        $this->emit('module.installed.' . $module->name());
-
-        return true;
-    }
-
-    /**
-     * Uninstall a module
-     *
-     * @param   Module $module
-     * @param   boolean $recollect (optional)
-     *
-     * @return  boolean
-     */
-    public function uninstall(Module $module, $recollect = true)
-    {
-        if (!$module->canBeUninstalled()) {
-            return false;
-        }
-
-        $config = $this->getConfig();
-        $modules = $config->read('modules.installed', array());
-        $config->write('modules.installed', array_diff($modules, array($module->name())));
-
-        $this->executeInstallerAction($module, 'uninstall');
-
-        if ($recollect) {
-            $this->collector()->recollect();
-        }
-
-        $this->emit('module.uninstalled.' . $module->name());
-
-        return true;
-    }
-
-    /**
-     * Enable a module
-     *
-     * @param   Module $module
-     * @param   boolean $recollect (optional)
-     *
-     * @return  boolean
-     */
-    public function enable(Module $module, $recollect = true)
-    {
-        if (!$module->canBeEnabled()) {
-            return false;
-        }
-
-        $config = $this->getConfig();
-        $modules = $config->read('app.modules.enabled', array());
-        $modules[] = $module->name();
-        $config->write('modules.enabled', $modules);
-
-        $this->executeInstallerAction($module, 'enable');
-        $this->registerAssets($module);
-
-        if ($recollect) {
-            $this->collector()->recollect();
-        }
-
-        $this->emit('module.enabled.' . $module->name());
-
-        return true;
-    }
-
-    /**
-     * Disable a module
-     *
-     * @param   Module $module
-     * @param   boolean $recollect (optional)
-     *
-     * @return  boolean
-     */
-    public function disable(Module $module, $recollect = true)
-    {
-        if (!$module->canBeDisabled()) {
-            return false;
-        }
-
-        $config = $this->getConfig();
-        $modules = $config->read('modules.enabled', array());
-        $config->write('modules.enabled', array_diff($modules, array($module->name())));
-
-        $this->executeInstallerAction($module, 'disable');
-        $this->unregisterAssets($module);
-
-        if ($recollect) {
-            $this->collector()->recollect();
-        }
-
-        $this->emit('module.disabled.' . $module->name());
-
-        return true;
-    }
-
-    /**
      * Get environment
      *
      * @return  Env
@@ -402,7 +294,7 @@ class Application
     public function getContainer()
     {
         if ($this->containerInstance === null) {
-            $container = $this->collector()->getContracts();
+            $container = $this->getCollector()->getContracts();
             $container->setApplication($this);
             $this->containerInstance = $container;
         }
@@ -475,7 +367,7 @@ class Application
         }
 
         if (!isset($this->cache[$storage])) {
-            $this->cache[$storage] = new Cache($this->collector()->getCacheStorage($storage));
+            $this->cache[$storage] = new Cache($this->getCollector()->getCacheStorage($storage));
         }
 
         return $this->cache[$storage];
@@ -495,7 +387,7 @@ class Application
         }
 
         if (!isset($this->config[$storage])) {
-            $this->session[$storage] = new Session($this->collector()->getSessionStorage($storage));
+            $this->session[$storage] = new Session($this->getCollector()->getSessionStorage($storage));
         }
 
         return $this->session[$storage];
@@ -515,7 +407,7 @@ class Application
         }
 
         if (!isset($this->config[$storage])) {
-            $this->config[$storage] = new Config($this->collector()->getConfigStorage($storage));
+            $this->config[$storage] = new Config($this->getCollector()->getConfigStorage($storage));
         }
 
         return $this->config[$storage];
@@ -540,7 +432,7 @@ class Application
 
     /**
      *
-     * @return  \Opis\Colibri\Console
+     * @return  Console
      */
     public function getConsole()
     {
@@ -562,7 +454,7 @@ class Application
         }
 
         if (!isset($this->connection[$name])) {
-            $this->connection[$name] = $this->collector()->getConnection($name);
+            $this->connection[$name] = $this->getCollector()->getConnection($name);
         }
 
         return $this->connection[$name];
@@ -578,7 +470,7 @@ class Application
     public function getDatabase($connection = null)
     {
         if (!isset($this->database[$connection])) {
-            $this->database[$connection] = $this->collector()->getDatabase($connection);
+            $this->database[$connection] = $this->getCollector()->getDatabase($connection);
         }
 
         return $this->database[$connection];
@@ -610,7 +502,7 @@ class Application
         }
 
         if (!isset($this->loggers[$logger])) {
-            $this->loggers[$logger] = $this->collector()->getLogger($logger);
+            $this->loggers[$logger] = $this->getCollector()->getLogger($logger);
         }
 
         return $this->cache[$logger];
@@ -652,7 +544,7 @@ class Application
     public function getVariables()
     {
         if($this->variables === null){
-            $this->variables = $this->collector()->getVariables();
+            $this->variables = $this->getCollector()->getVariables();
         }
         return $this->variables;
     }
@@ -663,7 +555,7 @@ class Application
     public function getEventTarget()
     {
         if($this->eventTarget === null){
-            $this->eventTarget = new EventTarget($this->collector()->getEventHandlers());
+            $this->eventTarget = new EventTarget($this->getCollector()->getEventHandlers());
         }
         return $this->eventTarget;
     }
@@ -676,6 +568,19 @@ class Application
     public function getAppInfo()
     {
         return $this->info;
+    }
+
+    /**
+     * Get collector
+     *
+     * @return CollectorManager
+     */
+    public function getCollector()
+    {
+        if ($this->collector === null) {
+            $this->collector = new CollectorManager($this);
+        }
+        return $this->collector;
     }
 
     /**
@@ -769,106 +674,123 @@ class Application
     }
 
     /**
-     * Get collector
+     * Install a module
      *
-     * @return CollectorManager
-     */
-    public function collector()
-    {
-        if ($this->collector === null) {
-            $this->collector = new CollectorManager($this);
-        }
-
-        return $this->collector;
-    }
-
-    /**
-     * Returns an instance of the specified contract or class
-     *
-     * @param   string $contract Contract name or class name
-     * @param   array $arguments (optional) Arguments that will be passed to the contract constructor
-     *
-     * @return  mixed
-     */
-    public function make($contract, array $arguments = array())
-    {
-        return $this->getContainer()->make($contract, $arguments);
-    }
-
-    /**
-     * Emit a new event
-     *
-     * @param   string $name Event name
-     * @param   boolean $cancelable (optional) Cancelable flag
-     *
-     * @return  \Opis\Events\Event
-     */
-    public function emit($name, $cancelable = false)
-    {
-        return $this->dispatch(new Event($this, $name, $cancelable));
-    }
-
-    /**
-     * Dispatch an event
-     *
-     * @param   Event $event An event to be dispatched
-     *
-     * @return  Event The dispatched event
-     */
-    public function dispatch(Event $event)
-    {
-        if ($this->eventTarget === null) {
-            $this->eventTarget = new EventTarget($this->collector()->getEventHandlers());
-        }
-        return $this->eventTarget->dispatch($event);
-    }
-
-    /**
-     * Module info
-     *
-     * @param   string $module
-     *
-     * @return  \Opis\Colibri\Module
-     */
-    public function module($module)
-    {
-        return new Module($this, $module);
-    }
-
-    /**
-     * Translate a text
-     *
-     * @param   string $sentence The text that will be translated
-     * @param   array $placeholders (optional) An array of placeholders
-     * @param   string $lang (optional) Translation language
-     *
-     * @return  string  Translated text
-     */
-    public function t($sentence, $placeholders = array(), $lang = null)
-    {
-        return $this->getTranslator()->translate($sentence, $placeholders, $lang);
-    }
-
-    /**
-     * Generates a CSRF token
-     *
-     * @return  string
-     */
-    public function csrfToken()
-    {
-        return $this->getCSRFToken()->generate();
-    }
-
-    /**
-     * Validates a CSRF token
-     *
-     * @param   string $token Token
+     * @param   Module $module
+     * @param   boolean $recollect (optional)
      *
      * @return  boolean
      */
-    public function csrfValidate($token)
+    public function install(Module $module, $recollect = true)
     {
-        return $this->getCSRFToken()->validate($token);
+        if (!$module->canBeInstalled()) {
+            return false;
+        }
+
+        $config = $this->getConfig();
+        $modules = $config->read('modules.installed', array());
+        $modules[] = $module->name();
+        $config->write('modules.installed', $modules);
+
+        $this->executeInstallerAction($module, 'install');
+
+        if ($recollect) {
+            $this->getCollector()->recollect();
+        }
+
+        $this->emit('module.installed.' . $module->name());
+
+        return true;
+    }
+
+    /**
+     * Uninstall a module
+     *
+     * @param   Module $module
+     * @param   boolean $recollect (optional)
+     *
+     * @return  boolean
+     */
+    public function uninstall(Module $module, $recollect = true)
+    {
+        if (!$module->canBeUninstalled()) {
+            return false;
+        }
+
+        $config = $this->getConfig();
+        $modules = $config->read('modules.installed', array());
+        $config->write('modules.installed', array_diff($modules, array($module->name())));
+
+        $this->executeInstallerAction($module, 'uninstall');
+
+        if ($recollect) {
+            $this->getCollector()->recollect();
+        }
+
+        $this->emit('module.uninstalled.' . $module->name());
+
+        return true;
+    }
+
+    /**
+     * Enable a module
+     *
+     * @param   Module $module
+     * @param   boolean $recollect (optional)
+     *
+     * @return  boolean
+     */
+    public function enable(Module $module, $recollect = true)
+    {
+        if (!$module->canBeEnabled()) {
+            return false;
+        }
+
+        $config = $this->getConfig();
+        $modules = $config->read('app.modules.enabled', array());
+        $modules[] = $module->name();
+        $config->write('modules.enabled', $modules);
+
+        $this->executeInstallerAction($module, 'enable');
+        $this->registerAssets($module);
+
+        if ($recollect) {
+            $this->getCollector()->recollect();
+        }
+
+        $this->emit('module.enabled.' . $module->name());
+
+        return true;
+    }
+
+    /**
+     * Disable a module
+     *
+     * @param   Module $module
+     * @param   boolean $recollect (optional)
+     *
+     * @return  boolean
+     */
+    public function disable(Module $module, $recollect = true)
+    {
+        if (!$module->canBeDisabled()) {
+            return false;
+        }
+
+        $config = $this->getConfig();
+        $modules = $config->read('modules.enabled', array());
+        $config->write('modules.enabled', array_diff($modules, array($module->name())));
+
+        $this->executeInstallerAction($module, 'disable');
+        $this->unregisterAssets($module);
+
+        if ($recollect) {
+            $this->getCollector()->recollect();
+        }
+
+        $this->emit('module.disabled.' . $module->name());
+
+        return true;
     }
 
     /**

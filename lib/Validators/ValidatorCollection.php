@@ -21,6 +21,8 @@
 namespace Opis\Colibri\Validators;
 
 use Opis\Colibri\Application;
+use Opis\Colibri\Components\ApplicationTrait;
+use Opis\Colibri\Components\ContractTrait;
 use Opis\Validation\ValidatorCollection as BaseCollection;
 use Opis\Validation\ValidatorInterface;
 use Opis\Validation\Validators\Between;
@@ -43,6 +45,9 @@ use Opis\Validation\Validators\RequiredFile;
 
 class ValidatorCollection extends  BaseCollection
 {
+    use ApplicationTrait;
+    use ContractTrait;
+
     /** @var  Application */
     protected  $app;
 
@@ -55,7 +60,7 @@ class ValidatorCollection extends  BaseCollection
      */
     public function __construct(Application $app)
     {
-        $classes = $app->collector()->getValidators();
+        $classes = $app->getCollector()->getValidators();
 
         $classes += array(
             'between' => Between::class,
@@ -83,6 +88,15 @@ class ValidatorCollection extends  BaseCollection
     }
 
     /**
+     * @return Application
+     */
+    public function getApp(): Application
+    {
+        return $this->app;
+    }
+
+
+    /**
      * @param $name
      * @return bool|ValidatorInterface
      */
@@ -90,7 +104,7 @@ class ValidatorCollection extends  BaseCollection
     {
         if(!isset($this->validators[$name])){
             if (isset($this->classes[$name])){
-                $validator = $this->app->make($this->classes[$name]);
+                $validator = $this->make($this->classes[$name]);
                 if (!($validator instanceof ValidatorInterface)) {
                     return false;
                 }

@@ -23,6 +23,9 @@ namespace Opis\Colibri;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Opis\Cache\StorageInterface as CacheStorageInterface;
 use Opis\Colibri\Annotations\Collector as CollectorAnnotation;
+use Opis\Colibri\Components\ApplicationTrait;
+use Opis\Colibri\Components\ContractTrait;
+use Opis\Colibri\Components\EventTrait;
 use Opis\Colibri\Routing\HttpRouteCollection;
 use Opis\Config\StorageInterface as ConfigStorageInterface;
 use Opis\Database\Connection;
@@ -45,6 +48,10 @@ use RuntimeException;
  */
 class CollectorManager
 {
+    use ApplicationTrait;
+    use EventTrait;
+    use ContractTrait;
+
     /** @var    Application */
     protected $app;
 
@@ -85,6 +92,14 @@ class CollectorManager
             $container->alias($collector['class'], $name);
             $container->singleton($collector['class']);
         }
+    }
+
+    /**
+     * @return Application
+     */
+    public function getApp(): Application
+    {
+        return $this->app;
     }
 
     /**
@@ -274,7 +289,7 @@ class CollectorManager
             });
 
             if ($hit) {
-                $this->app->emit('system.collect.' . $entry);
+                $this->emit('system.collect.' . $entry);
             }
         }
 
@@ -300,7 +315,7 @@ class CollectorManager
             $this->collect($entry, $fresh);
         }
 
-        $this->app->emit('system.collect');
+        $this->emit('system.collect');
 
         return true;
     }
@@ -357,7 +372,7 @@ class CollectorManager
                 continue;
             }
 
-            $instance = $this->app->make($module->collector());
+            $instance = $this->make($module->collector());
 
             $reflection = new ReflectionClass($instance);
 

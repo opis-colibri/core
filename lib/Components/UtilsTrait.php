@@ -20,6 +20,7 @@
 
 namespace Opis\Colibri\Components;
 
+use Opis\Colibri\Module;
 use Opis\Colibri\Serializable\ControllerCallback;
 
 trait UtilsTrait
@@ -98,4 +99,15 @@ trait UtilsTrait
         return new ControllerCallback($class, $method, $static);
     }
 
+    /**
+     * Module info
+     *
+     * @param   string $module
+     *
+     * @return  Module
+     */
+    protected function module(string $module)
+    {
+        return new Module($this->getApp(), $module);
+    }
 }

@@ -28,6 +28,7 @@ use Opis\View\View as OpisView;
 class View extends OpisView
 {
     use ApplicationTrait;
+    use ViewTrait;
 
     /** @var    Application */
     protected $app;
@@ -104,13 +105,11 @@ class View extends OpisView
     {
         if ($this->renderedContent === null) {
             try {
-                $this->renderedContent = (string) $this->app->getViewApp()->render($this);
-
+                $this->renderedContent = (string) $this->view($this->viewName(), $this->viewArguments());
             } catch (Exception $e) {
                 $this->renderedContent = (string) $e;
             }
         }
-
         return $this->renderedContent;
     }
 }

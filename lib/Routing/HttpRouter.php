@@ -64,7 +64,7 @@ class HttpRouter extends Router
             'view' => $app->getViewApp(),
         );
 
-        parent::__construct($app->collector()->getRoutes(), $app->collector()->getDispatcherResolver(), null, $specials);
+        parent::__construct($app->getCollector()->getRoutes(), $app->getCollector()->getDispatcherResolver(), null, $specials);
 
         $this->getRouteCollection()
             ->notFound(function ($path) {
@@ -103,7 +103,7 @@ class HttpRouter extends Router
      */
     public function route(BasePath $path)
     {
-        $router = new AliasRouter($this->app->collector()->getRouteAliases());
+        $router = new AliasRouter($this->app->getCollector()->getRouteAliases());
         $alias = $router->route(new BasePath($path->path()));
 
         if ($alias !== null) {

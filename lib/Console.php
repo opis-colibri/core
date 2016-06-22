@@ -56,7 +56,7 @@ class Console
     {
         $commands = array();
 
-        foreach ($this->app->collector()->getCommands() as $name => $builder) {
+        foreach ($this->app->getCollector()->getCommands() as $name => $builder) {
             try {
                 $command = call_user_func($builder);
                 if ($command instanceof Command) {

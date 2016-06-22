@@ -21,6 +21,7 @@
 namespace Opis\Colibri;
 
 use Opis\Colibri\Components\ApplicationTrait;
+use Opis\Colibri\Components\UtilsTrait;
 use Opis\Colibri\Validators\ValidatorCollection;
 use Opis\Validation\Validator as BaseValidator;
 use Opis\Validation\DefaultValidatorTrait;
@@ -29,6 +30,7 @@ class Validator extends BaseValidator
 {
     use ApplicationTrait;
     use DefaultValidatorTrait;
+    use UtilsTrait;
 
     /** @var    Application */
     protected $app;
@@ -60,7 +62,7 @@ class Validator extends BaseValidator
         $errors = array();
 
         foreach (parent::getErrors() as $key => $value) {
-            $errors[$key] = $this->app->t($value);
+            $errors[$key] = $this->t($value);
         }
 
         return $errors;
