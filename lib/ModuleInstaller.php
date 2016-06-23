@@ -29,8 +29,10 @@ abstract class ModuleInstaller
     /** @var  Application */
     protected $app;
 
+
     /**
-     * Constructor
+     * ModuleInstaller constructor.
+     * @param Application $app
      */
     final public function __construct(Application $app)
     {

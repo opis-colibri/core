@@ -48,9 +48,7 @@ use RuntimeException;
  */
 class CollectorManager
 {
-    use ApplicationTrait;
-    use EventTrait;
-    use ContractTrait;
+    use EventTrait, ContractTrait;
 
     /** @var    Application */
     protected $app;
@@ -97,7 +95,7 @@ class CollectorManager
     /**
      * @return Application
      */
-    public function getApp(): Application
+    protected function getApp(): Application
     {
         return $this->app;
     }

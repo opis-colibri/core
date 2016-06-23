@@ -20,8 +20,12 @@
 
 namespace Opis\Colibri;
 
+use Opis\Colibri\Components\ApplicationTrait;
+
 abstract class Collector
 {
+    use ApplicationTrait;
+
     /** @var    Application */
     protected $app;
 
@@ -45,6 +49,14 @@ abstract class Collector
     public function data()
     {
         return $this->dataObject;
+    }
+
+    /**
+     * @return Application
+     */
+    protected function getApp(): Application
+    {
+        return $this->app;
     }
 
 }
