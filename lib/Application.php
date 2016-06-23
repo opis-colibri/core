@@ -27,7 +27,6 @@ use Composer\IO\NullIO;
 use Composer\Package\CompletePackage;
 use Opis\Cache\Cache;
 use Opis\Cache\Storage\Memory as EphemeralCacheStorage;
-use Opis\Colibri\Components\ApplicationTrait;
 use Opis\Colibri\Components\ContractTrait;
 use Opis\Colibri\Components\EventTrait;
 use Opis\Colibri\Composer\CLI;
@@ -47,9 +46,7 @@ use SessionHandlerInterface;
 
 class Application
 {
-    use ApplicationTrait;
-    use ContractTrait;
-    use EventTrait;
+    use ContractTrait, EventTrait;
 
     /** @var    Env */
     protected $env;
@@ -138,6 +135,9 @@ class Application
     /** @var  Validator */
     protected $validator;
 
+    /** @var  AppHelper */
+    protected $helper;
+
     /**
      * Constructor
      *
@@ -151,14 +151,6 @@ class Application
         $this->composer = $composer;
         $this->classLoader = $loader;
         $this->info->setApplication($this);
-    }
-
-    /**
-     * @return Application
-     */
-    public function getApp(): Application
-    {
-        return $this;
     }
 
     /**
@@ -584,6 +576,17 @@ class Application
     }
 
     /**
+     * @return AppHelper
+     */
+    public function getHelper()
+    {
+        if ($this->helper === null){
+            $this->helper = new AppHelper($this);
+        }
+        return $this->helper;
+    }
+
+    /**
      * Bootstrap method
      *
      * @return  $this
@@ -791,6 +794,14 @@ class Application
         $this->emit('module.disabled.' . $module->name());
 
         return true;
+    }
+
+    /**
+     * @return Application
+     */
+    protected function getApp(): Application
+    {
+        return $this;
     }
 
     /**
