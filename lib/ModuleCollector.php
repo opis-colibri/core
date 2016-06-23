@@ -37,4 +37,12 @@ abstract class ModuleCollector
     {
         $this->app = $app;
     }
+
+    /**
+     * @return Application
+     */
+    protected function getApp(): Application
+    {
+        return $this->app;
+    }
 }

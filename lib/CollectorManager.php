@@ -23,7 +23,6 @@ namespace Opis\Colibri;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Opis\Cache\StorageInterface as CacheStorageInterface;
 use Opis\Colibri\Annotations\Collector as CollectorAnnotation;
-use Opis\Colibri\Components\ApplicationTrait;
 use Opis\Colibri\Components\ContractTrait;
 use Opis\Colibri\Components\EventTrait;
 use Opis\Colibri\Routing\HttpRouteCollection;
@@ -303,7 +302,7 @@ class CollectorManager
      */
     public function recollect(bool $fresh = true): bool
     {
-        if (!$this->app->getCache('app')->clear()) {
+        if (!$this->app->getCache()->clear()) {
             return false;
         }
 

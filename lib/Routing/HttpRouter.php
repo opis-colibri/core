@@ -21,7 +21,6 @@
 namespace Opis\Colibri\Routing;
 
 use Opis\Colibri\Application;
-use Opis\Colibri\Components\ApplicationTrait;
 use Opis\Colibri\Components\ViewTrait;
 use Opis\Http\Error\AccessDenied;
 use Opis\Http\Error\NotFound;
