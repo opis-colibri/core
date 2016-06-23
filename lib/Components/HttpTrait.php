@@ -20,7 +20,6 @@
 
 namespace Opis\Colibri\Components;
 
-
 use Opis\Http\Request;
 use Opis\Http\Response;
 use Opis\HttpRouting\HttpError;
