@@ -28,12 +28,12 @@ abstract class ModuleCollector
 
     /** @var  Application */
     protected $app;
-    
+
     /**
      * ModuleCollector constructor.
      * @param Application $app
      */
-    final public function __construct(Application $app)
+    public function __construct(Application $app)
     {
         $this->app = $app;
     }

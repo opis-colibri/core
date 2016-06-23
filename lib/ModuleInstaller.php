@@ -34,7 +34,7 @@ abstract class ModuleInstaller
      * ModuleInstaller constructor.
      * @param Application $app
      */
-    final public function __construct(Application $app)
+    public function __construct(Application $app)
     {
         $this->app = $app;
     }
@@ -77,5 +77,13 @@ abstract class ModuleInstaller
     public function disable(Application $app)
     {
 
+    }
+
+    /**
+     * @return Application
+     */
+    protected function getApp(): Application
+    {
+        return $this->app;
     }
 }
