@@ -27,5 +27,5 @@ trait ApplicationTrait
     /**
      * @return Application
      */
-    abstract public function getApp(): Application;
+    abstract protected function getApp(): Application;
 }

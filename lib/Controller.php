@@ -41,7 +41,7 @@ abstract class Controller
     /**
      * @return Application
      */
-    public function getApp(): Application
+    protected function getApp(): Application
     {
         return $this->app;
     }

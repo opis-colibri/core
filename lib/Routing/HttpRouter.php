@@ -37,7 +37,6 @@ use Opis\Routing\Router as AliasRouter;
  */
 class HttpRouter extends Router
 {
-    use ApplicationTrait;
     use ViewTrait;
 
     /** @var    Application */

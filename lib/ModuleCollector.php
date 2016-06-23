@@ -20,13 +20,20 @@
 
 namespace Opis\Colibri;
 
+use Opis\Colibri\Components\ApplicationTrait;
+
 abstract class ModuleCollector
 {
+    use ApplicationTrait;
+
+    /** @var  Application */
+    protected $app;
+
     /**
      * Constructor
      */
-    final public function __construct()
+    final public function __construct(Application $app)
     {
-
+        $this->app = $app;
     }
 }
