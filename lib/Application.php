@@ -34,13 +34,18 @@ use Opis\Colibri\Routing\HttpRouter;
 use Opis\Colibri\Routing\ViewApp;
 use Opis\Config\Config;
 use Opis\Config\Storage\Memory as EphemeralConfigStorage;
-use Opis\Container\Container;
+use Opis\Database\Connection;
+use Opis\Database\Database;
+use Opis\Database\Schema;
 use Opis\Events\EventTarget;
 use Opis\Http\Request as HttpRequest;
+use Opis\Http\Request;
+use Opis\Http\Response;
 use Opis\HttpRouting\Path;
 use Opis\Session\Session;
 use Opis\Utils\Dir;
 use Opis\Validation\Placeholder;
+use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SessionHandlerInterface;
 
@@ -158,7 +163,7 @@ class Application
      *
      * @return  Composer
      */
-    public function getComposer()
+    public function getComposer(): Composer
     {
         if ($this->composer === null) {
             $this->composer = Factory::create(new NullIO(), $this->info->composerFile());
@@ -172,7 +177,7 @@ class Application
      *
      * @return  CLI
      */
-    public function getComposerCLI()
+    public function getComposerCLI(): CLI
     {
         if ($this->composerCLI === null) {
             $this->composerCLI = new CLI($this);
@@ -184,7 +189,7 @@ class Application
     /**
      * @return  ClassLoader
      */
-    public function getClassLoader()
+    public function getClassLoader(): ClassLoader
     {
         return $this->classLoader;
     }
@@ -196,7 +201,7 @@ class Application
      *
      * @return  CompletePackage[]
      */
-    public function getPackages($clear = false)
+    public function getPackages(bool $clear = false): array
     {
         if (!$clear && $this->packages !== null) {
             return $this->packages;
@@ -223,7 +228,7 @@ class Application
      *
      * @return  Module[]
      */
-    public function getModules($clear = false)
+    public function getModules(bool $clear = false): array
     {
         if (!$clear && $this->modules !== null) {
             return $this->modules;
@@ -243,7 +248,7 @@ class Application
      *
      * @return  Env
      */
-    public function getEnv()
+    public function getEnv(): Env
     {
         if ($this->env === null) {
             $this->env = new Env($this);
@@ -257,7 +262,7 @@ class Application
      *
      * @return  HttpRouter
      */
-    public function getHttpRouter()
+    public function getHttpRouter(): HttpRouter
     {
         if ($this->httpRouter === null) {
             $this->httpRouter = new HttpRouter($this);
@@ -270,7 +275,7 @@ class Application
      *
      * @return  ViewApp
      */
-    public function getViewApp()
+    public function getViewApp(): ViewApp
     {
         if ($this->viewApp === null) {
             $this->viewApp = new ViewApp($this);
@@ -283,7 +288,7 @@ class Application
      *
      * @return  Container
      */
-    public function getContainer()
+    public function getContainer(): Container
     {
         if ($this->containerInstance === null) {
             $container = $this->getCollector()->getContracts();
@@ -296,7 +301,7 @@ class Application
     /**
      * @return  Translator
      */
-    public function getTranslator()
+    public function getTranslator(): Translator
     {
         if ($this->translatorInstance === null) {
             $this->translatorInstance = new Translator($this);
@@ -308,7 +313,7 @@ class Application
      *
      * @return  CSRFToken
      */
-    public function getCSRFToken()
+    public function getCSRFToken(): CSRFToken
     {
         if ($this->csrfTokenInstance === null) {
             $this->csrfTokenInstance = new CSRFToken($this);
@@ -322,7 +327,7 @@ class Application
      *
      * @return  Placeholder
      */
-    public function getPlaceholder()
+    public function getPlaceholder(): Placeholder
     {
         if ($this->placeholderInstance === null) {
             $this->placeholderInstance = new Placeholder();
@@ -336,7 +341,7 @@ class Application
      *
      * @return  Validator
      */
-    public function getValidator()
+    public function getValidator(): Validator
     {
         if ($this->validator === null){
             $this->validator = new Validator($this);
@@ -350,9 +355,9 @@ class Application
      *
      * @param   string|null $storage (optional) Storage name
      *
-     * @return  \Opis\Cache\Cache
+     * @return  Cache
      */
-    public function getCache($storage = null)
+    public function getCache(string $storage = null): Cache
     {
         if ($storage === null && false === $storage = getenv(Env::CACHE_STORAGE)) {
             $this->cache[$storage = ''] = new Cache(new EphemeralCacheStorage());
@@ -370,9 +375,9 @@ class Application
      *
      * @param   string|null $storage (optional) Storage name
      *
-     * @return  \Opis\Session\Session
+     * @return  Session
      */
-    public function getSession($storage = null)
+    public function getSession(string $storage = null): Session
     {
         if ($storage === null && false === $storage = getenv(Env::SESSION_STORAGE)) {
             $this->session[$storage = ''] = new Session();
@@ -390,9 +395,9 @@ class Application
      *
      * @param   string|null $storage (optional) Storage name
      *
-     * @return  \Opis\Config\Config
+     * @return  Config
      */
-    public function getConfig($storage = null)
+    public function getConfig(string $storage = null): Config
     {
         if ($storage === null && false === $storage = getenv(Env::CONFIG_STORAGE)) {
             $this->config[$storage = ''] = new Config(new EphemeralConfigStorage());
@@ -408,9 +413,9 @@ class Application
     /**
      * Returns a translation storage
      *
-     * @return  \Opis\Config\Config
+     * @return  Config
      */
-    public function getTranslations()
+    public function getTranslations(): Config
     {
         if ($this->translations === null) {
             if (false === $storage = getenv(Env::TRANSLATIONS_STORAGE)) {
@@ -426,7 +431,7 @@ class Application
      *
      * @return  Console
      */
-    public function getConsole()
+    public function getConsole(): Console
     {
         if ($this->consoleInstance === null) {
             $this->consoleInstance = new Console($this);
@@ -437,9 +442,9 @@ class Application
     /**
      * @param string|null $name
      * @throws  \RuntimeException
-     * @return  \Opis\Database\Connection
+     * @return  Connection
      */
-    public function getConnection($name = null)
+    public function getConnection(string $name = null): Connection
     {
         if ($name === null && false === $name = getenv(Env::DB_CONNECTION)) {
             throw new \RuntimeException("No database connection defined");
@@ -457,9 +462,9 @@ class Application
      *
      * @param   string|null $connection (optional) Connection name
      *
-     * @return  \Opis\Database\Database
+     * @return  Database
      */
-    public function getDatabase($connection = null)
+    public function getDatabase(string $connection = null): Database
     {
         if (!isset($this->database[$connection])) {
             $this->database[$connection] = $this->getCollector()->getDatabase($connection);
@@ -473,9 +478,9 @@ class Application
      *
      * @param   string|null $connection (optional) Connection name
      *
-     * @return  \Opis\Database\Schema
+     * @return  Schema
      */
-    public function getSchema($connection = null)
+    public function getSchema(string $connection = null): Schema
     {
         return $this->getDatabase($connection)->schema();
     }
@@ -485,9 +490,9 @@ class Application
      *
      * @param   string|null $logger Logger's name
      *
-     * @return  \Psr\Log\LoggerInterface
+     * @return  LoggerInterface
      */
-    public function getLog($logger = null)
+    public function getLog(string $logger = null): LoggerInterface
     {
         if ($logger === null && false === $logger = getenv(Env::LOGGER_STORAGE)) {
             $this->loggers[''] = new NullLogger();
@@ -503,9 +508,9 @@ class Application
     /**
      * Return the underlying HTTP request object
      *
-     * @return  \Opis\Http\Request
+     * @return  Request
      */
-    public function getHttpRequest()
+    public function getHttpRequest(): Request
     {
         if ($this->httpRequestInstance === null) {
             $this->httpRequestInstance = HttpRequest::fromGlobals();
@@ -517,9 +522,9 @@ class Application
     /**
      * Return the underlying HTTP response object
      *
-     * @return  \Opis\Http\Response
+     * @return  Response
      */
-    public function getHttpResponse()
+    public function getHttpResponse(): Response
     {
         if ($this->httpResponseInstance === null) {
             $this->httpResponseInstance = $this->getHttpRequest()->response();
@@ -533,7 +538,7 @@ class Application
      *
      * @return array
      */
-    public function getVariables()
+    public function getVariables(): array
     {
         if($this->variables === null){
             $this->variables = $this->getCollector()->getVariables();
@@ -544,7 +549,7 @@ class Application
     /**
      * @return EventTarget
      */
-    public function getEventTarget()
+    public function getEventTarget(): EventTarget
     {
         if($this->eventTarget === null){
             $this->eventTarget = new EventTarget($this->getCollector()->getEventHandlers());
@@ -557,7 +562,7 @@ class Application
      *
      * @return  AppInfo
      */
-    public function getAppInfo()
+    public function getAppInfo(): AppInfo
     {
         return $this->info;
     }
@@ -567,7 +572,7 @@ class Application
      *
      * @return CollectorManager
      */
-    public function getCollector()
+    public function getCollector(): CollectorManager
     {
         if ($this->collector === null) {
             $this->collector = new CollectorManager($this);
@@ -578,7 +583,7 @@ class Application
     /**
      * @return AppHelper
      */
-    public function getHelper()
+    public function getHelper(): AppHelper
     {
         if ($this->helper === null){
             $this->helper = new AppHelper($this);
@@ -588,10 +593,9 @@ class Application
 
     /**
      * Bootstrap method
-     *
-     * @return  $this
+     * @return $this|Application
      */
-    public function bootstrap()
+    public function bootstrap(): self
     {
         if (!$this->info->installMode()) {
             $this->emit('system.init');
@@ -684,7 +688,7 @@ class Application
      *
      * @return  boolean
      */
-    public function install(Module $module, $recollect = true)
+    public function install(Module $module, bool $recollect = true): bool
     {
         if (!$module->canBeInstalled()) {
             return false;
@@ -714,7 +718,7 @@ class Application
      *
      * @return  boolean
      */
-    public function uninstall(Module $module, $recollect = true)
+    public function uninstall(Module $module, bool $recollect = true): bool
     {
         if (!$module->canBeUninstalled()) {
             return false;
@@ -743,7 +747,7 @@ class Application
      *
      * @return  boolean
      */
-    public function enable(Module $module, $recollect = true)
+    public function enable(Module $module, bool $recollect = true): bool
     {
         if (!$module->canBeEnabled()) {
             return false;
@@ -774,7 +778,7 @@ class Application
      *
      * @return  boolean
      */
-    public function disable(Module $module, $recollect = true)
+    public function disable(Module $module, bool $recollect = true): bool
     {
         if (!$module->canBeDisabled()) {
             return false;
@@ -810,7 +814,7 @@ class Application
      * @param Module $module
      * @param string $action
      */
-    protected function executeInstallerAction(Module $module, $action)
+    protected function executeInstallerAction(Module $module, string $action)
     {
         if (!$this->info->installMode()) {
             $this->getComposerCLI()->dumpAutoload();
@@ -827,7 +831,7 @@ class Application
      * @param Module $module
      * @return bool
      */
-    protected function registerAssets(Module $module)
+    protected function registerAssets(Module $module): bool
     {
         if (null === $assets = $module->assets()){
             return false;
@@ -851,7 +855,7 @@ class Application
      * @param Module $module
      * @return bool
      */
-    protected function unregisterAssets(Module $module)
+    protected function unregisterAssets(Module $module): bool 
     {
         $path = $this->info->assetsDir() . '/' . $module->name();
 

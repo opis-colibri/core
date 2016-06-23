@@ -50,12 +50,15 @@ class AppInfo
      * @param   array $info App root folder
      * @param   Composer $composer Composer instance
      */
-    public function __construct($info, Composer $composer = null)
+    public function __construct(array $info, Composer $composer = null)
     {
         $this->info = $info;
         $this->composer = $composer;
     }
 
+    /**
+     * @param Application $app
+     */
     public function setApplication(Application $app)
     {
         $this->app = $app;
@@ -66,7 +69,7 @@ class AppInfo
      *
      * @return  string
      */
-    public function assetsDir()
+    public function assetsDir(): string
     {
         if (!isset($this->info[static::ASSETS_DIR])) {
             $this->info[static::ASSETS_DIR] = $this->publicDir() . '/assets';
@@ -80,7 +83,7 @@ class AppInfo
      *
      * @return  string
      */
-    public function publicDir()
+    public function publicDir(): string
     {
         if (!isset($this->info[static::PUBLIC_DIR])) {
             $this->info[static::PUBLIC_DIR] = $this->rootDir() . '/public';
@@ -94,7 +97,7 @@ class AppInfo
      * @return string
      * @throws Exception
      */
-    public function rootDir()
+    public function rootDir(): string
     {
         if (!isset($this->info[static::ROOT_DIR])) {
             throw new Exception('Root directory must be set');
@@ -107,7 +110,7 @@ class AppInfo
      *
      * @return  string
      */
-    public function writableDir()
+    public function writableDir(): string
     {
         if (!isset($this->info[static::WRITABLE_DIR])) {
             $this->info[static::WRITABLE_DIR] = $this->rootDir() . '/storage';
@@ -121,7 +124,7 @@ class AppInfo
      *
      * @return  string
      */
-    public function vendorDir()
+    public function vendorDir(): string
     {
         if (!isset($this->info[static::VENDOR_DIR])) {
             $this->info[static::VENDOR_DIR] = $this->app->getComposer()->getConfig()->get('vendor-dir');;
@@ -133,7 +136,7 @@ class AppInfo
     /**
      * @return string
      */
-    public function assetsPath()
+    public function assetsPath(): string
     {
         if(!isset($this->info[static::ASSETS_PATH])){
             $this->info[static::ASSETS_PATH] = '/assets';
@@ -147,7 +150,7 @@ class AppInfo
      * @return string
      * @throws Exception
      */
-    public function composerFile()
+    public function composerFile(): string
     {
         if(!isset($this->info[static::COMPOSER_FILE])) {
             $this->info[static::COMPOSER_FILE] = $this->rootDir() . '/composer.json';
@@ -161,7 +164,7 @@ class AppInfo
      *
      * @return  boolean
      */
-    public function installMode()
+    public function installMode(): bool
     {
         if (!isset($this->info[static::INSTALL_MODE])) {
             $this->info[static::INSTALL_MODE] = !$this->app->getConfig()->read('app.installed', false);
@@ -175,7 +178,7 @@ class AppInfo
      *
      * @return  boolean
      */
-    public function cliMode()
+    public function cliMode(): bool 
     {
         if (!isset($this->info[static::CLI_MODE])) {
             $this->info[static::CLI_MODE] = php_sapi_name() === 'cli';

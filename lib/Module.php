@@ -46,7 +46,7 @@ class Module
      * @param   string $name
      * @param   CompletePackage $package (optional)
      */
-    public function __construct(Application $app, $name, CompletePackage $package = null)
+    public function __construct(Application $app, string $name, CompletePackage $package = null)
     {
         $this->app = $app;
         $this->name = $name;
@@ -59,7 +59,7 @@ class Module
      *
      * @throws Exception
      */
-    public function getPackage()
+    public function getPackage(): CompletePackage
     {
         if ($this->package === null) {
             $packages = $this->app->getPackages();
@@ -77,7 +77,7 @@ class Module
      *
      * @return  string
      */
-    public function name()
+    public function name(): string
     {
         return $this->get(__FUNCTION__);
     }
@@ -88,7 +88,7 @@ class Module
      *
      * @return  string
      */
-    public function version()
+    public function version(): string
     {
         return $this->get(__FUNCTION__);
     }
@@ -98,7 +98,7 @@ class Module
      *
      * @return  string
      */
-    public function title()
+    public function title(): string
     {
         return $this->get(__FUNCTION__);
     }
@@ -108,7 +108,7 @@ class Module
      *
      * @return  string
      */
-    public function description()
+    public function description(): string
     {
         return $this->get(__FUNCTION__);
     }
@@ -118,7 +118,7 @@ class Module
      *
      * @return  string
      */
-    public function directory()
+    public function directory(): string
     {
         return $this->get(__FUNCTION__);
     }
@@ -128,7 +128,7 @@ class Module
      *
      * @return  string
      */
-    public function collector()
+    public function collector(): string
     {
         return $this->get(__FUNCTION__);
     }
@@ -138,7 +138,7 @@ class Module
      *
      * @return  string
      */
-    public function installer()
+    public function installer(): string
     {
         return $this->get(__FUNCTION__);
     }
@@ -148,7 +148,7 @@ class Module
      *
      * @return  string
      */
-    public function assets()
+    public function assets(): string
     {
         return $this->get(__FUNCTION__);
     }
@@ -158,7 +158,7 @@ class Module
      *
      * @return  boolean
      */
-    public function isHidden()
+    public function isHidden(): bool
     {
         return $this->get('hidden');
     }
@@ -168,7 +168,7 @@ class Module
      *
      * @return  boolean
      */
-    public function canBeEnabled()
+    public function canBeEnabled(): bool
     {
         if ($this->isEnabled() || !$this->isInstalled()) {
             return false;
@@ -188,7 +188,7 @@ class Module
      *
      * @return  boolean
      */
-    public function isEnabled()
+    public function isEnabled(): bool
     {
         if (!$this->exists()) {
             return false;
@@ -203,7 +203,7 @@ class Module
      *
      * @return  boolean
      */
-    public function exists()
+    public function exists(): bool
     {
         if ($this->exists === null) {
             $packages = $this->app->getPackages();
@@ -218,7 +218,7 @@ class Module
      *
      * @return  boolean
      */
-    public function isInstalled()
+    public function isInstalled(): bool
     {
         if (!$this->exists()) {
             return false;
@@ -233,7 +233,7 @@ class Module
      *
      * @return  Module[]
      */
-    public function dependencies()
+    public function dependencies(): array
     {
         return $this->get(__FUNCTION__);
     }
@@ -243,7 +243,7 @@ class Module
      *
      * @return  boolean
      */
-    public function canBeDisabled()
+    public function canBeDisabled(): bool
     {
         if (!$this->isEnabled()) {
             return false;
@@ -263,7 +263,7 @@ class Module
      *
      * @return  Module[]
      */
-    public function dependents()
+    public function dependents(): array
     {
         return $this->get(__FUNCTION__);
     }
@@ -273,7 +273,7 @@ class Module
      *
      * @return  boolean
      */
-    public function canBeInstalled()
+    public function canBeInstalled(): bool
     {
         if ($this->isInstalled()) {
             return false;
@@ -293,7 +293,7 @@ class Module
      *
      * @return  boolean
      */
-    public function canBeUninstalled()
+    public function canBeUninstalled(): bool
     {
         if (!$this->isInstalled()) {
             return false;
@@ -313,7 +313,7 @@ class Module
      *
      * @return  boolean
      */
-    public function enable()
+    public function enable(): bool
     {
         return $this->app->enable($this);
     }
@@ -323,7 +323,7 @@ class Module
      *
      * @return  boolean
      */
-    public function disable()
+    public function disable(): bool
     {
         return $this->app->disable($this);
     }
@@ -333,7 +333,7 @@ class Module
      *
      * @return  boolean
      */
-    public function install()
+    public function install(): bool
     {
         return $this->app->install($this);
     }
@@ -343,7 +343,7 @@ class Module
      *
      * @return  boolean
      */
-    public function uninstall()
+    public function uninstall(): bool
     {
         return $this->app->uninstall($this);
     }
@@ -353,7 +353,7 @@ class Module
      * @return bool|mixed|null|Module[]|string
      * @throws Exception
      */
-    protected function get($property)
+    protected function get(string $property)
     {
         if (array_key_exists($property, $this->info)) {
             return $this->info[$property];
@@ -407,7 +407,7 @@ class Module
      *
      * @return  string
      */
-    protected function resolveTitle($package, $extra)
+    protected function resolveTitle(CompletePackage $package, array $extra): string
     {
         $title = isset($extra['title']) ? trim($extra['title']) : '';
 
@@ -430,7 +430,7 @@ class Module
      *
      * @return  Module[]
      */
-    protected function resolveDependencies($package, $extra)
+    protected function resolveDependencies(CompletePackage $package, array $extra): array
     {
         $dependencies = array();
         $modules = $this->app->getModules();
@@ -453,7 +453,7 @@ class Module
      *
      * @return  Module[]
      */
-    protected function resolveDependants($package, $extra)
+    protected function resolveDependants(CompletePackage $package, array $extra): array
     {
         $dependants = array();
         $modules = $this->app->getModules();
@@ -479,7 +479,7 @@ class Module
      *
      * @return  string
      */
-    protected function resolveDirectory($package, $extra)
+    protected function resolveDirectory(CompletePackage $package, array $extra): string
     {
         return $this->app->getComposer()
             ->getInstallationManager()
@@ -494,7 +494,7 @@ class Module
      *
      * @return  string
      */
-    protected function resolveCollector($package, $extra)
+    protected function resolveCollector(CompletePackage $package, array $extra): string
     {
         if (!isset($extra['collector'])) {
             return null;
@@ -514,7 +514,7 @@ class Module
      *
      * @return  string
      */
-    protected function resolveInstaller($package, $extra)
+    protected function resolveInstaller(CompletePackage $package, array $extra): string
     {
         if (!isset($extra['installer'])) {
             return null;
@@ -534,7 +534,7 @@ class Module
      *
      * @return  string
      */
-    protected function resolveAssets($package, $extra)
+    protected function resolveAssets(CompletePackage $package, array $extra): string
     {
         if (!isset($extra['assetes'])) {
             return null;

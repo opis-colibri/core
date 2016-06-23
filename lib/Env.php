@@ -39,7 +39,7 @@ class Env
      *
      * @return boolean
      */
-    public function appInstalled()
+    public function appInstalled(): bool
     {
         if (false === $value = getenv('APP_INSTALLED')) {
             return false;
@@ -53,7 +53,7 @@ class Env
      *
      * @return boolean
      */
-    public function appDebug()
+    public function appDebug(): bool
     {
         if (false === $value = getenv('APP_DEBUG')) {
             return false;
@@ -67,7 +67,7 @@ class Env
      *
      * @return string
      */
-    public function appEnv()
+    public function appEnv(): string
     {
         if (false === $value = getenv('APP_ENV')) {
             return 'local';
@@ -82,7 +82,7 @@ class Env
      *
      * @return string
      */
-    public function databaseStorage()
+    public function databaseStorage(): string
     {
         if (false === $value = getenv('DB_STORAGE')) {
             return false;
@@ -95,7 +95,7 @@ class Env
      * CACHE_STORAGE
      * @return bool|string
      */
-    public function cacheStorage()
+    public function cacheStorage(): string
     {
         if (false === $value = getenv('CACHE_STORAGE')) {
             return false;
@@ -108,7 +108,7 @@ class Env
      * CONFIG_STORAGE
      * @return bool|string
      */
-    public function configStorage()
+    public function configStorage(): string 
     {
         if (false === $value = getenv('CONFIG_STORAGE')) {
             return false;

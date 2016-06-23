@@ -50,9 +50,9 @@ class Console
     /**
      *  Get a list of commands
      *
-     * @return  array
+     * @return  Command[]
      */
-    public function commands()
+    public function commands(): array
     {
         $commands = array();
 

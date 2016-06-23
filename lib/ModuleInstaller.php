@@ -41,40 +41,32 @@ abstract class ModuleInstaller
 
     /**
      * Install action
-     *
-     * @param   \Opis\Colibri\Application $app
      */
-    public function install(Application $app)
+    public function install()
     {
 
     }
 
     /**
      * Uninstall action
-     *
-     * @param   \Opis\Colibri\Application $app
      */
-    public function uninstall(Application $app)
+    public function uninstall()
     {
 
     }
 
     /**
      * Enable action
-     *
-     * @param   \Opis\Colibri\Application $app
      */
-    public function enable(Application $app)
+    public function enable()
     {
 
     }
 
     /**
      * Disable action
-     *
-     * @param   \Opis\Colibri\Application $app
      */
-    public function disable(Application $app)
+    public function disable()
     {
 
     }

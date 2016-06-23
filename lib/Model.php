@@ -20,11 +20,15 @@
 
 namespace Opis\Colibri;
 
+use Opis\Colibri\Components\ApplicationTrait;
+use Opis\Database\Connection;
 use Opis\Database\Model as BaseModel;
 
 class Model extends BaseModel
 {
-    /** @var    \Opis\Colibri\Application */
+    use ApplicationTrait;
+
+    /** @var   Application */
     protected static $app;
 
     /** @var    string  Connection name */
@@ -43,9 +47,9 @@ class Model extends BaseModel
     /**
      * Returns the active database connection
      *
-     * @return  \Opis\Database\Connection
+     * @return  Connection
      */
-    public static function getConnection()
+    public static function getConnection(): Connection
     {
         return static::getApplication()->getConnection(static::$connection);
     }
@@ -53,19 +57,17 @@ class Model extends BaseModel
     /**
      *  Get application
      *
-     * @return  \Opis\Colibri\Application
+     * @return  Application
      */
-    public static function getApplication()
+    public static function getApplication(): Application
     {
         return static::$app;
     }
 
     /**
-     * Get application instance
-     *
-     * @return  \Opis\Colibri\Application
+     * @return Application
      */
-    public function app()
+    protected function getApp(): Application
     {
         return static::$app;
     }

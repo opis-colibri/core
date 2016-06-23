@@ -55,7 +55,7 @@ class Validator extends BaseValidator
     /**
      * @return array
      */
-    public function getErrors()
+    public function getErrors(): array
     {
         $errors = array();
 

@@ -41,7 +41,7 @@ class CSRFToken
      * @param   string $key (optional)
      * @param   int $max (optional)
      */
-    public function __construct(Application $app, $key = 'opis_colibri_csrf', $max = 10)
+    public function __construct(Application $app, string $key = 'opis_colibri_csrf', int $max = 10)
     {
         $this->app = $app;
         $this->sessionKey = $key;
@@ -53,7 +53,7 @@ class CSRFToken
      *
      * @return  string
      */
-    public function generate()
+    public function generate(): string
     {
         $tokens = $this->app->getSession()->get($this->sessionKey, array());
 
@@ -77,7 +77,7 @@ class CSRFToken
      *
      * @return  string
      */
-    protected function getRandomToken($length = 32)
+    protected function getRandomToken(int $length = 32): string
     {
         $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $token = '';
@@ -96,7 +96,7 @@ class CSRFToken
      *
      * @return  boolean
      */
-    public function validate($value)
+    public function validate(string $value): bool
     {
         $tokens = $this->app->getSession()->get($this->sessionKey, array());
 

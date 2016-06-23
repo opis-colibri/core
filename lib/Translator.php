@@ -43,7 +43,7 @@ class Translator
      * @param   string $language (optional)
      * @param   \Opis\Utils\Placeholder|null $placeholder (optional)
      */
-    public function __construct(Application $app, $language = 'en', Placeholder $placeholder = null)
+    public function __construct(Application $app, string $language = 'en', Placeholder $placeholder = null)
     {
         if ($placeholder === null) {
             $placeholder = new Placeholder();
@@ -58,7 +58,7 @@ class Translator
      *
      * @return  string
      */
-    public function getLanguage()
+    public function getLanguage(): string
     {
         return $this->language;
     }
@@ -67,10 +67,9 @@ class Translator
      * Set the current language
      *
      * @param   string $language
-     *
-     * @return  $this
+     * @return $this|Translator
      */
-    public function setLanguage($language)
+    public function setLanguage(string $language): self
     {
         $this->language = $language;
         return $this;
@@ -85,7 +84,7 @@ class Translator
      *
      * @return  string
      */
-    public function __invoke($sentence, $placeholders = array(), $lang = null)
+    public function __invoke(string $sentence, array $placeholders = array(), string $lang = null): string
     {
         return $this->translate($sentence, $placeholders, $lang);
     }
@@ -99,7 +98,7 @@ class Translator
      *
      * @return  string
      */
-    public function translate($sentence, $placeholders = array(), $lang = null)
+    public function translate(string $sentence, array $placeholders = array(), string $lang = null): string 
     {
         if ($lang === null) {
             $lang = $this->language;
