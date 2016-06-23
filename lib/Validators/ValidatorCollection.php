@@ -21,7 +21,6 @@
 namespace Opis\Colibri\Validators;
 
 use Opis\Colibri\Application;
-use Opis\Colibri\Components\ApplicationTrait;
 use Opis\Colibri\Components\ContractTrait;
 use Opis\Validation\ValidatorCollection as BaseCollection;
 use Opis\Validation\ValidatorInterface;
@@ -45,7 +44,6 @@ use Opis\Validation\Validators\RequiredFile;
 
 class ValidatorCollection extends  BaseCollection
 {
-    use ApplicationTrait;
     use ContractTrait;
 
     /** @var  Application */
@@ -90,7 +88,7 @@ class ValidatorCollection extends  BaseCollection
     /**
      * @return Application
      */
-    public function getApp(): Application
+    protected function getApp(): Application
     {
         return $this->app;
     }

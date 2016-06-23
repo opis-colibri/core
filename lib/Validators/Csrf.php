@@ -21,13 +21,11 @@
 namespace Opis\Colibri\Validators;
 
 use Opis\Colibri\Application;
-use Opis\Colibri\Components\ApplicationTrait;
 use Opis\Colibri\Components\CSRFTrait;
 use Opis\Validation\ValidatorInterface;
 
 class Csrf implements ValidatorInterface
 {
-    use ApplicationTrait;
     use CSRFTrait;
 
     /** @var Application */
@@ -41,7 +39,7 @@ class Csrf implements ValidatorInterface
     /**
      * @return Application
      */
-    public function getApp(): Application
+    protected function getApp(): Application
     {
         return $this->app;
     }
