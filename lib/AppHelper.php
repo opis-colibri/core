@@ -27,6 +27,7 @@ use Opis\Colibri\Components\CSRFTrait;
 use Opis\Colibri\Components\DatabaseTrait;
 use Opis\Colibri\Components\EventTrait;
 use Opis\Colibri\Components\HttpTrait;
+use Opis\Colibri\Components\InfoTrait;
 use Opis\Colibri\Components\LogTrait;
 use Opis\Colibri\Components\SessionTrait;
 use Opis\Colibri\Components\UtilsTrait;
@@ -62,6 +63,17 @@ class AppHelper
         redirect as public;
         pageNotFound as public;
         accessDenied as public;
+    }
+    use InfoTrait {
+        assetsDir as public;
+        assetsPath as public;
+        publicDir as public;
+        rootDir as public;
+        writableDir as public;
+        vendorDir as public;
+        composerFile as public;
+        installMode as public;
+        cliMode as public;
     }
     use LogTrait {
         log as public;
