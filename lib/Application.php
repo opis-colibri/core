@@ -36,6 +36,7 @@ use Opis\Config\Config;
 use Opis\Config\Storage\Memory as EphemeralConfigStorage;
 use Opis\Database\Connection;
 use Opis\Database\Database;
+use Opis\Database\ORM;
 use Opis\Database\Schema;
 use Opis\Events\EventTarget;
 use Opis\Http\Request as HttpRequest;
@@ -104,11 +105,14 @@ class Application
     /** @var  Config */
     protected $config = array();
 
-    /** @var  \Opis\Database\Connection[] */
+    /** @var  Connection[] */
     protected $connection = array();
 
-    /** @var  \Opis\Database\Database[] */
+    /** @var  Database[] */
     protected $database = array();
+
+    /** @var  ORM[] */
+    protected $orm = array();
 
     /** @var  Session */
     protected $session = array();
@@ -483,6 +487,21 @@ class Application
     public function getSchema(string $connection = null): Schema
     {
         return $this->getDatabase($connection)->schema();
+    }
+
+    /**
+     * Returns an ORM
+     *
+     * @param   string|null $connection (optional) Connection name
+     *
+     * @return  ORM
+     */
+    public function getORM(string $connection = null): ORM
+    {
+        if(!isset($this->orm[$connection])){
+            $this->orm[$connection] = new ORM($this->getConnection($connection));
+        }
+        return $this->orm[$connection];
     }
 
     /**
