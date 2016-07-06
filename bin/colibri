@@ -19,10 +19,11 @@
  * limitations under the License.
  * ============================================================================ */
 
+/** @var \Opis\Colibri\Application $app */
 $app = require_once 'bootstrap.php';
 
-if (!$app->info()->cliMode()) {
+if (!$app->getAppInfo()->cliMode()) {
     die('CLI Mode only' . PHP_EOL);
 }
 
-$app->console()->run();
+$app->getConsole()->run();
