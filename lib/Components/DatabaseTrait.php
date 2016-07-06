@@ -63,6 +63,6 @@ trait DatabaseTrait
      */
     protected function orm(string $class, string $connection = null): Model
     {
-        return $this->getApp()->getORM($connection)->model($class);
+        return $this->getApp()->getORM($connection)->model($class)->setApp($this->getApp());
     }
 }
