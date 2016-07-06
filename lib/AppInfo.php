@@ -72,7 +72,7 @@ class AppInfo
     public function assetsDir(): string
     {
         if (!isset($this->info[static::ASSETS_DIR])) {
-            $this->info[static::ASSETS_DIR] = $this->publicDir() . '/assets';
+            $this->info[static::ASSETS_DIR] = $this->rootDir() . '/assets';
         }
 
         return $this->info[static::ASSETS_DIR];
