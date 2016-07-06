@@ -361,7 +361,6 @@ class Module
 
         $value = null;
         $package = $this->getPackage();
-        $extra = $package->getExtra();
 
         switch ($property) {
             case 'name':
@@ -371,28 +370,28 @@ class Module
                 $value = $package->getName();
                 break;
             case 'title':
-                $value = $this->resolveTitle($package, $extra);
+                $value = $this->resolveTitle($package);
                 break;
             case 'description':
                 $value = $package->getDescription();
                 break;
             case 'dependencies':
-                $value = $this->resolveDependencies($package, $extra);
+                $value = $this->resolveDependencies($package);
                 break;
             case 'dependants':
-                $value = $this->resolveDependants($package, $extra);
+                $value = $this->resolveDependants($package);
                 break;
             case 'directory':
-                $value = $this->resolveDirectory($package, $extra);
+                $value = $this->resolveDirectory($package);
                 break;
             case 'collector':
-                $value = $this->resolveCollector($package, $extra);
+                $value = $this->resolveCollector($package);
                 break;
             case 'installer':
-                $value = $this->resolveInstaller($package, $extra);
+                $value = $this->resolveInstaller($package);
                 break;
             case 'hidden':
-                $value = isset($extra['hidden']) ? (bool)$extra['hidden'] : false;
+                $value = $this->resolveHidden($package);
                 break;
         }
 
@@ -403,12 +402,12 @@ class Module
      * Get title
      *
      * @param   CompletePackage $package
-     * @param   array $extra
      *
      * @return  string
      */
-    protected function resolveTitle(CompletePackage $package, array $extra): string
+    protected function resolveTitle(CompletePackage $package): string
     {
+        $extra = $package->getExtra();
         $title = isset($extra['title']) ? trim($extra['title']) : '';
 
         if (empty($title)) {
@@ -423,14 +422,25 @@ class Module
     }
 
     /**
+     * Get hiffen
+     *
+     * @param   CompletePackage $package
+     *
+     * @return  bool
+     */
+    protected function resolveHidden(CompletePackage $package): bool
+    {
+        return $package->getExtra()['hidden'] ?? false;
+    }
+
+    /**
      * Resolve dependencies
      *
      * @param   CompletePackage $package
-     * @param   array $extra
      *
      * @return  Module[]
      */
-    protected function resolveDependencies(CompletePackage $package, array $extra): array
+    protected function resolveDependencies(CompletePackage $package): array
     {
         $dependencies = array();
         $modules = $this->app->getModules();
@@ -449,11 +459,10 @@ class Module
      * Resolve dependants
      *
      * @param   CompletePackage $package
-     * @param   array $extra
      *
      * @return  Module[]
      */
-    protected function resolveDependants(CompletePackage $package, array $extra): array
+    protected function resolveDependants(CompletePackage $package): array
     {
         $dependants = array();
         $modules = $this->app->getModules();
@@ -475,11 +484,10 @@ class Module
      * Resolve directory
      *
      * @param   CompletePackage $package
-     * @param   array $extra
      *
      * @return  string
      */
-    protected function resolveDirectory(CompletePackage $package, array $extra): string
+    protected function resolveDirectory(CompletePackage $package): string
     {
         return $this->app->getComposer()
             ->getInstallationManager()
@@ -490,12 +498,12 @@ class Module
      * Resolve collector class
      *
      * @param   CompletePackage $package
-     * @param   array $extra
      *
      * @return  string
      */
-    protected function resolveCollector(CompletePackage $package, array $extra): string
+    protected function resolveCollector(CompletePackage $package): string
     {
+        $extra = $package->getExtra();
         if (!isset($extra['collector'])) {
             return null;
         }
@@ -510,12 +518,12 @@ class Module
      * Resolve installer class
      *
      * @param   CompletePackage $package
-     * @param   array $extra
      *
      * @return  string
      */
-    protected function resolveInstaller(CompletePackage $package, array $extra): string
+    protected function resolveInstaller(CompletePackage $package): string
     {
+        $extra = $package->getExtra();
         if (!isset($extra['installer'])) {
             return null;
         }
@@ -530,12 +538,12 @@ class Module
      * Resolve assets
      *
      * @param   CompletePackage $package
-     * @param   array $extra
      *
      * @return  string
      */
-    protected function resolveAssets(CompletePackage $package, array $extra): string
+    protected function resolveAssets(CompletePackage $package): string
     {
+        $extra = $package->getExtra();
         if (!isset($extra['assetes'])) {
             return null;
         }
