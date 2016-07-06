@@ -365,7 +365,7 @@ class CollectorManager
 
             $this->collectors[$module->name()] = true;
 
-            if ($module->collector() === null) {
+            if ($module->collector() === false) {
                 continue;
             }
 

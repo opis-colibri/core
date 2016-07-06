@@ -126,9 +126,9 @@ class Module
     /**
      * Get the module's collector instance
      *
-     * @return  string
+     * @return  string|false
      */
-    public function collector(): string
+    public function collector()
     {
         return $this->get(__FUNCTION__);
     }
@@ -136,9 +136,9 @@ class Module
     /**
      * Get the module's collector class
      *
-     * @return  string
+     * @return  string|false
      */
-    public function installer(): string
+    public function installer()
     {
         return $this->get(__FUNCTION__);
     }
@@ -146,9 +146,9 @@ class Module
     /**
      * Get the module's assets folder
      *
-     * @return  string
+     * @return  string|false
      */
-    public function assets(): string
+    public function assets()
     {
         return $this->get(__FUNCTION__);
     }
@@ -430,7 +430,7 @@ class Module
      */
     protected function resolveHidden(CompletePackage $package): bool
     {
-        return $package->getExtra()['hidden'] ?? false;
+        return (bool) $package->getExtra()['hidden'] ?? false;
     }
 
     /**
@@ -499,19 +499,19 @@ class Module
      *
      * @param   CompletePackage $package
      *
-     * @return  string
+     * @return  string|false
      */
-    protected function resolveCollector(CompletePackage $package): string
+    protected function resolveCollector(CompletePackage $package)
     {
         $extra = $package->getExtra();
         if (!isset($extra['collector'])) {
-            return null;
+            return false;
         }
 
         $subject = $extra['collector'];
         $pattern = '`^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$`';
 
-        return preg_match($pattern, $subject) ? $subject : null;
+        return preg_match($pattern, $subject) ? $subject : false;
     }
 
     /**
@@ -519,19 +519,19 @@ class Module
      *
      * @param   CompletePackage $package
      *
-     * @return  string
+     * @return  string|false
      */
-    protected function resolveInstaller(CompletePackage $package): string
+    protected function resolveInstaller(CompletePackage $package)
     {
         $extra = $package->getExtra();
         if (!isset($extra['installer'])) {
-            return null;
+            return false;
         }
 
         $subject = $extra['installer'];
         $pattern = '`^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$`';
 
-        return preg_match($pattern, $subject) ? $subject : null;
+        return preg_match($pattern, $subject) ? $subject : false;
     }
 
     /**
@@ -539,17 +539,17 @@ class Module
      *
      * @param   CompletePackage $package
      *
-     * @return  string
+     * @return  string|false
      */
-    protected function resolveAssets(CompletePackage $package): string
+    protected function resolveAssets(CompletePackage $package)
     {
         $extra = $package->getExtra();
         if (!isset($extra['assetes'])) {
-            return null;
+            return false;
         }
 
         $directory = $this->directory() . '/' . trim($extra['assets'], '/');
-        return is_dir($directory) ? $directory : null;
+        return is_dir($directory) ? $directory : false;
     }
 
 }

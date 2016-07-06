@@ -841,7 +841,7 @@ class Application
             $this->classLoader = require $this->info->vendorDir() . '/autoload.php';
         }
 
-        if (null !== $installer = $module->installer()) {
+        if (false !== $installer = $module->installer()) {
             $this->make($installer)->{$action}($this);
         }
     }
@@ -852,7 +852,7 @@ class Application
      */
     protected function registerAssets(Module $module): bool
     {
-        if (null === $assets = $module->assets()){
+        if (false === $assets = $module->assets()){
             return false;
         }
 
