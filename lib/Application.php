@@ -163,6 +163,14 @@ class Application
     }
 
     /**
+     * @return Application
+     */
+    protected function getApp(): Application
+    {
+        return $this;
+    }
+
+    /**
      * Get Composer instance
      *
      * @return  Composer
@@ -817,14 +825,6 @@ class Application
         $this->emit('module.disabled.' . $module->name());
 
         return true;
-    }
-
-    /**
-     * @return Application
-     */
-    protected function getApp(): Application
-    {
-        return $this;
     }
 
     /**
