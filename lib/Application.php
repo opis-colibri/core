@@ -178,8 +178,10 @@ class Application
     public function getComposer(): Composer
     {
         if ($this->composer === null) {
-            $this->composer = Factory::create(new NullIO(), $this->info->composerFile());
-        }
+            $composerFile = $this->info->composerFile();
+            $cwd = $this->info->rootDir();
+            $this->composer = (new Factory())->createComposer(new NullIO(), $composerFile, false, $cwd);
+         }
 
         return $this->composer;
     }
@@ -624,11 +626,14 @@ class Application
      */
     public function bootstrap(): self
     {
+        if(!is_writable($this->info->vendorDir())){
+            throw new \RuntimeException('Vendor dir must be writable: ' . $this->info->vendorDir());
+        }
+
         if (!$this->info->installMode()) {
             $this->emit('system.init');
             return $this;
         }
-
 
         $composer = $this->getComposer();
         $generator = $composer->getAutoloadGenerator();

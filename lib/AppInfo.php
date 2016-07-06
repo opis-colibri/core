@@ -127,7 +127,7 @@ class AppInfo
     public function vendorDir(): string
     {
         if (!isset($this->info[static::VENDOR_DIR])) {
-            $this->info[static::VENDOR_DIR] = $this->app->getComposer()->getConfig()->get('vendor-dir');;
+            $this->info[static::VENDOR_DIR] = $this->rootDir() . '/vendor';
         }
 
         return $this->info[static::VENDOR_DIR];

@@ -57,7 +57,7 @@ class ViewApp extends BaseViewApp
      *
      * @return  \Opis\Routing\Router
      */
-    protected function getRouter()
+    protected function getRouter(): Router
     {
         if ($this->router === null) {
 

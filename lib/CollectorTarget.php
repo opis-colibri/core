@@ -24,6 +24,7 @@ use InvalidArgumentException;
 use Opis\Events\Event as BaseEvent;
 use Opis\Events\EventTarget;
 use Opis\Events\RouteCollection;
+use Opis\Routing\Route;
 
 class CollectorTarget extends EventTarget
 {
@@ -43,24 +44,28 @@ class CollectorTarget extends EventTarget
     }
 
     /**
-     * @param BaseEvent $event
+     * @param CollectorEntry $event
      *
-     * @return Collector
+     * @return BaseEvent
      */
-    public function dispatch(BaseEvent $event)
+    public function dispatch(BaseEvent $event): BaseEvent
     {
         if (!$event instanceof CollectorEntry) {
             throw new InvalidArgumentException('Invalid event type. Expected ' . CollectorEntry::class);
         }
 
         $this->collection->sort();
-        $handlers = $this->router->route($event);
+
+        $app = $this->app;
         $collector = $event->getCollector();
 
-        foreach ($handlers as $callback) {
-            $callback($collector, $this->app);
+        /** @var Route $handler */
+        foreach ($this->router->match($event) as $handler){
+            echo $event->name();
+            $callback = $handler->getAction();
+            $callback($collector, $app);
         }
 
-        return $collector;
+        return $event;
     }
 }
