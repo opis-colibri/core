@@ -34,6 +34,7 @@ class AppInfo
     const VENDOR_DIR = 7;
     const COMPOSER_FILE = 8;
     const ASSETS_PATH = 9;
+    const BOOTSTRAP_FILE = 10;
 
     /** @var    Application */
     protected $app;
@@ -155,6 +156,20 @@ class AppInfo
     }
 
     /**
+     * Bootstrap file
+     *
+     * @return string
+     */
+    public function bootstrapFile(): string
+    {
+        if(!isset($this->info[static::BOOTSTRAP_FILE])) {
+            $this->info[static::BOOTSTRAP_FILE] = $this->writableDir() . '/bootstrap.php';
+        }
+
+        return $this->info[static::BOOTSTRAP_FILE];
+    }
+
+    /**
      * Install mode
      *
      * @return  boolean
@@ -162,7 +177,7 @@ class AppInfo
     public function installMode(): bool
     {
         if (!isset($this->info[static::INSTALL_MODE])) {
-            $this->info[static::INSTALL_MODE] = !file_exists($this->writableDir() . '/.installed');
+            $this->info[static::INSTALL_MODE] = !file_exists($this->bootstrapFile());
         }
 
         return $this->info[static::INSTALL_MODE];

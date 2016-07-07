@@ -27,6 +27,7 @@ use Composer\IO\NullIO;
 use Composer\Package\CompletePackage;
 use Opis\Cache\Cache;
 use Opis\Cache\Storage\Memory as EphemeralCacheStorage;
+use Opis\Cache\StorageInterface as CacheStorageInterface;
 use Opis\Colibri\Components\ContractTrait;
 use Opis\Colibri\Components\EventTrait;
 use Opis\Colibri\Composer\CLI;
@@ -34,6 +35,7 @@ use Opis\Colibri\Routing\HttpRouter;
 use Opis\Colibri\Routing\ViewApp;
 use Opis\Config\Config;
 use Opis\Config\Storage\Memory as EphemeralConfigStorage;
+use Opis\Config\StorageInterface as ConfigStorageInterface;
 use Opis\Database\Connection;
 use Opis\Database\Database;
 use Opis\Database\ORM;
@@ -146,6 +148,9 @@ class Application
 
     /** @var  AppHelper */
     protected $helper;
+
+    /** @var array  */
+    protected $implicit = [];
 
     /**
      * Constructor
@@ -624,6 +629,66 @@ class Application
     }
 
     /**
+     * @param ConfigStorageInterface $storage
+     * @return Application
+     */
+    public function setConfigStorage(ConfigStorageInterface $storage): self
+    {
+        $this->implicit['config'] = $storage;
+        return $this;
+    }
+
+    /**
+     * @param CacheStorageInterface $storage
+     * @return Application
+     */
+    public function setCacheStorage(CacheStorageInterface $storage): self
+    {
+        $this->implicit['cache'] = $storage;
+        return $this;
+    }
+
+    /**
+     * @param ConfigStorageInterface $storage
+     * @return Application
+     */
+    public function setTranslatorStorage(ConfigStorageInterface $storage): self
+    {
+        $this->implicit['translator'] = $storage;
+        return $this;
+    }
+
+    /**
+     * @param Connection $connection
+     * @return Application
+     */
+    public function setDatabaseConnection(Connection $connection): self
+    {
+        $this->implicit['connection'] = $connection;
+        return $this;
+    }
+
+    /**
+     * @param SessionHandlerInterface $session
+     * @return Application
+     */
+    public function setSessionStorage(SessionHandlerInterface $session): self
+    {
+        $this->implicit['session'] = $session;
+        return $this;
+    }
+
+    /**
+     * @param LoggerInterface $logger
+     * @return Application
+     */
+    public function setDefaultLogger(LoggerInterface $logger): self
+    {
+        $this->implicit['logger'] = $logger;
+        return $this;
+    }
+
+    /**
      * Bootstrap method
      * @return $this|Application
      */
@@ -633,10 +698,11 @@ class Application
             throw new \RuntimeException('Vendor dir must be writable: ' . $this->info->vendorDir());
         }
 
-        /*if (!$this->info->installMode()) {
+        if (!$this->info->installMode()) {
+            $this->getBootstrapInstance()->bootstrap($this);
             $this->emit('system.init');
             return $this;
-        }*/
+        }
 
         $composer = $this->getComposer();
         $generator = $composer->getAutoloadGenerator();
@@ -688,10 +754,10 @@ class Application
         $this->classLoader = $loader;
         $this->classLoader->register();
 
+        $this->getBootstrapInstance()->bootstrap($this);
         $this->getConfig()->write('modules.installed', $enabled);
         $this->getConfig()->write('modules.enabled', $enabled);
-        print_r($this->config);
-print_r($this->getConfig()->read('modules'));die;
+
         $this->emit('system.init');
         return $this;
     }
@@ -836,6 +902,28 @@ print_r($this->getConfig()->read('modules'));die;
         $this->emit('module.disabled.' . $module->name());
 
         return true;
+    }
+
+    /**
+     * @return BootstrapInterface
+     */
+    protected function getBootstrapInstance(): BootstrapInterface
+    {
+        if(!$this->info->installMode()){
+            return require $this->info->bootstrapFile();
+        }
+
+        return new class implements BootstrapInterface
+        {
+            public function bootstrap(Application $app)
+            {
+                $app->setCacheStorage(new EphemeralCacheStorage())
+                    ->setConfigStorage(new EphemeralConfigStorage())
+                    ->setTranslatorStorage(new EphemeralConfigStorage())
+                    ->setDefaultLogger(new NullLogger())
+                    ->setSessionStorage(new \SessionHandler());
+            }
+        };
     }
 
     /**
