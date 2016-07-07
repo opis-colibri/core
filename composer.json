@@ -32,7 +32,6 @@
         "symfony/console": "2.7.*",
         "doctrine/annotations": "1.2.*",
         "composer/composer": "1.1.*",
-        "vlucas/phpdotenv": "~2.2",
         "psr/log": "~1.0"
     },
     "extra": {
