@@ -55,13 +55,12 @@ class CollectorTarget extends EventTarget
         }
 
         $this->collection->sort();
-
+        
         $app = $this->app;
         $collector = $event->getCollector();
 
         /** @var Route $handler */
         foreach ($this->router->match($event) as $handler){
-            echo $event->name();
             $callback = $handler->getAction();
             $callback($collector, $app);
         }

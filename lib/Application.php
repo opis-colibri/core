@@ -374,11 +374,12 @@ class Application
     public function getCache(string $storage = null): Cache
     {
         if ($storage === null && false === $storage = getenv(Env::CACHE_STORAGE)) {
-            $this->cache[$storage = ''] = new Cache(new EphemeralCacheStorage());
+            $storage = '@';
         }
 
         if (!isset($this->cache[$storage])) {
-            $this->cache[$storage] = new Cache($this->getCollector()->getCacheStorage($storage));
+            $instance = $storage ===  '@' ? new EphemeralCacheStorage() : $this->getCollector()->getCacheStorage($storage);
+            $this->cache[$storage] = new Cache($instance);
         }
 
         return $this->cache[$storage];
@@ -393,6 +394,7 @@ class Application
      */
     public function getSession(string $storage = null): Session
     {
+        //TODO: Fix this
         if ($storage === null && false === $storage = getenv(Env::SESSION_STORAGE)) {
             $this->session[$storage = ''] = new Session();
         }
@@ -414,11 +416,12 @@ class Application
     public function getConfig(string $storage = null): Config
     {
         if ($storage === null && false === $storage = getenv(Env::CONFIG_STORAGE)) {
-            $this->config[$storage = ''] = new Config(new EphemeralConfigStorage());
+            $storage = '@';
         }
 
         if (!isset($this->config[$storage])) {
-            $this->config[$storage] = new Config($this->getCollector()->getConfigStorage($storage));
+            $instance = $storage === '@' ? new EphemeralConfigStorage() : $this->getCollector()->getConfigStorage($storage);
+            $this->config[$storage] = new Config($instance);
         }
 
         return $this->config[$storage];
@@ -531,7 +534,7 @@ class Application
             $this->loggers[$logger] = $this->getCollector()->getLogger($logger);
         }
 
-        return $this->cache[$logger];
+        return $this->loggers[$logger];
     }
 
     /**
@@ -630,10 +633,10 @@ class Application
             throw new \RuntimeException('Vendor dir must be writable: ' . $this->info->vendorDir());
         }
 
-        if (!$this->info->installMode()) {
+        /*if (!$this->info->installMode()) {
             $this->emit('system.init');
             return $this;
-        }
+        }*/
 
         $composer = $this->getComposer();
         $generator = $composer->getAutoloadGenerator();
@@ -667,11 +670,13 @@ class Application
         }
 
         $canonicalPacks[] = $installer;
+        $enabled[] = $installer->getName();
 
         foreach ($installer->getRequires() as $require){
             $target = $require->getTarget();
             if (isset($modules[$target])) {
                 $canonicalPacks[] = $modules[$target];
+                $enabled[] = $modules[$target]->getName();
             }
         }
 
@@ -685,7 +690,8 @@ class Application
 
         $this->getConfig()->write('modules.installed', $enabled);
         $this->getConfig()->write('modules.enabled', $enabled);
-
+        print_r($this->config);
+print_r($this->getConfig()->read('modules'));die;
         $this->emit('system.init');
         return $this;
     }

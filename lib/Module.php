@@ -193,7 +193,7 @@ class Module
         if (!$this->exists()) {
             return false;
         }
-
+        
         $list = $this->app->getConfig()->read('modules.enabled', array());
         return in_array($this->name, $list);
     }
