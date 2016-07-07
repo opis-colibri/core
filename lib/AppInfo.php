@@ -21,7 +21,7 @@
 namespace Opis\Colibri;
 
 use Composer\Composer;
-use Exception;
+use RuntimeException;
 
 class AppInfo
 {
@@ -38,9 +38,6 @@ class AppInfo
     /** @var    Application */
     protected $app;
 
-    /**  @var   Composer */
-    protected $composer;
-
     /** @var    array */
     protected $info = array();
 
@@ -50,10 +47,9 @@ class AppInfo
      * @param   array $info App root folder
      * @param   Composer $composer Composer instance
      */
-    public function __construct(array $info, Composer $composer = null)
+    public function __construct(array $info)
     {
         $this->info = $info;
-        $this->composer = $composer;
     }
 
     /**
@@ -95,12 +91,12 @@ class AppInfo
     /**
      * Get root path
      * @return string
-     * @throws Exception
+     * @throws RuntimeException
      */
     public function rootDir(): string
     {
         if (!isset($this->info[static::ROOT_DIR])) {
-            throw new Exception('Root directory must be set');
+            throw new RuntimeException('Root directory must be set');
         }
         return $this->info[static::ROOT_DIR];
     }
@@ -148,7 +144,6 @@ class AppInfo
      * Composer file
      *
      * @return string
-     * @throws Exception
      */
     public function composerFile(): string
     {
@@ -167,7 +162,7 @@ class AppInfo
     public function installMode(): bool
     {
         if (!isset($this->info[static::INSTALL_MODE])) {
-            $this->info[static::INSTALL_MODE] = !$this->app->getConfig()->read('app.installed', false);
+            $this->info[static::INSTALL_MODE] = !file_exists($this->writableDir() . '/.installed');
         }
 
         return $this->info[static::INSTALL_MODE];
