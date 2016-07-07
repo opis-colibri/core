@@ -113,8 +113,8 @@ class RouteCollector extends Collector
      */
     protected function handle($path, $action, $name = null)
     {
-        $route = new HttpRoute($path, $action);
-        $this->dataObject[$name] = $route;
+        $route = new HttpRoute($path, $action, $name);
+        $this->dataObject->addRoute($route);
         return $route;
     }
 

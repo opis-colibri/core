@@ -284,6 +284,7 @@ class CollectorManager
                 $instance = $self->container->make($entry);
                 return $self->collectorTarget->dispatch(new CollectorEntry($entry, $instance))->getCollector()->data();
             });
+
             if ($hit) {
                 $this->emit('system.collect.' . $entry);
             }

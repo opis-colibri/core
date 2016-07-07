@@ -503,15 +503,7 @@ class Module
      */
     protected function resolveCollector(CompletePackage $package)
     {
-        $extra = $package->getExtra();
-        if (!isset($extra['collector'])) {
-            return false;
-        }
-
-        $subject = $extra['collector'];
-        $pattern = '`^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$`';
-
-        return preg_match($pattern, $subject) ? $subject : false;
+        return $package->getExtra()['collector'] ?? false;
     }
 
     /**
@@ -523,15 +515,7 @@ class Module
      */
     protected function resolveInstaller(CompletePackage $package)
     {
-        $extra = $package->getExtra();
-        if (!isset($extra['installer'])) {
-            return false;
-        }
-
-        $subject = $extra['installer'];
-        $pattern = '`^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$`';
-
-        return preg_match($pattern, $subject) ? $subject : false;
+        return $package->getExtra()['installer'] ?? false;
     }
 
     /**

@@ -21,7 +21,7 @@
 namespace Opis\Colibri\Routing;
 
 use Opis\Colibri\Serializable\ControllerCallback;
-use Opis\Routing\Route;
+use Opis\HttpRouting\Route;
 
 /**
  * Class HttpRoute

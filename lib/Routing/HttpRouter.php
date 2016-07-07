@@ -41,9 +41,6 @@ class HttpRouter extends Router
     /** @var    Application */
     protected $app;
 
-    /** @var    \Opis\HttpRouting\Path */
-    protected $path;
-
     /**
      * Constructor
      *
@@ -70,9 +67,8 @@ class HttpRouter extends Router
             })
             ->accessDenied(function ($path) {
                 return new AccessDenied($this->view('error.403', array('path' => $path)));
-            });
-        
-        $this->getRouteCollection()->setRouter($this);
+            })
+            ->setRouter($this);
     }
 
     /**
@@ -84,13 +80,11 @@ class HttpRouter extends Router
     }
 
     /**
-     * Get current path
-     *
-     * @return  BasePath
+     * @return Path
      */
-    public function getPath()
+    public function getPath(): Path
     {
-        return $this->path;
+        return $this->currentPath;
     }
 
     /**
@@ -104,13 +98,12 @@ class HttpRouter extends Router
         $router = new AliasRouter($this->app->getCollector()->getRouteAliases());
         $alias = $router->route(new BasePath($path->path()));
 
-        if ($alias !== null) {
+        if ($alias !== false) {
             $path = new Path(
                 (string) $alias, $path->domain(), $path->method(), $path->isSecure(), $path->request()
             );
         }
 
-        $this->path = $path;
         $result = parent::route($path);
 
         /** @var \Opis\Http\Request $request */
