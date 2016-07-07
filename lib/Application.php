@@ -263,20 +263,6 @@ class Application
     }
 
     /**
-     * Get environment
-     *
-     * @return  Env
-     */
-    public function getEnv(): Env
-    {
-        if ($this->env === null) {
-            $this->env = new Env($this);
-        }
-
-        return $this->env;
-    }
-
-    /**
      * Get the HTTP router
      *
      * @return  HttpRouter
@@ -378,13 +364,19 @@ class Application
      */
     public function getCache(string $storage = null): Cache
     {
-        if ($storage === null && false === $storage = getenv(Env::CACHE_STORAGE)) {
-            $storage = '@';
+        if ($storage === null) {
+            $storage = 'default';
         }
 
         if (!isset($this->cache[$storage])) {
-            $instance = $storage ===  '@' ? new EphemeralCacheStorage() : $this->getCollector()->getCacheStorage($storage);
-            $this->cache[$storage] = new Cache($instance);
+            if($storage === 'default'){
+                if(!isset($this->implicit['cache'])){
+                    throw new \RuntimeException('The default cache storage was not set');
+                }
+                $this->cache[$storage] = new Cache($this->implicit['cache']);
+            } else {
+                $this->cache[$storage] = new Cache($this->getCollector()->getCacheStorage($storage));
+            }
         }
 
         return $this->cache[$storage];
@@ -399,13 +391,19 @@ class Application
      */
     public function getSession(string $storage = null): Session
     {
-        //TODO: Fix this
-        if ($storage === null && false === $storage = getenv(Env::SESSION_STORAGE)) {
-            $this->session[$storage = ''] = new Session();
+        if ($storage === null) {
+            $storage = 'default';
         }
 
         if (!isset($this->config[$storage])) {
-            $this->session[$storage] = new Session($this->getCollector()->getSessionStorage($storage));
+            if($storage === 'default'){
+                if(!isset($this->implicit['session'])){
+                    throw new \RuntimeException('The default session storage was not set');
+                }
+                $this->session[$storage] = new Session($this->implicit['session']);
+            } else {
+                $this->session[$storage] = new Session($this->getCollector()->getSessionStorage($storage));
+            }
         }
 
         return $this->session[$storage];
@@ -420,13 +418,19 @@ class Application
      */
     public function getConfig(string $storage = null): Config
     {
-        if ($storage === null && false === $storage = getenv(Env::CONFIG_STORAGE)) {
-            $storage = '@';
+        if ($storage === null) {
+            $storage = 'default';
         }
 
         if (!isset($this->config[$storage])) {
-            $instance = $storage === '@' ? new EphemeralConfigStorage() : $this->getCollector()->getConfigStorage($storage);
-            $this->config[$storage] = new Config($instance);
+            if($storage === 'default') {
+                if(!isset($this->implicit['config'])){
+                    throw new \RuntimeException('The default config storage was not set');
+                }
+                $this->config[$storage] = new Config($this->implicit['config']);
+            } else {
+                $this->config[$storage] = new Config($this->getCollector()->getConfigStorage($storage));
+            }
         }
 
         return $this->config[$storage];
@@ -440,10 +444,7 @@ class Application
     public function getTranslations(): Config
     {
         if ($this->translations === null) {
-            if (false === $storage = getenv(Env::TRANSLATIONS_STORAGE)) {
-                $storage = null;
-            }
-            $this->translations = $this->getConfig($storage);
+            $this->translations = $this->getConfig();
         }
 
         return $this->translations;
@@ -468,12 +469,19 @@ class Application
      */
     public function getConnection(string $name = null): Connection
     {
-        if ($name === null && false === $name = getenv(Env::DB_CONNECTION)) {
-            throw new \RuntimeException("No database connection defined");
+        if ($name === null) {
+            $name = 'default';
         }
 
         if (!isset($this->connection[$name])) {
-            $this->connection[$name] = $this->getCollector()->getConnection($name);
+            if($name === 'default'){
+                if(!isset($this->implicit['connection'])){
+                    throw new \RuntimeException('The default database connection was not set');
+                }
+                $this->connection[$name] = $this->implicit['connection'];
+            } else {
+                $this->connection[$name] = $this->getCollector()->getConnection($name);
+            }
         }
 
         return $this->connection[$name];
@@ -531,12 +539,19 @@ class Application
      */
     public function getLog(string $logger = null): LoggerInterface
     {
-        if ($logger === null && false === $logger = getenv(Env::LOGGER_STORAGE)) {
-            $this->loggers[''] = new NullLogger();
+        if ($logger === null) {
+            $logger = 'default';
         }
 
         if (!isset($this->loggers[$logger])) {
-            $this->loggers[$logger] = $this->getCollector()->getLogger($logger);
+            if($logger === 'default'){
+                if(!isset($this->implicit['logger'])){
+                    throw new \RuntimeException('The default logger was not set');
+                }
+                $this->loggers[$logger] = $this->implicit['logger'];
+            } else{
+                $this->loggers[$logger] = $this->getCollector()->getLogger($logger);
+            }
         }
 
         return $this->loggers[$logger];
@@ -652,9 +667,9 @@ class Application
      * @param ConfigStorageInterface $storage
      * @return Application
      */
-    public function setTranslatorStorage(ConfigStorageInterface $storage): self
+    public function setTranslationsStorage(ConfigStorageInterface $storage): self
     {
-        $this->implicit['translator'] = $storage;
+        $this->translations = new Config($storage);
         return $this;
     }
 
@@ -919,7 +934,6 @@ class Application
             {
                 $app->setCacheStorage(new EphemeralCacheStorage())
                     ->setConfigStorage(new EphemeralConfigStorage())
-                    ->setTranslatorStorage(new EphemeralConfigStorage())
                     ->setDefaultLogger(new NullLogger())
                     ->setSessionStorage(new \SessionHandler());
             }
