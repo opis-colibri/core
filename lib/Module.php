@@ -503,7 +503,11 @@ class Module
      */
     protected function resolveCollector(CompletePackage $package)
     {
-        return $package->getExtra()['collector'] ?? false;
+        $collector = $package->getExtra()['collector'] ?? false;
+        if(!is_array($collector) || !isset($collector['class']) || !isset($collector['file'])){
+            return false;
+        }
+        return $collector['class'];
     }
 
     /**
@@ -515,7 +519,11 @@ class Module
      */
     protected function resolveInstaller(CompletePackage $package)
     {
-        return $package->getExtra()['installer'] ?? false;
+        $installer = $package->getExtra()['installer'] ?? false;
+        if(!is_array($installer) || !isset($installer['class']) || !isset($installer['file'])){
+            return false;
+        }
+        return $installer['class'];
     }
 
     /**

@@ -59,23 +59,21 @@ class EventHandler
                 continue;
             }
 
-            $autoload = $module->getPackage()->getAutoload();
+            $classmap = [];
+            $package = $module->getPackage();
+            $extra = $package->getExtra();
 
-            if (!isset($autoload['classmap'])) {
-                $module->getPackage()->setAutoload(array());
-                continue;
-            }
-
-            $result = array();
-
-            foreach (array('collect.php', 'install.php') as $item) {
-                if (in_array($item, $autoload['classmap'])) {
-                    $result[] = $item;
+            foreach (['collector', 'installer'] as $key) {
+                if(!isset($extra[$key]) || !is_array($extra[$key])){
+                    continue;
+                }
+                $item = $extra[$key];
+                if(isset($item['file']) && isset($item['class'])){
+                    $classmap[] = $item['file'];;
                 }
             }
 
-            $result = empty($result) ? array() : array('classmap' => $result);
-            $module->getPackage()->setAutoload($result);
+            $package->setAutoload(empty($classmap) ? [] : ['classmap' => $classmap]);
         }
     }
 }
