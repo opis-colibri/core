@@ -32,8 +32,8 @@ class ViewHelper
         render as public;
     }
     use UtilsTrait{
-        getAsset as public asset;
-        getURL as public url;
+        getAsset as public;
+        getURL as public;
         r as public;
         v as public;
         t as public;
