@@ -895,7 +895,7 @@ class Application
         }
 
         $config = $this->getConfig();
-        $modules = $config->read('app.modules.enabled', array());
+        $modules = $config->read('modules.enabled', array());
         $modules[] = $module->name();
         $config->write('modules.enabled', $modules);
 
@@ -977,6 +977,7 @@ class Application
         }
 
         if (false !== $installer = $module->installer()) {
+
             $this->make($installer)->{$action}($this);
         }
     }
@@ -987,6 +988,7 @@ class Application
      */
     protected function registerAssets(Module $module): bool
     {
+
         if (false === $assets = $module->assets()){
             return false;
         }

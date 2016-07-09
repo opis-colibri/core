@@ -72,6 +72,7 @@ class AppHelper
         writableDir as public;
         vendorDir as public;
         composerFile as public;
+        bootstrapFile as public;
         installMode as public;
         cliMode as public;
     }
