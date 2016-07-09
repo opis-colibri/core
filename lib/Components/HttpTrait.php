@@ -66,7 +66,7 @@ trait HttpTrait
      */
     protected function pageNotFound(): HttpError
     {
-        $this->httpError(404);
+        return $this->httpError(404);
     }
 
     /**
