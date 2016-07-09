@@ -27,7 +27,7 @@ trait CSRFTrait
     /**
      * @return string
      */
-    protected function generateCSRF(): string
+    protected function generateCSRFToken(): string
     {
         return $this->getApp()->getCSRFToken()->generate();
     }
@@ -36,7 +36,7 @@ trait CSRFTrait
      * @param string $token
      * @return bool
      */
-    protected function validateCSRF(string $token): bool
+    protected function validateCSRFToken(string $token): bool
     {
         return $this->getApp()->getCSRFToken()->validate($token);
     }

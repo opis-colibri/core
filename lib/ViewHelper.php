@@ -18,14 +18,29 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Routing;
+namespace Opis\Colibri;
 
 use Opis\Colibri\Application;
-use Opis\Colibri\Components\ApplicationTrait;
+use Opis\Colibri\Components\CSRFTrait;
+use Opis\Colibri\Components\UtilsTrait;
+use Opis\Colibri\Components\ViewTrait;
 
-class ViewItem
+class ViewHelper
 {
-    use ApplicationTrait;
+    use ViewTrait{
+        view as public;
+        render as public;
+    }
+    use UtilsTrait{
+        getAsset as public asset;
+        getURL as public url;
+        r as public;
+        v as public;
+        t as public;
+    }
+    use CSRFTrait{
+        generateCSRFToken as public csrfToken;
+    }
 
     /** @var  Application */
     protected $app;

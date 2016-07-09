@@ -39,9 +39,10 @@ class ViewApp extends BaseViewApp
      */
     public function __construct(Application $app)
     {
-        $this->app = $this->param = $app;
-        $this->viewItem = new ViewItem($app);
         parent::__construct($app->getCollector()->getViews(), $app->getCollector()->getViewEngineResolver(), true, 'this');
+
+        $this->app = $this->param = $app;
+        $this->viewItem = $app->getViewHelper();
     }
 
     /**
@@ -60,16 +61,7 @@ class ViewApp extends BaseViewApp
     protected function getRouter(): Router
     {
         if ($this->router === null) {
-
-            $specials = array(
-                'app' => $this->app,
-                'request' => $this->app->getHttpRequest(),
-                'response' => $this->app->getHttpResponse(),
-                't' => $this->app->getTranslator(),
-                'lang' => $this->app->getTranslator()->getLanguage(),
-                'view' => $this,
-            );
-
+            $specials = $this->app->getSpecials();
             $this->router = new Router($this->collection, null, $this->getFilters(), $specials);
         }
 

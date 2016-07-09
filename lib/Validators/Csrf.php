@@ -81,7 +81,7 @@ class Csrf implements ValidatorInterface
      */
     public function validate($value, array $arguments)
     {
-        return $this->validateCSRF($value);
+        return $this->validateCSRFToken($value);
     }
 
 }

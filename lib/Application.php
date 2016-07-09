@@ -152,6 +152,12 @@ class Application
     /** @var array  */
     protected $implicit = [];
 
+    /** @var  array */
+    protected $specials;
+
+    /** @var  ViewHelper */
+    protected $viewHelper;
+
     /**
      * Constructor
      *
@@ -641,6 +647,31 @@ class Application
             $this->helper = new AppHelper($this);
         }
         return $this->helper;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSpecials(): array
+    {
+        if($this->specials === null){
+            $this->specials = [
+                'app' => $this->getHelper(),
+                'lang' => $this->getTranslator()->getLanguage(),
+            ];
+        }
+        return $this->specials;
+    }
+
+    /**
+     * @return ViewHelper
+     */
+    public function getViewHelper(): ViewHelper
+    {
+        if($this->viewHelper === null){
+            $this->viewHelper = new ViewHelper($this);
+        }
+       return $this->viewHelper;
     }
 
     /**

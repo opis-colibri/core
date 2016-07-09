@@ -45,8 +45,8 @@ class AppHelper
         make as public;
     }
     use CSRFTrait {
-        generateCSRF as public;
-        validateCSRF as public;
+        generateCSRFToken as public;
+        validateCSRFToken as public;
     }
     use DatabaseTrait {
         db as public;
