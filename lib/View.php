@@ -105,7 +105,7 @@ class View extends OpisView
             try {
                 $this->renderedContent = (string) $this->render($this);
             } catch (Exception $e) {
-                $this->renderedContent = (string) $e;
+                $this->renderedContent = (string) $e->getMessage();
             }
         }
         return $this->renderedContent;
