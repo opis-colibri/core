@@ -384,6 +384,9 @@ class Module
             case 'directory':
                 $value = $this->resolveDirectory($package);
                 break;
+            case 'assets':
+                $value = $this->resolveAssets($package);
+                break;
             case 'collector':
                 $value = $this->resolveCollector($package);
                 break;
@@ -430,7 +433,7 @@ class Module
      */
     protected function resolveHidden(CompletePackage $package): bool
     {
-        return (bool) $package->getExtra()['hidden'] ?? false;
+        return $package->getExtra()['hidden'] ?? false;
     }
 
     /**
@@ -536,7 +539,7 @@ class Module
     protected function resolveAssets(CompletePackage $package)
     {
         $extra = $package->getExtra();
-        if (!isset($extra['assetes'])) {
+        if (!isset($extra['assets'])) {
             return false;
         }
 
