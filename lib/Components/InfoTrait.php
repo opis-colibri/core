@@ -83,6 +83,14 @@ trait InfoTrait
     }
 
     /**
+     * @return string
+     */
+    protected function bootstrapFile(): string
+    {
+        return $this->getApp()->getAppInfo()->bootstrapFile();
+    }
+
+    /**
      * @return bool
      */
     protected function installMode(): bool
