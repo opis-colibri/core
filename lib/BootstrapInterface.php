@@ -23,8 +23,8 @@ namespace Opis\Colibri;
 interface BootstrapInterface
 {
     /**
-     * @param Application $app
+     * @param DefaultCollectorInterface $collector
      * @return mixed
      */
-    public function bootstrap(Application $app);
+    public function bootstrap(DefaultCollectorInterface $collector);
 }
