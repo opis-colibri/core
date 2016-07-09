@@ -56,9 +56,6 @@ class Application
 {
     use ContractTrait, EventTrait;
 
-    /** @var    Env */
-    protected $env;
-
     /** @var    AppInfo */
     protected $info;
 
@@ -127,9 +124,6 @@ class Application
 
     /** @var  ViewApp */
     protected $viewApp;
-
-    /** @var  callable[] */
-    protected $coreMethods;
 
     /** @var  Console */
     protected $consoleInstance;
@@ -401,7 +395,7 @@ class Application
             $storage = 'default';
         }
 
-        if (!isset($this->config[$storage])) {
+        if (!isset($this->session[$storage])) {
             if($storage === 'default'){
                 if(!isset($this->implicit['session'])){
                     throw new \RuntimeException('The default session storage was not set');
