@@ -51,7 +51,7 @@ class View extends OpisView
     /**
      * @return Application
      */
-    protected function getApp(): Application
+    public function getApp(): Application
     {
         return $this->app;
     }
