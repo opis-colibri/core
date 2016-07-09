@@ -402,7 +402,7 @@ class CollectorManager
                     $instance->{$name}($collector, $app);
                 };
 
-                $this->collectorTarget->handle($annotation->name, $callback, $annotation->priority);
+                $this->collectorTarget->handle(strtolower($annotation->name), $callback, $annotation->priority);
             }
         }
     }
