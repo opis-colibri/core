@@ -972,7 +972,7 @@ class Application implements DefaultCollectorInterface
 
         return new class implements BootstrapInterface
         {
-            public function bootstrap(Application $app)
+            public function bootstrap(DefaultCollectorInterface $app)
             {
                 $app->setCacheStorage(new EphemeralCacheStorage())
                     ->setConfigStorage(new EphemeralConfigStorage())
