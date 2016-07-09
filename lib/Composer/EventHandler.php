@@ -33,9 +33,9 @@ class EventHandler
     public static function onDumpAutoload(Event $event)
     {
         $composer = $event->getComposer();
-        $autoloadFile = $composer->getConfig()->get('vendor-dir') . '/autoload.php';
-        $installManager = $composer->getInstallationManager();
-        $rootDir = $installManager->getInstallPath($composer->getPackage());
+        $vendorDir = $composer->getConfig()->get('vendor-dir');
+        $autoloadFile = $vendorDir . '/autoload.php';
+        $rootDir = realpath($vendorDir . '/../');
 
         if(!file_exists($autoloadFile)){
             $loader = $composer->getAutoloadGenerator()->createLoader(array());
@@ -48,11 +48,12 @@ class EventHandler
         ));
 
         $app = new Application($appInfo, $loader, $composer);
+        $app->bootstrap();
         $installMode = $app->getAppInfo()->installMode();
 
         foreach ($app->getModules() as $module) {
-
             if ($installMode || !$module->isInstalled()) {
+                echo $module->name();
                 $module->getPackage()->setAutoload(array());
                 continue;
             } elseif ($module->isEnabled()) {

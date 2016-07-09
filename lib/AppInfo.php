@@ -40,8 +40,10 @@ class AppInfo
     protected $app;
 
     /** @var    array */
-    protected $info = array();
+    protected $info;
 
+    /** @var  array */
+    protected $original;
     /**
      * Constructor
      *
@@ -50,7 +52,7 @@ class AppInfo
      */
     public function __construct(array $info)
     {
-        $this->info = $info;
+        $this->original = $this->info = $info;
     }
 
     /**
@@ -59,6 +61,15 @@ class AppInfo
     public function setApplication(Application $app)
     {
         $this->app = $app;
+    }
+
+    /**
+     * @param bool $original
+     * @return array
+     */
+    public function getInfo(bool $original = true): array
+    {
+        return $original ? $this->original : $this->info;
     }
 
     /**
@@ -165,7 +176,6 @@ class AppInfo
         if(!isset($this->info[static::BOOTSTRAP_FILE])) {
             $this->info[static::BOOTSTRAP_FILE] = $this->writableDir() . '/bootstrap.php';
         }
-
         return $this->info[static::BOOTSTRAP_FILE];
     }
 

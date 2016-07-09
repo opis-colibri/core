@@ -61,9 +61,6 @@ class CollectorManager
     /** @var   Container */
     protected $container;
 
-    /** @var  array|null */
-    protected $collectorList;
-
     /** @var  CollectorTarget */
     protected $collectorTarget;
 
@@ -82,10 +79,7 @@ class CollectorManager
         $container->setApplication($app);
         $this->collectorTarget = new CollectorTarget($app);
 
-        $default = require __DIR__ . '/../collectors.php';
-        $this->collectorList = $this->app->getConfig()->read('collectors', array()) + $default;
-
-        foreach ($this->collectorList as $name => $collector) {
+        foreach ($app->getCollectorList() as $name => $collector) {
             $container->alias($collector['class'], $name);
             $container->singleton($collector['class']);
         }
@@ -275,7 +269,8 @@ class CollectorManager
         if (!isset($this->cache[$entry])) {
             $hit = false;
             $self = $this;
-            if (!isset($this->collectorList[$entry])) {
+            $collectors = $this->app->getCollectorList();
+            if (!isset($collectors[$entry])) {
                 throw new RuntimeException("Unknown collector type `$type`");
             }
             $this->cache[$entry] = $this->app->getCache()->load($entry, function ($entry) use ($self, &$hit) {
@@ -308,7 +303,7 @@ class CollectorManager
 
         $this->collectorsIncluded = false;
 
-        foreach (array_keys($this->app->getConfig()->read('collectors')) as $entry) {
+        foreach (array_keys($this->app->getCollectorList()) as $entry) {
             $this->collect($entry, $fresh);
         }
 

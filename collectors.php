@@ -79,10 +79,6 @@ return array(
         'class' => 'Opis\\Colibri\\Collectors\\CommandCollector',
         'description' => 'Collects commands',
     ),
-    'coremethods' => array(
-        'class' => 'Opis\\Colibri\\Collectors\\CoreMethodCollector',
-        'description' => 'Collects core methods',
-    ),
     'loggers' => array(
         'class' => 'Opis\\Colibri\\Collectors\\LoggerCollector',
         'description' => 'Collects log storages',

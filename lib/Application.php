@@ -152,6 +152,9 @@ class Application
     /** @var  ViewHelper */
     protected $viewHelper;
 
+    /** @var  array|null */
+    protected $collectorList;
+
     /**
      * Constructor
      *
@@ -669,6 +672,19 @@ class Application
     }
 
     /**
+     * @return array
+     */
+    public function getCollectorList(): array
+    {
+        if($this->collectorList === null){
+            $default = require __DIR__ . '/../collectors.php';
+            $this->collectorList = $this->getConfig()->read('collectors', array()) + $default;
+        }
+
+        return $this->collectorList;
+    }
+
+    /**
      * @param ConfigStorageInterface $storage
      * @return Application
      */
@@ -901,7 +917,7 @@ class Application
 
         $this->executeInstallerAction($module, 'enable');
         $this->registerAssets($module);
-
+        echo $module->name();
         if ($recollect) {
             $this->getCollector()->recollect();
         }
