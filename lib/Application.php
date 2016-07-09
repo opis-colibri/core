@@ -52,7 +52,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SessionHandlerInterface;
 
-class Application
+class Application implements DefaultCollectorInterface
 {
     use ContractTrait, EventTrait;
 
@@ -168,6 +168,9 @@ class Application
         $this->composer = $composer;
         $this->classLoader = $loader;
         $this->info->setApplication($this);
+        if($composer !== null) {
+            $composer->opisColibriApp = $this;
+        }
     }
 
     /**
@@ -189,6 +192,7 @@ class Application
             $composerFile = $this->info->composerFile();
             $cwd = $this->info->rootDir();
             $this->composer = (new Factory())->createComposer(new NullIO(), $composerFile, false, $cwd);
+            $this->composer->opisColibriApp = $this;
          }
 
         return $this->composer;

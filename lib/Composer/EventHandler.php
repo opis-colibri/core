@@ -43,17 +43,14 @@ class EventHandler
             $loader = require $autoloadFile;
         }
 
-        $appInfo = new AppInfo(array(
+        $app = (new Application(new AppInfo(array(
             AppInfo::ROOT_DIR => $rootDir
-        ));
+        )), $loader, $composer))->bootstrap();
 
-        $app = new Application($appInfo, $loader, $composer);
-        $app->bootstrap();
         $installMode = $app->getAppInfo()->installMode();
 
         foreach ($app->getModules() as $module) {
             if ($installMode || !$module->isInstalled()) {
-                echo $module->name();
                 $module->getPackage()->setAutoload(array());
                 continue;
             } elseif ($module->isEnabled()) {
@@ -76,5 +73,14 @@ class EventHandler
 
             $package->setAutoload(empty($classmap) ? [] : ['classmap' => $classmap]);
         }
+    }
+
+    public static function test(Event $event)
+    {
+        $composer = $event->getComposer();
+        $vendorDir = $composer->getConfig()->get('vendor-dir');
+        $autoloadFile = $vendorDir . '/autoload.php';
+        $rootDir = realpath($vendorDir . '/../');
+
     }
 }

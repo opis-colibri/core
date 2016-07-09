@@ -28,8 +28,18 @@ class CLI
     protected function instance()
     {
         if ($this->instance === null) {
-            $this->instance = new ComposerConsole();
-            $this->instance->setAutoExit(false);
+            $composer = $this->app->getComposer();
+            $composer->opisColibriApp = $this->app;
+
+            $this->instance = new class($composer) extends ComposerConsole {
+
+                public function __construct(Composer $composer)
+                {
+                    parent::__construct();
+                    $this->composer = $composer;
+                    $this->setAutoExit(false);
+                }
+            };
         }
 
         return $this->instance;
@@ -42,7 +52,6 @@ class CLI
 
     public function dumpAutoload()
     {
-
         return $this->execute(array(
             'command' => 'dump-autoload',
         ));
