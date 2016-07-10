@@ -160,6 +160,10 @@ class Application implements DefaultCollectorInterface
      */
     public function __construct(string $rootDir, ClassLoader $loader, Composer $composer = null)
     {
+        if(getenv('HOME') === false){
+            putenv('HOME=' . posix_getpwuid(fileowner($rootDir))['dir']);
+        }
+        
         if($composer === null){
             $composer = (new Factory())->createComposer(new NullIO(), $rootDir . '/composer.json', false, $rootDir);
         }
