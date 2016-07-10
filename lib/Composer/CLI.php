@@ -27,60 +27,23 @@ class CLI
 
     protected function instance()
     {
-        if ($this->instance === null) {
-            $composer = $this->app->getComposer();
-            $composer->opisColibriApp = $this->app;
-
-            return new class($composer) extends ComposerConsole {
-
-                public function __construct(Composer $composer)
-                {
-                    parent::__construct();
-                    //$this->composer = $composer;
-                    $this->setAutoExit(false);
-                }
-            };
-        }
-
-        return $this->instance;
+        $instance = new ComposerConsole();
+        $instance->setAutoExit(false);
+        return $instance;
     }
 
     public function execute(array $command)
     {
+        $cwd = getcwd();
+        chdir($this->app->getAppInfo()->rootDir());
         $this->instance()->run(new ArrayInput($command), new NullOutput());
+        chdir($cwd);
     }
 
     public function dumpAutoload()
     {
-        return $this->execute(array(
+        $this->execute(array(
             'command' => 'dump-autoload',
         ));
-
-        $input = new ArrayInput([
-            'command' => 'dump-autoload',
-        ]);
-
-        $output = new NullOutput();
-
-        $composer = $this->app->getComposer();
-        $commandEvent = new CommandEvent(PluginEvents::COMMAND, 'dump-autoload', $input, $output);
-        $composer->getEventDispatcher()->dispatch($commandEvent->getName(), $commandEvent);
-
-        $installationManager = $composer->getInstallationManager();
-        $localRepo = $composer->getRepositoryManager()->getLocalRepository();
-        $package = $composer->getPackage();
-        $config = $composer->getConfig();
-
-        $optimize = $config->get('optimize-autoloader');
-        $authoritative = $config->get('classmap-authoritative');
-
-
-        $generator = $composer->getAutoloadGenerator();
-        $generator->setDevMode(true);
-        $generator->setClassMapAuthoritative($authoritative);
-        $generator->setRunScripts(true);
-        $generator->dump($config, $localRepo, $package, $installationManager, 'composer', $optimize);
-
-
     }
 }

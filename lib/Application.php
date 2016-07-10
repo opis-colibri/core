@@ -163,7 +163,7 @@ class Application implements DefaultCollectorInterface
         if(getenv('HOME') === false){
             putenv('HOME=' . posix_getpwuid(fileowner($rootDir))['dir']);
         }
-        
+
         if($composer === null){
             $composer = (new Factory())->createComposer(new NullIO(), $rootDir . '/composer.json', false, $rootDir);
         }
