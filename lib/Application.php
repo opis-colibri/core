@@ -125,9 +125,6 @@ class Application implements DefaultCollectorInterface
     /** @var  ViewApp */
     protected $viewApp;
 
-    /** @var  Console */
-    protected $consoleInstance;
-
     /** @var \Psr\Log\LoggerInterface[] */
     protected $loggers = array();
 
@@ -165,6 +162,14 @@ class Application implements DefaultCollectorInterface
     {
         if($composer === null){
             $composer = (new Factory())->createComposer(new NullIO(), $rootDir . '/composer.json', false, $rootDir);
+        }
+
+        if(getenv('APP_PRODUCTION') === false){
+            $whoops = (new \Whoops\Run())->pushHandler(new \Whoops\Handler\PrettyPageHandler());
+            if(\Whoops\Util\Misc::isAjaxRequest()){
+                $whoops->pushHandler(new \Whoops\Handler\JsonResponseHandler());
+            }
+            $whoops->register();
         }
 
         $this->composer = $composer;
@@ -455,10 +460,7 @@ class Application implements DefaultCollectorInterface
      */
     public function getConsole(): Console
     {
-        if ($this->consoleInstance === null) {
-            $this->consoleInstance = new Console($this);
-        }
-        $this->consoleInstance;
+        return new Console($this);
     }
 
     /**
@@ -765,7 +767,7 @@ class Application implements DefaultCollectorInterface
         $modules = array();
         $installer = null;
 
-        if(!isset($extra['opis-colibri-installer'])){
+        if(!isset($extra['application']['installer'])){
             throw new \RuntimeException('No installer defined');
         }
 
@@ -779,11 +781,11 @@ class Application implements DefaultCollectorInterface
             $modules[$package->getName()] = $package;
         }
 
-        if(!isset($modules[$extra['opis-colibri-installer']])){
+        if(!isset($modules[$extra['application']['installer']])){
             throw new \RuntimeException("The specified installer was not found");
         }
 
-        $installer = $modules[$extra['opis-colibri-installer']];
+        $installer = $modules[$extra['application']['installer']];
         $canonicalPacks[] = $installer;
         $enabled[] = $installer->getName();
 

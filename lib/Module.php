@@ -367,7 +367,7 @@ class Module
                 $value = $package->getName();
                 break;
             case 'version':
-                $value = $package->getName();
+                $value = $package->getPrettyVersion();
                 break;
             case 'title':
                 $value = $this->resolveTitle($package);
@@ -378,8 +378,8 @@ class Module
             case 'dependencies':
                 $value = $this->resolveDependencies($package);
                 break;
-            case 'dependants':
-                $value = $this->resolveDependants($package);
+            case 'dependents':
+                $value = $this->resolveDependents($package);
                 break;
             case 'directory':
                 $value = $this->resolveDirectory($package);
@@ -465,7 +465,7 @@ class Module
      *
      * @return  Module[]
      */
-    protected function resolveDependants(CompletePackage $package): array
+    protected function resolveDependents(CompletePackage $package): array
     {
         $dependants = array();
         $modules = $this->app->getModules();
