@@ -31,12 +31,12 @@ class CLI
             $composer = $this->app->getComposer();
             $composer->opisColibriApp = $this->app;
 
-            $this->instance = new class($composer) extends ComposerConsole {
+            return new class($composer) extends ComposerConsole {
 
                 public function __construct(Composer $composer)
                 {
                     parent::__construct();
-                    $this->composer = $composer;
+                    //$this->composer = $composer;
                     $this->setAutoExit(false);
                 }
             };

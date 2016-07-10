@@ -158,19 +158,18 @@ class Application implements DefaultCollectorInterface
     /**
      * Constructor
      *
-     * @param  AppInfo $info Application info
      * @param ClassLoader $loader
      * @param Composer $composer (optional)
      */
-    public function __construct(AppInfo $info, ClassLoader $loader, Composer $composer = null)
+    public function __construct(string $rootDir, ClassLoader $loader, Composer $composer = null)
     {
-        $this->info = $info;
+        if($composer === null){
+            $composer = (new Factory())->createComposer(new NullIO(), $rootDir . '/composer.json', false, $rootDir);
+        }
+
         $this->composer = $composer;
         $this->classLoader = $loader;
-        $this->info->setApplication($this);
-        if($composer !== null) {
-            $composer->opisColibriApp = $this;
-        }
+        $this->info = new AppInfo($composer, $rootDir);
     }
 
     /**
@@ -188,13 +187,6 @@ class Application implements DefaultCollectorInterface
      */
     public function getComposer(): Composer
     {
-        if ($this->composer === null) {
-            $composerFile = $this->info->composerFile();
-            $cwd = $this->info->rootDir();
-            $this->composer = (new Factory())->createComposer(new NullIO(), $composerFile, false, $cwd);
-            $this->composer->opisColibriApp = $this;
-         }
-
         return $this->composer;
     }
 
@@ -690,9 +682,9 @@ class Application implements DefaultCollectorInterface
 
     /**
      * @param ConfigStorageInterface $storage
-     * @return Application
+     * @return DefaultCollectorInterface
      */
-    public function setConfigStorage(ConfigStorageInterface $storage): self
+    public function setConfigStorage(ConfigStorageInterface $storage): DefaultCollectorInterface
     {
         $this->implicit['config'] = $storage;
         return $this;
@@ -700,9 +692,9 @@ class Application implements DefaultCollectorInterface
 
     /**
      * @param CacheStorageInterface $storage
-     * @return Application
+     * @return DefaultCollectorInterface
      */
-    public function setCacheStorage(CacheStorageInterface $storage): self
+    public function setCacheStorage(CacheStorageInterface $storage): DefaultCollectorInterface
     {
         $this->implicit['cache'] = $storage;
         return $this;
@@ -710,9 +702,9 @@ class Application implements DefaultCollectorInterface
 
     /**
      * @param ConfigStorageInterface $storage
-     * @return Application
+     * @return DefaultCollectorInterface
      */
-    public function setTranslationsStorage(ConfigStorageInterface $storage): self
+    public function setTranslationsStorage(ConfigStorageInterface $storage): DefaultCollectorInterface
     {
         $this->translations = new Config($storage);
         return $this;
@@ -720,9 +712,9 @@ class Application implements DefaultCollectorInterface
 
     /**
      * @param Connection $connection
-     * @return Application
+     * @return DefaultCollectorInterface
      */
-    public function setDatabaseConnection(Connection $connection): self
+    public function setDatabaseConnection(Connection $connection): DefaultCollectorInterface
     {
         $this->implicit['connection'] = $connection;
         return $this;
@@ -730,9 +722,9 @@ class Application implements DefaultCollectorInterface
 
     /**
      * @param SessionHandlerInterface $session
-     * @return Application
+     * @return DefaultCollectorInterface
      */
-    public function setSessionStorage(SessionHandlerInterface $session): self
+    public function setSessionStorage(SessionHandlerInterface $session): DefaultCollectorInterface
     {
         $this->implicit['session'] = $session;
         return $this;
@@ -740,9 +732,9 @@ class Application implements DefaultCollectorInterface
 
     /**
      * @param LoggerInterface $logger
-     * @return Application
+     * @return DefaultCollectorInterface
      */
-    public function setDefaultLogger(LoggerInterface $logger): self
+    public function setDefaultLogger(LoggerInterface $logger): DefaultCollectorInterface
     {
         $this->implicit['logger'] = $logger;
         return $this;
@@ -921,7 +913,7 @@ class Application implements DefaultCollectorInterface
 
         $this->executeInstallerAction($module, 'enable');
         $this->registerAssets($module);
-        echo $module->name();
+
         if ($recollect) {
             $this->getCollector()->recollect();
         }

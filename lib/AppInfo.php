@@ -25,51 +25,61 @@ use RuntimeException;
 
 class AppInfo
 {
-    const ROOT_DIR = 1;
-    const PUBLIC_DIR = 2;
-    const ASSETS_DIR = 3;
-    const WRITABLE_DIR = 4;
-    const CLI_MODE = 5;
-    const INSTALL_MODE = 6;
-    const VENDOR_DIR = 7;
-    const COMPOSER_FILE = 8;
-    const ASSETS_PATH = 9;
-    const BOOTSTRAP_FILE = 10;
-
-    /** @var    Application */
-    protected $app;
+    const ROOT_DIR = 'root-dir';
+    const PUBLIC_DIR = 'public-dir';
+    const ASSETS_DIR = 'assets-dir';
+    const WRITABLE_DIR = 'writable-dir';
+    const CLI_MODE = 'cli-mode';
+    const INSTALL_MODE = 'install-mode';
+    const VENDOR_DIR = 'vendor-dir';
+    const COMPOSER_FILE = 'composer-file';
+    const ASSETS_PATH = 'assets-path';
+    const BOOTSTRAP_FILE = 'bootstrap-file';
 
     /** @var    array */
-    protected $info;
+    protected $cache = [];
 
     /** @var  array */
-    protected $original;
+    protected $settings = [];
+
+    /** @var  Composer */
+    protected $composer;
+
     /**
-     * Constructor
-     *
-     * @param   array $info App root folder
-     * @param   Composer $composer Composer instance
+     * AppInfo constructor.
+     * @param Composer $composer
+     * @param string|null $rootDir
      */
-    public function __construct(array $info)
+    public function __construct(Composer $composer, string $rootDir = null)
     {
-        $this->original = $this->info = $info;
+        $this->composer = $composer;
+        $this->cache[static::ROOT_DIR] = $rootDir;
+        $extra = $composer->getPackage()->getExtra();
+
+        if(isset($extra['application']) && is_array($extra['application'])){
+            $this->settings = $extra['application'];
+        }
+
+        $this->settings += [
+            static::PUBLIC_DIR => 'public',
+            static::ASSETS_DIR => 'assets',
+            static::WRITABLE_DIR => 'storage',
+            static::BOOTSTRAP_FILE => 'bootstrap.php',
+            static::ASSETS_PATH => '/assets',
+        ];
     }
 
     /**
-     * @param Application $app
+     * Get root path
+     * @return string
      */
-    public function setApplication(Application $app)
+    public function rootDir(): string
     {
-        $this->app = $app;
-    }
+        if (!isset($this->cache[static::ROOT_DIR])) {
+            $this->cache[static::ROOT_DIR] = realpath($this->vendorDir() . '/../');
+        }
 
-    /**
-     * @param bool $original
-     * @return array
-     */
-    public function getInfo(bool $original = true): array
-    {
-        return $original ? $this->original : $this->info;
+        return $this->cache[static::ROOT_DIR];
     }
 
     /**
@@ -79,11 +89,15 @@ class AppInfo
      */
     public function assetsDir(): string
     {
-        if (!isset($this->info[static::ASSETS_DIR])) {
-            $this->info[static::ASSETS_DIR] = $this->rootDir() . '/assets';
+        if (!isset($this->cache[static::ASSETS_DIR])) {
+            if($this->settings[static::ASSETS_DIR][0] === '/') {
+                $this->cache[static::ASSETS_DIR] = $this->settings[static::ASSETS_DIR];
+            } else {
+                $this->cache[static::ASSETS_DIR] = $this->rootDir() . '/' . $this->settings[static::ASSETS_DIR];
+            }
         }
 
-        return $this->info[static::ASSETS_DIR];
+        return $this->cache[static::ASSETS_DIR];
     }
 
     /**
@@ -93,24 +107,15 @@ class AppInfo
      */
     public function publicDir(): string
     {
-        if (!isset($this->info[static::PUBLIC_DIR])) {
-            $this->info[static::PUBLIC_DIR] = $this->rootDir() . '/public';
+        if (!isset($this->cache[static::PUBLIC_DIR])) {
+            if($this->settings[static::PUBLIC_DIR][0] === '/') {
+                $this->cache[static::PUBLIC_DIR] = $this->settings[static::PUBLIC_DIR];
+            } else {
+                $this->cache[static::PUBLIC_DIR] = $this->rootDir() . '/' . $this->settings[static::PUBLIC_DIR];
+            }
         }
 
-        return $this->info[static::PUBLIC_DIR];
-    }
-
-    /**
-     * Get root path
-     * @return string
-     * @throws RuntimeException
-     */
-    public function rootDir(): string
-    {
-        if (!isset($this->info[static::ROOT_DIR])) {
-            throw new RuntimeException('Root directory must be set');
-        }
-        return $this->info[static::ROOT_DIR];
+        return $this->cache[static::PUBLIC_DIR];
     }
 
     /**
@@ -120,11 +125,15 @@ class AppInfo
      */
     public function writableDir(): string
     {
-        if (!isset($this->info[static::WRITABLE_DIR])) {
-            $this->info[static::WRITABLE_DIR] = $this->rootDir() . '/storage';
+        if (!isset($this->cache[static::WRITABLE_DIR])) {
+            if($this->settings[static::WRITABLE_DIR][0] === '/') {
+                $this->cache[static::WRITABLE_DIR] = $this->settings[static::WRITABLE_DIR];
+            } else {
+                $this->cache[static::WRITABLE_DIR] = $this->rootDir() . '/' . $this->settings[static::WRITABLE_DIR];
+            }
         }
 
-        return $this->info[static::WRITABLE_DIR];
+        return $this->cache[static::WRITABLE_DIR];
     }
 
     /**
@@ -134,11 +143,10 @@ class AppInfo
      */
     public function vendorDir(): string
     {
-        if (!isset($this->info[static::VENDOR_DIR])) {
-            $this->info[static::VENDOR_DIR] = $this->rootDir() . '/vendor';
+        if (!isset($this->cache[static::VENDOR_DIR])) {
+            $this->cache[static::VENDOR_DIR] = $this->composer->getConfig()->get('vendor-dir');
         }
-
-        return $this->info[static::VENDOR_DIR];
+        return $this->cache[static::VENDOR_DIR];
     }
 
     /**
@@ -146,10 +154,11 @@ class AppInfo
      */
     public function assetsPath(): string
     {
-        if(!isset($this->info[static::ASSETS_PATH])){
-            $this->info[static::ASSETS_PATH] = '/assets';
+        if (!isset($this->cache[static::ASSETS_PATH])) {
+            $this->cache[static::ASSETS_PATH] = '/' . trim($this->settings[static::ASSETS_PATH], '/');
         }
-        return $this->info[static::ASSETS_PATH];
+
+        return $this->cache[static::ASSETS_PATH];
     }
 
     /**
@@ -159,11 +168,11 @@ class AppInfo
      */
     public function composerFile(): string
     {
-        if(!isset($this->info[static::COMPOSER_FILE])) {
-            $this->info[static::COMPOSER_FILE] = $this->rootDir() . '/composer.json';
+        if (!isset($this->cache[static::COMPOSER_FILE])) {
+            $this->cache[static::COMPOSER_FILE] = $this->rootDir() . '/composer.json';
         }
 
-        return $this->info[static::COMPOSER_FILE];
+        return $this->cache[static::COMPOSER_FILE];
     }
 
     /**
@@ -173,10 +182,15 @@ class AppInfo
      */
     public function bootstrapFile(): string
     {
-        if(!isset($this->info[static::BOOTSTRAP_FILE])) {
-            $this->info[static::BOOTSTRAP_FILE] = $this->writableDir() . '/bootstrap.php';
+        if (!isset($this->cache[static::BOOTSTRAP_FILE])) {
+            if($this->settings[static::BOOTSTRAP_FILE][0] === '/') {
+                $this->cache[static::BOOTSTRAP_FILE] = $this->settings[static::BOOTSTRAP_FILE];
+            } else {
+                $this->cache[static::BOOTSTRAP_FILE] = $this->vendorDir() . '/' . $this->settings[static::BOOTSTRAP_FILE];
+            }
         }
-        return $this->info[static::BOOTSTRAP_FILE];
+
+        return $this->cache[static::BOOTSTRAP_FILE];
     }
 
     /**
@@ -186,11 +200,11 @@ class AppInfo
      */
     public function installMode(): bool
     {
-        if (!isset($this->info[static::INSTALL_MODE])) {
-            $this->info[static::INSTALL_MODE] = !file_exists($this->bootstrapFile());
+        if (!isset($this->cache[static::INSTALL_MODE])) {
+            $this->cache[static::INSTALL_MODE] = !file_exists($this->bootstrapFile());
         }
 
-        return $this->info[static::INSTALL_MODE];
+        return $this->cache[static::INSTALL_MODE];
     }
 
     /**
@@ -200,11 +214,19 @@ class AppInfo
      */
     public function cliMode(): bool 
     {
-        if (!isset($this->info[static::CLI_MODE])) {
-            $this->info[static::CLI_MODE] = php_sapi_name() === 'cli';
+        if (!isset($this->cache[static::CLI_MODE])) {
+            $this->cache[static::CLI_MODE] = php_sapi_name() === 'cli';
         }
 
-        return $this->info[static::CLI_MODE];
+        return $this->cache[static::CLI_MODE];
+    }
+
+    /**
+     * Clear cache
+     */
+    public function clearCache()
+    {
+        $this->cache = [];
     }
 
 }

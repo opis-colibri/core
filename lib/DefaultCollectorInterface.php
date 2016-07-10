@@ -63,4 +63,9 @@ interface DefaultCollectorInterface
      * @return DefaultCollectorInterface
      */
     public function setDefaultLogger(LoggerInterface $logger): self;
+
+    /**
+     * @return AppInfo
+     */
+    public function getAppInfo(): AppInfo;
 }

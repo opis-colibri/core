@@ -20,6 +20,7 @@
 
 namespace Opis\Colibri\Composer;
 
+use Composer\Package\CompletePackage;
 use Composer\Script\Event;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\Application;
@@ -32,6 +33,8 @@ class EventHandler
      */
     public static function onDumpAutoload(Event $event)
     {
+        return static::test($event);
+
         $composer = $event->getComposer();
         $vendorDir = $composer->getConfig()->get('vendor-dir');
         $autoloadFile = $vendorDir . '/autoload.php';
@@ -79,8 +82,59 @@ class EventHandler
     {
         $composer = $event->getComposer();
         $vendorDir = $composer->getConfig()->get('vendor-dir');
-        $autoloadFile = $vendorDir . '/autoload.php';
-        $rootDir = realpath($vendorDir . '/../');
+        $appInfo = new AppInfo($composer);
 
+        $installMode = true;
+        $installed = $enabled = [];
+
+        if(!$appInfo->installMode()){
+            $installMode = false;
+            $collector = new DefaultCollector(new AppInfo($composer));
+            /** @var \Opis\Colibri\BootstrapInterface $bootstrap */
+            $bootstrap = require $appInfo->bootstrapFile();
+            $bootstrap->bootstrap($collector);
+            $installed = $collector->getInstalledModules();
+            $enabled = $collector->getEnabledModules();
+        }
+
+        /** @var CompletePackage[] $packages */
+        $packages = $composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
+
+        foreach ($packages as $package){
+            if($package->getType() !== 'opis-colibri-module'){
+                continue;
+            }
+
+            $module = $package->getName();
+
+            if($installMode){
+                $package->setAutoload([]);
+                continue;
+            }
+
+            if(!in_array($module, $installed)){
+                $package->setAutoload([]);
+                continue;
+            }
+
+            if(in_array($module, $enabled)){
+                continue;
+            }
+
+            $classmap = [];
+            $extra = $package->getExtra();
+
+            foreach (['collector', 'installer'] as $key) {
+                if(!isset($extra[$key]) || !is_array($extra[$key])){
+                    continue;
+                }
+                $item = $extra[$key];
+                if(isset($item['file']) && isset($item['class'])){
+                    $classmap[] = $item['file'];;
+                }
+            }
+
+            $package->setAutoload(empty($classmap) ? [] : ['classmap' => $classmap]);
+        }
     }
 }
