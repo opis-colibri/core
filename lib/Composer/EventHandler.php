@@ -33,55 +33,7 @@ class EventHandler
      */
     public static function onDumpAutoload(Event $event)
     {
-        return static::test($event);
-
         $composer = $event->getComposer();
-        $vendorDir = $composer->getConfig()->get('vendor-dir');
-        $autoloadFile = $vendorDir . '/autoload.php';
-        $rootDir = realpath($vendorDir . '/../');
-
-        if(!file_exists($autoloadFile)){
-            $loader = $composer->getAutoloadGenerator()->createLoader(array());
-        } else {
-            $loader = require $autoloadFile;
-        }
-
-        $app = (new Application(new AppInfo(array(
-            AppInfo::ROOT_DIR => $rootDir
-        )), $loader, $composer))->bootstrap();
-
-        $installMode = $app->getAppInfo()->installMode();
-
-        foreach ($app->getModules() as $module) {
-            if ($installMode || !$module->isInstalled()) {
-                $module->getPackage()->setAutoload(array());
-                continue;
-            } elseif ($module->isEnabled()) {
-                continue;
-            }
-
-            $classmap = [];
-            $package = $module->getPackage();
-            $extra = $package->getExtra();
-
-            foreach (['collector', 'installer'] as $key) {
-                if(!isset($extra[$key]) || !is_array($extra[$key])){
-                    continue;
-                }
-                $item = $extra[$key];
-                if(isset($item['file']) && isset($item['class'])){
-                    $classmap[] = $item['file'];;
-                }
-            }
-
-            $package->setAutoload(empty($classmap) ? [] : ['classmap' => $classmap]);
-        }
-    }
-
-    public static function test(Event $event)
-    {
-        $composer = $event->getComposer();
-        $vendorDir = $composer->getConfig()->get('vendor-dir');
         $appInfo = new AppInfo($composer);
 
         $installMode = true;
