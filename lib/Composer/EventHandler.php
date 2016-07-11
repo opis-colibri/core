@@ -34,14 +34,17 @@ class EventHandler
     public static function onDumpAutoload(Event $event)
     {
         $composer = $event->getComposer();
-        $appInfo = new AppInfo($composer);
+
+        $rootDir = realpath($composer->getConfig()->get('vendor-dir') . '/../');
+        $settings = $composer->getPackage()->getExtra()['application'] ?? [];
+        $appInfo = new AppInfo($rootDir, $settings);
 
         $installMode = true;
         $installed = $enabled = [];
 
         if(!$appInfo->installMode()){
             $installMode = false;
-            $collector = new DefaultCollector(new AppInfo($composer));
+            $collector = new DefaultCollector($appInfo);
             /** @var \Opis\Colibri\BootstrapInterface $bootstrap */
             $bootstrap = require $appInfo->bootstrapFile();
             $bootstrap->bootstrap($collector);

@@ -24,7 +24,9 @@ use Composer\Autoload\ClassLoader;
 use Composer\Composer;
 use Composer\Factory;
 use Composer\IO\NullIO;
+use Composer\Json\JsonFile;
 use Composer\Package\CompletePackage;
+use Composer\Repository\InstalledFilesystemRepository;
 use Opis\Cache\Cache;
 use Opis\Cache\Storage\Memory as EphemeralCacheStorage;
 use Opis\Cache\StorageInterface as CacheStorageInterface;
@@ -160,14 +162,6 @@ class Application implements DefaultCollectorInterface
      */
     public function __construct(string $rootDir, ClassLoader $loader, Composer $composer = null)
     {
-        if(getenv('HOME') === false){
-            putenv('HOME=' . posix_getpwuid(fileowner($rootDir))['dir']);
-        }
-
-        if($composer === null){
-            $composer = (new Factory())->createComposer(new NullIO(), $rootDir . '/composer.json', false, $rootDir);
-        }
-
         if(getenv('APP_PRODUCTION') === false){
             $whoops = (new \Whoops\Run())->pushHandler(new \Whoops\Handler\PrettyPageHandler());
             if(\Whoops\Util\Misc::isAjaxRequest()){
@@ -176,9 +170,11 @@ class Application implements DefaultCollectorInterface
             $whoops->register();
         }
 
+        $json = json_decode(file_get_contents($rootDir . '/composer.json'), true);
+
         $this->composer = $composer;
         $this->classLoader = $loader;
-        $this->info = new AppInfo($composer, $rootDir);
+        $this->info = new AppInfo($rootDir, $json['extra']['application'] ?? []);
     }
 
     /**
@@ -196,6 +192,14 @@ class Application implements DefaultCollectorInterface
      */
     public function getComposer(): Composer
     {
+        if($this->composer === null) {
+            $rootDir = $this->info->rootDir();
+            $composerFile = $this->info->composerFile();
+            if(getenv('HOME') === false){
+                putenv('HOME=' . posix_getpwuid(fileowner($rootDir))['dir']);
+            }
+            $this->composer = (new Factory())->createComposer(new NullIO(), $composerFile, false, $rootDir);
+        }
         return $this->composer;
     }
 
@@ -235,9 +239,9 @@ class Application implements DefaultCollectorInterface
         }
 
         $packages = array();
-        $composer = $this->getComposer();
-        $repository = $composer->getRepositoryManager()->getLocalRepository();
-
+        $repository = new InstalledFilesystemRepository(new JsonFile($this->info->vendorDir() . '/composer/installed.json'));
+        //$composer = $this->getComposer();
+        //$repository = $composer->getRepositoryManager()->getLocalRepository();
         foreach ($repository->getCanonicalPackages() as $package) {
             if (!$package instanceof CompletePackage || $package->getType() !== 'opis-colibri-module') {
                 continue;

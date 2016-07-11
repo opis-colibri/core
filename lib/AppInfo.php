@@ -42,25 +42,21 @@ class AppInfo
     /** @var  array */
     protected $settings = [];
 
-    /** @var  Composer */
-    protected $composer;
+    /** @var  string */
+    protected $rootDir;
 
     /**
      * AppInfo constructor.
-     * @param Composer $composer
-     * @param string|null $rootDir
+     * @param string $rootDir
+     * @param array $settings
      */
-    public function __construct(Composer $composer, string $rootDir = null)
+    public function __construct(string $rootDir, array $settings)
     {
-        $this->composer = $composer;
-        $this->cache[static::ROOT_DIR] = $rootDir;
-        $extra = $composer->getPackage()->getExtra();
-
-        if(isset($extra['application']) && is_array($extra['application'])){
-            $this->settings = $extra['application'];
-        }
+        $this->rootDir = $rootDir;
+        $this->settings = $settings;
 
         $this->settings += [
+            static::VENDOR_DIR => 'vendor',
             static::PUBLIC_DIR => 'public',
             static::ASSETS_DIR => 'assets',
             static::WRITABLE_DIR => 'storage',
@@ -75,11 +71,7 @@ class AppInfo
      */
     public function rootDir(): string
     {
-        if (!isset($this->cache[static::ROOT_DIR])) {
-            $this->cache[static::ROOT_DIR] = realpath($this->vendorDir() . '/../');
-        }
-
-        return $this->cache[static::ROOT_DIR];
+        return $this->rootDir;
     }
 
     /**
@@ -144,8 +136,13 @@ class AppInfo
     public function vendorDir(): string
     {
         if (!isset($this->cache[static::VENDOR_DIR])) {
-            $this->cache[static::VENDOR_DIR] = $this->composer->getConfig()->get('vendor-dir');
+            if($this->settings[static::VENDOR_DIR][0] === '/') {
+                $this->cache[static::WRITABLE_DIR] = $this->settings[static::VENDOR_DIR];
+            } else {
+                $this->cache[static::VENDOR_DIR] = $this->rootDir() . '/' . $this->settings[static::VENDOR_DIR];
+            }
         }
+
         return $this->cache[static::VENDOR_DIR];
     }
 
@@ -219,6 +216,16 @@ class AppInfo
         }
 
         return $this->cache[static::CLI_MODE];
+    }
+
+    /**
+     * Get app settings
+     *
+     * @return array
+     */
+    public function getSettings(): array
+    {
+        return $this->settings;
     }
 
     /**
