@@ -994,6 +994,7 @@ class Application implements DefaultCollectorInterface
 
         $this->getComposerCLI()->dumpAutoload();
 
+        $canonicalPacks = $composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
         $generator = $composer->getAutoloadGenerator();
         $packMap = $generator->buildPackageMap($composer->getInstallationManager(), $composer->getPackage(), $canonicalPacks);
         $autoload = $generator->parseAutoloads($packMap, $composer->getPackage());
