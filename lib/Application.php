@@ -240,8 +240,6 @@ class Application implements DefaultCollectorInterface
 
         $packages = array();
         $repository = new InstalledFilesystemRepository(new JsonFile($this->info->vendorDir() . '/composer/installed.json'));
-        //$composer = $this->getComposer();
-        //$repository = $composer->getRepositoryManager()->getLocalRepository();
         foreach ($repository->getCanonicalPackages() as $package) {
             if (!$package instanceof CompletePackage || $package->getType() !== 'opis-colibri-module') {
                 continue;
