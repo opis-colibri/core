@@ -990,15 +990,21 @@ class Application implements DefaultCollectorInterface
      */
     protected function executeInstallerAction(Module $module, string $action)
     {
-        if (!$this->info->installMode()) {
-            $this->getComposerCLI()->dumpAutoload();
-            $this->getClassLoader()->unregister();
-            $this->classLoader = require $this->info->vendorDir() . '/autoload.php';
-        }
+        $composer = $this->getComposer();
+
+        $this->getComposerCLI()->dumpAutoload();
+
+        $generator = $composer->getAutoloadGenerator();
+        $packMap = $generator->buildPackageMap($composer->getInstallationManager(), $composer->getPackage(), $canonicalPacks);
+        $autoload = $generator->parseAutoloads($packMap, $composer->getPackage());
+
+        $this->classLoader->unregister();
+        $this->classLoader = $generator->createLoader($autoload);
+        $this->classLoader->register();
+
 
         if (false !== $installer = $module->installer()) {
-
-            $this->make($installer)->{$action}($this);
+            $this->make($installer)->{$action}();
         }
     }
 
