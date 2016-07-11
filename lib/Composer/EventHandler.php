@@ -62,7 +62,7 @@ class EventHandler
         $packages = $composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
 
         foreach ($packages as $package){
-            if($package->getType() !== 'opis-colibri-module'){
+            if($package->getType() !== Application::MODULE_TYPE){
                 continue;
             }
 
