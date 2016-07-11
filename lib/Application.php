@@ -990,23 +990,25 @@ class Application implements DefaultCollectorInterface
      */
     protected function executeInstallerAction(Module $module, string $action)
     {
-        $composer = $this->getComposer();
-
         $this->getComposerCLI()->dumpAutoload();
 
-        $canonicalPacks = $composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
-        $generator = $composer->getAutoloadGenerator();
-        $packMap = $generator->buildPackageMap($composer->getInstallationManager(), $composer->getPackage(), $canonicalPacks);
-        $autoload = $generator->parseAutoloads($packMap, $composer->getPackage());
-
         $this->classLoader->unregister();
-        $this->classLoader = $generator->createLoader($autoload);
+        $this->classLoader = $this->generateClassLoader();
         $this->classLoader->register();
-
 
         if (false !== $installer = $module->installer()) {
             $this->make($installer)->{$action}();
         }
+    }
+
+    protected function generateClassLoader(): ClassLoader
+    {
+        $composer = $this->getComposer();
+        $canonicalPacks = $composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
+        $generator = $composer->getAutoloadGenerator();
+        $packMap = $generator->buildPackageMap($composer->getInstallationManager(), $composer->getPackage(), $canonicalPacks);
+        $autoload = $generator->parseAutoloads($packMap, $composer->getPackage());
+        return $generator->createLoader($autoload);
     }
 
     /**
