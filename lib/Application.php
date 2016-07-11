@@ -993,10 +993,12 @@ class Application implements DefaultCollectorInterface
      */
     protected function executeInstallerAction(Module $module, string $action)
     {
+        // This must be executed here in order to setup HOME environment
+        $composer = $this->getComposer();
         $this->getComposerCLI()->dumpAutoload();
 
         $this->classLoader->unregister();
-        $this->classLoader = $this->generateClassLoader();
+        $this->classLoader = $this->generateClassLoader($composer);
         $this->classLoader->register();
 
         if (false !== $installer = $module->installer()) {
@@ -1007,9 +1009,8 @@ class Application implements DefaultCollectorInterface
     /**
      * @return ClassLoader
      */
-    protected function generateClassLoader(): ClassLoader
+    protected function generateClassLoader(Composer $composer): ClassLoader
     {
-        $composer = $this->getComposer();
         $installMode = $this->info->installMode();
         $installed = $this->getHelper()->config()->read('modules.installed', []);
         $enabled = $this->getHelper()->config()->read('modules.enabled', []);
