@@ -20,6 +20,7 @@
 
 namespace Opis\Colibri\Composer;
 
+use Composer\Composer;
 use Composer\Package\CompletePackage;
 use Composer\Script\Event;
 use Opis\Colibri\AppInfo;
@@ -52,6 +53,11 @@ class EventHandler
             $enabled = $collector->getEnabledModules();
         }
 
+        static::preparePacks($composer, $installMode, $enabled, $installed);
+    }
+
+    public static function preparePacks(Composer $composer, bool $installMode, array $enabled, array $installed): array
+    {
         /** @var CompletePackage[] $packages */
         $packages = $composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
 
@@ -91,5 +97,7 @@ class EventHandler
 
             $package->setAutoload(empty($classmap) ? [] : ['classmap' => $classmap]);
         }
+
+        return $packages;
     }
 }

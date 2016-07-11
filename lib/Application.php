@@ -33,6 +33,7 @@ use Opis\Cache\StorageInterface as CacheStorageInterface;
 use Opis\Colibri\Components\ContractTrait;
 use Opis\Colibri\Components\EventTrait;
 use Opis\Colibri\Composer\CLI;
+use Opis\Colibri\Composer\EventHandler;
 use Opis\Colibri\Routing\HttpRouter;
 use Opis\Colibri\Routing\ViewApp;
 use Opis\Config\Config;
@@ -57,6 +58,8 @@ use SessionHandlerInterface;
 class Application implements DefaultCollectorInterface
 {
     use ContractTrait, EventTrait;
+
+    const MODULE_TYPE = 'opis-colibri-module';
 
     /** @var    AppInfo */
     protected $info;
@@ -241,7 +244,7 @@ class Application implements DefaultCollectorInterface
         $packages = array();
         $repository = new InstalledFilesystemRepository(new JsonFile($this->info->vendorDir() . '/composer/installed.json'));
         foreach ($repository->getCanonicalPackages() as $package) {
-            if (!$package instanceof CompletePackage || $package->getType() !== 'opis-colibri-module') {
+            if (!$package instanceof CompletePackage || $package->getType() !== static::MODULE_TYPE) {
                 continue;
             }
             $packages[$package->getName()] = $package;
@@ -779,7 +782,7 @@ class Application implements DefaultCollectorInterface
 
         foreach ($composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages() as $package) {
 
-            if ($package->getType() !== 'opis-colibri-module') {
+            if ($package->getType() !== static::MODULE_TYPE) {
                 $canonicalPacks[] = $package;
                 continue;
             }
@@ -1001,12 +1004,20 @@ class Application implements DefaultCollectorInterface
         }
     }
 
+    /**
+     * @return ClassLoader
+     */
     protected function generateClassLoader(): ClassLoader
     {
         $composer = $this->getComposer();
-        $canonicalPacks = $composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
+        $installMode = $this->info->installMode();
+        $installed = $this->getHelper()->config()->read('modules.installed', []);
+        $enabled = $this->getHelper()->config()->read('modules.enabled', []);
+
+        $packages = EventHandler::preparePacks($composer, $installMode, $enabled, $installed);
+
         $generator = $composer->getAutoloadGenerator();
-        $packMap = $generator->buildPackageMap($composer->getInstallationManager(), $composer->getPackage(), $canonicalPacks);
+        $packMap = $generator->buildPackageMap($composer->getInstallationManager(), $composer->getPackage(), $packages);
         $autoload = $generator->parseAutoloads($packMap, $composer->getPackage());
         return $generator->createLoader($autoload);
     }
