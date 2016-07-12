@@ -1041,6 +1041,8 @@ class Application implements DefaultCollectorInterface
             mkdir($dirpath, 0775);
         }
 
+        chmod($dirpath, 0775);
+
         if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
             return Dir::copy($assets, $dirpath . '/' . $target);
         }
