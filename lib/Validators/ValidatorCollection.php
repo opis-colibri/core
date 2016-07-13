@@ -81,6 +81,7 @@ class ValidatorCollection extends  BaseCollection
             'requiredFile' => RequiredFile::class,
         );
 
+        $this->app = $app;
         $this->classes = $classes;
         $this->validators = array();
     }
