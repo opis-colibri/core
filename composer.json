@@ -1,5 +1,6 @@
 {
     "name": "opis/colibri",
+    "type": "composer-plugin",
     "license": "Apache-2.0",
     "description": "Opis Colibri Framework",
     "keywords": ["opis", "colibri", "framework", "core"],
@@ -17,7 +18,7 @@
     },
     "require": {
         "php": ">=7.0.0",
-        "opis-colibri/module-installer": "2.0.*@dev",
+        "composer-plugin-api": "^1.0",
         "opis/routing": "5.0.x-dev",
         "opis/database": "4.0.x-dev",
         "opis/container": "3.0.x-dev",
