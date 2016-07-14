@@ -4,10 +4,10 @@ namespace Opis\Colibri\Composer;
 
 use Composer\Composer;
 use Composer\Console\Application as ComposerConsole;
+use Composer\Factory;
+use Composer\IO\NullIO;
 use Opis\Colibri\Application;
 use Symfony\Component\Console\Input\ArrayInput;
-use Composer\Plugin\CommandEvent;
-use Composer\Plugin\PluginEvents;
 use Symfony\Component\Console\Output\NullOutput;
 
 /**
@@ -22,14 +22,17 @@ class CLI
 
     public function __construct(Application $app)
     {
+        if(getenv('HOME') === false){
+            putenv('HOME=' . posix_getpwuid(fileowner($app->getAppInfo()->rootDir()))['dir']);
+        }
         $this->app = $app;
     }
 
-    protected function instance()
+    public function getComposer(): Composer
     {
-        $instance = new ComposerConsole();
-        $instance->setAutoExit(false);
-        return $instance;
+        $rootDir = $this->app->getAppInfo()->rootDir();
+        $composerFile = $this->app->getAppInfo()->composerFile();
+        return (new Factory())->createComposer(new NullIO(), $composerFile, false, $rootDir);
     }
 
     public function execute(array $command)
@@ -45,5 +48,12 @@ class CLI
         $this->execute(array(
             'command' => 'dump-autoload',
         ));
+    }
+
+    protected function instance()
+    {
+        $instance = new ComposerConsole();
+        $instance->setAutoExit(false);
+        return $instance;
     }
 }

@@ -985,12 +985,10 @@ class Application implements DefaultCollectorInterface
      */
     protected function executeInstallerAction(Module $module, string $action)
     {
-        // This must be executed here in order to setup HOME environment
-        $composer = $this->getComposer();
         $this->getComposerCLI()->dumpAutoload();
 
         $this->classLoader->unregister();
-        $this->classLoader = $this->generateClassLoader($composer);
+        $this->classLoader = $this->generateClassLoader($this->getComposerCLI()->getComposer());
         $this->classLoader->register();
 
         if (false !== $installer = $module->installer()) {
@@ -1023,7 +1021,6 @@ class Application implements DefaultCollectorInterface
      */
     protected function registerAssets(Module $module): bool
     {
-
         if (false === $assets = $module->assets()){
             return false;
         }
