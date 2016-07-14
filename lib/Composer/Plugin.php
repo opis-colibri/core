@@ -70,7 +70,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            'pre-dump-autoload' => 'handleDumpAutoload'
+            'pre-autoload-dump' => 'handleDumpAutoload'
         ];
     }
 
