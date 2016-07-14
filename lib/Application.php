@@ -181,21 +181,13 @@ class Application implements DefaultCollectorInterface
     }
 
     /**
-     * Get Composer instance
+     * Get a Composer instance
      *
      * @return  Composer
      */
     public function getComposer(): Composer
     {
-        if($this->composer === null) {
-            $rootDir = $this->info->rootDir();
-            $composerFile = $this->info->composerFile();
-            if(getenv('HOME') === false){
-                putenv('HOME=' . posix_getpwuid(fileowner($rootDir))['dir']);
-            }
-            $this->composer = (new Factory())->createComposer(new NullIO(), $composerFile, false, $rootDir);
-        }
-        return $this->composer;
+        return $this->getComposerCLI()->getComposer();
     }
 
     /**
@@ -759,7 +751,7 @@ class Application implements DefaultCollectorInterface
             return $this;
         }
 
-        $composer = $this->getComposer();
+        $composer = $this->getComposerCLI()->getComposer();
         $generator = $composer->getAutoloadGenerator();
         $extra = $composer->getPackage()->getExtra();
         $enabled = array();
@@ -988,7 +980,7 @@ class Application implements DefaultCollectorInterface
         $this->getComposerCLI()->dumpAutoload();
 
         $this->classLoader->unregister();
-        $this->classLoader = $this->generateClassLoader($this->getComposerCLI()->getComposer());
+        $this->classLoader = $this->generateClassLoader($this->getComposer());
         $this->classLoader->register();
 
         if (false !== $installer = $module->installer()) {
