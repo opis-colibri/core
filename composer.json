@@ -17,6 +17,7 @@
     },
     "require": {
         "php": ">=7.0.0",
+        "opis-colibri/module-installer": "2.0.*@dev",
         "opis/routing": "5.0.x-dev",
         "opis/database": "4.0.x-dev",
         "opis/container": "3.0.x-dev",

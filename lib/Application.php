@@ -33,7 +33,7 @@ use Opis\Cache\StorageInterface as CacheStorageInterface;
 use Opis\Colibri\Components\ContractTrait;
 use Opis\Colibri\Components\EventTrait;
 use Opis\Colibri\Composer\CLI;
-use Opis\Colibri\Composer\EventHandler;
+use Opis\Colibri\Composer\Plugin;
 use Opis\Colibri\Routing\HttpRouter;
 use Opis\Colibri\Routing\ViewApp;
 use Opis\Config\Config;
@@ -1015,7 +1015,9 @@ class Application implements DefaultCollectorInterface
         $installed = $this->getHelper()->config()->read('modules.installed', []);
         $enabled = $this->getHelper()->config()->read('modules.enabled', []);
 
-        $packages = EventHandler::preparePacks($composer, $installMode, $enabled, $installed);
+        $plugin = new Plugin();
+        $plugin->activate($composer, new NullIO());
+        $packages = $plugin->preparePacks($installMode, $enabled, $installed);
 
         $generator = $composer->getAutoloadGenerator();
         $packMap = $generator->buildPackageMap($composer->getInstallationManager(), $composer->getPackage(), $packages);

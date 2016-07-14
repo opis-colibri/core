@@ -21,23 +21,66 @@
 namespace Opis\Colibri\Composer;
 
 use Composer\Composer;
+use Composer\EventDispatcher\EventSubscriberInterface;
+use Composer\IO\IOInterface;
 use Composer\Package\CompletePackage;
+use Composer\Plugin\PluginInterface;
 use Composer\Script\Event;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\Application;
 
-class EventHandler
+class Plugin implements PluginInterface, EventSubscriberInterface
 {
+    /** @var  IOInterface */
+    protected $io;
+
+    /** @var  Composer */
+    protected $composer;
+
+    /**
+     * Apply plugin modifications to Composer
+     *
+     * @param Composer $composer
+     * @param IOInterface $io
+     */
+    public function activate(Composer $composer, IOInterface $io)
+    {
+        $this->io = $io;
+        $this->composer = $composer;
+    }
+
+    /**
+     * Returns an array of event names this subscriber wants to listen to.
+     *
+     * The array keys are event names and the value can be:
+     *
+     * * The method name to call (priority defaults to 0)
+     * * An array composed of the method name to call and the priority
+     * * An array of arrays composed of the method names to call and respective
+     *   priorities, or 0 if unset
+     *
+     * For instance:
+     *
+     * * array('eventName' => 'methodName')
+     * * array('eventName' => array('methodName', $priority))
+     * * array('eventName' => array(array('methodName1', $priority), array('methodName2'))
+     *
+     * @return array The event names to listen to
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            'pre-dump-autoload' => 'handleDumpAutoload'
+        ];
+    }
+
     /**
      * @param Event $event
-     * @throws \Exception
      */
-    public static function onDumpAutoload(Event $event)
+    public function handleDumpAutoload(Event $event)
     {
-        $composer = $event->getComposer();
-
-        $rootDir = realpath($composer->getConfig()->get('vendor-dir') . '/../');
-        $settings = $composer->getPackage()->getExtra()['application'] ?? [];
+        $rootDir = realpath($this->composer->getConfig()->get('vendor-dir') . '/../');
+        $settings = $this->composer->getPackage()->getExtra()['application'] ?? [];
         $appInfo = new AppInfo($rootDir, $settings);
 
         $installMode = true;
@@ -53,13 +96,19 @@ class EventHandler
             $enabled = $collector->getEnabledModules();
         }
 
-        static::preparePacks($composer, $installMode, $enabled, $installed);
+        $this->preparePacks($installMode, $enabled, $installed);
     }
 
-    public static function preparePacks(Composer $composer, bool $installMode, array $enabled, array $installed): array
+    /**
+     * @param bool $installMode
+     * @param array $enabled
+     * @param array $installed
+     * @return CompletePackage[]
+     */
+    public function preparePacks(bool $installMode, array $enabled, array $installed): array
     {
         /** @var CompletePackage[] $packages */
-        $packages = $composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
+        $packages = $this->composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
 
         foreach ($packages as $package){
             if($package->getType() !== Application::MODULE_TYPE){
@@ -100,4 +149,5 @@ class EventHandler
 
         return $packages;
     }
+
 }
