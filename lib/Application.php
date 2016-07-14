@@ -165,14 +165,6 @@ class Application implements DefaultCollectorInterface
      */
     public function __construct(string $rootDir, ClassLoader $loader, Composer $composer = null)
     {
-        if(getenv('APP_PRODUCTION') === false){
-            $whoops = (new \Whoops\Run())->pushHandler(new \Whoops\Handler\PrettyPageHandler());
-            if(\Whoops\Util\Misc::isAjaxRequest()){
-                $whoops->pushHandler(new \Whoops\Handler\JsonResponseHandler());
-            }
-            $whoops->register();
-        }
-
         $json = json_decode(file_get_contents($rootDir . '/composer.json'), true);
 
         $this->composer = $composer;
