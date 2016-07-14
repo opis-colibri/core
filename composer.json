@@ -38,6 +38,7 @@
         "filp/whoops": "2.*"
     },
     "extra": {
+        "class": "Opis\\Colibri\\Composer\\Plugin",
         "branch-alias": {
             "dev-master": "2.0.x-dev"
         }
