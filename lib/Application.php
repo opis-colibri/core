@@ -22,7 +22,6 @@ namespace Opis\Colibri;
 
 use Composer\Autoload\ClassLoader;
 use Composer\Composer;
-use Composer\Factory;
 use Composer\IO\NullIO;
 use Composer\Json\JsonFile;
 use Composer\Package\CompletePackage;
@@ -59,7 +58,7 @@ class Application implements DefaultCollectorInterface
 {
     use ContractTrait, EventTrait;
 
-    const MODULE_TYPE = 'opis-colibri-module';
+    const COMPOSER_TYPE = 'opis-colibri-module';
 
     /** @var    AppInfo */
     protected $info;
@@ -228,7 +227,7 @@ class Application implements DefaultCollectorInterface
         $packages = array();
         $repository = new InstalledFilesystemRepository(new JsonFile($this->info->vendorDir() . '/composer/installed.json'));
         foreach ($repository->getCanonicalPackages() as $package) {
-            if (!$package instanceof CompletePackage || $package->getType() !== static::MODULE_TYPE) {
+            if (!$package instanceof CompletePackage || $package->getType() !== static::COMPOSER_TYPE) {
                 continue;
             }
             $packages[$package->getName()] = $package;
@@ -766,7 +765,7 @@ class Application implements DefaultCollectorInterface
 
         foreach ($composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages() as $package) {
 
-            if ($package->getType() !== static::MODULE_TYPE) {
+            if ($package->getType() !== static::COMPOSER_TYPE) {
                 $canonicalPacks[] = $package;
                 continue;
             }
