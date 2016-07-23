@@ -58,7 +58,7 @@ class Application implements DefaultCollectorInterface
 {
     use ContractTrait, EventTrait;
 
-    const COMPOSER_TYPE = 'opis-colibri-module';
+    const COMPOSER_TYPE = 'module';
 
     /** @var    AppInfo */
     protected $info;
