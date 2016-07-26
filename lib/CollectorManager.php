@@ -378,7 +378,7 @@ class CollectorManager
 
                 if (substr($name, 0, 2) === '__') {
                     if ($name === '__invoke') {
-                        $instance($this, $reader);
+                        $instance($this->collectorTarget);
                     }
                     continue;
                 }
