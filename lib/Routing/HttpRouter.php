@@ -51,8 +51,9 @@ class HttpRouter extends Router
         $this->app = $app;
 
         $specials = $app->getSpecials();
+        $dispatchers = $app->getCollector()->getDispatcherCollection();
 
-        parent::__construct($app->getCollector()->getRoutes(), $app->getCollector()->getDispatcherResolver(), null, $specials);
+        parent::__construct($app->getCollector()->getRoutes(), new DispatcherResolver($app, $dispatchers), null, $specials);
 
         $this->getRouteCollection()
             ->notFound(function ($path) {

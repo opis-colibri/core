@@ -30,9 +30,9 @@ use Opis\Config\StorageInterface as ConfigStorageInterface;
 use Opis\Database\Connection;
 use Opis\Database\Database;
 use Opis\Events\RouteCollection as EventsRouteCollection;
+use Opis\Routing\DispatcherCollection;
 use Opis\Routing\RouteCollection as AliasRouteCollection;
 use Opis\View\RouteCollection as ViewRouteCollection;
-use Opis\Routing\DispatcherResolver;
 use Opis\View\EngineResolver;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
@@ -154,9 +154,9 @@ class CollectorManager
 
     /**
      * @param bool $fresh
-     * @return DispatcherResolver
+     * @return DispatcherCollection
      */
-    public function getDispatcherResolver(bool $fresh = false): DispatcherResolver
+    public function getDispatcherCollection(bool $fresh = false): DispatcherCollection
     {
         return $this->collect('Dispatchers', $fresh);
     }
