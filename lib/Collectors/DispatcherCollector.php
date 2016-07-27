@@ -22,17 +22,16 @@ namespace Opis\Colibri\Collectors;
 
 use Opis\Colibri\Application;
 use Opis\Colibri\Collector;
-use Opis\HttpRouting\DispatcherResolver;
+use Opis\Routing\DispatcherCollection;
 
 /**
  * Class DispatcherCollector
  * @package Opis\Colibri\Collectors
- * @method DispatcherResolver data()
- * @property DispatcherResolver $dataObject;
+ * @method DispatcherCollection data()
+ * @property DispatcherCollection $dataObject
  */
 class DispatcherCollector extends Collector
 {
-
     /**
      * Constructor
      *
@@ -40,7 +39,7 @@ class DispatcherCollector extends Collector
      */
     public function __construct(Application $app)
     {
-        parent::__construct($app, new DispatcherResolver());
+        parent::__construct($app, new DispatcherCollection());
     }
 
     /**
@@ -50,7 +49,7 @@ class DispatcherCollector extends Collector
      */
     public function register(string $name, callable $factory): self
     {
-        $this->dataObject->getDispatcherCollection()->register($name, $factory);
+        $this->dataObject->register($name, $factory);
         return $this;
     }
 }
