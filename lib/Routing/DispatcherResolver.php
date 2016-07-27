@@ -21,7 +21,6 @@
 namespace Opis\Colibri\Routing;
 
 use Opis\Colibri\Application;
-use Opis\Colibri\Components\ApplicationTrait;
 use Opis\Routing\Dispatcher;
 use Opis\Routing\DispatcherCollection;
 use Opis\Routing\Path;
@@ -30,8 +29,6 @@ use Opis\Routing\Router;
 
 class DispatcherResolver extends \Opis\Routing\DispatcherResolver
 {
-    use ApplicationTrait;
-
     /** @var  Application */
     protected $app;
 
@@ -58,14 +55,4 @@ class DispatcherResolver extends \Opis\Routing\DispatcherResolver
         $factory = $this->collection->get($dispatcher);
         return $factory($this->app);
     }
-
-    /**
-     * @return Application
-     */
-    protected function getApp(): Application
-    {
-        return $this->app;
-    }
-
-
 }
