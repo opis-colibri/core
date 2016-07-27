@@ -662,10 +662,15 @@ class Application implements DefaultCollectorInterface
     }
 
     /**
+     * @param bool $fresh
      * @return array
      */
-    public function getCollectorList(): array
+    public function getCollectorList(bool $fresh = false): array
     {
+        if($fresh){
+            $this->collectorList = null;
+        }
+
         if($this->collectorList === null){
             $default = require __DIR__ . '/../collectors.php';
             $this->collectorList = $this->getConfig()->read('collectors', array()) + $default;
