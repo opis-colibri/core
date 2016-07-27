@@ -27,7 +27,7 @@ use Opis\Routing\Path;
 use Opis\Routing\Route;
 use Opis\Routing\Router;
 
-class DispatcherResolver extends \Opis\Routing\DispatcherResolver
+class DispatcherResolver extends \Opis\HttpRouting\DispatcherResolver
 {
     /** @var  Application */
     protected $app;
