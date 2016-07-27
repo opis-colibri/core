@@ -269,7 +269,7 @@ class CollectorManager
         if (!isset($this->cache[$entry])) {
             $hit = false;
             $self = $this;
-            $collectors = $this->app->getCollectorList();
+            $collectors = $this->app->getCollectorList($fresh);
             if (!isset($collectors[$entry])) {
                 throw new RuntimeException('Unknown collector type `' . $entry . '`');
             }
@@ -303,7 +303,7 @@ class CollectorManager
 
         $this->collectorsIncluded = false;
 
-        foreach (array_keys($this->app->getCollectorList()) as $entry) {
+        foreach (array_keys($this->app->getCollectorList($fresh)) as $entry) {
             $this->collect($entry, $fresh);
         }
 
@@ -325,8 +325,6 @@ class CollectorManager
             'class' => $class,
             'description' => $description,
         ));
-        $this->collectorsIncluded = false;
-        $this->app->getCollectorList(true);
         $this->container->singleton($class);
         $this->container->alias($class, $name);
     }
