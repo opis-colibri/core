@@ -271,7 +271,7 @@ class CollectorManager
             $self = $this;
             $collectors = $this->app->getCollectorList();
             if (!isset($collectors[$entry])) {
-                throw new RuntimeException("Unknown collector type `$type`");
+                throw new RuntimeException('Unknown collector type `' . $entry . '`');
             }
             $this->cache[$entry] = $this->app->getCache()->load($entry, function ($entry) use ($self, &$hit) {
                 $hit = true;
@@ -325,7 +325,8 @@ class CollectorManager
             'class' => $class,
             'description' => $description,
         ));
-
+        $this->collectorsIncluded = false;
+        $this->app->getCollectorList(true);
         $this->container->singleton($class);
         $this->container->alias($class, $name);
     }
