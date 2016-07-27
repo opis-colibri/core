@@ -39,7 +39,7 @@ class ViewApp extends BaseViewApp
      */
     public function __construct(Application $app)
     {
-        parent::__construct($app->getCollector()->getViews(), $app->getCollector()->getViewEngineResolver(), true, 'app');
+        parent::__construct($app->getCollector()->getViews(), $app->getCollector()->getViewEngineResolver());
 
         $this->app = $this->param = $app;
         $this->viewItem = $app->getViewHelper();
