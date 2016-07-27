@@ -34,7 +34,6 @@ use Opis\Colibri\Components\EventTrait;
 use Opis\Colibri\Composer\CLI;
 use Opis\Colibri\Composer\Plugin;
 use Opis\Colibri\Routing\HttpRouter;
-use Opis\Colibri\Routing\ViewApp;
 use Opis\Config\Config;
 use Opis\Config\Storage\Memory as EphemeralConfigStorage;
 use Opis\Config\StorageInterface as ConfigStorageInterface;

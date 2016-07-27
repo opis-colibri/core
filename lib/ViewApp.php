@@ -18,11 +18,9 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Routing;
+namespace Opis\Colibri;
 
-use Opis\Colibri\Application;
 use Opis\Colibri\Components\ApplicationTrait;
-use Opis\Colibri\ViewEngine;
 use Opis\Routing\Router;
 use Opis\View\EngineInterface;
 use Opis\View\ViewApp as BaseViewApp;
