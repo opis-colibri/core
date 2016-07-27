@@ -22,7 +22,9 @@ namespace Opis\Colibri\Routing;
 
 use Opis\Colibri\Application;
 use Opis\Colibri\Components\ApplicationTrait;
+use Opis\Colibri\ViewEngine;
 use Opis\Routing\Router;
+use Opis\View\EngineInterface;
 use Opis\View\ViewApp as BaseViewApp;
 
 class ViewApp extends BaseViewApp
@@ -39,10 +41,8 @@ class ViewApp extends BaseViewApp
      */
     public function __construct(Application $app)
     {
+        $this->app = $app;
         parent::__construct($app->getCollector()->getViews(), $app->getCollector()->getViewEngineResolver());
-
-        $this->app = $this->param = $app;
-        $this->viewItem = $app->getViewHelper();
     }
 
     /**
@@ -51,6 +51,20 @@ class ViewApp extends BaseViewApp
     public function getApp(): Application
     {
         return $this->app;
+    }
+
+    /**
+     * Get the default template engine
+     *
+     * @return EngineInterface
+     */
+    public function getDefaultEngine(): EngineInterface
+    {
+        if($this->defaultEngine === null){
+            $this->defaultEngine = new ViewEngine($this->app);
+        }
+
+        return $this->defaultEngine;
     }
 
     /**

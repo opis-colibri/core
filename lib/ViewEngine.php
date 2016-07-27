@@ -20,12 +20,12 @@
 
 namespace Opis\Colibri;
 
-use Opis\Colibri\Application;
 use Opis\Colibri\Components\CSRFTrait;
 use Opis\Colibri\Components\UtilsTrait;
 use Opis\Colibri\Components\ViewTrait;
+use Opis\View\PHPEngine;
 
-class ViewHelper
+class ViewEngine extends PHPEngine
 {
     use ViewTrait{
         view as public;
@@ -45,6 +45,11 @@ class ViewHelper
     /** @var  Application */
     protected $app;
 
+    /**
+     * ViewEngine constructor
+     *
+     * @param Application $app
+     */
     public function __construct(Application $app)
     {
         $this->app = $app;

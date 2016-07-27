@@ -150,9 +150,6 @@ class Application implements DefaultCollectorInterface
     /** @var  array */
     protected $specials;
 
-    /** @var  ViewHelper */
-    protected $viewHelper;
-
     /** @var  array|null */
     protected $collectorList;
 
@@ -648,17 +645,6 @@ class Application implements DefaultCollectorInterface
             ];
         }
         return $this->specials;
-    }
-
-    /**
-     * @return ViewHelper
-     */
-    public function getViewHelper(): ViewHelper
-    {
-        if($this->viewHelper === null){
-            $this->viewHelper = new ViewHelper($this);
-        }
-       return $this->viewHelper;
     }
 
     /**
