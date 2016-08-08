@@ -96,10 +96,10 @@ class ValidatorCollection extends  BaseCollection
 
 
     /**
-     * @param $name
+     * @param string $name
      * @return bool|ValidatorInterface
      */
-    public function get($name)
+    public function get(string $name)
     {
         if(!isset($this->validators[$name])){
             if (isset($this->classes[$name])){

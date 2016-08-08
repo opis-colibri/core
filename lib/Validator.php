@@ -67,15 +67,25 @@ class Validator extends BaseValidator
     }
 
     /**
-     * @return Validator|static
+     * @return Validator
      */
     public function csrf(): self
     {
-        $this->stack[] = array(
+        return $this->push([
             'name' => __FUNCTION__,
-            'arguments' => array(),
-        );
+            'arguments' => [],
+        ]);
+    }
+
+    /**
+     * @param array $validator
+     * @return Validator
+     */
+    protected function push(array $validator): self
+    {
+        $this->stack[] = $validator;
         return $this;
     }
+
 
 }
