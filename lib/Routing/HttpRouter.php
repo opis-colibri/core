@@ -24,9 +24,9 @@ use Opis\Colibri\Application;
 use Opis\Colibri\Components\ViewTrait;
 use Opis\Http\Error\AccessDenied;
 use Opis\Http\Error\NotFound;
-use Opis\HttpRouting\Path;
+use Opis\HttpRouting\Context;
 use Opis\HttpRouting\Router;
-use Opis\Routing\Path as BasePath;
+use Opis\Routing\Context as BaseContext;
 use Opis\Routing\Router as AliasRouter;
 
 /**
@@ -74,35 +74,35 @@ class HttpRouter extends Router
     }
 
     /**
-     * @return Path
+     * @return BaseContext
      */
-    public function getPath(): Path
+    public function getContext(): BaseContext
     {
-        return $this->currentPath;
+        return $this->currentContext;
     }
 
     /**
      * Route path
      *
-     * @param Path $path
+     * @param BaseContext|Context $context
      * @return mixed
      */
-    public function route(BasePath $path)
+    public function route(BaseContext $context)
     {
-        $this->currentPath = $path;
+        $this->currentPath = $context;
         $router = new AliasRouter($this->app->getCollector()->getRouteAliases());
-        $alias = $router->route(new BasePath($path->path()));
+        $alias = $router->route(new BaseContext($context->path()));
 
         if ($alias !== false) {
-            $path = new Path(
-                (string) $alias, $path->domain(), $path->method(), $path->isSecure(), $path->request()
+            $context = new Context(
+                (string) $alias, $context->domain(), $context->method(), $context->isSecure(), $context->request()
             );
         }
 
-        $result = parent::route($path);
+        $result = parent::route($context);
 
         /** @var \Opis\Http\Request $request */
-        $request = $path->request();
+        $request = $context->request();
         /** @var \Opis\Http\Response $response */
         $response = $request->response();
         $response->body($result);

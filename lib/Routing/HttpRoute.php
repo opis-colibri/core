@@ -46,7 +46,7 @@ class HttpRoute extends Route
         /** @var ControllerCallback $callback */
         $callback = $this->routeAction;
         $router = $this->getRouteCollection()->getRouter();
-        $values = $router->bind($router->extract($router->getPath(), $this), $this->getBindings());
+        $values = $router->bind($router->extract($router->getContext(), $this), $this->getBindings());
         $method = $callback->getMethod();
         $class = $callback->getClass();
 
