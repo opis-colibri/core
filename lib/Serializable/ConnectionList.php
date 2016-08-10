@@ -21,8 +21,6 @@
 namespace Opis\Colibri\Serializable;
 
 use Opis\Database\Connection;
-use Opis\Database\Database;
-use Opis\Database\Schema;
 use RuntimeException;
 use Serializable;
 
@@ -41,20 +39,10 @@ class ConnectionList implements Serializable
     public function get($name)
     {
         if (!isset($this->connections[$name])) {
-            throw new RuntimeException("Invalid connection name `$name`");
+            throw new RuntimeException("Invalid connection name $name");
         }
 
         return $this->connections[$name];
-    }
-
-    public function database($name)
-    {
-
-        if (!isset($this->databases[$name])) {
-            $this->databases[$name] = new Database($this->get($name));
-        }
-
-        return $this->databases[$name];
     }
 
     /**
