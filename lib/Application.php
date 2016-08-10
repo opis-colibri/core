@@ -459,18 +459,14 @@ class Application implements DefaultCollectorInterface
     public function getConnection(string $name = null): Connection
     {
         if ($name === null) {
-            $name = 'default';
+            if(!isset($this->implicit['connection'])){
+                throw new \RuntimeException('The default database connection was not set');
+            }
+            return $this->implicit['connection'];
         }
 
         if (!isset($this->connection[$name])) {
-            if($name === 'default'){
-                if(!isset($this->implicit['connection'])){
-                    throw new \RuntimeException('The default database connection was not set');
-                }
-                $this->connection[$name] = $this->implicit['connection'];
-            } else {
-                $this->connection[$name] = $this->getCollector()->getConnection($name);
-            }
+            $this->connection[$name] = $this->getCollector()->getConnection($name);
         }
 
         return $this->connection[$name];
@@ -485,12 +481,15 @@ class Application implements DefaultCollectorInterface
      */
     public function getDatabase(string $connection = null): Database
     {
-        if ($connection === null) {
-            $connection = 'default';
+        if($connection === null){
+            if(!isset($this->implicit['database'])){
+                $this->implicit['database'] = new Database($this->getConnection());
+            }
+            return $this->implicit['database'];
         }
 
         if (!isset($this->database[$connection])) {
-            $this->database[$connection] = $this->getCollector()->getDatabase($connection);
+            $this->database[$connection] = new Database($this->getConnection($connection));
         }
 
         return $this->database[$connection];
