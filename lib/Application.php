@@ -45,7 +45,7 @@ use Opis\Events\EventTarget;
 use Opis\Http\Request as HttpRequest;
 use Opis\Http\Request;
 use Opis\Http\Response;
-use Opis\HttpRouting\Path;
+use Opis\HttpRouting\Context;
 use Opis\Session\Session;
 use Opis\Utils\Dir;
 use Opis\Validation\Placeholder;
@@ -810,11 +810,11 @@ class Application implements DefaultCollectorInterface
 
         $this->httpRequestInstance = $request;
 
-        $path = new Path(
+        $context = new Context(
             $request->path(), $request->host(), $request->method(), $request->isSecure(), $request
         );
 
-        return $this->getHttpRouter()->route($path);
+        return $this->getHttpRouter()->route($context);
     }
 
     /**
