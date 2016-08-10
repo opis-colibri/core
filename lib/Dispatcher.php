@@ -21,10 +21,13 @@
 namespace Opis\Colibri;
 
 use Opis\Colibri\Components\ApplicationTrait;
+use Opis\Routing\DispatcherInterface;
+use Opis\Routing\DispatcherTrait;
 
-class Dispatcher extends \Opis\Routing\Dispatcher
+abstract class Dispatcher implements DispatcherInterface
 {
     use ApplicationTrait;
+    use DispatcherTrait;
 
     /** @var  Application */
     protected $app;
