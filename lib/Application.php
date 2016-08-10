@@ -485,6 +485,10 @@ class Application implements DefaultCollectorInterface
      */
     public function getDatabase(string $connection = null): Database
     {
+        if ($connection === null) {
+            $connection = 'default';
+        }
+
         if (!isset($this->database[$connection])) {
             $this->database[$connection] = $this->getCollector()->getDatabase($connection);
         }
