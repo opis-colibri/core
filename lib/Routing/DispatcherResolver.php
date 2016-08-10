@@ -21,11 +21,11 @@
 namespace Opis\Colibri\Routing;
 
 use Opis\Colibri\Application;
-use Opis\Routing\Dispatcher;
+use Opis\Routing\DispatcherInterface;
 use Opis\Routing\DispatcherCollection;
-use Opis\Routing\Path;
-use Opis\Routing\Route;
-use Opis\Routing\Router;
+use Opis\Routing\Context as BaseContext;
+use Opis\Routing\Route as BaseRoute;
+use Opis\Routing\Router as BaseRouter;
 
 class DispatcherResolver extends \Opis\HttpRouting\DispatcherResolver
 {
@@ -43,13 +43,7 @@ class DispatcherResolver extends \Opis\HttpRouting\DispatcherResolver
         parent::__construct($collection);
     }
 
-    /**
-     * @param Path $path
-     * @param Route $route
-     * @param Router $router
-     * @return Dispatcher
-     */
-    public function resolve(Path $path, Route $route, Router $router): Dispatcher
+    public function resolve(BaseRouter $router, BaseContext $context, BaseRoute $route): DispatcherInterface
     {
         $dispatcher = $route->get('dispatcher', 'default');
         $factory = $this->collection->get($dispatcher);
