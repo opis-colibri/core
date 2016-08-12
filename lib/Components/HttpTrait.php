@@ -31,7 +31,7 @@ trait HttpTrait
     /**
      * @return Request
      */
-    protected function request(): Request
+    private function request(): Request
     {
         return $this->getApp()->getHttpRequest();
     }
@@ -39,7 +39,7 @@ trait HttpTrait
     /**
      * @return Response
      */
-    protected function response(): Response
+    private function response(): Response
     {
         return $this->getApp()->getHttpResponse();
     }
@@ -49,7 +49,7 @@ trait HttpTrait
      * @param int $code
      * @param array $query
      */
-    protected function redirect(string $location, int $code = 302, array $query = array())
+    private function redirect(string $location, int $code = 302, array $query = array())
     {
         if (!empty($query)) {
             foreach ($query as $key => $value) {
@@ -64,7 +64,7 @@ trait HttpTrait
     /**
      * @return HttpError
      */
-    protected function pageNotFound(): HttpError
+    private function pageNotFound(): HttpError
     {
         return $this->httpError(404);
     }
@@ -72,7 +72,7 @@ trait HttpTrait
     /**
      * @return HttpError
      */
-    protected function accessDenied(): HttpError
+    private function accessDenied(): HttpError
     {
         return $this->httpError(403);
     }
@@ -81,7 +81,7 @@ trait HttpTrait
      * @param int $code
      * @return HttpError
      */
-    protected function httpError(int $code): HttpError
+    private function httpError(int $code): HttpError
     {
         return new HttpError($code);
     }

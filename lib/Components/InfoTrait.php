@@ -28,7 +28,7 @@ trait InfoTrait
     /**
      * @return string
      */
-    protected function assetsDir(): string
+    private function assetsDir(): string
     {
         return $this->getApp()->getAppInfo()->assetsDir();
     }
@@ -36,7 +36,7 @@ trait InfoTrait
     /**
      * @return string
      */
-    protected function assetsPath(): string
+    private function assetsPath(): string
     {
         return $this->getApp()->getAppInfo()->assetsPath();
     }
@@ -44,7 +44,7 @@ trait InfoTrait
     /**
      * @return string
      */
-    protected function publicDir(): string
+    private function publicDir(): string
     {
         return $this->getApp()->getAppInfo()->publicDir();
     }
@@ -53,7 +53,7 @@ trait InfoTrait
      * @return string
      * @throws \Exception
      */
-    protected function rootDir(): string
+    private function rootDir(): string
     {
         return $this->getApp()->getAppInfo()->rootDir();
     }
@@ -61,7 +61,7 @@ trait InfoTrait
     /**
      * @return string
      */
-    protected function writableDir(): string
+    private function writableDir(): string
     {
         return $this->getApp()->getAppInfo()->writableDir();
     }
@@ -69,7 +69,7 @@ trait InfoTrait
     /**
      * @return string
      */
-    protected function vendorDir(): string
+    private function vendorDir(): string
     {
         return $this->getApp()->getAppInfo()->vendorDir();
     }
@@ -77,7 +77,7 @@ trait InfoTrait
     /**
      * @return string
      */
-    protected function composerFile(): string
+    private function composerFile(): string
     {
         return $this->getApp()->getAppInfo()->composerFile();
     }
@@ -85,7 +85,7 @@ trait InfoTrait
     /**
      * @return string
      */
-    protected function bootstrapFile(): string
+    private function bootstrapFile(): string
     {
         return $this->getApp()->getAppInfo()->bootstrapFile();
     }
@@ -93,7 +93,7 @@ trait InfoTrait
     /**
      * @return bool
      */
-    protected function installMode(): bool
+    private function installMode(): bool
     {
         return $this->getApp()->getAppInfo()->installMode();
     }
@@ -101,7 +101,7 @@ trait InfoTrait
     /**
      * @return bool
      */
-    protected function cliMode(): bool
+    private function cliMode(): bool
     {
         return $this->getApp()->getAppInfo()->cliMode();
     }

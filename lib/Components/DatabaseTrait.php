@@ -33,7 +33,7 @@ trait DatabaseTrait
      * @param string|null $name
      * @return Connection
      */
-    protected function connection(string $name = null): Connection
+    private function connection(string $name = null): Connection
     {
         return $this->getApp()->getConnection($name);
     }
@@ -42,7 +42,7 @@ trait DatabaseTrait
      * @param string|null $connection
      * @return Database
      */
-    protected function db(string $connection = null): Database
+    private function db(string $connection = null): Database
     {
         return $this->getApp()->getDatabase($connection);
     }
@@ -51,7 +51,7 @@ trait DatabaseTrait
      * @param string|null $connection
      * @return Schema
      */
-    protected function schema(string $connection = null): Schema
+    private function schema(string $connection = null): Schema
     {
         return $this->getApp()->getSchema($connection);
     }
@@ -61,7 +61,7 @@ trait DatabaseTrait
      * @param string|null $connection
      * @return Model
      */
-    protected function orm(string $class, string $connection = null): Model
+    private function orm(string $class, string $connection = null): Model
     {
         return $this->getApp()->getORM($connection)->model($class)->setApp($this->getApp());
     }

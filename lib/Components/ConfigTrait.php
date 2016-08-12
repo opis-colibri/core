@@ -30,7 +30,7 @@ trait ConfigTrait
      * @param string|null $storage
      * @return Config
      */
-    protected function config(string $storage = null): Config
+    private function config(string $storage = null): Config
     {
         return $this->getApp()->getConfig($storage);
     }

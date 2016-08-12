@@ -34,7 +34,7 @@ trait UtilsTrait
      * @param null $default
      * @return null|mixed
      */
-    protected function v(string $name, $default = null)
+    private function v(string $name, $default = null)
     {
         $var = $this->getApp()->getVariables();
         return array_key_exists($name, $var) ? $var[$name] : $default;
@@ -47,7 +47,7 @@ trait UtilsTrait
      * @param array $placeholders
      * @return string
      */
-    protected function r(string $text, array $placeholders): string
+    private function r(string $text, array $placeholders): string
     {
         return $this->getApp()->getPlaceholder()->replace($text, $placeholders);
     }
@@ -60,7 +60,7 @@ trait UtilsTrait
      * @param string|null $lang
      * @return string
      */
-    protected function t(string $sentence, array $placeholders = [], string $lang = null): string
+    private function t(string $sentence, array $placeholders = [], string $lang = null): string
     {
         return $this->getApp()->getTranslator()->translate($sentence, $placeholders, $lang);
     }
@@ -71,7 +71,7 @@ trait UtilsTrait
      * @param bool $full
      * @return string
      */
-    protected function getAsset(string $module, string $path, bool $full = false): string
+    private function getAsset(string $module, string $path, bool $full = false): string
     {
         $assetsPath = $this->getApp()->getAppInfo()->assetsPath();
         return $this->getURL($assetsPath . '/' . $module . '/' . ltrim($path), $full);
@@ -82,7 +82,7 @@ trait UtilsTrait
      * @param bool $full
      * @return string
      */
-    protected function getURL(string $path, bool $full = false): string
+    private function getURL(string $path, bool $full = false): string
     {
         $req = $this->getApp()->getHttpRequest();
         return $full ? $req->uriForPath($path) : $req->baseUrl() . '/' . ltrim($path, '/');
@@ -94,7 +94,7 @@ trait UtilsTrait
      * @param bool $static
      * @return ControllerCallback
      */
-    protected function controller(string $class, string $method, bool $static = false): ControllerCallback
+    private function controller(string $class, string $method, bool $static = false): ControllerCallback
     {
         return new ControllerCallback($class, $method, $static);
     }
@@ -106,7 +106,7 @@ trait UtilsTrait
      *
      * @return  Module
      */
-    protected function module(string $module)
+    private function module(string $module)
     {
         return new Module($this->getApp(), $module);
     }

@@ -31,7 +31,7 @@ trait EventTrait
      * @param bool $cancelable
      * @return Event
      */
-    protected function emit(string $event, bool $cancelable = false): Event
+    private function emit(string $event, bool $cancelable = false): Event
     {
         return $this->dispatch(new Event($this->getApp(), $event, $cancelable));
     }
@@ -40,7 +40,7 @@ trait EventTrait
      * @param Event $event
      * @return Event
      */
-    protected function dispatch(Event $event): Event
+    private function dispatch(Event $event): Event
     {
         return $this->getApp()->getEventTarget()->dispatch($event);
     }
