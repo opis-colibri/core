@@ -52,6 +52,7 @@ class AppHelper
         db as public;
         schema as public;
         connection as public;
+        orm as public;
     }
     use EventTrait {
         emit as public;
