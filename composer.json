@@ -21,7 +21,7 @@
         "composer-plugin-api": "^1.0",
         "composer/composer": "1.1.*",
         "opis/routing": "5.0.x-dev",
-        "opis/database": "4.0.x-dev",
+        "opis/database": "^3.6.7",
         "opis/container": "3.0.x-dev",
         "opis/http": "^2.0.0",
         "opis/http-routing": "5.0.x-dev",
