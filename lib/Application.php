@@ -719,12 +719,11 @@ class Application implements DefaultCollectorInterface
         }
 
         if (!$this->info->installMode()) {
+            Model::setApplication($this);
             $this->getBootstrapInstance()->bootstrap($this);
             $this->emit('system.init');
             return $this;
         }
-
-        Model::setApplication($this);
 
         $composer = $this->getComposerCLI()->getComposer();
         $generator = $composer->getAutoloadGenerator();
