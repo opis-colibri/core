@@ -152,6 +152,9 @@ class Application implements DefaultCollectorInterface
     /** @var  array|null */
     protected $collectorList;
 
+    /** @var  Application */
+    protected static $instance;
+
     /**
      * Constructor
      *
@@ -165,6 +168,15 @@ class Application implements DefaultCollectorInterface
         $this->composer = $composer;
         $this->classLoader = $loader;
         $this->info = new AppInfo($rootDir, $json['extra']['application'] ?? []);
+        static::$instance = $this;
+    }
+
+    /**
+     * @return Application
+     */
+    public static function getInstance(): Application
+    {
+        return static::$instance;
     }
 
     /**
