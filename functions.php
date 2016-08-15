@@ -15,10 +15,16 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri;
+namespace Opis\Colibri\Helpers;
 
 use Opis\Cache\Cache;
+use Opis\Colibri\AppInfo;
+use Opis\Colibri\Application;
+use Opis\Colibri\Event;
+use Opis\Colibri\Model;
+use Opis\Colibri\Module;
 use Opis\Colibri\Serializable\ControllerCallback;
+use Opis\Colibri\View;
 use Opis\Config\Config;
 use Opis\Database\Connection;
 use Opis\Database\Database;
