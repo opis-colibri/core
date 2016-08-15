@@ -21,6 +21,7 @@
 namespace Opis\Colibri;
 
 use Opis\Utils\Placeholder;
+use function Opis\Colibri\Helpers\{app};
 
 class Translator
 {
@@ -33,22 +34,18 @@ class Translator
     /** @var    array */
     protected $translations = array();
 
-    /** @var    \Opis\Colibri\Application */
-    protected $app;
-
     /**
      * Constructor
      *
-     * @param   \Opis\Colibri\Application $app
      * @param   string $language (optional)
      * @param   \Opis\Utils\Placeholder|null $placeholder (optional)
      */
-    public function __construct(Application $app, string $language = 'en', Placeholder $placeholder = null)
+    public function __construct(string $language = 'en', Placeholder $placeholder = null)
     {
         if ($placeholder === null) {
             $placeholder = new Placeholder();
         }
-        $this->app = $app;
+
         $this->language = $language;
         $this->placeholder = $placeholder;
     }
@@ -98,14 +95,14 @@ class Translator
      *
      * @return  string
      */
-    public function translate(string $sentence, array $placeholders = array(), string $lang = null): string 
+    public function translate(string $sentence, array $placeholders = [], string $lang = null): string
     {
         if ($lang === null) {
             $lang = $this->language;
         }
 
         if (!isset($this->translations[$lang])) {
-            $this->translations[$lang] = $this->app->getTranslations()->read($lang, array());
+            $this->translations[$lang] = app()->getTranslations()->read($lang, []);
         }
 
         $translation = &$this->translations[$lang];
