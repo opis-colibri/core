@@ -174,14 +174,6 @@ class Application implements DefaultCollectorInterface
     }
 
     /**
-     * @return Application
-     */
-    protected function getApp(): Application
-    {
-        return $this;
-    }
-
-    /**
      * Get a Composer instance
      *
      * @return  Composer
