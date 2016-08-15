@@ -28,23 +28,9 @@ use Opis\Routing\Route;
 
 class CollectorTarget extends EventTarget
 {
-    /** @var  Application */
-    protected $app;
 
     /**
-     * CollectorTarget constructor.
-     *
-     * @param Application $app
-     * @param RouteCollection|null $collection
-     */
-    public function __construct(Application $app, RouteCollection $collection = null)
-    {
-        $this->app = $app;
-        parent::__construct($collection);
-    }
-
-    /**
-     * @param CollectorEntry $event
+     * @param BaseEvent|CollectorEntry $event
      *
      * @return BaseEvent
      */
@@ -55,14 +41,13 @@ class CollectorTarget extends EventTarget
         }
 
         $this->collection->sort();
-        
-        $app = $this->app;
+
         $collector = $event->getCollector();
 
         /** @var Route $handler */
         foreach ($this->router->match($event) as $handler){
             $callback = $handler->getAction();
-            $callback($collector, $app);
+            $callback($collector);
         }
 
         return $event;
