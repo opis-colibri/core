@@ -23,8 +23,6 @@ namespace Opis\Colibri;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Opis\Cache\StorageInterface as CacheStorageInterface;
 use Opis\Colibri\Annotations\Collector as CollectorAnnotation;
-use Opis\Colibri\Components\ContractTrait;
-use Opis\Colibri\Components\EventTrait;
 use Opis\Colibri\Routing\HttpRouteCollection;
 use Opis\Config\StorageInterface as ConfigStorageInterface;
 use Opis\Database\Connection;
@@ -38,6 +36,7 @@ use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use RuntimeException;
+use function Opis\Colibri\Helpers\{app, cache, emit, make, config};
 
 /**
  * Description of CollectorManager
@@ -47,11 +46,6 @@ use RuntimeException;
  */
 class CollectorManager
 {
-    use EventTrait, ContractTrait;
-
-    /** @var    Application */
-    protected $app;
-
     /** @var array */
     protected $cache = array();
 
@@ -69,28 +63,16 @@ class CollectorManager
 
     /**
      * Constructor
-     *
-     * @param   Application $app
      */
-    public function __construct(Application $app)
+    public function __construct()
     {
-        $this->app = $app;
         $this->container = $container = new Container();
-        $container->setApplication($app);
-        $this->collectorTarget = new CollectorTarget($app);
+        $this->collectorTarget = new CollectorTarget();
 
-        foreach ($app->getCollectorList() as $name => $collector) {
+        foreach (app()->getCollectorList() as $name => $collector) {
             $container->alias($collector['class'], $name);
             $container->singleton($collector['class']);
         }
-    }
-
-    /**
-     * @return Application
-     */
-    protected function getApp(): Application
-    {
-        return $this->app;
     }
 
     /**
@@ -100,7 +82,7 @@ class CollectorManager
      */
     public function getCacheStorage(string $name, bool $fresh = false): CacheStorageInterface
     {
-        return $this->collect('CacheStorages', $fresh)->get($this->app, $name);
+        return $this->collect('CacheStorages', $fresh)->get($name);
     }
 
     /**
@@ -129,7 +111,7 @@ class CollectorManager
      */
     public function getConfigStorage(string $name, bool $fresh = false): ConfigStorageInterface
     {
-        return $this->collect('ConfigStorages', $fresh)->get($this->app, $name);
+        return $this->collect('ConfigStorages', $fresh)->get($name);
     }
 
     /**
@@ -267,21 +249,23 @@ class CollectorManager
         }
 
         if (!isset($this->cache[$entry])) {
-            $hit = false;
-            $self = $this;
-            $collectors = $this->app->getCollectorList($fresh);
+
+            $collectors = app()->getCollectorList($fresh);
+
             if (!isset($collectors[$entry])) {
-                throw new RuntimeException('Unknown collector type `' . $entry . '`');
+                throw new RuntimeException("Unknown collector type '$entry'");
             }
-            $this->cache[$entry] = $this->app->getCache()->load($entry, function ($entry) use ($self, &$hit) {
+
+            $hit = false;
+            $this->cache[$entry] = cache()->load($entry, function ($entry) use (&$hit) {
                 $hit = true;
-                $self->includeCollectors();
-                $instance = $self->container->make($entry);
-                return $self->collectorTarget->dispatch(new CollectorEntry($entry, $instance))->getCollector()->data();
+                $this->includeCollectors();
+                $instance = make($entry);
+                return $this->collectorTarget->dispatch(new CollectorEntry($entry, $instance))->getCollector()->data();
             });
 
             if ($hit) {
-                $this->emit('system.collect.' . $entry);
+                emit('system.collect.' . $entry);
             }
         }
 
@@ -297,17 +281,17 @@ class CollectorManager
      */
     public function recollect(bool $fresh = true): bool
     {
-        if (!$this->app->getCache()->clear()) {
+        if (!cache()->clear()) {
             return false;
         }
 
         $this->collectorsIncluded = false;
 
-        foreach (array_keys($this->app->getCollectorList($fresh)) as $entry) {
+        foreach (array_keys(app()->getCollectorList($fresh)) as $entry) {
             $this->collect($entry, $fresh);
         }
 
-        $this->emit('system.collect');
+        emit('system.collect');
 
         return true;
     }
@@ -321,7 +305,7 @@ class CollectorManager
      */
     public function register(string $name, string $class, string $description)
     {
-        $this->app->getConfig()->write('collectors.' . $name, array(
+        config()->write('collectors.' . $name, array(
             'class' => $class,
             'description' => $description,
         ));
@@ -336,7 +320,7 @@ class CollectorManager
      */
     public function unregister(string $name)
     {
-        $this->app->getConfig()->delete('collectors.' . $name);
+        config()->delete('collectors.' . $name);
     }
 
     /**
@@ -351,7 +335,7 @@ class CollectorManager
         $this->collectorsIncluded = true;
         $reader = new AnnotationReader();
 
-        foreach ($this->app->getModules() as $module) {
+        foreach (app()->getModules() as $module) {
 
             if (isset($this->collectors[$module->name()]) || !$module->isEnabled()) {
                 continue;
@@ -363,7 +347,7 @@ class CollectorManager
                 continue;
             }
 
-            $instance = $this->make($module->collector());
+            $instance = make($module->collector());
 
             $reflection = new ReflectionClass($instance);
 
