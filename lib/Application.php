@@ -140,9 +140,6 @@ class Application implements DefaultCollectorInterface
     /** @var  Validator */
     protected $validator;
 
-    /** @var  AppHelper */
-    protected $helper;
-
     /** @var array  */
     protected $implicit = [];
 
@@ -611,27 +608,17 @@ class Application implements DefaultCollectorInterface
     }
 
     /**
-     * @return AppHelper
-     */
-    public function getHelper(): AppHelper
-    {
-        if ($this->helper === null){
-            $this->helper = new AppHelper($this);
-        }
-        return $this->helper;
-    }
-
-    /**
      * @return array
      */
     public function getSpecials(): array
     {
         if($this->specials === null){
             $this->specials = [
-                'app' => $this->getHelper(),
+                'app' => $this,
                 'lang' => $this->getTranslator()->getLanguage(),
             ];
         }
+
         return $this->specials;
     }
 
@@ -972,8 +959,9 @@ class Application implements DefaultCollectorInterface
     protected function generateClassLoader(Composer $composer): ClassLoader
     {
         $installMode = $this->info->installMode();
-        $installed = $this->getHelper()->config()->read('modules.installed', []);
-        $enabled = $this->getHelper()->config()->read('modules.enabled', []);
+        $config = \Opis\Colibri\config();
+        $installed = $config->read('modules.installed', []);
+        $enabled = $config->read('modules.enabled', []);
 
         $plugin = new Plugin();
         $plugin->activate($composer, new NullIO());
