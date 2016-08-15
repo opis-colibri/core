@@ -28,35 +28,25 @@ class Model extends BaseModel
     use ApplicationTrait;
 
     /** @var   Application */
-    protected static $app;
-
-    /** @var  string */
-    protected static $connection;
+    protected $app;
 
     /**
      *  Set application
      *
      * @param  Application $app
+     * @return Model|static
      */
-    public static function setApplication(Application $app)
+    public function setApp(Application $app): self
     {
-        static::$app = $app;
+        $this->app = $app;
+        return $this;
     }
-
-    /**
-     * @return \Opis\Database\Connection
-     */
-    public static function getConnection()
-    {
-        return static::$app->getConnection(static::$connection);
-    }
-
 
     /**
      * @return Application
      */
     protected function getApp(): Application
     {
-        return static::$app;
+        return $this->app;
     }
 }

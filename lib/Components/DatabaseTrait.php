@@ -20,8 +20,11 @@
 
 namespace Opis\Colibri\Components;
 
+use Opis\Colibri\Model;
 use Opis\Database\Connection;
 use Opis\Database\Database;
+use Opis\Database\ORM\LoaderTrait;
+use Opis\Database\ORM\SelectTrait;
 use Opis\Database\Schema;
 
 trait DatabaseTrait
@@ -53,5 +56,15 @@ trait DatabaseTrait
     private function schema(string $connection = null): Schema
     {
         return $this->getApp()->getSchema($connection);
+    }
+
+    /**
+     * @param string $class
+     * @param string|null $connection
+     * @return Model|SelectTrait|LoaderTrait
+     */
+    private function orm(string $class, string $connection = null): Model
+    {
+        return $this->getApp()->getORM($connection)->model($class)->setApp($this->getApp());
     }
 }

@@ -39,6 +39,7 @@ use Opis\Config\Storage\Memory as EphemeralConfigStorage;
 use Opis\Config\StorageInterface as ConfigStorageInterface;
 use Opis\Database\Connection;
 use Opis\Database\Database;
+use Opis\Database\ORM;
 use Opis\Database\Schema;
 use Opis\Events\EventTarget;
 use Opis\Http\Request as HttpRequest;
@@ -111,6 +112,9 @@ class Application implements DefaultCollectorInterface
 
     /** @var  Database[] */
     protected $database = array();
+
+    /** @var  ORM[] */
+    protected $orm = array();
 
     /** @var  Session */
     protected $session = array();
@@ -504,6 +508,21 @@ class Application implements DefaultCollectorInterface
     }
 
     /**
+     * Returns an ORM
+     *
+     * @param   string|null $connection (optional) Connection name
+     *
+     * @return  ORM
+     */
+    public function getORM(string $connection = null): ORM
+    {
+        if(!isset($this->orm[$connection])){
+            $this->orm[$connection] = new ORM($this->getConnection($connection));
+        }
+        return $this->orm[$connection];
+    }
+
+    /**
      * Returns a logger
      *
      * @param   string|null $logger Logger's name
@@ -723,8 +742,6 @@ class Application implements DefaultCollectorInterface
             $this->emit('system.init');
             return $this;
         }
-
-        Model::setApplication($this);
 
         $composer = $this->getComposerCLI()->getComposer();
         $generator = $composer->getAutoloadGenerator();
