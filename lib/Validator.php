@@ -21,6 +21,7 @@
 namespace Opis\Colibri;
 
 use Opis\Validation\Validator as BaseValidator;
+use function Opis\Colibri\Helpers\{t};
 
 class Validator extends BaseValidator
 {

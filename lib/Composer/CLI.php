@@ -6,9 +6,9 @@ use Composer\Composer;
 use Composer\Console\Application as ComposerConsole;
 use Composer\Factory;
 use Composer\IO\NullIO;
-use Opis\Colibri\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
+use function Opis\Colibri\Helpers\{info};
 
 /**
  * Description of Composer
@@ -17,28 +17,26 @@ use Symfony\Component\Console\Output\NullOutput;
  */
 class CLI
 {
-    protected $app;
     protected $instance;
 
-    public function __construct(Application $app)
+    public function __construct()
     {
         if(getenv('HOME') === false){
-            putenv('HOME=' . posix_getpwuid(fileowner($app->getAppInfo()->rootDir()))['dir']);
+            putenv('HOME=' . posix_getpwuid(fileowner(info()->rootDir()))['dir']);
         }
-        $this->app = $app;
     }
 
     public function getComposer(): Composer
     {
-        $rootDir = $this->app->getAppInfo()->rootDir();
-        $composerFile = $this->app->getAppInfo()->composerFile();
+        $rootDir = info()->rootDir();
+        $composerFile = info()->composerFile();
         return (new Factory())->createComposer(new NullIO(), $composerFile, false, $rootDir);
     }
 
     public function execute(array $command)
     {
         $cwd = getcwd();
-        chdir($this->app->getAppInfo()->rootDir());
+        chdir(info()->rootDir());
         $this->instance()->run(new ArrayInput($command), new NullOutput());
         chdir($cwd);
     }

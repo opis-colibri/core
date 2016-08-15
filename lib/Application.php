@@ -151,10 +151,10 @@ class Application implements DefaultCollectorInterface
     protected static $instance;
 
     /**
-     * Constructor
-     *
+     * Application constructor
+     * @param string $rootDir
      * @param ClassLoader $loader
-     * @param Composer $composer (optional)
+     * @param Composer|null $composer
      */
     public function __construct(string $rootDir, ClassLoader $loader, Composer $composer = null)
     {
@@ -192,7 +192,7 @@ class Application implements DefaultCollectorInterface
     public function getComposerCLI(): CLI
     {
         if ($this->composerCLI === null) {
-            $this->composerCLI = new CLI($this);
+            $this->composerCLI = new CLI();
         }
 
         return $this->composerCLI;
@@ -261,7 +261,7 @@ class Application implements DefaultCollectorInterface
     public function getHttpRouter(): HttpRouter
     {
         if ($this->httpRouter === null) {
-            $this->httpRouter = new HttpRouter($this);
+            $this->httpRouter = new HttpRouter();
         }
         return $this->httpRouter;
     }
@@ -291,7 +291,6 @@ class Application implements DefaultCollectorInterface
     {
         if ($this->containerInstance === null) {
             $container = $this->getCollector()->getContracts();
-            $container->setApplication($this);
             $this->containerInstance = $container;
         }
         return $this->containerInstance;
@@ -303,7 +302,7 @@ class Application implements DefaultCollectorInterface
     public function getTranslator(): Translator
     {
         if ($this->translatorInstance === null) {
-            $this->translatorInstance = new Translator($this);
+            $this->translatorInstance = new Translator();
         }
         return $this->translatorInstance;
     }
@@ -343,7 +342,7 @@ class Application implements DefaultCollectorInterface
     public function getValidator(): Validator
     {
         if ($this->validator === null){
-            $this->validator = new Validator($this);
+            $this->validator = new Validator(new ValidatorCollection(), $this->getPlaceholder());
         }
 
         return $this->validator;
@@ -365,7 +364,7 @@ class Application implements DefaultCollectorInterface
                 }
                 $this->cache[$storage] = new Cache($this->implicit['cache']);
             } else {
-                $this->cache[$storage] = new Cache($this->getCollector()->getCacheStorage($storage));
+                $this->cache[$storage] = new Cache($this->getCollector()->getCacheStorages($storage));
             }
         }
 
@@ -438,7 +437,7 @@ class Application implements DefaultCollectorInterface
      */
     public function getConsole(): Console
     {
-        return new Console($this);
+        return new Console();
     }
 
     /**
@@ -595,7 +594,7 @@ class Application implements DefaultCollectorInterface
     public function getCollector(): CollectorManager
     {
         if ($this->collector === null) {
-            $this->collector = new CollectorManager($this);
+            $this->collector = new CollectorManager();
         }
         return $this->collector;
     }
@@ -1017,7 +1016,7 @@ class Application implements DefaultCollectorInterface
      */
     protected function emit(string $name, bool $cancelable = false): Event
     {
-        return $this->getEventTarget()->dispatch(new Event($this, $name, $cancelable));
+        return $this->getEventTarget()->dispatch(new Event($name, $cancelable));
     }
 
 }

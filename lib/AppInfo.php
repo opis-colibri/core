@@ -20,9 +20,6 @@
 
 namespace Opis\Colibri;
 
-use Composer\Composer;
-use RuntimeException;
-
 class AppInfo
 {
     const ROOT_DIR = 'root-dir';

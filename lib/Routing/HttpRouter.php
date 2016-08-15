@@ -20,14 +20,14 @@
 
 namespace Opis\Colibri\Routing;
 
-use Opis\Colibri\Application;
-use Opis\Colibri\Components\ViewTrait;
 use Opis\Http\Error\AccessDenied;
 use Opis\Http\Error\NotFound;
 use Opis\HttpRouting\Context;
+use Opis\HttpRouting\DispatcherResolver;
 use Opis\HttpRouting\Router;
 use Opis\Routing\Context as BaseContext;
 use Opis\Routing\Router as AliasRouter;
+use function Opis\Colibri\Helpers\{app, view};
 
 /**
  * Class HttpRouter
@@ -36,41 +36,20 @@ use Opis\Routing\Router as AliasRouter;
  */
 class HttpRouter extends Router
 {
-    use ViewTrait;
-
-    /** @var    Application */
-    protected $app;
-
-    /**
-     * Constructor
-     *
-     * @param   Application $app
-     */
-    public function __construct(Application $app)
+    public function __construct()
     {
-        $this->app = $app;
+        $dispatchers = app()->getCollector()->getDispatcherCollection();
 
-        $specials = $app->getSpecials();
-        $dispatchers = $app->getCollector()->getDispatcherCollection();
-
-        parent::__construct($app->getCollector()->getRoutes(), new DispatcherResolver($app, $dispatchers), null, $specials);
+        parent::__construct(app()->getCollector()->getRoutes(), new DispatcherResolver($dispatchers));
 
         $this->getRouteCollection()
             ->notFound(function ($path) {
-                return new NotFound($this->view('error.404', array('path' => $path)));
+                return new NotFound(view('error.404', array('path' => $path)));
             })
             ->accessDenied(function ($path) {
-                return new AccessDenied($this->view('error.403', array('path' => $path)));
+                return new AccessDenied(view('error.403', array('path' => $path)));
             })
             ->setRouter($this);
-    }
-
-    /**
-     * @return Application
-     */
-    public function getApp(): Application
-    {
-        return $this->app;
     }
 
     /**
@@ -90,7 +69,7 @@ class HttpRouter extends Router
     public function route(BaseContext $context)
     {
         $this->currentPath = $context;
-        $router = new AliasRouter($this->app->getCollector()->getRouteAliases());
+        $router = new AliasRouter(app()->getCollector()->getRouteAliases());
         $alias = $router->route(new BaseContext($context->path()));
 
         if ($alias !== false) {

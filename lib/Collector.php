@@ -20,8 +20,6 @@
 
 namespace Opis\Colibri;
 
-use Opis\Colibri\Components\ApplicationTrait;
-
 abstract class Collector
 {
     /** @var  mixed */

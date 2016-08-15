@@ -23,7 +23,6 @@ namespace Opis\Colibri;
 use InvalidArgumentException;
 use Opis\Events\Event as BaseEvent;
 use Opis\Events\EventTarget;
-use Opis\Events\RouteCollection;
 use Opis\Routing\Route;
 
 class CollectorTarget extends EventTarget

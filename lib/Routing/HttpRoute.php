@@ -22,6 +22,7 @@ namespace Opis\Colibri\Routing;
 
 use Opis\Colibri\Serializable\ControllerCallback;
 use Opis\HttpRouting\Route;
+use function Opis\Colibri\Helpers\{make};
 
 /**
  * Class HttpRoute
@@ -67,7 +68,7 @@ class HttpRoute extends Route
         }
 
         if(!$callback->isStatic()){
-            $class = $router->getApp()->getContainer()->make($class);
+            $class = make($class);
         }
 
         return $this->resolvedAction = [$class, $method];

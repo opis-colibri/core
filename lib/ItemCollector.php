@@ -20,26 +20,11 @@
 
 namespace Opis\Colibri;
 
-use Opis\Colibri\Components\ApplicationTrait;
 use ReflectionMethod;
 use ReflectionObject;
 
 abstract class ItemCollector
 {
-    use ApplicationTrait;
-
-    /** @var  Application */
-    protected $app;
-
-    /**
-     * ItemCollector constructor.
-     * @param Application $app
-     */
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
     /**
      * Collect items
      *
@@ -48,6 +33,7 @@ abstract class ItemCollector
     public function collect(Collector $collector)
     {
         $reflection = new ReflectionObject($this);
+
         foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
 
             if ($method->getShortName() == __FUNCTION__ ||
@@ -59,13 +45,5 @@ abstract class ItemCollector
 
             $method->invoke($this, $collector);
         }
-    }
-
-    /**
-     * @return Application
-     */
-    protected function getApp(): Application
-    {
-        return $this->app;
     }
 }

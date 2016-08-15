@@ -40,7 +40,7 @@ use Opis\Validation\Validators\Number;
 use Opis\Validation\Validators\Regex;
 use Opis\Validation\Validators\Required;
 use Opis\Validation\Validators\RequiredFile;
-use function Opis\Colibri\Helpers\{app, make, t};
+use function Opis\Colibri\Helpers\{app, make};
 
 class ValidatorCollection extends  BaseCollection
 {

@@ -20,15 +20,15 @@
 
 namespace Opis\Colibri;
 
-use Opis\Utils\Placeholder;
 use function Opis\Colibri\Helpers\{app};
+use Opis\Validation\Placeholder;
 
 class Translator
 {
     /** @var    string */
     protected $language;
 
-    /** @var    \Opis\Utils\Placeholder */
+    /** @var    Placeholder */
     protected $placeholder;
 
     /** @var    array */
@@ -38,7 +38,7 @@ class Translator
      * Constructor
      *
      * @param   string $language (optional)
-     * @param   \Opis\Utils\Placeholder|null $placeholder (optional)
+     * @param   Placeholder|null $placeholder (optional)
      */
     public function __construct(string $language = 'en', Placeholder $placeholder = null)
     {

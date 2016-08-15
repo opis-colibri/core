@@ -78,11 +78,11 @@ class CollectorManager
     /**
      * @param string $name
      * @param bool $fresh
-     * @return CacheStorageInterface
+     * @return callable[]
      */
-    public function getCacheStorage(string $name, bool $fresh = false): CacheStorageInterface
+    public function getCacheStorages(string $name, bool $fresh = false): CacheStorageInterface
     {
-        return $this->collect('CacheStorages', $fresh)->get($name);
+        return $this->collect('CacheStorages', $fresh)->gat($name);
     }
 
     /**
