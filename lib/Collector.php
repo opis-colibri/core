@@ -24,22 +24,16 @@ use Opis\Colibri\Components\ApplicationTrait;
 
 abstract class Collector
 {
-    use ApplicationTrait;
-
-    /** @var    Application */
-    protected $app;
-
     /** @var  mixed */
     protected $dataObject;
 
     /**
      * Collector constructor.
-     * @param Application $app
      * @param mixed $dataObject
+     * @internal param Application $app
      */
-    public function __construct(Application $app, $dataObject)
+    public function __construct($dataObject)
     {
-        $this->app = $app;
         $this->dataObject = $dataObject;
     }
 
@@ -50,13 +44,4 @@ abstract class Collector
     {
         return $this->dataObject;
     }
-
-    /**
-     * @return Application
-     */
-    protected function getApp(): Application
-    {
-        return $this->app;
-    }
-
 }
