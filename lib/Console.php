@@ -20,19 +20,12 @@
 
 namespace Opis\Colibri;
 
-use Exception;
 use Symfony\Component\Console\Application as ConsoleApplication;
+use Symfony\Component\Console\Command\Command;
+use function Opis\Colibri\Helpers\{app};
 
 class Console
 {
-    /** @var    \Opis\Colibri\Application */
-    protected $app;
-
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
     /**
      * Run a command
      */
@@ -54,18 +47,10 @@ class Console
      */
     public function commands(): array
     {
-        $commands = array();
+        $commands = [];
 
-        foreach ($this->app->getCollector()->getCommands() as $name => $builder) {
-            try {
-                $command = call_user_func($builder);
-                if ($command instanceof Command) {
-                    $command->setApp($this->app);
-                    $commands[$name] = $command;
-                }
-            } catch (Exception $e) {
-
-            }
+        foreach (app()->getCollector()->getCommands() as $name => $builder) {
+            $command[$name] = call_user_func($builder);
         }
 
         return $commands;
