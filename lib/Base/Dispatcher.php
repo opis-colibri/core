@@ -1,9 +1,6 @@
 <?php
 /* ===========================================================================
- * Opis Project
- * http://opis.io
- * ===========================================================================
- * Copyright 2014-2016 Marius Sarca
+ * Copyright 2013-2016 The Opis Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,31 +15,11 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri;
+namespace Opis\Colibri\Base;
 
-use Opis\Colibri\Components\ApplicationTrait;
 use Opis\Routing\DispatcherInterface;
-use Opis\Routing\DispatcherTrait;
 
 abstract class Dispatcher implements DispatcherInterface
 {
-    use ApplicationTrait;
-    use DispatcherTrait;
-
-    /** @var  Application */
-    protected $app;
-
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
-    /**
-     * @return Application
-     */
-    protected function getApp(): Application
-    {
-        return $this->app;
-    }
 
 }
