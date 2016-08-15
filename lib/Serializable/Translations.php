@@ -20,19 +20,13 @@
 
 namespace Opis\Colibri\Serializable;
 
-use Opis\Colibri\Application;
 use Serializable;
+use function Opis\Colibri\Helpers\{app};
 
 class Translations implements Serializable
 {
-    protected $app;
     protected $translations = array();
     protected $oldTranslations = array();
-
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
 
     public function translate($language, array $sentences)
     {
@@ -45,7 +39,7 @@ class Translations implements Serializable
 
     public function serialize()
     {
-        $storage = $this->app->getTranslations();
+        $storage = app()->getTranslations();
 
         foreach ($this->oldTranslations as $translation) {
             $storage->delete($translation);
