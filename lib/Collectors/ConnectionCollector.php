@@ -44,7 +44,7 @@ class ConnectionCollector extends Collector
      */
     public function create(string $name, callable $callback): self
     {
-        $this->dataObject->set($name, call_user_func($callback, $this->app));
+        $this->dataObject->set($name, $callback());
         return $this;
     }
 }
