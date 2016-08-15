@@ -20,32 +20,18 @@
 
 namespace Opis\Colibri;
 
-use Opis\Colibri\Components\ApplicationTrait;
 use Opis\Container\Container as BaseContainer;
 
 class Container extends BaseContainer
 {
-    use ApplicationTrait;
-
-    /** @var Application */
-    protected $app;
-
-    /**
-     * Set application
-     *
-     * @param Application $app
-     */
-    public function setApplication(Application $app)
+    public function __construct()
     {
-        $this->singleton(Application::class);
-        $this->app = $this->instances[Application::class] = $app;
+        $this->instances[Application::class] = Application::getInstance();
     }
 
-    /**
-     * @return Application
-     */
-    public function getApp(): Application
+    public function unserialize($data)
     {
-        return $this->app;
+        $this->__construct();
+        parent::unserialize($data);
     }
 }
