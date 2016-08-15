@@ -247,7 +247,7 @@ class Application implements DefaultCollectorInterface
         $modules = array();
 
         foreach ($this->getPackages($clear) as $module => $package) {
-            $modules[$module] = new Module($this, $module, $package);
+            $modules[$module] = new Module($module, $package);
         }
 
         return $this->modules = $modules;
