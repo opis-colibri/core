@@ -22,6 +22,7 @@ namespace Opis\Colibri;
 
 use Composer\Package\CompletePackage;
 use Exception;
+use function Opis\Colibri\Helpers\{app, config};
 
 class Module
 {
@@ -37,9 +38,6 @@ class Module
     /** @var  bool */
     protected $exists;
 
-    /** @var  Application */
-    protected $app;
-
     /**
      * Constructor
      *
@@ -50,7 +48,6 @@ class Module
     {
         $this->name = $name;
         $this->package = $package;
-        $this->app = Application::getInstance();
     }
 
     /**
@@ -63,7 +60,7 @@ class Module
     public function getPackage(): CompletePackage
     {
         if ($this->package === null) {
-            $packages = $this->app->getPackages();
+            $packages = app()->getPackages();
             if (!isset($packages[$this->name])) {
                 throw new Exception('Module `' . $this->name . "` doesn't exist");
             }
@@ -195,7 +192,7 @@ class Module
             return false;
         }
         
-        $list = $this->app->getConfig()->read('modules.enabled', array());
+        $list = config()->read('modules.enabled', array());
         return in_array($this->name, $list);
     }
 
@@ -207,7 +204,7 @@ class Module
     public function exists(): bool
     {
         if ($this->exists === null) {
-            $packages = $this->app->getPackages();
+            $packages = app()->getPackages();
             $this->exists = isset($packages[$this->name]);
         }
 
@@ -225,7 +222,7 @@ class Module
             return false;
         }
 
-        $list = $this->app->getConfig()->read('modules.installed', array());
+        $list = config()->read('modules.installed', array());
         return in_array($this->name, $list);
     }
 
@@ -316,7 +313,7 @@ class Module
      */
     public function enable(): bool
     {
-        return $this->app->enable($this);
+        return app()->enable($this);
     }
 
     /**
@@ -326,7 +323,7 @@ class Module
      */
     public function disable(): bool
     {
-        return $this->app->disable($this);
+        return app()->disable($this);
     }
 
     /**
@@ -336,7 +333,7 @@ class Module
      */
     public function install(): bool
     {
-        return $this->app->install($this);
+        return app()->install($this);
     }
 
     /**
@@ -346,7 +343,7 @@ class Module
      */
     public function uninstall(): bool
     {
-        return $this->app->uninstall($this);
+        return app()->uninstall($this);
     }
 
     /**
@@ -447,7 +444,7 @@ class Module
     protected function resolveDependencies(CompletePackage $package): array
     {
         $dependencies = array();
-        $modules = $this->app->getModules();
+        $modules = app()->getModules();
 
         foreach ($package->getRequires() as $dependency) {
             $target = $dependency->getTarget();
@@ -469,7 +466,7 @@ class Module
     protected function resolveDependents(CompletePackage $package): array
     {
         $dependants = array();
-        $modules = $this->app->getModules();
+        $modules = app()->getModules();
 
         foreach ($modules as $name => $module) {
             if ($name === $this->name) {
@@ -493,9 +490,9 @@ class Module
      */
     protected function resolveDirectory(CompletePackage $package): string
     {
-        return $this->app->getComposer()
-            ->getInstallationManager()
-            ->getInstallPath($package);
+        return app()->getComposer()
+                    ->getInstallationManager()
+                    ->getInstallPath($package);
     }
 
     /**
