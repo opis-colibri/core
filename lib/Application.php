@@ -362,16 +362,12 @@ class Application implements DefaultCollectorInterface
     /**
      * Returns a caching storage
      *
-     * @param   string|null $storage (optional) Storage name
+     * @param   string $storage (optional) Storage name
      *
      * @return  Cache
      */
-    public function getCache(string $storage = null): Cache
+    public function getCache(string $storage = 'default'): Cache
     {
-        if ($storage === null) {
-            $storage = 'default';
-        }
-
         if (!isset($this->cache[$storage])) {
             if($storage === 'default'){
                 if(!isset($this->implicit['cache'])){
@@ -389,16 +385,12 @@ class Application implements DefaultCollectorInterface
     /**
      * Returns a session storage
      *
-     * @param   string|null $storage (optional) Storage name
+     * @param   string $storage (optional) Storage name
      *
      * @return  Session
      */
-    public function getSession(string $storage = null): Session
+    public function getSession(string $storage = 'default'): Session
     {
-        if ($storage === null) {
-            $storage = 'default';
-        }
-
         if (!isset($this->session[$storage])) {
             if($storage === 'default'){
                 if(!isset($this->implicit['session'])){
@@ -416,16 +408,12 @@ class Application implements DefaultCollectorInterface
     /**
      * Returns a config storage
      *
-     * @param   string|null $storage (optional) Storage name
+     * @param   string $storage (optional) Storage name
      *
      * @return  Config
      */
-    public function getConfig(string $storage = null): Config
+    public function getConfig(string $storage = 'default'): Config
     {
-        if ($storage === null) {
-            $storage = 'default';
-        }
-
         if (!isset($this->config[$storage])) {
             if($storage === 'default') {
                 if(!isset($this->implicit['config'])){
@@ -464,21 +452,18 @@ class Application implements DefaultCollectorInterface
     }
 
     /**
-     * @param string|null $name
+     * @param string $name
      * @throws  \RuntimeException
      * @return  Connection
      */
-    public function getConnection(string $name = null): Connection
+    public function getConnection(string $name = 'default'): Connection
     {
-        if ($name === null) {
-            if(!isset($this->implicit['connection'])){
-                throw new \RuntimeException('The default database connection was not set');
+        if(!isset($this->connection[$name])){
+            if($name === 'default' && isset($this->implicit['connection'])){
+                $this->connection[$name] = $this->implicit['connection'];
+            } else {
+                $this->connection[$name] = $this->getCollector()->getConnection($name);
             }
-            return $this->implicit['connection'];
-        }
-
-        if (!isset($this->connection[$name])) {
-            $this->connection[$name] = $this->getCollector()->getConnection($name);
         }
 
         return $this->connection[$name];
@@ -487,20 +472,13 @@ class Application implements DefaultCollectorInterface
     /**
      * Returns a database abstraction layer
      *
-     * @param   string|null $connection (optional) Connection name
+     * @param   string $connection (optional) Connection name
      *
      * @return  Database
      */
-    public function getDatabase(string $connection = null): Database
+    public function getDatabase(string $connection = 'default'): Database
     {
-        if($connection === null){
-            if(!isset($this->implicit['database'])){
-                $this->implicit['database'] = new Database($this->getConnection());
-            }
-            return $this->implicit['database'];
-        }
-
-        if (!isset($this->database[$connection])) {
+        if(!isset($this->database[$connection])){
             $this->database[$connection] = new Database($this->getConnection($connection));
         }
 
@@ -510,11 +488,11 @@ class Application implements DefaultCollectorInterface
     /**
      * Returns a database schema abstraction layer
      *
-     * @param   string|null $connection (optional) Connection name
+     * @param   string $connection (optional) Connection name
      *
      * @return  Schema
      */
-    public function getSchema(string $connection = null): Schema
+    public function getSchema(string $connection = 'default'): Schema
     {
         return $this->getDatabase($connection)->schema();
     }
@@ -526,7 +504,7 @@ class Application implements DefaultCollectorInterface
      *
      * @return  ORM
      */
-    public function getORM(string $connection = null): ORM
+    public function getORM(string $connection = 'default'): ORM
     {
         if(!isset($this->orm[$connection])){
             $this->orm[$connection] = new ORM($this->getConnection($connection));
@@ -537,16 +515,12 @@ class Application implements DefaultCollectorInterface
     /**
      * Returns a logger
      *
-     * @param   string|null $logger Logger's name
+     * @param   string $logger Logger's name
      *
      * @return  LoggerInterface
      */
-    public function getLog(string $logger = null): LoggerInterface
+    public function getLog(string $logger = 'default'): LoggerInterface
     {
-        if ($logger === null) {
-            $logger = 'default';
-        }
-
         if (!isset($this->loggers[$logger])) {
             if($logger === 'default'){
                 if(!isset($this->implicit['logger'])){
