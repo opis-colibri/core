@@ -423,7 +423,7 @@ class Module
     }
 
     /**
-     * Get hiffen
+     * Get hidden
      *
      * @param   CompletePackage $package
      *
