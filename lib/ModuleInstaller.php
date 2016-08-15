@@ -24,21 +24,6 @@ use Opis\Colibri\Components\ApplicationTrait;
 
 abstract class ModuleInstaller
 {
-    use ApplicationTrait;
-
-    /** @var  Application */
-    protected $app;
-
-
-    /**
-     * ModuleInstaller constructor.
-     * @param Application $app
-     */
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
     /**
      * Install action
      */
@@ -69,13 +54,5 @@ abstract class ModuleInstaller
     public function disable()
     {
 
-    }
-
-    /**
-     * @return Application
-     */
-    protected function getApp(): Application
-    {
-        return $this->app;
     }
 }
