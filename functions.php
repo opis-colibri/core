@@ -20,7 +20,6 @@ namespace Opis\Colibri\Helpers;
 use Opis\Cache\Cache;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\Application;
-use Opis\Colibri\Event;
 use Opis\Colibri\Model;
 use Opis\Colibri\Module;
 use Opis\Colibri\Serializable\ControllerCallback;
@@ -29,11 +28,27 @@ use Opis\Config\Config;
 use Opis\Database\Connection;
 use Opis\Database\Database;
 use Opis\Database\Schema;
+use Opis\Events\Event;
 use Opis\Http\Request;
 use Opis\Http\Response;
 use Opis\Session\Session;
 use Opis\View\ViewableInterface;
 use Psr\Log\LoggerInterface;
+
+
+/**
+ * @return Application
+ */
+function app(): Application
+{
+    static $app;
+
+    if($app === null){
+        $app = Application::getInstance();
+    }
+
+    return $app;
+}
 
 /**
  * @param string $storage
@@ -43,7 +58,7 @@ function cache(string $storage = 'default'): Cache
 {
     static $cache = [];
 
-    return $cache[$storage] ?? (Application::getInstance()->getCache($storage));
+    return $cache[$storage] ?? (app()->getCache($storage));
 }
 
 /**
@@ -54,7 +69,7 @@ function config(string $storage = 'default'): Config
 {
     static $config = [];
 
-    return $config[$storage] ?? (Application::getInstance()->getConfig($storage));
+    return $config[$storage] ?? (app()->getConfig($storage));
 }
 
 /**
@@ -67,7 +82,7 @@ function make(string $abstract, array $arguments = [])
     static $container;
 
     if($container === null){
-        $container = Application::getInstance()->getContainer();
+        $container = app()->getContainer();
     }
 
     return $container->make($abstract, $arguments);
@@ -78,7 +93,7 @@ function make(string $abstract, array $arguments = [])
  */
 function generateCSRFToken(): string
 {
-    return Application::getInstance()->getCSRFToken()->generate();
+    return app()->getCSRFToken()->generate();
 }
 
 /**
@@ -87,7 +102,7 @@ function generateCSRFToken(): string
  */
 function validateCSRFToken(string $token): bool
 {
-    return Application::getInstance()->getCSRFToken()->validate($token);
+    return app()->getCSRFToken()->validate($token);
 }
 
 /**
@@ -98,7 +113,7 @@ function connection(string $name = 'default'): Connection
 {
     static $connection = [];
 
-    return $connection[$name] ?? ($connection[$name] = Application::getInstance()->getConnection($name));
+    return $connection[$name] ?? ($connection[$name] = app()->getConnection($name));
 }
 
 /**
@@ -109,7 +124,7 @@ function db(string $connection = 'default'): Database
 {
     static $db = [];
 
-    return $db[$connection] ?? ($db[$connection] = Application::getInstance()->getDatabase($connection));
+    return $db[$connection] ?? ($db[$connection] = app()->getDatabase($connection));
 }
 
 /**
@@ -120,7 +135,7 @@ function schema(string $connection = null): Schema
 {
     static $schema = [];
 
-    return $schema[$connection] ?? ($schema[$connection] = Application::getInstance()->getSchema($connection));
+    return $schema[$connection] ?? ($schema[$connection] = app()->getSchema($connection));
 }
 
 /**
@@ -131,7 +146,7 @@ function schema(string $connection = null): Schema
 function model(string $class, string $connection = 'default'): Model
 {
     static $orm = [];
-    $instance = $orm[$connection] ?? ($orm[$connection] = Application::getInstance()->getORM($connection));
+    $instance = $orm[$connection] ?? ($orm[$connection] = app()->getORM($connection));
     return $instance->model($class);
 }
 
@@ -142,7 +157,7 @@ function model(string $class, string $connection = 'default'): Model
  */
 function emit(string $event, bool $cancelable = false): Event
 {
-    return dispatch(new Event(Application::getInstance(), $event, $cancelable));
+    return dispatch(new Event($event, $cancelable));
 }
 
 /**
@@ -154,7 +169,7 @@ function dispatch(Event $event): Event
     static $target;
 
     if($target === null){
-        $target = Application::getInstance()->getEventTarget();
+        $target = app()->getEventTarget();
     }
 
     return $target->dispatch($event);
@@ -168,7 +183,7 @@ function request(): Request
     static $request;
 
     if($request === null){
-        $request = Application::getInstance()->getHttpRequest();
+        $request = app()->getHttpRequest();
     }
 
     return $request;
@@ -182,7 +197,7 @@ function response(): Response
     static $resonse;
 
     if($resonse === null){
-        $resonse = Application::getInstance()->getHttpResponse();
+        $resonse = app()->getHttpResponse();
     }
 
     return $resonse;
@@ -213,7 +228,7 @@ function info(): AppInfo
     static $info;
 
     if($info === null){
-        $info = Application::getInstance()->getAppInfo();
+        $info = app()->getAppInfo();
     }
 
     return $info;
@@ -227,7 +242,7 @@ function logger(string $logger = 'default'): LoggerInterface
 {
     static $log = [];
 
-    return $log[$logger] ?? ($log[$logger] = Application::getInstance()->getLog($logger));
+    return $log[$logger] ?? ($log[$logger] = app()->getLog($logger));
 }
 
 /**
@@ -238,7 +253,7 @@ function session(string $storage = null): Session
 {
     static $session = [];
 
-    return $session[$storage] ?? ($session[$storage] =  Application::getInstance()->getSession($storage));
+    return $session[$storage] ?? ($session[$storage] =  app()->getSession($storage));
 }
 
 /**
@@ -253,7 +268,7 @@ function v(string $name, $default = null)
     static $var;
 
     if($var === null){
-        $var = Application::getInstance()->getVariables();
+        $var = app()->getVariables();
     }
 
     return array_key_exists($name, $var) ? $var[$name] : $default;
@@ -271,7 +286,7 @@ function r(string $text, array $placeholders): string
     static $placehoder;
 
     if($placehoder === null){
-        $placehoder = Application::getInstance()->getPlaceholder();
+        $placehoder = app()->getPlaceholder();
     }
 
     return $placehoder->replace($text, $placeholders);
@@ -290,7 +305,7 @@ function t(string $sentence, array $placeholders = [], string $lang = null): str
     static $translator;
 
     if($translator === null){
-        $translator = Application::getInstance()->getTranslator();
+        $translator = app()->getTranslator();
     }
 
     return $translator->translate($sentence, $placeholders, $lang);
@@ -356,7 +371,7 @@ function render($view): string
     static $viewApp;
 
     if($viewApp === null){
-        $viewApp = Application::getInstance()->getViewApp();
+        $viewApp = app()->getViewApp();
     }
 
     return $viewApp->render($view);
