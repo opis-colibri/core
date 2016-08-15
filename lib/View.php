@@ -20,14 +20,12 @@
 
 namespace Opis\Colibri;
 
-use Exception;
+use Opis\Colibri\Partials\RenderableViewTrait;
 use Opis\View\View as OpisView;
-use function Opis\Colibri\Helpers\{render};
 
 class View extends OpisView
 {
-    /** @var    string */
-    protected $renderedContent = null;
+    use RenderableViewTrait;
 
     /**
      * Set a value
@@ -65,22 +63,5 @@ class View extends OpisView
     public function get(string $name, $default = null)
     {
         return $this->arguments[$name] ?? $default;
-    }
-
-    /**
-     * Stringify
-     *
-     * @return  string
-     */
-    public function __toString()
-    {
-        if ($this->renderedContent === null) {
-            try {
-                $this->renderedContent = (string) render($this);
-            } catch (Exception $e) {
-                $this->renderedContent = (string) $e->getMessage();
-            }
-        }
-        return $this->renderedContent;
     }
 }
