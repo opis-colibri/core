@@ -20,7 +20,6 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Application;
 use Opis\Colibri\Collector;
 use Opis\Routing\DispatcherCollection;
 
@@ -34,12 +33,10 @@ class DispatcherCollector extends Collector
 {
     /**
      * Constructor
-     *
-     * @param   Application $app
      */
-    public function __construct(Application $app)
+    public function __construct()
     {
-        parent::__construct($app, new DispatcherCollection());
+        parent::__construct(new DispatcherCollection());
     }
 
     /**

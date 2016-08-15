@@ -20,7 +20,6 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Application;
 use Opis\Colibri\Collector;
 use Opis\Events\RouteCollection;
 use Opis\Routing\Route;
@@ -36,12 +35,10 @@ class EventHandlerCollector extends Collector
 
     /**
      * Constructor
-     *
-     * @param   Application $app
      */
-    public function __construct(Application $app)
+    public function __construct()
     {
-        parent::__construct($app, new RouteCollection());
+        parent::__construct(new RouteCollection());
     }
 
     /**

@@ -20,7 +20,6 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Application;
 use Opis\Colibri\Collector;
 use Opis\Colibri\Serializable\ConnectionList;
 
@@ -34,21 +33,19 @@ class ConnectionCollector extends Collector
 
     /**
      * Constructor
-     *
-     * @param   Application $app
      */
-    public function __construct(Application $app)
+    public function __construct()
     {
-        parent::__construct($app, new ConnectionList());
+        parent::__construct(new ConnectionList());
     }
 
 
     /**
      * @param string $name
      * @param callable $callback
-     * @return $this
+     * @return ConnectionCollector
      */
-    public function create($name, callable $callback)
+    public function create(string $name, callable $callback): self
     {
         $this->dataObject->set($name, call_user_func($callback, $this->app));
         return $this;

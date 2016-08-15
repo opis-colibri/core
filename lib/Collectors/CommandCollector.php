@@ -20,7 +20,6 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Application;
 use Opis\Colibri\Collector;
 use Opis\Colibri\Serializable\CallbackList;
 
@@ -33,24 +32,19 @@ class CommandCollector extends Collector
 {
 
     /**
-     * Constructor
-     *
-     * @param   Application $app
+     * CommandCollector constructor
      */
-    public function __construct(Application $app)
+    public function __construct()
     {
-        parent::__construct($app, new CallbackList());
+        parent::__construct(new CallbackList());
     }
 
     /**
-     * Register a new command
-     *
-     * @param   string $name Command's name
-     * @param   callable $callback Callback
-     *
-     * @return  self   Self reference
+     * @param string $name
+     * @param callable $callback
+     * @return CommandCollector
      */
-    public function register($name, callable $callback)
+    public function register(string $name, callable $callback): self
     {
         $this->dataObject->add($name, $callback);
         return $this;

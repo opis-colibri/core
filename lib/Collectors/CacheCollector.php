@@ -20,8 +20,7 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Closure;
-use Opis\Colibri\Application;
+use Opis\Cache\StorageInterface;
 use Opis\Colibri\Collector;
 use Opis\Colibri\Serializable\StorageCollection;
 
@@ -30,36 +29,38 @@ use Opis\Colibri\Serializable\StorageCollection;
  *
  * @package Opis\Colibri\Collectors
  *
- * @method  StorageCollection   data()
+ * @method  StorageCollection    data()
+ * @property StorageCollection $dataObject
  */
 class CacheCollector extends Collector
 {
 
     /**
      * Constructor
-     *
-     * @param   Application $app
      */
-    public function __construct(Application $app)
+    public function __construct()
     {
-        $collection = new StorageCollection(function ($storage, Closure $constructor, $app) {
-            return new \Opis\Cache\Cache($constructor($app));
-        });
-
-        parent::__construct($app, $collection);
+        parent::__construct(new StorageCollection(self::class . '::factory'));
     }
 
     /**
-     * Register a new storage
-     *
-     * @param   string $storage Storage name
-     * @param   Closure $constructor Storage constructor callback
-     *
-     * @return  self
+     * @param $storage
+     * @param callable $constructor
+     * @return CacheCollector
      */
-    public function register($storage, Closure $constructor)
+    public function register($storage, callable $constructor): self
     {
         $this->dataObject->add($storage, $constructor);
         return $this;
+    }
+
+    /**
+     * @param string $storage
+     * @param callable $factory
+     * @return StorageInterface
+     */
+    public static function factory(string $storage, callable $factory): StorageInterface
+    {
+        return $factory($storage);
     }
 }

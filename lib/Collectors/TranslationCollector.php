@@ -38,9 +38,9 @@ class TranslationCollector extends Collector
      *
      * @param   Application $app
      */
-    public function __construct(Application $app)
+    public function __construct()
     {
-        parent::__construct($app, new Translations($app));
+        parent::__construct(new Translations());
     }
 
     /**

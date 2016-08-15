@@ -20,8 +20,6 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Closure;
-use Opis\Colibri\Application;
 use Opis\Colibri\Collector;
 use Opis\Colibri\Serializable\StorageCollection;
 
@@ -35,27 +33,30 @@ class SessionCollector extends Collector
 
     /**
      * Constructor
-     *
-     * @param   Application $app
      */
-    public function __construct(Application $app)
+    public function __construct()
     {
-        $collection = new StorageCollection(function ($storage, Closure $constructor, $app) {
-            return new \Opis\Session\Session($constructor($app), array('name' => $storage));
-        });
-
-        parent::__construct($app, $collection);
+        parent::__construct(new StorageCollection(self::class . '::factory'));
     }
-
 
     /**
      * @param string $storage
-     * @param Closure $constructor
-     * @return $this
+     * @param callable $constructor
+     * @return ConfigCollector
      */
-    public function register($storage, Closure $constructor)
+    public function register(string $storage, callable $constructor): self
     {
         $this->dataObject->add($storage, $constructor);
         return $this;
+    }
+
+    /**
+     * @param string $storage
+     * @param callable $factory
+     * @return \SessionHandlerInterface
+     */
+    public static function factory(string $storage, callable $factory): \SessionHandlerInterface
+    {
+        return $factory($storage);
     }
 }

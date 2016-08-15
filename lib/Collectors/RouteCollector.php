@@ -20,7 +20,6 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Application;
 use Opis\Colibri\Collector;
 use Opis\Colibri\Routing\HttpRoute;
 use Opis\Colibri\Routing\HttpRouteCollection;
@@ -38,12 +37,10 @@ class RouteCollector extends Collector
 
     /**
      * Constructor
-     *
-     * @param   Application $app
      */
-    public function __construct(Application $app)
+    public function __construct()
     {
-        parent::__construct($app, new HttpRouteCollection());
+        parent::__construct(new HttpRouteCollection());
     }
 
     /**

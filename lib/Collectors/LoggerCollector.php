@@ -20,10 +20,9 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Closure;
-use Opis\Colibri\Application;
 use Opis\Colibri\Collector;
 use Opis\Colibri\Serializable\StorageCollection;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class LoggerCollector
@@ -32,29 +31,32 @@ use Opis\Colibri\Serializable\StorageCollection;
  */
 class LoggerCollector extends Collector
 {
-
     /**
      * Constructor
-     *
-     * @param   Application $app
      */
-    public function __construct(Application $app)
+    public function __construct()
     {
-        $collection = new StorageCollection(function ($storage, Closure $constructor, $app) {
-            return $constructor($app, $storage);
-        });
+        parent::__construct(new StorageCollection(self::class . '::factory'));
+    }
 
-        parent::__construct($app, $collection);
+    /**
+     * @param $storage
+     * @param callable $constructor
+     * @return CacheCollector
+     */
+    public function register($storage, callable $constructor): self
+    {
+        $this->dataObject->add($storage, $constructor);
+        return $this;
     }
 
     /**
      * @param string $storage
-     * @param Closure $constructor
-     * @return $this
+     * @param callable $factory
+     * @return LoggerInterface
      */
-    public function register($storage, Closure $constructor)
+    public static function factory(string $storage, callable $factory): LoggerInterface
     {
-        $this->dataObject->add($storage, $constructor);
-        return $this;
+        return $factory($storage);
     }
 }
