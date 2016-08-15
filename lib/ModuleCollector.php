@@ -20,29 +20,7 @@
 
 namespace Opis\Colibri;
 
-use Opis\Colibri\Components\ApplicationTrait;
-
 abstract class ModuleCollector
 {
-    use ApplicationTrait;
 
-    /** @var  Application */
-    protected $app;
-
-    /**
-     * ModuleCollector constructor.
-     * @param Application $app
-     */
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
-    /**
-     * @return Application
-     */
-    protected function getApp(): Application
-    {
-        return $this->app;
-    }
 }
