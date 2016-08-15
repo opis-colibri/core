@@ -18,10 +18,9 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Validators;
+namespace Opis\Colibri;
 
-use Opis\Colibri\Application;
-use Opis\Colibri\Components\ContractTrait;
+use Opis\Colibri\Validators\Csrf;
 use Opis\Validation\ValidatorCollection as BaseCollection;
 use Opis\Validation\ValidatorInterface;
 use Opis\Validation\Validators\Between;
@@ -41,24 +40,19 @@ use Opis\Validation\Validators\Number;
 use Opis\Validation\Validators\Regex;
 use Opis\Validation\Validators\Required;
 use Opis\Validation\Validators\RequiredFile;
+use function Opis\Colibri\Helpers\{app, make, t};
 
 class ValidatorCollection extends  BaseCollection
 {
-    use ContractTrait;
-
-    /** @var  Application */
-    protected  $app;
-
     /** @var  array */
     protected $classes;
 
     /**
-     * ValidatorCollection constructor.
-     * @param Application $app
+     * ValidatorCollection constructor
      */
-    public function __construct(Application $app)
+    public function __construct()
     {
-        $classes = $app->getCollector()->getValidators();
+        $classes = app()->getCollector()->getValidators();
 
         $classes += array(
             'between' => Between::class,
@@ -81,17 +75,8 @@ class ValidatorCollection extends  BaseCollection
             'requiredFile' => RequiredFile::class,
         );
 
-        $this->app = $app;
         $this->classes = $classes;
         $this->validators = array();
-    }
-
-    /**
-     * @return Application
-     */
-    protected function getApp(): Application
-    {
-        return $this->app;
     }
 
 
@@ -103,7 +88,7 @@ class ValidatorCollection extends  BaseCollection
     {
         if(!isset($this->validators[$name])){
             if (isset($this->classes[$name])){
-                $validator = $this->make($this->classes[$name]);
+                $validator = make($this->classes[$name]);
                 if (!($validator instanceof ValidatorInterface)) {
                     return false;
                 }
