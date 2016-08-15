@@ -959,7 +959,7 @@ class Application implements DefaultCollectorInterface
     protected function generateClassLoader(Composer $composer): ClassLoader
     {
         $installMode = $this->info->installMode();
-        $config = \Opis\Colibri\config();
+        $config = $this->getConfig();
         $installed = $config->read('modules.installed', []);
         $enabled = $config->read('modules.enabled', []);
 
