@@ -223,7 +223,7 @@ function info(): AppInfo
  * @param string $logger
  * @return LoggerInterface
  */
-function log(string $logger = 'default'): LoggerInterface
+function logger(string $logger = 'default'): LoggerInterface
 {
     static $log = [];
 
@@ -334,7 +334,7 @@ function controller(string $class, string $method, bool $static = false): Contro
  */
 function module(string $module): Module
 {
-    return new Module(Application::getInstance(), $module);
+    return new Module($module);
 }
 
 /**
@@ -344,7 +344,7 @@ function module(string $module): Module
  */
 function view(string $name, array $arguments = []): View
 {
-    return new View(Application::getInstance(), $name, $arguments);
+    return new View($name, $arguments);
 }
 
 /**
