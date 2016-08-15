@@ -314,7 +314,7 @@ class Application implements DefaultCollectorInterface
     public function getCSRFToken(): CSRFToken
     {
         if ($this->csrfTokenInstance === null) {
-            $this->csrfTokenInstance = new CSRFToken($this);
+            $this->csrfTokenInstance = new CSRFToken();
         }
 
         return $this->csrfTokenInstance;

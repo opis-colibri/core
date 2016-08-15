@@ -20,10 +20,10 @@
 
 namespace Opis\Colibri;
 
+use function Opis\Colibri\Helpers\{session};
+
 class CSRFToken
 {
-    /** @var    \Opis\Colibri\Application */
-    protected $app;
 
     /** @var    array */
     protected $values = array();
@@ -41,9 +41,8 @@ class CSRFToken
      * @param   string $key (optional)
      * @param   int $max (optional)
      */
-    public function __construct(Application $app, string $key = 'opis_colibri_csrf', int $max = 10)
+    public function __construct(string $key = 'opis_colibri_csrf', int $max = 10)
     {
-        $this->app = $app;
         $this->sessionKey = $key;
         $this->maxNumber = $max;
     }
@@ -55,7 +54,7 @@ class CSRFToken
      */
     public function generate(): string
     {
-        $tokens = $this->app->getSession()->get($this->sessionKey, array());
+        $tokens = session()->get($this->sessionKey, array());
 
         if (!empty($tokens)) {
             $tokens = array_slice($tokens, 0, $this->maxNumber - 1);
@@ -65,7 +64,7 @@ class CSRFToken
 
         array_unshift($tokens, $token);
 
-        $this->app->getSession()->set($this->sessionKey, $tokens);
+        session()->set($this->sessionKey, $tokens);
 
         return $token;
     }
@@ -98,13 +97,13 @@ class CSRFToken
      */
     public function validate(string $value): bool
     {
-        $tokens = $this->app->getSession()->get($this->sessionKey, array());
+        $tokens = session()->get($this->sessionKey, array());
 
         $key = array_search($value, $tokens);
 
         if ($key !== false) {
             unset($tokens[$key]);
-            $this->app->getSession()->set($this->sessionKey, $tokens);
+            session()->set($this->sessionKey, $tokens);
             return true;
         }
 
