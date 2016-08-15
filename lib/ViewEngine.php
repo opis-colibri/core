@@ -20,47 +20,82 @@
 
 namespace Opis\Colibri;
 
-use Opis\Colibri\Components\CSRFTrait;
-use Opis\Colibri\Components\UtilsTrait;
-use Opis\Colibri\Components\ViewTrait;
 use Opis\View\PHPEngine;
+use function Opis\Colibri\Helpers\{view, render, getAsset, getURL, generateCSRFToken, r, v, t};
 
 class ViewEngine extends PHPEngine
 {
-    use ViewTrait{
-        view as public;
-        render as public;
-    }
-    use UtilsTrait{
-        getAsset as public;
-        getURL as public;
-        r as public;
-        v as public;
-        t as public;
-    }
-    use CSRFTrait{
-        generateCSRFToken as public csrfToken;
-    }
-
-    /** @var  Application */
-    protected $app;
-
     /**
-     * ViewEngine constructor
-     *
-     * @param Application $app
+     * @param string $name
+     * @param array $arguments
+     * @return \Opis\Colibri\View
      */
-    public function __construct(Application $app)
+    public function view(string $name, array $arguments = []): \Opis\Colibri\View
     {
-        $this->app = $app;
+        return view($name, $arguments);
     }
 
     /**
-     * @return Application
+     * @param $view
+     * @return string
      */
-    public function getApp(): Application
+    public function render($view): string
     {
-        return $this->app;
+        return render($view);
     }
 
+    /**
+     * @param string $module
+     * @param string $path
+     * @param bool $full
+     * @return string
+     */
+    public function getAsset(string $module, string $path, bool $full = false): string
+    {
+        return getAsset($module, $path, $full);
+    }
+
+    /**
+     * @param string $path
+     * @param bool $full
+     * @return string
+     */
+    public function getURL(string $path, bool $full = false): string
+    {
+        return getURL($path, $full);
+    }
+
+    /**
+     * @param string $name
+     * @param null $default
+     * @return null
+     */
+    public function v(string $name, $default = null)
+    {
+        return v($name, $default);
+    }
+
+    public function r(string $text, array $placeholders): string
+    {
+        return r($text, $placeholders);
+    }
+
+    /**
+     * @param string $sentence
+     * @param array $placeholders
+     * @param string|null $lang
+     * @return string
+     */
+    public function t(string $sentence, array $placeholders = [], string $lang = null): string
+    {
+        return t($sentence, $placeholders, $lang);
+    }
+
+    /**
+     * @return string
+     */
+    public function csrfToken(): string
+    {
+        return generateCSRFToken();
+    }
 }
