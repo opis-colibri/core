@@ -34,22 +34,23 @@ class Module
     /** @var    CompletePackage */
     protected $package;
 
-    /** @var    Application */
-    protected $app;
-
+    /** @var  bool */
     protected $exists;
+
+    /** @var  Application */
+    protected $app;
 
     /**
      * Constructor
      *
-     * @param   Application $app
      * @param   string $name
      * @param   CompletePackage $package (optional)
      */
-    public function __construct(Application $app, string $name, CompletePackage $package = null)
+    public function __construct(string $name, CompletePackage $package = null)
     {
-        $this->app = $app;
         $this->name = $name;
+        $this->package = $package;
+        $this->app = Application::getInstance();
     }
 
     /**
