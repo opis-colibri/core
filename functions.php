@@ -20,13 +20,13 @@ namespace Opis\Colibri\Helpers;
 use Opis\Cache\Cache;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\Application;
-use Opis\Colibri\Model;
+use Opis\Colibri\View;
 use Opis\Colibri\Module;
 use Opis\Colibri\Serializable\ControllerCallback;
-use Opis\Colibri\View;
 use Opis\Config\Config;
 use Opis\Database\Connection;
 use Opis\Database\Database;
+use Opis\Database\Model;
 use Opis\Database\Schema;
 use Opis\Events\Event;
 use Opis\Http\Request;
@@ -34,7 +34,6 @@ use Opis\Http\Response;
 use Opis\Session\Session;
 use Opis\View\ViewableInterface;
 use Psr\Log\LoggerInterface;
-
 
 /**
  * @return Application
