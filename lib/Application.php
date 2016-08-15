@@ -29,8 +29,6 @@ use Composer\Repository\InstalledFilesystemRepository;
 use Opis\Cache\Cache;
 use Opis\Cache\Storage\Memory as EphemeralCacheStorage;
 use Opis\Cache\StorageInterface as CacheStorageInterface;
-use Opis\Colibri\Components\ContractTrait;
-use Opis\Colibri\Components\EventTrait;
 use Opis\Colibri\Composer\CLI;
 use Opis\Colibri\Composer\Plugin;
 use Opis\Colibri\Routing\HttpRouter;
@@ -41,6 +39,7 @@ use Opis\Database\Connection;
 use Opis\Database\Database;
 use Opis\Database\ORM;
 use Opis\Database\Schema;
+use Opis\Events\Event;
 use Opis\Events\EventTarget;
 use Opis\Http\Request as HttpRequest;
 use Opis\Http\Request;
@@ -55,8 +54,6 @@ use SessionHandlerInterface;
 
 class Application implements DefaultCollectorInterface
 {
-    use ContractTrait, EventTrait;
-
     const COMPOSER_TYPE = 'opis-colibri-module';
 
     /** @var    AppInfo */
@@ -949,7 +946,7 @@ class Application implements DefaultCollectorInterface
         $this->classLoader->register();
 
         if (false !== $installer = $module->installer()) {
-            $this->make($installer)->{$action}();
+            $this->getContainer()->make($installer)->{$action}();
         }
     }
 
@@ -1015,6 +1012,16 @@ class Application implements DefaultCollectorInterface
         }
 
         return Dir::remove($path);
+    }
+
+    /**
+     * @param string $name
+     * @param bool $cancelable
+     * @return Event
+     */
+    protected function emit(string $name, bool $cancelable = false): Event
+    {
+        return $this->getEventTarget()->dispatch(new Event($this, $name, $cancelable));
     }
 
 }
