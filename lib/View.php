@@ -41,7 +41,7 @@ class View extends OpisView
     }
 
     /**
-     * Check if a value was setted
+     * Check if a value was set
      *
      * @param   string $name
      *
