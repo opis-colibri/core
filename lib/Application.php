@@ -48,6 +48,7 @@ use Opis\HttpRouting\Context;
 use Opis\Session\Session;
 use Opis\Utils\Dir;
 use Opis\Validation\Placeholder;
+use Opis\View\ViewApp;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SessionHandlerInterface;
@@ -273,7 +274,10 @@ class Application implements DefaultCollectorInterface
     public function getViewApp(): ViewApp
     {
         if ($this->viewApp === null) {
-            $this->viewApp = new ViewApp($this);
+            $collector = $this->getCollector();
+            $routes = $collector->getViews();
+            $resolver = $collector->getViewEngineResolver();
+            $this->viewApp = new ViewApp($routes, $resolver, new ViewEngine());
         }
         return $this->viewApp;
     }
