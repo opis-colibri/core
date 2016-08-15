@@ -21,7 +21,6 @@
 namespace Opis\Colibri\Collectors;
 
 use Closure;
-use Opis\Colibri\Application;
 use Opis\Colibri\Collector;
 use Opis\Colibri\Container;
 
@@ -31,18 +30,17 @@ use Opis\Colibri\Container;
  * @package Opis\Colibri\Collectors
  *
  * @method Container    data()
+ * @property Container $dataObject
  */
 class ContractCollector extends Collector
 {
 
     /**
-     * Constructor
-     *
-     * @param   Application $app
+     * ContractCollector constructor
      */
-    public function __construct(Application $app)
+    public function __construct()
     {
-        parent::__construct($app, new Container());
+        parent::__construct(new Container());
     }
 
     /**
