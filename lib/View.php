@@ -21,40 +21,13 @@
 namespace Opis\Colibri;
 
 use Exception;
-use Opis\Colibri\Components\ViewTrait;
 use Opis\View\View as OpisView;
+use function Opis\Colibri\Helpers\{render};
 
 class View extends OpisView
 {
-    use ViewTrait;
-
-    /** @var    Application */
-    protected $app;
-
     /** @var    string */
     protected $renderedContent = null;
-
-    /**
-     * Constructor
-     *
-     * @param   Application $app
-     * @param   string $name
-     * @param   array $arguments (optional)
-     */
-    public function __construct(Application $app, string $name, array $arguments = array())
-    {
-        $this->app = $app;
-        parent::__construct($name, $arguments);
-    }
-
-
-    /**
-     * @return Application
-     */
-    public function getApp(): Application
-    {
-        return $this->app;
-    }
 
     /**
      * Set a value
@@ -103,7 +76,7 @@ class View extends OpisView
     {
         if ($this->renderedContent === null) {
             try {
-                $this->renderedContent = (string) $this->render($this);
+                $this->renderedContent = (string) render($this);
             } catch (Exception $e) {
                 $this->renderedContent = (string) $e->getMessage();
             }
