@@ -17,11 +17,13 @@
 
 namespace Opis\Colibri;
 
+use Opis\Validation\DefaultValidatorTrait;
 use Opis\Validation\Validator as BaseValidator;
 use function Opis\Colibri\Helpers\{t};
 
 class Validator extends BaseValidator
 {
+    use DefaultValidatorTrait;
 
     /**
      * @return array
@@ -57,6 +59,5 @@ class Validator extends BaseValidator
         $this->stack[] = $validator;
         return $this;
     }
-
 
 }
