@@ -274,7 +274,7 @@ function logger(string $logger = 'default'): LoggerInterface
  * @param string|null $storage
  * @return Session
  */
-function session(string $storage = null): Session
+function session(string $storage = 'default'): Session
 {
     static $session = [];
 
