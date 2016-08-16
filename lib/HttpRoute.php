@@ -15,11 +15,13 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Routing;
+namespace Opis\Colibri;
 
 use Opis\Colibri\Serializable\ControllerCallback;
 use Opis\HttpRouting\Route;
-use function Opis\Colibri\Helpers\{make, app};
+use function Opis\Colibri\Helpers\{
+    app, make
+};
 
 class HttpRoute extends Route
 {

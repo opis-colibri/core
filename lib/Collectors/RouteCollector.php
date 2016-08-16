@@ -18,17 +18,9 @@
 namespace Opis\Colibri\Collectors;
 
 use Opis\Colibri\Collector;
-use Opis\Colibri\Routing\HttpRoute;
-use Opis\Colibri\Routing\HttpRouteCollection;
+use Opis\Colibri\HttpRoute;
+use Opis\HttpRouting\RouteCollection;
 
-/**
- * Class RouteCollector
- *
- * @package Opis\Colibri\Collectors
- *
- * @property HttpRouteCollection $dataObject
- * @method HttpRouteCollection  data()
- */
 class RouteCollector extends Collector
 {
 
@@ -37,7 +29,7 @@ class RouteCollector extends Collector
      */
     public function __construct()
     {
-        parent::__construct(new HttpRouteCollection());
+        parent::__construct(new RouteCollection());
     }
 
     /**
@@ -103,7 +95,7 @@ class RouteCollector extends Collector
      * @param   callable $action An action that will be executed
      * @param   string $name (optional) Route name
      *
-     * @return  HttpRoute
+     * @return  \Opis\Colibri\HttpRoute
      */
     protected function handle($path, $action, $name = null)
     {
@@ -187,7 +179,7 @@ class RouteCollector extends Collector
      * @param   callable $action An action that will be executed
      * @param   string $name (optional) Route name
      *
-     * @return  HttpRoute
+     * @return  \Opis\Colibri\HttpRoute
      */
     public function delete($path, $action, $name = null)
     {

@@ -20,11 +20,11 @@ namespace Opis\Colibri;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Opis\Cache\StorageInterface as CacheStorageInterface;
 use Opis\Colibri\Annotations\Collector as CollectorAnnotation;
-use Opis\Colibri\Routing\HttpRouteCollection;
 use Opis\Config\StorageInterface as ConfigStorageInterface;
 use Opis\Database\Connection;
 use Opis\Database\Database;
 use Opis\Events\RouteCollection as EventsRouteCollection;
+use Opis\HttpRouting\RouteCollection as HttpRouteCollection;
 use Opis\Routing\DispatcherCollection;
 use Opis\Routing\RouteCollection as AliasRouteCollection;
 use Opis\View\RouteCollection as ViewRouteCollection;
@@ -75,7 +75,7 @@ class CollectorManager
     /**
      * @param string $name
      * @param bool $fresh
-     * @return callable[]
+     * @return CacheStorageInterface
      */
     public function getCacheStorages(string $name, bool $fresh = false): CacheStorageInterface
     {

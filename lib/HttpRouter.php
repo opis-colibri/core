@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Routing;
+namespace Opis\Colibri;
 
 use Opis\Http\Error\AccessDenied;
 use Opis\Http\Error\NotFound;
@@ -24,7 +24,9 @@ use Opis\HttpRouting\DispatcherResolver;
 use Opis\HttpRouting\Router;
 use Opis\Routing\Context as BaseContext;
 use Opis\Routing\Router as AliasRouter;
-use function Opis\Colibri\Helpers\{app, view};
+use function Opis\Colibri\Helpers\{
+    app, view
+};
 
 class HttpRouter extends Router
 {
