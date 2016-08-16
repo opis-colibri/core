@@ -36,5 +36,7 @@ trait RenderableViewTrait
                 $this->renderedContent = $e->getMessage();
             }
         }
+
+        return $this->renderedContent;
     }
 }
