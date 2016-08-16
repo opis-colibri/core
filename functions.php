@@ -282,13 +282,13 @@ function v(string $name, $default = null)
  */
 function r(string $text, array $placeholders): string
 {
-    static $placehoder;
+    static $placeholder;
 
-    if($placehoder === null){
-        $placehoder = app()->getPlaceholder();
+    if($placeholder === null){
+        $placeholder = app()->getPlaceholder();
     }
 
-    return $placehoder->replace($text, $placeholders);
+    return $placeholder->replace($text, $placeholders);
 }
 
 /**
