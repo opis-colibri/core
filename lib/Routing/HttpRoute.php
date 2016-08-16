@@ -19,14 +19,8 @@ namespace Opis\Colibri\Routing;
 
 use Opis\Colibri\Serializable\ControllerCallback;
 use Opis\HttpRouting\Route;
-use function Opis\Colibri\Helpers\{make};
+use function Opis\Colibri\Helpers\{make, app};
 
-/**
- * Class HttpRoute
- * @package Opis\Colibri\Routing
- *
- * @method  HttpRouteCollection getRouteCollection(): RouteCollection
- */
 class HttpRoute extends Route
 {
     protected $resolvedAction;
@@ -43,7 +37,7 @@ class HttpRoute extends Route
 
         /** @var ControllerCallback $callback */
         $callback = $this->routeAction;
-        $router = $this->getRouteCollection()->getRouter();
+        $router = app()->getHttpRouter();
         $values = $router->bind($router->extract($router->getContext(), $this), $this->getBindings());
         $method = $callback->getMethod();
         $class = $callback->getClass();
@@ -51,7 +45,7 @@ class HttpRoute extends Route
         if($class[0] === '@'){
             $class = substr($class, 1);
             if(!isset($values[$class])){
-                throw new \RuntimeException("Unknown controller variable `$class`");
+                throw new \RuntimeException("Unknown controller variable '$class'");
             }
             $class = $values[$class]->value();
         }
@@ -59,7 +53,7 @@ class HttpRoute extends Route
         if($method[0] === '@'){
             $method = substr($method, 1);
             if(!isset($values[$method])){
-                throw new \RuntimeException("Unknown controller variable `$method`");
+                throw new \RuntimeException("Unknown controller variable '$method'");
             }
             $method = $values[$method]->value();
         }

@@ -26,11 +26,6 @@ use Opis\Routing\Context as BaseContext;
 use Opis\Routing\Router as AliasRouter;
 use function Opis\Colibri\Helpers\{app, view};
 
-/**
- * Class HttpRouter
- * @package Opis\Colibri\Routing
- * @method HttpRouteCollection getRouteCollection()
- */
 class HttpRouter extends Router
 {
     public function __construct()
@@ -38,15 +33,14 @@ class HttpRouter extends Router
         $dispatchers = app()->getCollector()->getDispatcherCollection();
 
         parent::__construct(app()->getCollector()->getRoutes(), new DispatcherResolver($dispatchers));
-
+        
         $this->getRouteCollection()
             ->notFound(function ($path) {
                 return new NotFound(view('error.404', array('path' => $path)));
             })
             ->accessDenied(function ($path) {
                 return new AccessDenied(view('error.403', array('path' => $path)));
-            })
-            ->setRouter($this);
+            });
     }
 
     /**
