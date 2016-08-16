@@ -373,8 +373,8 @@ class CollectorManager
                     $annotation->name = $name;
                 }
 
-                $callback = function ($collector, $app) use ($instance, $name) {
-                    $instance->{$name}($collector, $app);
+                $callback = function ($collector) use ($instance, $name) {
+                    $instance->{$name}($collector);
                 };
 
                 $this->collectorTarget->handle(strtolower($annotation->name), $callback, $annotation->priority);
