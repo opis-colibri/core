@@ -20,6 +20,7 @@ namespace Opis\Colibri\Helpers;
 use Opis\Cache\Cache;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\Application;
+use Opis\Colibri\Validator;
 use Opis\Colibri\View;
 use Opis\Colibri\Module;
 use Opis\Colibri\Serializable\ControllerCallback;
@@ -234,6 +235,14 @@ function pageNotFound(): HttpError
 function accessDenied(): HttpError
 {
     return HttpError::accessDenied();
+}
+
+/**
+ * @return Validator
+ */
+function validator(): Validator
+{
+    return app()->getValidator();
 }
 
 /**
