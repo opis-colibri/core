@@ -33,7 +33,7 @@ use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use RuntimeException;
-use function Opis\Colibri\Helpers\{app, cache, emit, make, config};
+use function Opis\Colibri\Helpers\{app, cache, emit, config};
 
 /**
  * Description of CollectorManager
@@ -257,7 +257,7 @@ class CollectorManager
             $this->cache[$entry] = cache()->load($entry, function ($entry) use (&$hit) {
                 $hit = true;
                 $this->includeCollectors();
-                $instance = make($entry);
+                $instance = $this->container->make($entry);
                 return $this->collectorTarget->dispatch(new CollectorEntry($entry, $instance))->getCollector()->data();
             });
 
@@ -344,7 +344,7 @@ class CollectorManager
                 continue;
             }
 
-            $instance = make($module->collector());
+            $instance = $this->container->make($module->collector());
 
             $reflection = new ReflectionClass($instance);
 
