@@ -31,6 +31,7 @@ use Opis\Database\Schema;
 use Opis\Events\Event;
 use Opis\Http\Request;
 use Opis\Http\Response;
+use Opis\HttpRouting\HttpError;
 use Opis\Session\Session;
 use Opis\View\ViewableInterface;
 use Psr\Log\LoggerInterface;
@@ -217,6 +218,22 @@ function redirect(string $location, int $code = 302, array $query = array())
     }
 
     response()->redirect($location, $code);
+}
+
+/**
+ * @return HttpError
+ */
+function pageNotFound(): HttpError
+{
+    return HttpError::pageNotFound();
+}
+
+/**
+ * @return HttpError
+ */
+function accessDenied(): HttpError
+{
+    return HttpError::accessDenied();
 }
 
 /**
