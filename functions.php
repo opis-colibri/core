@@ -193,13 +193,13 @@ function request(): Request
  */
 function response(): Response
 {
-    static $resonse;
+    static $response;
 
-    if($resonse === null){
-        $resonse = app()->getHttpResponse();
+    if($response === null){
+        $response = app()->getHttpResponse();
     }
 
-    return $resonse;
+    return $response;
 }
 
 /**
