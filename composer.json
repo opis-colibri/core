@@ -14,7 +14,8 @@
     "autoload": {
         "psr-4": {
             "Opis\\Colibri\\": "lib/"
-        }
+        },
+        "files": ["functions.php"]
     },
     "require": {
         "php": ">=7.0.0",
