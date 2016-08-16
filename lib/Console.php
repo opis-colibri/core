@@ -47,7 +47,7 @@ class Console
         $commands = [];
 
         foreach (app()->getCollector()->getCommands() as $name => $builder) {
-            $command[$name] = call_user_func($builder);
+            $commands[$name] = call_user_func($builder);
         }
 
         return $commands;
