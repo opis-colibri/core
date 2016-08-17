@@ -25,7 +25,6 @@ abstract class Collector
     /**
      * Collector constructor.
      * @param mixed $dataObject
-     * @internal param Application $app
      */
     public function __construct($dataObject)
     {
