@@ -42,12 +42,12 @@ use Opis\Http\Request as HttpRequest;
 use Opis\Http\Response;
 use Opis\HttpRouting\Context;
 use Opis\Session\Session;
-use Opis\Utils\Dir;
 use Opis\Validation\Placeholder;
 use Opis\View\ViewApp;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SessionHandlerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 class Application implements DefaultCollectorInterface
 {
@@ -143,6 +143,9 @@ class Application implements DefaultCollectorInterface
     /** @var  array|null */
     protected $collectorList;
 
+    /** @var  Filesystem */
+    protected $fileSystem;
+
     /** @var  Application */
     protected static $instance;
 
@@ -200,6 +203,18 @@ class Application implements DefaultCollectorInterface
     public function getClassLoader(): ClassLoader
     {
         return $this->classLoader;
+    }
+
+    /**
+     * @return Filesystem
+     */
+    public function getFileSystem(): Filesystem
+    {
+        if($this->fileSystem === null){
+            $this->fileSystem = new Filesystem();
+        }
+
+        return $this->fileSystem;
     }
 
     /**
@@ -979,11 +994,9 @@ class Application implements DefaultCollectorInterface
             chmod($dirpath, 0775);
         }
 
-        if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
-            return Dir::copy($assets, $dirpath . '/' . $target);
-        }
+        $this->getFileSystem()->symlink($assets, $dirpath . '/' . $target, true);
 
-        return symlink($assets, $dirpath . '/' . $target);
+        return true;
     }
 
     /**
@@ -998,11 +1011,9 @@ class Application implements DefaultCollectorInterface
             return false;
         }
 
-        if (is_link($path)){
-            return unlink($path);
-        }
+        $this->getFileSystem()->remove($path);
 
-        return Dir::remove($path);
+        return true;
     }
 
     /**
