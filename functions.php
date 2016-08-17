@@ -28,6 +28,7 @@ use Opis\Config\Config;
 use Opis\Database\Connection;
 use Opis\Database\Database;
 use Opis\Database\Model;
+use Opis\Database\ORM\Query;
 use Opis\Database\Schema;
 use Opis\Events\Event;
 use Opis\Http\Request;
@@ -142,7 +143,7 @@ function schema(string $connection = null): Schema
 /**
  * @param string $class
  * @param string $connection
- * @return Model
+ * @return Model|Query
  */
 function model(string $class, string $connection = 'default'): Model
 {
