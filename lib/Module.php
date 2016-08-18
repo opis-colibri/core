@@ -306,41 +306,45 @@ class Module
     /**
      * Enable the module
      *
+     * @param bool $recollect
      * @return  boolean
      */
-    public function enable(): bool
+    public function enable(bool $recollect = true): bool
     {
-        return app()->enable($this);
+        return app()->enable($this, $recollect);
     }
 
     /**
      * Disable the module
      *
+     * @param bool $recollect
      * @return  boolean
      */
-    public function disable(): bool
+    public function disable(bool $recollect = true): bool
     {
-        return app()->disable($this);
+        return app()->disable($this, $recollect);
     }
 
     /**
      * Install the module
      *
+     * @param bool $recollect
      * @return  boolean
      */
-    public function install(): bool
+    public function install(bool $recollect = true): bool
     {
-        return app()->install($this);
+        return app()->install($this, $recollect);
     }
 
     /**
      * Uninstall the module
      *
+     * @param bool $recollect
      * @return  boolean
      */
-    public function uninstall(): bool
+    public function uninstall(bool $recollect = true): bool
     {
-        return app()->uninstall($this);
+        return app()->uninstall($this, $recollect);
     }
 
     /**
