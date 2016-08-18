@@ -815,7 +815,11 @@ class Application implements DefaultCollectorInterface
         $modules[] = $module->name();
         $config->write('modules.installed', $modules);
 
-        $this->executeInstallerAction($module, 'install');
+        $this->getComposerCLI()->dumpAutoload();
+        $this->reloadClassLoader();
+        if(false !== $installer = $module->installer()){
+            $this->getContainer()->make($installer)->install();
+        }
 
         if ($recollect) {
             $this->getCollector()->recollect();
@@ -844,10 +848,14 @@ class Application implements DefaultCollectorInterface
         $modules = $config->read('modules.installed', array());
         $config->write('modules.installed', array_diff($modules, array($module->name())));
 
-        $this->executeInstallerAction($module, 'uninstall');
+        if(false !== $installer = $module->installer()){
+            $this->getContainer()->make($installer)->uninstall();
+        }
+        $this->getComposerCLI()->dumpAutoload();
+        $this->reloadClassLoader();
 
         if ($recollect) {
-            $this->getCollector()->recollect();
+            $this->getCollector()->recollect(true);
         }
 
         $this->emit('module.uninstalled.' . $module->name());
@@ -874,7 +882,13 @@ class Application implements DefaultCollectorInterface
         $modules[] = $module->name();
         $config->write('modules.enabled', $modules);
 
-        $this->executeInstallerAction($module, 'enable');
+        $this->getComposerCLI()->dumpAutoload();
+        $this->reloadClassLoader();
+
+        if(false !== $installer = $module->installer()){
+            $this->getContainer()->make($installer)->enable();
+        }
+
         $this->registerAssets($module);
 
         if ($recollect) {
@@ -904,11 +918,16 @@ class Application implements DefaultCollectorInterface
         $modules = $config->read('modules.enabled', array());
         $config->write('modules.enabled', array_diff($modules, array($module->name())));
 
-        $this->executeInstallerAction($module, 'disable');
+        if(false !== $installer = $module->installer()){
+            $this->getContainer()->make($installer)->disable();
+        }
+
+        $this->getComposerCLI()->dumpAutoload();
+        $this->reloadClassLoader();
         $this->unregisterAssets($module);
 
         if ($recollect) {
-            $this->getCollector()->recollect();
+            $this->getCollector()->recollect(true);
         }
 
         $this->emit('module.disabled.' . $module->name());
@@ -938,22 +957,13 @@ class Application implements DefaultCollectorInterface
     }
 
     /**
-     * Execute an action
-     *
-     * @param Module $module
-     * @param string $action
+     * Reloac class loader
      */
-    protected function executeInstallerAction(Module $module, string $action)
+    protected function reloadClassLoader()
     {
-        $this->getComposerCLI()->dumpAutoload();
-
         $this->classLoader->unregister();
         $this->classLoader = $this->generateClassLoader($this->getComposer());
         $this->classLoader->register();
-
-        if (false !== $installer = $module->installer()) {
-            $this->getContainer()->make($installer)->{$action}();
-        }
     }
 
     /**
