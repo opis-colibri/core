@@ -46,9 +46,6 @@ class CollectorManager
     /** @var array */
     protected $cache = array();
 
-    /** @var array */
-    protected $collectors = array();
-
     /** @var   Container */
     protected $container;
 
@@ -336,13 +333,7 @@ class CollectorManager
 
         foreach (app()->getModules() as $module) {
 
-            if (isset($this->collectors[$module->name()]) || !$module->isEnabled()) {
-                continue;
-            }
-
-            $this->collectors[$module->name()] = true;
-
-            if ($module->collector() === false) {
+            if (!$module->isEnabled() || $module->collector() === false) {
                 continue;
             }
 
