@@ -302,6 +302,8 @@ class CollectorManager
      */
     public function register(string $name, string $class, string $description)
     {
+        $name = strtolower($name);
+
         config()->write('collectors.' . $name, array(
             'class' => $class,
             'description' => $description,
@@ -317,7 +319,7 @@ class CollectorManager
      */
     public function unregister(string $name)
     {
-        config()->delete('collectors.' . $name);
+        config()->delete('collectors.' . strtolower($name));
     }
 
     /**
