@@ -133,7 +133,7 @@ function db(string $connection = 'default'): Database
  * @param string|null $connection
  * @return Schema
  */
-function schema(string $connection = null): Schema
+function schema(string $connection = 'default'): Schema
 {
     static $schema = [];
 
