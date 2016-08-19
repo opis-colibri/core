@@ -28,7 +28,7 @@
         "opis/http-routing": "5.0.x-dev",
         "opis/view": "5.0.x-dev",
         "opis/events": "5.0.x-dev",
-        "opis/config": "^2.1.1",
+        "opis/config": "3.0.x-dev",
         "opis/cache": "^3.1.0",
         "opis/session": "^3.1.0",
         "opis/validation": "1.0.x-dev",
