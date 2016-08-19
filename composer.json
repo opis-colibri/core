@@ -30,7 +30,7 @@
         "opis/events": "5.0.x-dev",
         "opis/config": "3.0.x-dev",
         "opis/cache": "^3.1.0",
-        "opis/session": "^3.1.0",
+        "opis/session": "4.0.x-dev",
         "opis/validation": "1.0.x-dev",
         "symfony/console": "^3.1.3",
         "symfony/filesystem": "^3.1.3",
