@@ -39,7 +39,7 @@ class SessionCollector extends Collector
     /**
      * @param string $storage
      * @param callable $constructor
-     * @return ConfigCollector
+     * @return SessionCollector
      */
     public function register(string $storage, callable $constructor): self
     {
