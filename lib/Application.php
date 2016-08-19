@@ -420,7 +420,7 @@ class Application implements DefaultCollectorInterface
                 }
                 $this->config[$storage] = $this->implicit['config'];
             } else {
-                $this->config[$storage] = $this->getCollector()->getConfigStorage($storage);
+                $this->config[$storage] = $this->getCollector()->getConfigStores($storage);
             }
         }
 
