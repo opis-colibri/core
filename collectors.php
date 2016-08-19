@@ -52,9 +52,9 @@ return array(
         'class' => 'Opis\\Colibri\\Collectors\\CacheCollector',
         'description' => 'Collects cache drivers',
     ),
-    'sessionstorages' => array(
+    'sessionhandlers' => array(
         'class' => 'Opis\\Colibri\\Collectors\\SessionCollector',
-        'description' => 'Collects session storages',
+        'description' => 'Collects session handlers',
     ),
     'configdrivers' => array(
         'class' => 'Opis\\Colibri\\Collectors\\ConfigCollector',

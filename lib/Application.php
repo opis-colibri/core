@@ -396,7 +396,7 @@ class Application implements DefaultCollectorInterface
                 }
                 $this->session[$storage] = new Session($this->implicit['session']);
             } else {
-                $this->session[$storage] = new Session($this->getCollector()->getSessionStorage($storage));
+                $this->session[$storage] = new Session($this->getCollector()->getSessionHandler($storage));
             }
         }
 
@@ -685,7 +685,7 @@ class Application implements DefaultCollectorInterface
      * @param SessionHandlerInterface $session
      * @return DefaultCollectorInterface
      */
-    public function setSessionStorage(SessionHandlerInterface $session): DefaultCollectorInterface
+    public function setSessionHandler(SessionHandlerInterface $session): DefaultCollectorInterface
     {
         $this->implicit['session'] = $session;
         return $this;
@@ -949,7 +949,7 @@ class Application implements DefaultCollectorInterface
                 $app->setCacheDriver(new MemoryDriver())
                     ->setConfigDriver(new EphemeralConfig())
                     ->setDefaultLogger(new NullLogger())
-                    ->setSessionStorage(new \SessionHandler());
+                    ->setSessionHandler(new \SessionHandler());
             }
         };
     }

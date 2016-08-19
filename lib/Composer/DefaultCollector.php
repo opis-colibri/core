@@ -110,7 +110,7 @@ class DefaultCollector implements DefaultCollectorInterface
      * @param SessionHandlerInterface $session
      * @return DefaultCollectorInterface
      */
-    public function setSessionStorage(SessionHandlerInterface $session): DefaultCollectorInterface
+    public function setSessionHandler(SessionHandlerInterface $session): DefaultCollectorInterface
     {
         return $this;
     }

@@ -179,9 +179,9 @@ class CollectorManager
      * @param bool $fresh
      * @return \SessionHandlerInterface
      */
-    public function getSessionStorage(string $name, bool $fresh = false): \SessionHandlerInterface
+    public function getSessionHandler(string $name, bool $fresh = false): \SessionHandlerInterface
     {
-        return $this->collect('SessionStorages', $fresh)->get($name);
+        return $this->collect('SessionHandlers', $fresh)->get($name);
     }
 
     /**

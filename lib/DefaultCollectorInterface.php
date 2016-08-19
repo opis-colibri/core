@@ -53,7 +53,7 @@ interface DefaultCollectorInterface
      * @param SessionHandlerInterface $session
      * @return DefaultCollectorInterface
      */
-    public function setSessionStorage(SessionHandlerInterface $session): self;
+    public function setSessionHandler(SessionHandlerInterface $session): self;
 
     /**
      * @param LoggerInterface $logger
