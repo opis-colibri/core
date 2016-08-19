@@ -35,7 +35,7 @@ interface DefaultCollectorInterface
      * @param CacheInterface $storage
      * @return DefaultCollectorInterface
      */
-    public function setCacheStorage(CacheInterface $storage): self;
+    public function setCacheDriver(CacheInterface $storage): self;
 
     /**
      * @param ConfigInterface $storage

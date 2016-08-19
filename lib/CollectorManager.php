@@ -74,9 +74,9 @@ class CollectorManager
      * @param bool $fresh
      * @return CacheInterface
      */
-    public function getCacheStorages(string $name, bool $fresh = false): CacheInterface
+    public function getCacheDriver(string $name, bool $fresh = false): CacheInterface
     {
-        return $this->collect('CacheStorages', $fresh)->gat($name);
+        return $this->collect('CacheDrivers', $fresh)->get($name);
     }
 
     /**

@@ -48,9 +48,9 @@ return array(
         'class' => 'Opis\\Colibri\\Collectors\\ViewEngineCollector',
         'description' => 'Collects view engines',
     ),
-    'cachestorages' => array(
+    'cachedrivers' => array(
         'class' => 'Opis\\Colibri\\Collectors\\CacheCollector',
-        'description' => 'Collects cache storages',
+        'description' => 'Collects cache drivers',
     ),
     'sessionstorages' => array(
         'class' => 'Opis\\Colibri\\Collectors\\SessionCollector',
@@ -58,7 +58,7 @@ return array(
     ),
     'configdrivers' => array(
         'class' => 'Opis\\Colibri\\Collectors\\ConfigCollector',
-        'description' => 'Collects config drives'
+        'description' => 'Collects config drivers'
     ),
     'validators' => array(
         'class' => 'Opis\\Colibri\\Collectors\\ValidatorCollector',

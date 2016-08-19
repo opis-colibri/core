@@ -373,7 +373,7 @@ class Application implements DefaultCollectorInterface
                 }
                 $this->cache[$storage] = $this->implicit['cache'];
             } else {
-                $this->cache[$storage] = $this->getCollector()->getCacheStorages($storage);
+                $this->cache[$storage] = $this->getCollector()->getCacheDriver($storage);
             }
         }
 
@@ -655,7 +655,7 @@ class Application implements DefaultCollectorInterface
      * @param CacheInterface $storage
      * @return DefaultCollectorInterface
      */
-    public function setCacheStorage(CacheInterface $storage): DefaultCollectorInterface
+    public function setCacheDriver(CacheInterface $storage): DefaultCollectorInterface
     {
         $this->implicit['cache'] = $storage;
         return $this;
@@ -946,7 +946,7 @@ class Application implements DefaultCollectorInterface
         {
             public function bootstrap(DefaultCollectorInterface $app)
             {
-                $app->setCacheStorage(new MemoryDriver())
+                $app->setCacheDriver(new MemoryDriver())
                     ->setConfigDriver(new EphemeralConfig())
                     ->setDefaultLogger(new NullLogger())
                     ->setSessionStorage(new \SessionHandler());

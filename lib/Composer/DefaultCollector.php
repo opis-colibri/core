@@ -83,7 +83,7 @@ class DefaultCollector implements DefaultCollectorInterface
      * @param CacheInterface $storage
      * @return DefaultCollectorInterface
      */
-    public function setCacheStorage(CacheInterface $storage): DefaultCollectorInterface
+    public function setCacheDriver(CacheInterface $storage): DefaultCollectorInterface
     {
         return $this;
     }
