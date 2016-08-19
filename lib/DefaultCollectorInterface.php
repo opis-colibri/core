@@ -32,16 +32,16 @@ interface DefaultCollectorInterface
     public function setConfigDriver(ConfigInterface $driver): self;
 
     /**
-     * @param CacheInterface $storage
+     * @param CacheInterface $driver
      * @return DefaultCollectorInterface
      */
-    public function setCacheDriver(CacheInterface $storage): self;
+    public function setCacheDriver(CacheInterface $driver): self;
 
     /**
-     * @param ConfigInterface $storage
+     * @param ConfigInterface $driver
      * @return DefaultCollectorInterface
      */
-    public function setTranslationsStorage(ConfigInterface $storage): self;
+    public function setTranslationsDriver(ConfigInterface $driver): self;
 
     /**
      * @param Connection $connection

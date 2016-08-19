@@ -652,22 +652,22 @@ class Application implements DefaultCollectorInterface
     }
 
     /**
-     * @param CacheInterface $storage
+     * @param CacheInterface $driver
      * @return DefaultCollectorInterface
      */
-    public function setCacheDriver(CacheInterface $storage): DefaultCollectorInterface
+    public function setCacheDriver(CacheInterface $driver): DefaultCollectorInterface
     {
-        $this->implicit['cache'] = $storage;
+        $this->implicit['cache'] = $driver;
         return $this;
     }
 
     /**
-     * @param ConfigInterface $storage
+     * @param ConfigInterface $driver
      * @return DefaultCollectorInterface
      */
-    public function setTranslationsStorage(ConfigInterface $storage): DefaultCollectorInterface
+    public function setTranslationsDriver(ConfigInterface $driver): DefaultCollectorInterface
     {
-        $this->translations = $storage;
+        $this->translations = $driver;
         return $this;
     }
 
