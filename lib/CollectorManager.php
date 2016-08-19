@@ -18,7 +18,7 @@
 namespace Opis\Colibri;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Opis\Cache\StorageInterface as CacheStorageInterface;
+use Opis\Cache\CacheInterface;
 use Opis\Colibri\Annotations\Collector as CollectorAnnotation;
 use Opis\Config\ConfigInterface;
 use Opis\Database\Connection;
@@ -72,9 +72,9 @@ class CollectorManager
     /**
      * @param string $name
      * @param bool $fresh
-     * @return CacheStorageInterface
+     * @return CacheInterface
      */
-    public function getCacheStorages(string $name, bool $fresh = false): CacheStorageInterface
+    public function getCacheStorages(string $name, bool $fresh = false): CacheInterface
     {
         return $this->collect('CacheStorages', $fresh)->gat($name);
     }

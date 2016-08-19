@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Helpers;
 
-use Opis\Cache\Cache;
+use Opis\Cache\CacheInterface;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\Application;
 use Opis\Colibri\Validator;
@@ -54,9 +54,9 @@ function app(): Application
 
 /**
  * @param string $storage
- * @return Cache
+ * @return CacheInterface
  */
-function cache(string $storage = 'default'): Cache
+function cache(string $storage = 'default'): CacheInterface
 {
     static $cache = [];
 

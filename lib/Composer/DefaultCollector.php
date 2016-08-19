@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Composer;
 
 
-use Opis\Cache\StorageInterface as CacheStorageInterface;
+use Opis\Cache\CacheInterface;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\DefaultCollectorInterface;
 use Opis\Config\ConfigInterface;
@@ -80,10 +80,10 @@ class DefaultCollector implements DefaultCollectorInterface
     }
 
     /**
-     * @param CacheStorageInterface $storage
+     * @param CacheInterface $storage
      * @return DefaultCollectorInterface
      */
-    public function setCacheStorage(CacheStorageInterface $storage): DefaultCollectorInterface
+    public function setCacheStorage(CacheInterface $storage): DefaultCollectorInterface
     {
         return $this;
     }

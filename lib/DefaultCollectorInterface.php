@@ -17,10 +17,10 @@
 
 namespace Opis\Colibri;
 
+use Opis\Cache\CacheInterface;
 use Opis\Config\ConfigInterface;
 use SessionHandlerInterface;
 use Opis\Database\Connection;
-use Opis\Cache\StorageInterface as CacheStorageInterface;
 use Psr\Log\LoggerInterface;
 
 interface DefaultCollectorInterface
@@ -32,10 +32,10 @@ interface DefaultCollectorInterface
     public function setConfigDriver(ConfigInterface $driver): self;
 
     /**
-     * @param CacheStorageInterface $storage
+     * @param CacheInterface $storage
      * @return DefaultCollectorInterface
      */
-    public function setCacheStorage(CacheStorageInterface $storage): self;
+    public function setCacheStorage(CacheInterface $storage): self;
 
     /**
      * @param ConfigInterface $storage

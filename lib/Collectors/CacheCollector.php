@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Cache\StorageInterface;
+use Opis\Cache\CacheInterface;
 use Opis\Colibri\Collector;
 use Opis\Colibri\Serializable\StorageCollection;
 
@@ -54,9 +54,9 @@ class CacheCollector extends Collector
     /**
      * @param string $storage
      * @param callable $factory
-     * @return StorageInterface
+     * @return CacheInterface
      */
-    public static function factory(string $storage, callable $factory): StorageInterface
+    public static function factory(string $storage, callable $factory): CacheInterface
     {
         return $factory($storage);
     }

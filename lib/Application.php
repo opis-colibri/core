@@ -23,9 +23,8 @@ use Composer\IO\NullIO;
 use Composer\Json\JsonFile;
 use Composer\Package\CompletePackage;
 use Composer\Repository\InstalledFilesystemRepository;
-use Opis\Cache\Cache;
-use Opis\Cache\Storage\Memory as EphemeralCacheStorage;
-use Opis\Cache\StorageInterface as CacheStorageInterface;
+use Opis\Cache\CacheInterface;
+use Opis\Cache\Drivers\Memory as MemoryDriver;
 use Opis\Colibri\Composer\CLI;
 use Opis\Colibri\Composer\Plugin;
 use Opis\Config\ConfigInterface;
@@ -94,7 +93,7 @@ class Application implements DefaultCollectorInterface
     /** @var  \Opis\Http\Response */
     protected $httpResponseInstance;
 
-    /** @var  \Opis\Cache\Cache[] */
+    /** @var  CacheInterface[] */
     protected $cache = array();
 
     /** @var  ConfigInterface[] */
@@ -363,18 +362,18 @@ class Application implements DefaultCollectorInterface
      *
      * @param   string $storage (optional) Storage name
      *
-     * @return  Cache
+     * @return  CacheInterface
      */
-    public function getCache(string $storage = 'default'): Cache
+    public function getCache(string $storage = 'default'): CacheInterface
     {
         if (!isset($this->cache[$storage])) {
             if($storage === 'default'){
                 if(!isset($this->implicit['cache'])){
                     throw new \RuntimeException('The default cache storage was not set');
                 }
-                $this->cache[$storage] = new Cache($this->implicit['cache']);
+                $this->cache[$storage] = $this->implicit['cache'];
             } else {
-                $this->cache[$storage] = new Cache($this->getCollector()->getCacheStorages($storage));
+                $this->cache[$storage] = $this->getCollector()->getCacheStorages($storage);
             }
         }
 
@@ -653,10 +652,10 @@ class Application implements DefaultCollectorInterface
     }
 
     /**
-     * @param CacheStorageInterface $storage
+     * @param CacheInterface $storage
      * @return DefaultCollectorInterface
      */
-    public function setCacheStorage(CacheStorageInterface $storage): DefaultCollectorInterface
+    public function setCacheStorage(CacheInterface $storage): DefaultCollectorInterface
     {
         $this->implicit['cache'] = $storage;
         return $this;
@@ -947,7 +946,7 @@ class Application implements DefaultCollectorInterface
         {
             public function bootstrap(DefaultCollectorInterface $app)
             {
-                $app->setCacheStorage(new EphemeralCacheStorage())
+                $app->setCacheStorage(new MemoryDriver())
                     ->setConfigDriver(new EphemeralConfig())
                     ->setDefaultLogger(new NullLogger())
                     ->setSessionStorage(new \SessionHandler());
