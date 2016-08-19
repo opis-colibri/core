@@ -19,7 +19,7 @@ namespace Opis\Colibri\Collectors;
 
 use Opis\Colibri\Collector;
 use Opis\Colibri\Serializable\StorageCollection;
-use Opis\Config\StorageInterface;
+use Opis\Config\ConfigInterface;
 
 /**
  * Class ConfigCollector
@@ -53,9 +53,9 @@ class ConfigCollector extends Collector
     /**
      * @param string $storage
      * @param callable $factory
-     * @return StorageInterface
+     * @return ConfigInterface
      */
-    public static function factory(string $storage, callable $factory): StorageInterface
+    public static function factory(string $storage, callable $factory): ConfigInterface
     {
         return $factory($storage);
     }

@@ -20,7 +20,7 @@ namespace Opis\Colibri;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Opis\Cache\StorageInterface as CacheStorageInterface;
 use Opis\Colibri\Annotations\Collector as CollectorAnnotation;
-use Opis\Config\StorageInterface as ConfigStorageInterface;
+use Opis\Config\ConfigInterface;
 use Opis\Database\Connection;
 use Opis\Database\Database;
 use Opis\Events\RouteCollection as EventsRouteCollection;
@@ -101,9 +101,9 @@ class CollectorManager
     /**
      * @param string $name
      * @param bool $fresh
-     * @return ConfigStorageInterface
+     * @return ConfigInterface
      */
-    public function getConfigStorage(string $name, bool $fresh = false): ConfigStorageInterface
+    public function getConfigStorage(string $name, bool $fresh = false): ConfigInterface
     {
         return $this->collect('ConfigStorages', $fresh)->get($name);
     }

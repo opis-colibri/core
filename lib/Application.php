@@ -28,9 +28,8 @@ use Opis\Cache\Storage\Memory as EphemeralCacheStorage;
 use Opis\Cache\StorageInterface as CacheStorageInterface;
 use Opis\Colibri\Composer\CLI;
 use Opis\Colibri\Composer\Plugin;
-use Opis\Config\Config;
-use Opis\Config\Storage\Memory as EphemeralConfigStorage;
-use Opis\Config\StorageInterface as ConfigStorageInterface;
+use Opis\Config\ConfigInterface;
+use Opis\Config\Stores\Ephemeral as EphemeralConfig;
 use Opis\Database\Connection;
 use Opis\Database\Database;
 use Opis\Database\ORM;
@@ -98,7 +97,7 @@ class Application implements DefaultCollectorInterface
     /** @var  \Opis\Cache\Cache[] */
     protected $cache = array();
 
-    /** @var  Config */
+    /** @var  ConfigInterface[] */
     protected $config = array();
 
     /** @var  Connection[] */
@@ -113,7 +112,7 @@ class Application implements DefaultCollectorInterface
     /** @var  Session */
     protected $session = array();
 
-    /** @var  Config */
+    /** @var  ConfigInterface[] */
     protected $translations;
 
     /** @var  HttpRouter */
@@ -410,18 +409,18 @@ class Application implements DefaultCollectorInterface
      *
      * @param   string $storage (optional) Storage name
      *
-     * @return  Config
+     * @return  ConfigInterface
      */
-    public function getConfig(string $storage = 'default'): Config
+    public function getConfig(string $storage = 'default'): ConfigInterface
     {
         if (!isset($this->config[$storage])) {
             if($storage === 'default') {
                 if(!isset($this->implicit['config'])){
                     throw new \RuntimeException('The default config storage was not set');
                 }
-                $this->config[$storage] = new Config($this->implicit['config']);
+                $this->config[$storage] = $this->implicit['config'];
             } else {
-                $this->config[$storage] = new Config($this->getCollector()->getConfigStorage($storage));
+                $this->config[$storage] = $this->getCollector()->getConfigStorage($storage);
             }
         }
 
@@ -431,9 +430,9 @@ class Application implements DefaultCollectorInterface
     /**
      * Returns a translation storage
      *
-     * @return  Config
+     * @return  ConfigInterface
      */
-    public function getTranslations(): Config
+    public function getTranslations(): ConfigInterface
     {
         if ($this->translations === null) {
             $this->translations = $this->getConfig();
@@ -644,10 +643,10 @@ class Application implements DefaultCollectorInterface
     }
 
     /**
-     * @param ConfigStorageInterface $storage
+     * @param ConfigInterface $storage
      * @return DefaultCollectorInterface
      */
-    public function setConfigStorage(ConfigStorageInterface $storage): DefaultCollectorInterface
+    public function setConfigStorage(ConfigInterface $storage): DefaultCollectorInterface
     {
         $this->implicit['config'] = $storage;
         return $this;
@@ -664,12 +663,12 @@ class Application implements DefaultCollectorInterface
     }
 
     /**
-     * @param ConfigStorageInterface $storage
+     * @param ConfigInterface $storage
      * @return DefaultCollectorInterface
      */
-    public function setTranslationsStorage(ConfigStorageInterface $storage): DefaultCollectorInterface
+    public function setTranslationsStorage(ConfigInterface $storage): DefaultCollectorInterface
     {
-        $this->translations = new Config($storage);
+        $this->translations = $storage;
         return $this;
     }
 
@@ -949,7 +948,7 @@ class Application implements DefaultCollectorInterface
             public function bootstrap(DefaultCollectorInterface $app)
             {
                 $app->setCacheStorage(new EphemeralCacheStorage())
-                    ->setConfigStorage(new EphemeralConfigStorage())
+                    ->setConfigStorage(new EphemeralConfig())
                     ->setDefaultLogger(new NullLogger())
                     ->setSessionStorage(new \SessionHandler());
             }

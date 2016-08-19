@@ -17,19 +17,19 @@
 
 namespace Opis\Colibri;
 
+use Opis\Config\ConfigInterface;
 use SessionHandlerInterface;
 use Opis\Database\Connection;
-use Opis\Config\StorageInterface as ConfigStorageInterface;
 use Opis\Cache\StorageInterface as CacheStorageInterface;
 use Psr\Log\LoggerInterface;
 
 interface DefaultCollectorInterface
 {
     /**
-     * @param ConfigStorageInterface $storage
+     * @param ConfigInterface $storage
      * @return DefaultCollectorInterface
      */
-    public function setConfigStorage(ConfigStorageInterface $storage): self;
+    public function setConfigStorage(ConfigInterface $storage): self;
 
     /**
      * @param CacheStorageInterface $storage
@@ -38,10 +38,10 @@ interface DefaultCollectorInterface
     public function setCacheStorage(CacheStorageInterface $storage): self;
 
     /**
-     * @param ConfigStorageInterface $storage
+     * @param ConfigInterface $storage
      * @return DefaultCollectorInterface
      */
-    public function setTranslationsStorage(ConfigStorageInterface $storage): self;
+    public function setTranslationsStorage(ConfigInterface $storage): self;
 
     /**
      * @param Connection $connection

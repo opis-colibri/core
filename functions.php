@@ -24,7 +24,7 @@ use Opis\Colibri\Validator;
 use Opis\Colibri\View;
 use Opis\Colibri\Module;
 use Opis\Colibri\Serializable\ControllerCallback;
-use Opis\Config\Config;
+use Opis\Config\ConfigInterface;
 use Opis\Database\Connection;
 use Opis\Database\Database;
 use Opis\Database\Model;
@@ -65,9 +65,9 @@ function cache(string $storage = 'default'): Cache
 
 /**
  * @param string $storage
- * @return Config
+ * @return ConfigInterface
  */
-function config(string $storage = 'default'): Config
+function config(string $storage = 'default'): ConfigInterface
 {
     static $config = [];
 

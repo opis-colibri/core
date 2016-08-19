@@ -21,15 +21,14 @@ namespace Opis\Colibri\Composer;
 use Opis\Cache\StorageInterface as CacheStorageInterface;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\DefaultCollectorInterface;
-use Opis\Config\Config;
-use Opis\Config\StorageInterface as ConfigStorageInterface;
+use Opis\Config\ConfigInterface;
 use Opis\Database\Connection;
 use Psr\Log\LoggerInterface;
 use SessionHandlerInterface;
 
 class DefaultCollector implements DefaultCollectorInterface
 {
-    /** @var  Config */
+    /** @var  ConfigInterface */
     protected $config;
 
     /** @var  AppInfo */
@@ -71,12 +70,12 @@ class DefaultCollector implements DefaultCollectorInterface
 
 
     /**
-     * @param ConfigStorageInterface $storage
+     * @param ConfigInterface $storage
      * @return DefaultCollectorInterface
      */
-    public function setConfigStorage(ConfigStorageInterface $storage): DefaultCollectorInterface
+    public function setConfigStorage(ConfigInterface $storage): DefaultCollectorInterface
     {
-        $this->config = new Config($storage);
+        $this->config = $storage;
         return $this;
     }
 
@@ -90,10 +89,10 @@ class DefaultCollector implements DefaultCollectorInterface
     }
 
     /**
-     * @param ConfigStorageInterface $storage
+     * @param ConfigInterface $storage
      * @return DefaultCollectorInterface
      */
-    public function setTranslationsStorage(ConfigStorageInterface $storage): DefaultCollectorInterface
+    public function setTranslationsStorage(ConfigInterface $storage): DefaultCollectorInterface
     {
         return $this;
     }
