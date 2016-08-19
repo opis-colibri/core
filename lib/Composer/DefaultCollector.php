@@ -70,12 +70,12 @@ class DefaultCollector implements DefaultCollectorInterface
 
 
     /**
-     * @param ConfigInterface $storage
+     * @param ConfigInterface $driver
      * @return DefaultCollectorInterface
      */
-    public function setConfigStorage(ConfigInterface $storage): DefaultCollectorInterface
+    public function setConfigDriver(ConfigInterface $driver): DefaultCollectorInterface
     {
-        $this->config = $storage;
+        $this->config = $driver;
         return $this;
     }
 

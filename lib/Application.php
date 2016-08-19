@@ -29,7 +29,7 @@ use Opis\Cache\StorageInterface as CacheStorageInterface;
 use Opis\Colibri\Composer\CLI;
 use Opis\Colibri\Composer\Plugin;
 use Opis\Config\ConfigInterface;
-use Opis\Config\Stores\Ephemeral as EphemeralConfig;
+use Opis\Config\Drivers\Ephemeral as EphemeralConfig;
 use Opis\Database\Connection;
 use Opis\Database\Database;
 use Opis\Database\ORM;
@@ -407,24 +407,24 @@ class Application implements DefaultCollectorInterface
     /**
      * Returns a config storage
      *
-     * @param   string $storage (optional) Storage name
+     * @param   string $driver (optional) Driver's name
      *
      * @return  ConfigInterface
      */
-    public function getConfig(string $storage = 'default'): ConfigInterface
+    public function getConfig(string $driver = 'default'): ConfigInterface
     {
-        if (!isset($this->config[$storage])) {
-            if($storage === 'default') {
+        if (!isset($this->config[$driver])) {
+            if($driver === 'default') {
                 if(!isset($this->implicit['config'])){
                     throw new \RuntimeException('The default config storage was not set');
                 }
-                $this->config[$storage] = $this->implicit['config'];
+                $this->config[$driver] = $this->implicit['config'];
             } else {
-                $this->config[$storage] = $this->getCollector()->getConfigStores($storage);
+                $this->config[$driver] = $this->getCollector()->getConfigDriver($driver);
             }
         }
 
-        return $this->config[$storage];
+        return $this->config[$driver];
     }
 
     /**
@@ -643,12 +643,12 @@ class Application implements DefaultCollectorInterface
     }
 
     /**
-     * @param ConfigInterface $storage
+     * @param ConfigInterface $driver
      * @return DefaultCollectorInterface
      */
-    public function setConfigStorage(ConfigInterface $storage): DefaultCollectorInterface
+    public function setConfigDriver(ConfigInterface $driver): DefaultCollectorInterface
     {
-        $this->implicit['config'] = $storage;
+        $this->implicit['config'] = $driver;
         return $this;
     }
 
@@ -948,7 +948,7 @@ class Application implements DefaultCollectorInterface
             public function bootstrap(DefaultCollectorInterface $app)
             {
                 $app->setCacheStorage(new EphemeralCacheStorage())
-                    ->setConfigStorage(new EphemeralConfig())
+                    ->setConfigDriver(new EphemeralConfig())
                     ->setDefaultLogger(new NullLogger())
                     ->setSessionStorage(new \SessionHandler());
             }

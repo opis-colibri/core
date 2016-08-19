@@ -56,9 +56,9 @@ return array(
         'class' => 'Opis\\Colibri\\Collectors\\SessionCollector',
         'description' => 'Collects session storages',
     ),
-    'configstores' => array(
+    'configdrivers' => array(
         'class' => 'Opis\\Colibri\\Collectors\\ConfigCollector',
-        'description' => 'Collects config stores'
+        'description' => 'Collects config drives'
     ),
     'validators' => array(
         'class' => 'Opis\\Colibri\\Collectors\\ValidatorCollector',

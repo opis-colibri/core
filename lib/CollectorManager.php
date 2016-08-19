@@ -103,9 +103,9 @@ class CollectorManager
      * @param bool $fresh
      * @return ConfigInterface
      */
-    public function getConfigStores(string $name, bool $fresh = false): ConfigInterface
+    public function getConfigDriver(string $name, bool $fresh = false): ConfigInterface
     {
-        return $this->collect('ConfigStores', $fresh)->get($name);
+        return $this->collect('ConfigDrivers', $fresh)->get($name);
     }
 
     /**

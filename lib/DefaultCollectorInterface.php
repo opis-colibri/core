@@ -26,10 +26,10 @@ use Psr\Log\LoggerInterface;
 interface DefaultCollectorInterface
 {
     /**
-     * @param ConfigInterface $storage
+     * @param ConfigInterface $driver
      * @return DefaultCollectorInterface
      */
-    public function setConfigStorage(ConfigInterface $storage): self;
+    public function setConfigDriver(ConfigInterface $driver): self;
 
     /**
      * @param CacheStorageInterface $storage
