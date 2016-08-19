@@ -29,7 +29,7 @@
         "opis/view": "5.0.x-dev",
         "opis/events": "5.0.x-dev",
         "opis/config": "3.0.x-dev",
-        "opis/cache": "^3.1.0",
+        "opis/cache": "4.0.x-dev",
         "opis/session": "4.0.x-dev",
         "opis/validation": "1.0.x-dev",
         "symfony/console": "^3.1.3",
