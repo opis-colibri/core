@@ -853,7 +853,7 @@ class Application implements DefaultCollectorInterface
         $this->reloadClassLoader();
 
         if ($recollect) {
-            $this->getCollector()->recollect(true);
+            $this->getCollector()->recollect();
         }
 
         $this->emit('module.uninstalled.' . $module->name());
@@ -925,7 +925,7 @@ class Application implements DefaultCollectorInterface
         $this->unregisterAssets($module);
 
         if ($recollect) {
-            $this->getCollector()->recollect(true);
+            $this->getCollector()->recollect();
         }
 
         $this->emit('module.disabled.' . $module->name());
