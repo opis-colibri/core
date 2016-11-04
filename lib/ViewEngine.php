@@ -18,7 +18,7 @@
 namespace Opis\Colibri;
 
 use Opis\View\PHPEngine;
-use function Opis\Colibri\Helpers\{view as makeView, render, getAsset, getURL, generateCSRFToken, r, v, t};
+use function Opis\Colibri\Helpers\{view as makeView, render, asset, getURL, generateCSRFToken, r, v, t};
 
 class ViewEngine extends PHPEngine
 {
@@ -49,7 +49,7 @@ class ViewEngine extends PHPEngine
      */
     public function getAsset(string $module, string $path, bool $full = false): string
     {
-        return getAsset($module, $path, $full);
+        return asset($module, $path, $full);
     }
 
     /**

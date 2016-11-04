@@ -353,7 +353,7 @@ function getURL(string $path, bool $full = false): string
  * @param bool $full
  * @return string
  */
-function getAsset(string $module, string $path, bool $full = false): string
+function asset(string $module, string $path, bool $full = false): string
 {
     return getURL(info()->assetsPath() . '/' . $module . '/' . ltrim($path), $full);
 }
