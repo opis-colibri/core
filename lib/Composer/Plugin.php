@@ -21,10 +21,12 @@ use Composer\Composer;
 use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\IO\IOInterface;
 use Composer\Package\CompletePackage;
+use Composer\Package\PackageInterface;
 use Composer\Plugin\PluginInterface;
 use Composer\Script\Event;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\Application;
+use Opis\Colibri\Composer\Util\Filesystem;
 
 class Plugin implements PluginInterface, EventSubscriberInterface
 {
@@ -33,6 +35,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
     /** @var  Composer */
     protected $composer;
+
+    /** @var  AppInfo */
+    protected $appInfo;
 
     /**
      * Apply plugin modifications to Composer
@@ -44,6 +49,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     {
         $this->io = $io;
         $this->composer = $composer;
+        $rootDir = realpath($this->composer->getConfig()->get('vendor-dir') . '/../');
+        $settings = $this->composer->getPackage()->getExtra()['application'] ?? [];
+        $this->appInfo = new AppInfo($rootDir, $settings);
     }
 
     /**
@@ -76,24 +84,21 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     public function handleDumpAutoload(Event $event)
     {
-        $rootDir = realpath($this->composer->getConfig()->get('vendor-dir') . '/../');
-        $settings = $this->composer->getPackage()->getExtra()['application'] ?? [];
-        $appInfo = new AppInfo($rootDir, $settings);
-
         $installMode = true;
         $installed = $enabled = [];
 
-        if(!$appInfo->installMode()){
+        if (!$this->appInfo->installMode()) {
             $installMode = false;
-            $collector = new DefaultCollector($appInfo);
+            $collector = new DefaultCollector($this->appInfo);
             /** @var \Opis\Colibri\BootstrapInterface $bootstrap */
-            $bootstrap = require $appInfo->bootstrapFile();
+            $bootstrap = require $this->appInfo->bootstrapFile();
             $bootstrap->bootstrap($collector);
             $installed = $collector->getInstalledModules();
             $enabled = $collector->getEnabledModules();
         }
 
         $this->preparePacks($installMode, $enabled, $installed);
+        $this->copyAssets($installMode, $enabled, $installed);
     }
 
     /**
@@ -107,24 +112,24 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         /** @var CompletePackage[] $packages */
         $packages = $this->composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
 
-        foreach ($packages as $package){
-            if($package->getType() !== Application::COMPOSER_TYPE){
+        foreach ($packages as $package) {
+            if ($package->getType() !== Application::COMPOSER_TYPE) {
                 continue;
             }
 
             $module = $package->getName();
 
-            if($installMode){
+            if ($installMode) {
                 $package->setAutoload([]);
                 continue;
             }
 
-            if(!in_array($module, $installed)){
+            if (!in_array($module, $installed)) {
                 $package->setAutoload([]);
                 continue;
             }
 
-            if(in_array($module, $enabled)){
+            if (in_array($module, $enabled)) {
                 continue;
             }
 
@@ -132,11 +137,11 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             $extra = $package->getExtra();
 
             foreach (['collector', 'installer'] as $key) {
-                if(!isset($extra[$key]) || !is_array($extra[$key])){
+                if (!isset($extra[$key]) || !is_array($extra[$key])) {
                     continue;
                 }
                 $item = $extra[$key];
-                if(isset($item['file']) && isset($item['class'])){
+                if (isset($item['file']) && isset($item['class'])) {
                     $classmap[] = $item['file'];;
                 }
             }
@@ -145,6 +150,73 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         }
 
         return $packages;
+    }
+
+    /**
+     * @param bool $installMode
+     * @param array $enabled
+     * @param array $installed
+     * @return CompletePackage[]
+     */
+    public function copyAssets(bool $installMode, array $enabled, array $installed)
+    {
+        /** @var CompletePackage[] $packages */
+        $packages = $this->composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
+        $fs = new Filesystem();
+
+        foreach ($packages as $package) {
+
+            if ($package->getType() !== Application::COMPOSER_TYPE) {
+                continue;
+            }
+
+            $extra = $package->getExtra();
+
+            if(!isset($extra['component']) || !is_array($extra['component'])){
+                continue;
+            }
+
+            $module = $package->getName();
+
+            $assetsDir = $this->appInfo->assetsDir();
+            $moduleDir = implode(DIRECTORY_SEPARATOR, explode('/', $module));
+            $targetDir = $assetsDir . DIRECTORY_SEPARATOR . $moduleDir;
+
+            if(!in_array($module, $enabled)){
+                if(file_exists($targetDir) && is_dir($targetDir)){
+                    $fs->removeDirectory($targetDir);
+                    $targetDir = dirname($targetDir);
+                    // If parent dir is empty, delete it
+                    if(count(scandir($targetDir)) == 2){
+                        $fs->removeDirectory($targetDir);
+                    }
+                }
+                continue;
+            }
+
+            $types = ['scripts', 'styles', 'files'];
+            $packageDir = $this->composer->getInstallationManager()->getInstallPath($package);
+
+            foreach ($types as $type){
+                if(!isset($extra['component'][$type]) || !is_array($extra['component'][$type])){
+                    continue;
+                }
+                foreach ($extra['component'][$type] as $file){
+                    $source = $packageDir . DIRECTORY_SEPARATOR . $file;
+                    foreach ($fs->recursiveGlobFiles($source) as $filesource){
+                        // Find the final destination without the package directory.
+                        $withoutPackageDir = str_replace($packageDir . DIRECTORY_SEPARATOR, '', $filesource);
+                        // Construct the final file destination.
+                        $destination = implode(DIRECTORY_SEPARATOR, [$assetsDir, $moduleDir, $withoutPackageDir]);
+                        // Ensure the directory is available.
+                        $fs->ensureDirectoryExists(dirname($destination));
+                        // Copy the file to its destination.
+                        copy($filesource, $destination);
+                    }
+                }
+            }
+
+        }
     }
 
 }
