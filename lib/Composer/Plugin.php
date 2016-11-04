@@ -24,6 +24,7 @@ use Composer\Package\CompletePackage;
 use Composer\Package\PackageInterface;
 use Composer\Plugin\PluginInterface;
 use Composer\Script\Event;
+use Opis\Cache\Drivers\File;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\Application;
 use Opis\Colibri\Composer\Util\Filesystem;
@@ -171,7 +172,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $modulesDir = $this->appInfo->assetsDir() . DIRECTORY_SEPARATOR . 'module';
         $manager = $this->composer->getInstallationManager();
 
-        $doCopy = function (Filesystem $fs, array $component, string $destination, string $packageDir){
+        $doCopy = function (Filesystem $fs, array $component, string $packageDir, string $destination){
             $types = ['scripts', 'styles', 'files'];
             foreach ($types as $type){
                 if(!isset($component[$type]) || !is_array($component[$type])){
@@ -182,14 +183,21 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                     foreach ($fs->recursiveGlobFiles($source) as $filesource){
                         // Find the final destination without the package directory.
                         $withoutPackageDir = str_replace($packageDir . DIRECTORY_SEPARATOR, '', $filesource);
-                        // Construct the final file destination.
-                        $destination .= DIRECTORY_SEPARATOR . $withoutPackageDir;
+                        $fileDest = $destination . DIRECTORY_SEPARATOR . $withoutPackageDir;
                         // Ensure the directory is available.
-                        $fs->ensureDirectoryExists(dirname($destination));
+                        $fs->ensureDirectoryExists(dirname($fileDest));
                         // Copy the file to its destination.
-                        copy($filesource, $destination);
+                        copy($filesource, $fileDest);
                     }
                 }
+            }
+        };
+
+        $removeDir = function(Filesystem $fs, string $dir){
+            $fs->removeDirectory($dir);
+            $dir = dirname($dir);
+            if(count(scandir($dir)) == 2){
+                $fs->removeDirectory($dir);
             }
         };
 
@@ -201,56 +209,38 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             }
 
             $extra = $package->getExtra();
+            $packageDir = $manager->getInstallPath($package);
 
-            if(!isset($extra['component']) || !is_array($extra['component'])){
+            if($packageType === 'component'){
+                if(!isset($extra['component']) || !is_array($extra['component'])){
+                    continue;
+                }
+                $moduleDest = $this->componentInstaller->getComponentPath($package);
+                if(!file_exists($moduleDest)){
+                    $doCopy($fs, $extra['component'], $packageDir, $moduleDest);
+                }
+                continue;
+            }
+
+            if(!isset($extra['assets']) || !is_string($extra['assets'])){
                 continue;
             }
 
             $packageName = $package->getName();
-            $isModule = $packageType === Application::COMPOSER_TYPE;
+            $moduleDest = $modulesDir . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, explode('/', $packageName));
 
-            if($isModule && !in_array($packageName, $enabled)){
-                $targetDir = $modulesDir . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, explode('/', $packageName));
-
-                if(file_exists($targetDir) && is_dir($targetDir)){
-                    $fs->removeDirectory($targetDir);
-                    $targetDir = dirname($targetDir);
-                    // If parent dir is empty, delete it
-                    if(count(scandir($targetDir)) == 2){
-                        $fs->removeDirectory($targetDir);
-                    }
+            // If module is not enabled
+            if(!in_array($packageName, $enabled)){
+                if(file_exists($moduleDest)){
+                    $removeDir($fs, $moduleDest);
                 }
                 continue;
             }
 
-            $types = ['scripts', 'styles', 'files'];
-
-            $packageDir = $manager->getInstallPath($package);
-
-            foreach ($types as $type){
-                if(!isset($extra['component'][$type]) || !is_array($extra['component'][$type])){
-                    continue;
-                }
-                foreach ($extra['component'][$type] as $file){
-                    $source = $packageDir . DIRECTORY_SEPARATOR . $file;
-                    foreach ($fs->recursiveGlobFiles($source) as $filesource){
-                        // Find the final destination without the package directory.
-                        $withoutPackageDir = str_replace($packageDir . DIRECTORY_SEPARATOR, '', $filesource);
-                        // Construct the final file destination.
-                        if($isModule){
-                            $destination = $modulesDir . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, explode('/', $packageName));
-                        } else{
-                            $destination = $this->componentInstaller->getComponentPath($package);
-                        }
-                        $destination .= DIRECTORY_SEPARATOR . $withoutPackageDir;
-                        // Ensure the directory is available.
-                        $fs->ensureDirectoryExists(dirname($destination));
-                        // Copy the file to its destination.
-                        copy($filesource, $destination);
-                    }
-                }
+            // If the module was not copied
+            if(!file_exists($moduleDest)){
+                $doCopy($fs, ['files' => ['**']], $packageDir . DIRECTORY_SEPARATOR . $extra['assets'], $moduleDest);
             }
-
         }
     }
 
