@@ -52,6 +52,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $rootDir = realpath($this->composer->getConfig()->get('vendor-dir') . '/../');
         $settings = $this->composer->getPackage()->getExtra()['application'] ?? [];
         $this->appInfo = new AppInfo($rootDir, $settings);
+        $this->composer->getInstallationManager()->addInstaller(new ComponentInstaller($io, $composer, $this->appInfo));
     }
 
     /**
