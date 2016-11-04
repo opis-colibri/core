@@ -887,8 +887,6 @@ class Application implements DefaultCollectorInterface
             $this->getContainer()->make($installer)->enable();
         }
 
-        $this->registerAssets($module);
-
         if ($recollect) {
             $this->getCollector()->recollect();
         }
@@ -922,7 +920,6 @@ class Application implements DefaultCollectorInterface
 
         $this->getComposerCLI()->dumpAutoload();
         $this->reloadClassLoader();
-        $this->unregisterAssets($module);
 
         if ($recollect) {
             $this->getCollector()->recollect();
@@ -982,46 +979,6 @@ class Application implements DefaultCollectorInterface
         $packMap = $generator->buildPackageMap($composer->getInstallationManager(), $composer->getPackage(), $packages);
         $autoload = $generator->parseAutoloads($packMap, $composer->getPackage());
         return $generator->createLoader($autoload);
-    }
-
-    /**
-     * @param Module $module
-     * @return bool
-     */
-    protected function registerAssets(Module $module): bool
-    {
-        if (false === $assets = $module->assets()){
-            return false;
-        }
-
-        list($dirname, $target) = explode('/', $module->name());
-        $dirpath = $this->info->assetsDir() . '/' . $dirname;
-
-        if(!file_exists($dirpath) || !is_dir($dirpath)){
-            mkdir($dirpath, 0775);
-            chmod($dirpath, 0775);
-        }
-
-        $this->getFileSystem()->symlink($assets, $dirpath . '/' . $target, true);
-
-        return true;
-    }
-
-    /**
-     * @param Module $module
-     * @return bool
-     */
-    protected function unregisterAssets(Module $module): bool 
-    {
-        $path = $this->info->assetsDir() . '/' . $module->name();
-
-        if (!file_exists($path)){
-            return false;
-        }
-
-        $this->getFileSystem()->remove($path);
-
-        return true;
     }
 
     /**
