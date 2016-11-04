@@ -355,7 +355,13 @@ function getURL(string $path, bool $full = false): string
  */
 function asset(string $module, string $path, bool $full = false): string
 {
-    return getURL(info()->assetsPath() . '/' . $module . '/' . ltrim($path), $full);
+    static $assetsPath;
+
+    if($assetsPath === null){
+        $assetsPath = info()->assetsPath();
+    }
+    $base = strpos($module, '/') === false ? $assetsPath : $assetsPath . '/module';
+    return getURL($base . '/' . $module . '/' . ltrim($path, '/'), $full);
 }
 
 /**
