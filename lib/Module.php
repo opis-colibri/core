@@ -35,6 +35,9 @@ class Module
     /** @var  bool */
     protected $exists;
 
+    /** @var  array */
+    protected $moduleInfo;
+
     /**
      * Constructor
      *
@@ -369,31 +372,31 @@ class Module
                 $value = $package->getPrettyVersion();
                 break;
             case 'title':
-                $value = $this->resolveTitle($package);
+                $value = $this->resolveTitle();
                 break;
             case 'description':
                 $value = $package->getDescription();
                 break;
             case 'dependencies':
-                $value = $this->resolveDependencies($package);
+                $value = $this->resolveDependencies();
                 break;
             case 'dependents':
-                $value = $this->resolveDependents($package);
+                $value = $this->resolveDependents();
                 break;
             case 'directory':
-                $value = $this->resolveDirectory($package);
+                $value = $this->resolveDirectory();
                 break;
             case 'assets':
-                $value = $this->resolveAssets($package);
+                $value = $this->resolveAssets();
                 break;
             case 'collector':
-                $value = $this->resolveCollector($package);
+                $value = $this->resolveCollector();
                 break;
             case 'installer':
-                $value = $this->resolveInstaller($package);
+                $value = $this->resolveInstaller();
                 break;
             case 'hidden':
-                $value = $this->resolveHidden($package);
+                $value = $this->resolveHidden();
                 break;
         }
 
@@ -401,16 +404,25 @@ class Module
     }
 
     /**
+     * @return array
+     */
+    protected function getModuleInfo(): array
+    {
+        if($this->moduleInfo === null){
+            $this->moduleInfo = $this->getPackage()->getExtra()['module'] ?? [];
+        }
+
+        return $this->moduleInfo;
+    }
+
+    /**
      * Get title
-     *
-     * @param   CompletePackage $package
      *
      * @return  string
      */
-    protected function resolveTitle(CompletePackage $package): string
+    protected function resolveTitle(): string
     {
-        $extra = $package->getExtra();
-        $title = isset($extra['title']) ? trim($extra['title']) : '';
+        $title = trim($this->getModuleInfo()['title'] ?? '');
 
         if (empty($title)) {
             $name = substr($this->name, strpos($this->name, '/') + 1);
@@ -426,28 +438,24 @@ class Module
     /**
      * Get hidden
      *
-     * @param   CompletePackage $package
-     *
      * @return  bool
      */
-    protected function resolveHidden(CompletePackage $package): bool
+    protected function resolveHidden(): bool
     {
-        return $package->getExtra()['hidden'] ?? false;
+        return $this->getModuleInfo()['hidden'] ?? false;
     }
 
     /**
      * Resolve dependencies
      *
-     * @param   CompletePackage $package
-     *
      * @return  Module[]
      */
-    protected function resolveDependencies(CompletePackage $package): array
+    protected function resolveDependencies(): array
     {
         $dependencies = array();
         $modules = app()->getModules();
 
-        foreach ($package->getRequires() as $dependency) {
+        foreach ($this->getPackage()->getRequires() as $dependency) {
             $target = $dependency->getTarget();
             if (isset($modules[$target])) {
                 $dependencies[$target] = $modules[$target];
@@ -460,11 +468,9 @@ class Module
     /**
      * Resolve dependants
      *
-     * @param   CompletePackage $package
-     *
      * @return  Module[]
      */
-    protected function resolveDependents(CompletePackage $package): array
+    protected function resolveDependents(): array
     {
         $dependants = array();
         $modules = app()->getModules();
@@ -485,27 +491,23 @@ class Module
     /**
      * Resolve directory
      *
-     * @param   CompletePackage $package
-     *
      * @return  string
      */
-    protected function resolveDirectory(CompletePackage $package): string
+    protected function resolveDirectory(): string
     {
         return app()->getComposer()
                     ->getInstallationManager()
-                    ->getInstallPath($package);
+                    ->getInstallPath($this->getPackage());
     }
 
     /**
      * Resolve collector class
      *
-     * @param   CompletePackage $package
-     *
      * @return  string|false
      */
-    protected function resolveCollector(CompletePackage $package)
+    protected function resolveCollector()
     {
-        $collector = $package->getExtra()['collector'] ?? false;
+        $collector = $this->getModuleInfo()['collector'] ?? false;
         if(!is_array($collector) || !isset($collector['class']) || !isset($collector['file'])){
             return false;
         }
@@ -515,13 +517,11 @@ class Module
     /**
      * Resolve installer class
      *
-     * @param   CompletePackage $package
-     *
      * @return  string|false
      */
-    protected function resolveInstaller(CompletePackage $package)
+    protected function resolveInstaller()
     {
-        $installer = $package->getExtra()['installer'] ?? false;
+        $installer = $this->getModuleInfo()['installer'] ?? false;
         if(!is_array($installer) || !isset($installer['class']) || !isset($installer['file'])){
             return false;
         }
@@ -535,14 +535,14 @@ class Module
      *
      * @return  string|false
      */
-    protected function resolveAssets(CompletePackage $package)
+    protected function resolveAssets()
     {
-        $extra = $package->getExtra();
-        if (!isset($extra['assets'])) {
+        $module = $this->getModuleInfo();
+        if (!isset($module['assets'])) {
             return false;
         }
 
-        $directory = $this->directory() . '/' . trim($extra['assets'], '/');
+        $directory = $this->directory() . '/' . trim($module['assets'], '/');
         return is_dir($directory) ? $directory : false;
     }
 

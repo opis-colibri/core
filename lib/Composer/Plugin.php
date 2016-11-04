@@ -140,7 +140,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             }
 
             $classmap = [];
-            $extra = $package->getExtra();
+            $extra = $package->getExtra()['module'] ?? [];
 
             foreach (['collector', 'installer'] as $key) {
                 if (!isset($extra[$key]) || !is_array($extra[$key])) {
@@ -221,6 +221,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                 }
                 continue;
             }
+
+            $extra = $extra['module'] ?? [];
 
             if(!isset($extra['assets']) || !is_string($extra['assets'])){
                 continue;
