@@ -47,7 +47,7 @@ class ViewEngine extends PHPEngine
      * @param bool $full
      * @return string
      */
-    public function getAsset(string $module, string $path, bool $full = false): string
+    public function asset(string $module, string $path, bool $full = false): string
     {
         return asset($module, $path, $full);
     }
