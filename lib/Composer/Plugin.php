@@ -39,6 +39,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     /** @var  AppInfo */
     protected $appInfo;
 
+    /** @var  ComponentInstaller */
+    protected $componentInstaller;
+
     /**
      * Apply plugin modifications to Composer
      *
@@ -52,7 +55,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $rootDir = realpath($this->composer->getConfig()->get('vendor-dir') . '/../');
         $settings = $this->composer->getPackage()->getExtra()['application'] ?? [];
         $this->appInfo = new AppInfo($rootDir, $settings);
-        $this->composer->getInstallationManager()->addInstaller(new ComponentInstaller($io, $composer, $this->appInfo));
+        $this->componentInstaller = new ComponentInstaller($io, $composer, $this->appInfo);
+        $this->composer->getInstallationManager()->addInstaller($this->componentInstaller);
     }
 
     /**
@@ -161,13 +165,38 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     public function copyAssets(bool $installMode, array $enabled, array $installed)
     {
+        $fs = new Filesystem();
         /** @var CompletePackage[] $packages */
         $packages = $this->composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
-        $fs = new Filesystem();
+        $modulesDir = $this->appInfo->assetsDir() . DIRECTORY_SEPARATOR . 'module';
+        $manager = $this->composer->getInstallationManager();
+
+        $doCopy = function (Filesystem $fs, array $component, string $destination, string $packageDir){
+            $types = ['scripts', 'styles', 'files'];
+            foreach ($types as $type){
+                if(!isset($component[$type]) || !is_array($component[$type])){
+                    continue;
+                }
+                foreach ($component[$type] as $file){
+                    $source = $packageDir . DIRECTORY_SEPARATOR . $file;
+                    foreach ($fs->recursiveGlobFiles($source) as $filesource){
+                        // Find the final destination without the package directory.
+                        $withoutPackageDir = str_replace($packageDir . DIRECTORY_SEPARATOR, '', $filesource);
+                        // Construct the final file destination.
+                        $destination .= DIRECTORY_SEPARATOR . $withoutPackageDir;
+                        // Ensure the directory is available.
+                        $fs->ensureDirectoryExists(dirname($destination));
+                        // Copy the file to its destination.
+                        copy($filesource, $destination);
+                    }
+                }
+            }
+        };
 
         foreach ($packages as $package) {
+            $packageType = $package->getType();
 
-            if ($package->getType() !== Application::COMPOSER_TYPE) {
+            if(!in_array($packageType, [Application::COMPOSER_TYPE, 'component'])){
                 continue;
             }
 
@@ -177,13 +206,12 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                 continue;
             }
 
-            $module = $package->getName();
+            $packageName = $package->getName();
+            $isModule = $packageType === Application::COMPOSER_TYPE;
 
-            $assetsDir = $this->appInfo->assetsDir();
-            $moduleDir = implode(DIRECTORY_SEPARATOR, explode('/', $module));
-            $targetDir = $assetsDir . DIRECTORY_SEPARATOR . $moduleDir;
+            if($isModule && !in_array($packageName, $enabled)){
+                $targetDir = $modulesDir . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, explode('/', $packageName));
 
-            if(!in_array($module, $enabled)){
                 if(file_exists($targetDir) && is_dir($targetDir)){
                     $fs->removeDirectory($targetDir);
                     $targetDir = dirname($targetDir);
@@ -196,7 +224,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             }
 
             $types = ['scripts', 'styles', 'files'];
-            $packageDir = $this->composer->getInstallationManager()->getInstallPath($package);
+
+            $packageDir = $manager->getInstallPath($package);
 
             foreach ($types as $type){
                 if(!isset($extra['component'][$type]) || !is_array($extra['component'][$type])){
@@ -208,7 +237,12 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                         // Find the final destination without the package directory.
                         $withoutPackageDir = str_replace($packageDir . DIRECTORY_SEPARATOR, '', $filesource);
                         // Construct the final file destination.
-                        $destination = implode(DIRECTORY_SEPARATOR, [$assetsDir, $moduleDir, $withoutPackageDir]);
+                        if($isModule){
+                            $destination = $modulesDir . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, explode('/', $packageName));
+                        } else{
+                            $destination = $this->componentInstaller->getComponentPath($package);
+                        }
+                        $destination .= DIRECTORY_SEPARATOR . $withoutPackageDir;
                         // Ensure the directory is available.
                         $fs->ensureDirectoryExists(dirname($destination));
                         // Copy the file to its destination.

@@ -17,7 +17,9 @@
 
 namespace Opis\Colibri\Composer;
 
+use Composer\Composer;
 use Composer\Installer\LibraryInstaller;
+use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
 use Opis\Colibri\AppInfo;
 
@@ -38,6 +40,7 @@ class ComponentInstaller extends LibraryInstaller
      */
     public function __construct(IOInterface $io, Composer $composer, AppInfo $appInfo)
     {
+        $this->appInfo = $appInfo;
         parent::__construct($io, $composer);
     }
 
@@ -50,7 +53,7 @@ class ComponentInstaller extends LibraryInstaller
      */
     public function supports($packageType)
     {
-        return $packageType == 'component';
+        return $packageType === 'component';
     }
 
     /**
@@ -87,9 +90,16 @@ class ComponentInstaller extends LibraryInstaller
         if (isset($component['name'])) {
             $name = $component['name'];
         }
-
         // Find where the package should be located.
         return $this->getComponentDir() . DIRECTORY_SEPARATOR . $name;
+    }
+
+    /**
+     * Retrieves the Installer's provided component directory.
+     */
+    public function getComponentDir()
+    {
+        return $this->appInfo->assetsDir();
     }
 
     /**
@@ -99,14 +109,6 @@ class ComponentInstaller extends LibraryInstaller
     {
         $this->filesystem->ensureDirectoryExists($this->getComponentDir());
         parent::initializeVendorDir();
-    }
-
-    /**
-     * Retrieves the Installer's provided component directory.
-     */
-    public function getComponentDir()
-    {
-        return $this->appInfo->assetsDir();
     }
 
     /**
