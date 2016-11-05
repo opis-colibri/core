@@ -15,7 +15,7 @@
         "psr-4": {
             "Opis\\Colibri\\": "lib/"
         },
-        "files": ["functions.php"]
+        "files": ["res/functions.php"]
     },
     "require": {
         "php": ">=7.0.0",
