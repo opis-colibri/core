@@ -65,8 +65,8 @@ class ComponentInstaller extends LibraryInstaller
      */
     public function getComponentPath(PackageInterface $package)
     {
-        // Parse the pretty name for the vendor and package name.
-        $name = $prettyName = $package->getPrettyName();
+        // Parse the name for the vendor and package name.
+        $name = $prettyName = $package->getName();
 
         if (strpos($prettyName, '/') !== false) {
             list($vendor, $name) = explode('/', $prettyName);
