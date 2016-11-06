@@ -58,13 +58,4 @@ class AssetsInstaller extends BaseAssetsInstaller
         }
         return true;
     }
-
-    /**
-     * Init
-     */
-    public function initializeVendorDir()
-    {
-        parent::initializeVendorDir();
-        $this->filesystem->emptyDirectory($this->getAssetsDir() . DIRECTORY_SEPARATOR . 'module');
-    }
 }
