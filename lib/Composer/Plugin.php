@@ -177,10 +177,10 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $fs = new Filesystem();
         /** @var CompletePackage[] $packages */
         $packages = $this->composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
-        $modulesDir = $this->appInfo->assetsDir() . DIRECTORY_SEPARATOR . 'module';
         $manager = $this->composer->getInstallationManager();
 
-        $doCopy = function (Filesystem $fs, array $component, string $packageDir, string $destination){
+        // Copy function
+        $doCopy = function (Filesystem $fs, array $component, string $packageDir, string $destination) use(&$i){
             $types = ['scripts', 'styles', 'files'];
             foreach ($types as $type){
                 if(!isset($component[$type]) || !is_array($component[$type])){
@@ -201,6 +201,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             }
         };
 
+        // Remove module function
         $removeDir = function(Filesystem $fs, string $dir){
             $fs->removeDirectory($dir);
             $dir = dirname($dir);
@@ -230,16 +231,25 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                 continue;
             }
 
+            $moduleDest = $this->assetsInstaller->getAssetsPath($package);
+
+            if(!in_array($package->getName(), $enabled)){
+                if(file_exists($moduleDest)){
+                    $removeDir($fs, $moduleDest);
+                }
+                continue;
+            }
+
             $extra = $extra['module'] ?? [];
 
             if(!isset($extra['assets']) || !is_string($extra['assets'])){
                 continue;
             }
 
-            $moduleDest = $this->assetsInstaller->getAssetsPath($package);
+            $packageDir .= DIRECTORY_SEPARATOR . $extra['assets'];
 
             if(!file_exists($moduleDest)){
-                $doCopy($fs, ['files' => ['**']], $packageDir . DIRECTORY_SEPARATOR . $extra['assets'], $moduleDest);
+                $doCopy($fs, ['files' => ['**']], $packageDir, $moduleDest);
             }
         }
     }
