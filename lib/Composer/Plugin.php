@@ -27,6 +27,8 @@ use Composer\Script\Event;
 use Opis\Cache\Drivers\File;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\Application;
+use Opis\Colibri\Composer\Installers\AssetsInstaller;
+use Opis\Colibri\Composer\Installers\ComponentInstaller;
 use Opis\Colibri\Composer\Util\Filesystem;
 
 class Plugin implements PluginInterface, EventSubscriberInterface
@@ -43,6 +45,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     /** @var  ComponentInstaller */
     protected $componentInstaller;
 
+    /** @var  AssetsInstaller */
+    protected $assetsInstaller;
+
     /**
      * Apply plugin modifications to Composer
      *
@@ -56,8 +61,11 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $rootDir = realpath($this->composer->getConfig()->get('vendor-dir') . '/../');
         $settings = $this->composer->getPackage()->getExtra()['application'] ?? [];
         $this->appInfo = new AppInfo($rootDir, $settings);
-        $this->componentInstaller = new ComponentInstaller($io, $composer, $this->appInfo);
-        $this->composer->getInstallationManager()->addInstaller($this->componentInstaller);
+        $this->componentInstaller = new ComponentInstaller($this->appInfo, $io, $composer);
+        $this->assetsInstaller = new AssetsInstaller($this->appInfo, $io, $composer);
+        $manager = $this->composer->getInstallationManager();
+        $manager->addInstaller($this->componentInstaller);
+        $manager->addInstaller($this->assetsInstaller);
     }
 
     /**
@@ -215,7 +223,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                 if(!isset($extra['component']) || !is_array($extra['component'])){
                     continue;
                 }
-                $moduleDest = $this->componentInstaller->getComponentPath($package);
+                $moduleDest = $this->componentInstaller->getAssetsPath($package);
                 if(!file_exists($moduleDest)){
                     $doCopy($fs, $extra['component'], $packageDir, $moduleDest);
                 }
@@ -228,18 +236,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                 continue;
             }
 
-            $packageName = $package->getName();
-            $moduleDest = $modulesDir . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, explode('/', $packageName));
+            $moduleDest = $this->assetsInstaller->getAssetsPath($package);
 
-            // If module is not enabled
-            if(!in_array($packageName, $enabled)){
-                if(file_exists($moduleDest)){
-                    $removeDir($fs, $moduleDest);
-                }
-                continue;
-            }
-
-            // If the module was not copied
             if(!file_exists($moduleDest)){
                 $doCopy($fs, ['files' => ['**']], $packageDir . DIRECTORY_SEPARATOR . $extra['assets'], $moduleDest);
             }
