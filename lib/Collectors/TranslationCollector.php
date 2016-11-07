@@ -32,8 +32,6 @@ class TranslationCollector extends Collector
 
     /**
      * Constructor
-     *
-     * @param   Application $app
      */
     public function __construct()
     {

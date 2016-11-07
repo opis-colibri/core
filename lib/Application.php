@@ -962,6 +962,7 @@ class Application implements DefaultCollectorInterface
     }
 
     /**
+     * @param Composer $composer
      * @return ClassLoader
      */
     protected function generateClassLoader(Composer $composer): ClassLoader

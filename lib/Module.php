@@ -530,9 +530,7 @@ class Module
 
     /**
      * Resolve assets
-     *
-     * @param   CompletePackage $package
-     *
+     * 
      * @return  string|false
      */
     protected function resolveAssets()

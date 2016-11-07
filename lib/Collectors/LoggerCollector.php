@@ -39,7 +39,7 @@ class LoggerCollector extends Collector
     /**
      * @param $storage
      * @param callable $constructor
-     * @return CacheCollector
+     * @return LoggerCollector
      */
     public function register($storage, callable $constructor): self
     {

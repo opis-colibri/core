@@ -34,7 +34,6 @@ class CSRFToken
     /**
      * Constructor
      *
-     * @param   Application $app
      * @param   string $key (optional)
      * @param   int $max (optional)
      */
