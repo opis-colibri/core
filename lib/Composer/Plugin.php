@@ -24,7 +24,6 @@ use Composer\Package\CompletePackage;
 use Composer\Package\PackageInterface;
 use Composer\Plugin\PluginInterface;
 use Composer\Script\Event;
-use Opis\Cache\Drivers\File;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\Application;
 use Opis\Colibri\Composer\Installers\AssetsInstaller;
@@ -175,7 +174,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     public function copyAssets(bool $installMode, array $enabled, array $installed)
     {
         $fs = new Filesystem();
-        /** @var CompletePackage[] $packages */
+        /** @var PackageInterface[] $packages */
         $packages = $this->composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
         $manager = $this->composer->getInstallationManager();
 
