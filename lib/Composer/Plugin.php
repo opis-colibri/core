@@ -236,16 +236,16 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                 continue;
             }
 
-            $extra = $extra['module'] ?? [];
+            $module = $extra['module'] ?? [];
 
-            if(!isset($extra['assets']) || !is_string($extra['assets'])){
+            if(!isset($module['assets']) || !is_string($module['assets'])){
                 continue;
             }
 
-            $packageDir .= DIRECTORY_SEPARATOR . $extra['assets'];
+            $packageDir .= DIRECTORY_SEPARATOR . $module['assets'];
 
             if(!file_exists($moduleDest)){
-                $doCopy($fs, ['files' => ['**']], $packageDir, $moduleDest);
+                $doCopy($fs, $extra['component'] ?? ['files' => ['**']], $packageDir, $moduleDest);
             }
         }
     }
