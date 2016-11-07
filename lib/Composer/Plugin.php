@@ -111,7 +111,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         }
 
         $this->preparePacks($installMode, $enabled, $installed);
-        $this->copyAssets($installMode, $enabled, $installed);
+        $this->copyAssets($enabled);
     }
 
     /**
@@ -166,12 +166,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     }
 
     /**
-     * @param bool $installMode
      * @param array $enabled
-     * @param array $installed
-     * @return CompletePackage[]
      */
-    public function copyAssets(bool $installMode, array $enabled, array $installed)
+    protected function copyAssets(array $enabled)
     {
         $fs = new Filesystem();
         /** @var PackageInterface[] $packages */
