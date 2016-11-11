@@ -29,6 +29,7 @@ use Opis\Colibri\Application;
 use Opis\Colibri\Composer\Installers\AssetsInstaller;
 use Opis\Colibri\Composer\Installers\ComponentInstaller;
 use Opis\Colibri\Composer\Util\Filesystem;
+use Opis\Sassc\Command as SassCommand;
 
 class Plugin implements PluginInterface, EventSubscriberInterface
 {
@@ -190,6 +191,13 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                         $fileDest = $destination . DIRECTORY_SEPARATOR . $withoutPackageDir;
                         // Ensure the directory is available.
                         $fs->ensureDirectoryExists(dirname($fileDest));
+                        // If it is a .scss file
+                        if($type == 'styles' && 'scss' == pathinfo($fileDest, PATHINFO_EXTENSION)){
+                            $pathInfo = pathinfo($fileDest);
+                            $fileDest = $pathInfo['dirname'] .DIRECTORY_SEPARATOR . $pathInfo['filename'] . '.css';
+                            SassCommand::convert($filesource, $fileDest);
+                            continue;
+                        }
                         // Copy the file to its destination.
                         copy($filesource, $fileDest);
                     }
