@@ -194,8 +194,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                         // If it is a .scss file
                         if($type == 'styles' && 'scss' == pathinfo($fileDest, PATHINFO_EXTENSION)){
                             $pathInfo = pathinfo($fileDest);
-                            $fileDest = $pathInfo['dirname'] .DIRECTORY_SEPARATOR . $pathInfo['filename'] . '.css';
-                            SassCommand::convert($filesource, $fileDest);
+                            $fileDest = $pathInfo['dirname'] .DIRECTORY_SEPARATOR . $pathInfo['filename'];
+                            SassCommand::convert($filesource, $fileDest . '.css', SassCommand::STYLE_EXPANDED);
+                            SassCommand::convert($filesource, $fileDest . '.min.css', SassCommand::STYLE_COMPRESSED);
                             continue;
                         }
                         // Copy the file to its destination.
