@@ -28,6 +28,7 @@ use Opis\Config\ConfigInterface;
 use Opis\Database\Connection;
 use Opis\Database\Database;
 use Opis\Database\EntityManager;
+use Opis\Database\ORM\EntityQuery;
 use Opis\Database\Schema;
 use Opis\Events\Event;
 use Opis\Http\Request;
@@ -140,10 +141,20 @@ function schema(string $connection = 'default'): Schema
 }
 
 /**
+ * @param string $class
+ * @param string $connection
+ * @return EntityQuery
+ */
+function entity(string $class, string $connection = 'default'): EntityQuery
+{
+    return entityManger($connection)->query($class);
+}
+
+/**
  * @param string $connection
  * @return EntityManager
  */
-function entity(string $connection = 'default'): EntityManager
+function entityManger(string $connection = 'default'): EntityManager
 {
     static $em = [];
     return $em[$connection] ?? ($em[$connection] = app()->getEntityManager($connection));
