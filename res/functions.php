@@ -27,8 +27,7 @@ use Opis\Colibri\Serializable\ControllerCallback;
 use Opis\Config\ConfigInterface;
 use Opis\Database\Connection;
 use Opis\Database\Database;
-use Opis\Database\Model;
-use Opis\Database\ORM\Query;
+use Opis\Database\EntityManager;
 use Opis\Database\Schema;
 use Opis\Events\Event;
 use Opis\Http\Request;
@@ -141,15 +140,13 @@ function schema(string $connection = 'default'): Schema
 }
 
 /**
- * @param string $class
  * @param string $connection
- * @return Model|Query
+ * @return EntityManager
  */
-function model(string $class, string $connection = 'default'): Model
+function entity(string $connection = 'default'): EntityManager
 {
-    static $orm = [];
-    $instance = $orm[$connection] ?? ($orm[$connection] = app()->getORM($connection));
-    return $instance->model($class);
+    static $em = [];
+    return $em[$connection] ?? ($em[$connection] = app()->getEntityManager($connection));
 }
 
 /**

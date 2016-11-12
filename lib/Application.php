@@ -31,7 +31,7 @@ use Opis\Config\ConfigInterface;
 use Opis\Config\Drivers\Ephemeral as EphemeralConfig;
 use Opis\Database\Connection;
 use Opis\Database\Database;
-use Opis\Database\ORM;
+use Opis\Database\EntityManager;
 use Opis\Database\Schema;
 use Opis\Events\Event;
 use Opis\Events\EventTarget;
@@ -105,8 +105,8 @@ class Application implements DefaultCollectorInterface
     /** @var  Database[] */
     protected $database = array();
 
-    /** @var  ORM[] */
-    protected $orm = array();
+    /** @var  EntityManager[] */
+    protected $entityManager = array();
 
     /** @var  Session */
     protected $session = array();
@@ -496,18 +496,18 @@ class Application implements DefaultCollectorInterface
     }
 
     /**
-     * Returns an ORM
+     * Returns an entity manager
      *
      * @param   string|null $connection (optional) Connection name
      *
-     * @return  ORM
+     * @return  EntityManager
      */
-    public function getORM(string $connection = 'default'): ORM
+    public function getEntityManager(string $connection = 'default'): EntityManager
     {
-        if(!isset($this->orm[$connection])){
-            $this->orm[$connection] = new ORM($this->getConnection($connection));
+        if(!isset($this->entityManager[$connection])){
+            $this->entityManager[$connection] = new EntityManager($this->getConnection($connection));
         }
-        return $this->orm[$connection];
+        return $this->entityManager[$connection];
     }
 
     /**
