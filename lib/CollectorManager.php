@@ -350,9 +350,6 @@ class CollectorManager
                 $name = $method->getShortName();
 
                 if (substr($name, 0, 2) === '__') {
-                    if ($name === '__invoke') {
-                        $instance($this->collectorTarget);
-                    }
                     continue;
                 }
 
