@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Validators;
 
 use Opis\Validation\ValidatorInterface;
-use function Opis\Colibri\Helpers\{validateCSRFToken};
+use function Opis\Colibri\Functions\{validateCSRFToken};
 
 class Csrf implements ValidatorInterface
 {

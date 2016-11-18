@@ -19,7 +19,7 @@ namespace Opis\Colibri;
 
 use Opis\Colibri\Serializable\ControllerCallback;
 use Opis\HttpRouting\Route;
-use function Opis\Colibri\Helpers\{
+use function Opis\Colibri\Functions\{
     app, make
 };
 

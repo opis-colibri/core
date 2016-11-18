@@ -33,7 +33,7 @@ use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use RuntimeException;
-use function Opis\Colibri\Helpers\{app, cache, emit, config};
+use function Opis\Colibri\Functions\{app, cache, emit, config};
 
 /**
  * Description of CollectorManager

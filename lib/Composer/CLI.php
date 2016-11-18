@@ -23,7 +23,7 @@ use Composer\Factory;
 use Composer\IO\NullIO;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
-use function Opis\Colibri\Helpers\{info};
+use function Opis\Colibri\Functions\{info};
 
 /**
  * Description of Composer
