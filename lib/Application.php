@@ -703,14 +703,10 @@ class Application implements DefaultCollectorInterface
 
     /**
      * Bootstrap method
-     * @return $this|Application
+     * @return Application
      */
     public function bootstrap(): self
     {
-        if(!is_writable($this->info->vendorDir())){
-            throw new \RuntimeException('Vendor dir must be writable: ' . $this->info->vendorDir());
-        }
-
         if (!$this->info->installMode()) {
             $this->getBootstrapInstance()->bootstrap($this);
             $this->emit('system.init');
