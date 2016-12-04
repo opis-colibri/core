@@ -70,15 +70,6 @@ abstract class BaseAssetsInstaller extends LibraryInstaller
     }
 
     /**
-     * Initialize the Component directory, as well as the vendor directory.
-     */
-    protected function initializeVendorDir()
-    {
-        $this->filesystem->ensureDirectoryExists($this->getAssetsDir());
-        parent::initializeVendorDir();
-    }
-
-    /**
      * Remove both the installed code and files from the assets directory.
      *
      * @param PackageInterface $package
