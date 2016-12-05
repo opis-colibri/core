@@ -144,6 +144,7 @@ function schema(string $connection = 'default'): Schema
  * @param callable $callback
  * @param array $options
  * @return mixed
+ * @throws \Exception
  */
 function transaction(callable $callback, array $options = [])
 {
@@ -158,11 +159,12 @@ function transaction(callable $callback, array $options = [])
     if($pdo->inTransaction()){
         return $callback();
     }
+
     try{
         $pdo->beginTransaction();
         $result = $callback();
         $pdo->commit();
-    } catch (\PDOException $exception){
+    } catch (\Exception $exception){
         if($options['throw']){
             throw  $exception;
         }
