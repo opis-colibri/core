@@ -30,6 +30,7 @@ use Opis\Database\Database;
 use Opis\Database\EntityManager;
 use Opis\Database\ORM\EntityQuery;
 use Opis\Database\Schema;
+use Opis\Database\Transaction as DBTransaction;
 use Opis\Events\Event;
 use Opis\Http\Request;
 use Opis\Http\Response;
@@ -138,6 +139,17 @@ function schema(string $connection = 'default'): Schema
     static $schema = [];
 
     return $schema[$connection] ?? ($schema[$connection] = app()->getSchema($connection));
+}
+
+/**
+ * @param callable $callback
+ * @param mixed|null $object
+ * @param string $connection
+ * @return DBTransaction
+ */
+function transaction(callable $callback, $object = null, string $connection = 'default'): DBTransaction
+{
+    return new DBTransaction(connection($connection), $callback, $object);
 }
 
 /**
