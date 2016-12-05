@@ -152,6 +152,8 @@ function transaction(callable $callback, array $options = [])
         'connection' => 'default',
         'return' => false,
         'throw' => false,
+        'error' => null,
+        'success' => null,
     ];
 
     $pdo = connection($options['connection'])->getPDO();
@@ -164,10 +166,16 @@ function transaction(callable $callback, array $options = [])
         $pdo->beginTransaction();
         $result = $callback();
         $pdo->commit();
+        if(isset($options['success']) && is_callable($options['success'])){
+            $options['success']();
+        }
     } catch (\Exception $exception){
         $pdo->rollBack();
         if($options['throw']){
             throw  $exception;
+        }
+        if(isset($options['error']) && is_callable($options['error'])){
+            $options['error']($exception);
         }
         $result = $options['return'];
     }
