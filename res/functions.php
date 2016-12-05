@@ -25,12 +25,11 @@ use Opis\Colibri\View;
 use Opis\Colibri\Module;
 use Opis\Colibri\Serializable\ControllerCallback;
 use Opis\Config\ConfigInterface;
-use Opis\Database\Connection;
+use Opis\Database\Connection as DBConnection;
 use Opis\Database\Database;
 use Opis\Database\EntityManager;
 use Opis\Database\ORM\EntityQuery;
 use Opis\Database\Schema;
-use Opis\Database\Transaction as DBTransaction;
 use Opis\Events\Event;
 use Opis\Http\Request;
 use Opis\Http\Response;
@@ -110,9 +109,9 @@ function validateCSRFToken(string $token): bool
 
 /**
  * @param string $name
- * @return Connection
+ * @return DBConnection
  */
-function connection(string $name = 'default'): Connection
+function connection(string $name = 'default'): DBConnection
 {
     static $connection = [];
 
@@ -143,13 +142,35 @@ function schema(string $connection = 'default'): Schema
 
 /**
  * @param callable $callback
- * @param mixed|null $object
- * @param string $connection
- * @return DBTransaction
+ * @param array $options
+ * @return mixed
  */
-function transaction(callable $callback, $object = null, string $connection = 'default'): DBTransaction
+function transaction(callable $callback, array $options = [])
 {
-    return new DBTransaction(connection($connection), $callback, $object);
+    $options += [
+        'connection' => 'default',
+        'return' => false,
+        'throw' => false,
+    ];
+
+    $pdo = connection($options['connection'])->getPDO();
+
+    if($pdo->inTransaction()){
+        return $callback();
+    }
+    try{
+        $pdo->beginTransaction();
+        $result = $callback();
+        $pdo->commit();
+    } catch (\PDOException $exception){
+        if($options['throw']){
+            throw  $exception;
+        }
+        $pdo->rollBack();
+        $result = $options['return'];
+    }
+
+    return $result;
 }
 
 /**
