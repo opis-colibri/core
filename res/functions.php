@@ -165,10 +165,10 @@ function transaction(callable $callback, array $options = [])
         $result = $callback();
         $pdo->commit();
     } catch (\Exception $exception){
+        $pdo->rollBack();
         if($options['throw']){
             throw  $exception;
         }
-        $pdo->rollBack();
         $result = $options['return'];
     }
 
