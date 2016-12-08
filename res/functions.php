@@ -411,6 +411,11 @@ function asset(string $module, string $path, bool $full = false): string
     if($assetsPath === null){
         $assetsPath = info()->assetsPath();
     }
+
+    if($module === '*'){
+        return getURL($assetsPath . '/' . ltrim($path, '/'), $full);
+    }
+
     $base = strpos($module, '/') === false ? $assetsPath : $assetsPath . '/module';
     return getURL($base . '/' . $module . '/' . ltrim($path, '/'), $full);
 }

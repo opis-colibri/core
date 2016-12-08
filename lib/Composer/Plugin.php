@@ -28,8 +28,9 @@ use Opis\Colibri\AppInfo;
 use Opis\Colibri\Application;
 use Opis\Colibri\Composer\Installers\AssetsInstaller;
 use Opis\Colibri\Composer\Installers\ComponentInstaller;
-use Opis\Colibri\Composer\Util\Filesystem;
-use Opis\Sassc\File as ScssFile;
+use Opis\Colibri\Composer\Tasks\BuildComponents;
+use Opis\Colibri\Composer\Tasks\BuildRequireJS;
+use Opis\Colibri\Composer\Tasks\CopyFiles;
 
 class Plugin implements PluginInterface, EventSubscriberInterface
 {
@@ -112,7 +113,12 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         }
 
         $this->preparePacks($installMode, $enabled, $installed);
-        $this->copyAssets($enabled);
+
+        (new AssetsManager($this->composer,
+            $this->io, $this->appInfo,
+            $this->componentInstaller,
+            $this->assetsInstaller, $enabled))
+        ->run(new CopyFiles(), new BuildComponents(), new BuildRequireJS());
     }
 
     /**
@@ -165,98 +171,4 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
         return $packages;
     }
-
-    /**
-     * @param array $enabled
-     */
-    protected function copyAssets(array $enabled)
-    {
-        $fs = new Filesystem();
-        /** @var PackageInterface[] $packages */
-        $packages = $this->composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
-        $manager = $this->composer->getInstallationManager();
-
-        // Copy function
-        $doCopy = function (Filesystem $fs, array $component, string $packageDir, string $destination) use(&$i){
-            $types = ['scripts', 'styles', 'files'];
-            foreach ($types as $type){
-                if(!isset($component[$type]) || !is_array($component[$type])){
-                    continue;
-                }
-                foreach ($component[$type] as $file){
-                    $source = $packageDir . DIRECTORY_SEPARATOR . $file;
-                    foreach ($fs->recursiveGlobFiles($source) as $filesource){
-                        // Find the final destination without the package directory.
-                        $withoutPackageDir = str_replace($packageDir . DIRECTORY_SEPARATOR, '', $filesource);
-                        $fileDest = $destination . DIRECTORY_SEPARATOR . $withoutPackageDir;
-                        // Ensure the directory is available.
-                        $fs->ensureDirectoryExists(dirname($fileDest));
-                        // If it is a .scss file
-                        if($type == 'styles' && 'scss' == pathinfo($fileDest, PATHINFO_EXTENSION)){
-                            $pathInfo = pathinfo($fileDest);
-                            $fileDest = $pathInfo['dirname'] .DIRECTORY_SEPARATOR . $pathInfo['filename'];
-                            ScssFile::build($filesource, $fileDest . '.css', ScssFile::STYLE_EXPANDED);
-                            ScssFile::build($filesource, $fileDest . '.min.css', ScssFile::STYLE_COMPRESSED);
-                            continue;
-                        }
-                        // Copy the file to its destination.
-                        copy($filesource, $fileDest);
-                    }
-                }
-            }
-        };
-
-        // Remove module function
-        $removeDir = function(Filesystem $fs, string $dir){
-            $fs->removeDirectory($dir);
-            $dir = dirname($dir);
-            if(count(scandir($dir)) == 2){
-                $fs->removeDirectory($dir);
-            }
-        };
-
-        foreach ($packages as $package) {
-            $packageType = $package->getType();
-
-            if(!in_array($packageType, [Application::COMPOSER_TYPE, 'component'])){
-                continue;
-            }
-
-            $extra = $package->getExtra();
-            $packageDir = $manager->getInstallPath($package);
-
-            if($packageType === 'component'){
-                if(!isset($extra['component']) || !is_array($extra['component'])){
-                    continue;
-                }
-                $moduleDest = $this->componentInstaller->getAssetsPath($package);
-                if(!file_exists($moduleDest)){
-                    $doCopy($fs, $extra['component'], $packageDir, $moduleDest);
-                }
-                continue;
-            }
-
-            $moduleDest = $this->assetsInstaller->getAssetsPath($package);
-
-            if(!in_array($package->getName(), $enabled)){
-                if(file_exists($moduleDest)){
-                    $removeDir($fs, $moduleDest);
-                }
-                continue;
-            }
-
-            $module = $extra['module'] ?? [];
-
-            if(!isset($module['assets']) || !is_string($module['assets'])){
-                continue;
-            }
-
-            $packageDir .= DIRECTORY_SEPARATOR . $module['assets'];
-
-            if(!file_exists($moduleDest)){
-                $doCopy($fs, $extra['component'] ?? ['files' => ['**']], $packageDir, $moduleDest);
-            }
-        }
-    }
-
 }
