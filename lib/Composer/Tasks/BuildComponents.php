@@ -31,6 +31,7 @@ class BuildComponents implements ITask
         $manager = $assetsManager->getComposer()->getInstallationManager();
         $componentInstaller = $assetsManager->getComponentInstaller();
         $assetsInstaller = $assetsManager->getAssetsInstaller();
+        $rebuild = $assetsManager->getAppInfo()->getSettings()['rebuild-components'] ?? true;
         $fs = new Filesystem();
 
         foreach ($assetsManager->getPackages() as $package){
@@ -66,7 +67,7 @@ class BuildComponents implements ITask
 
             $destination .= DIRECTORY_SEPARATOR . $name . '--build.js';
 
-            if(file_exists($destination)){
+            if(!$rebuild && file_exists($destination)){
                 continue;
             }
 
