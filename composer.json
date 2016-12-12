@@ -20,7 +20,7 @@
     "require": {
         "php": ">=7.0.0",
         "composer-plugin-api": "^1.0",
-        "composer/composer": "1.1.*",
+        "composer/composer": "1.2.*",
         "opis/routing": "5.0.x-dev",
         "opis/database": "4.0.x-dev",
         "opis/container": "3.0.x-dev",
