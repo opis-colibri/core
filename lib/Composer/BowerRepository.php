@@ -38,16 +38,16 @@ class BowerRepository extends ComposerRepository
     protected $appInfo;
     protected $cached = [];
     protected $synced = [];
+    protected $resolved = [];
     protected $bowerDir;
     protected $versionParser;
 
 
-    public function __construct(AppInfo $appInfo, array $repoConfig, IOInterface $io, Config $config, EventDispatcher $eventDispatcher = null, RemoteFilesystem $rfs = null)
+    public function __construct(array $repoConfig, IOInterface $io, Config $config, EventDispatcher $eventDispatcher = null, RemoteFilesystem $rfs = null)
     {
         $this->fs = new Filesystem();
-        $this->appInfo = $appInfo;
         $this->versionParser = new VersionParser();
-        $this->bowerDir = $appInfo->writableDir() . '/bower';
+        $this->bowerDir = $config->get('cache-dir') . '/bower';
         $this->fs->ensureDirectoryExists($this->bowerDir . '/packages');
         $this->fs->ensureDirectoryExists($this->bowerDir . '/repositories');
         GitUtil::cleanEnv();
@@ -68,9 +68,11 @@ class BowerRepository extends ComposerRepository
 
         $path = substr($name, strlen('bower__components/'));
 
-        if(strpos($name, '--') === false){
-            $json = json_decode(file_get_contents('http://bower.herokuapp.com/packages/' . $path), true);
-            if(!$json){
+        if(strpos($path, '--') === false){
+            if(!isset($this->resolved[$path])){
+                $this->resolved[$path] = $this->resolvePackage($path);
+            }
+            if(false === $json = $this->resolved[$name]){
                 return [];
             }
             $url = $json['url'];
@@ -221,6 +223,29 @@ class BowerRepository extends ComposerRepository
         }catch (\Exception $e){
             return false;
         }
+    }
+
+    protected function resolvePackage($name)
+    {
+        $packageFile = $this->bowerDir . '/packages.json';
+
+        if(file_exists($packageFile)){
+            $packages = json_decode(file_get_contents($packageFile), true);
+        } else {
+            $packages = [];
+        }
+
+        if(!isset($packages[$name])){
+            if(null !== $json = json_decode(file_get_contents('http://bower.herokuapp.com/packages/' . $name), true)){
+                $packages[$name] = [
+                    'time' => time(),
+                    'data' => $json,
+                ];
+                file_put_contents($packageFile, json_encode($packages));
+            }
+        }
+
+        return $packages[$name]['data'] ?? false;
     }
 
     protected function syncMirror($url, $dir)
