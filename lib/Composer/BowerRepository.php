@@ -27,7 +27,6 @@ use Composer\Util\Filesystem;
 use Composer\Util\Git as GitUtil;
 use Composer\Util\ProcessExecutor;
 use Composer\Util\RemoteFilesystem;
-use Opis\Colibri\AppInfo;
 use Opis\Colibri\Composer\Util\Git;
 use Opis\Colibri\Composer\Util\GitRepo;
 
@@ -227,7 +226,7 @@ class BowerRepository extends ComposerRepository
 
     protected function resolvePackage($name)
     {
-        $packageFile = $this->bowerDir . '/packages.json';
+        $packageFile = $this->bowerDir . '/registry.json';
 
         if(file_exists($packageFile)){
             $packages = json_decode(file_get_contents($packageFile), true);
