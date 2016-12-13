@@ -71,7 +71,7 @@ class BowerRepository extends ComposerRepository
             if(!isset($this->resolved[$path])){
                 $this->resolved[$path] = $this->resolvePackage($path);
             }
-            if(false === $json = $this->resolved[$name]){
+            if(false === $json = $this->resolved[$path]){
                 return [];
             }
             $url = $json['url'];
@@ -128,7 +128,6 @@ class BowerRepository extends ComposerRepository
         $packs = [];
 
         foreach ($repo->list_tags() as $tag){
-
             try{
                 $this->versionParser->normalize($tag);
             }catch (\Exception $e){

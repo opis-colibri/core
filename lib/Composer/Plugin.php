@@ -67,7 +67,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $manager = $this->composer->getInstallationManager();
         $manager->addInstaller($this->componentInstaller);
         $manager->addInstaller($this->assetsInstaller);
-        $composer->getRepositoryManager()->addRepository(new BowerRepository($this->appInfo, [
+        $composer->getRepositoryManager()->addRepository(new BowerRepository([
             'url' => 'https://opis.io'
         ], $io, $composer->getConfig(), $composer->getEventDispatcher()));
     }
