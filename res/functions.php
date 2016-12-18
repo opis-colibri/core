@@ -150,7 +150,7 @@ function transaction(callable $callback, array $options = [])
 {
     $options += [
         'connection' => 'default',
-        'return' => false,
+        'return' => null,
         'throw' => false,
         'error' => null,
         'success' => null,
@@ -177,7 +177,9 @@ function transaction(callable $callback, array $options = [])
         if(isset($options['error']) && is_callable($options['error'])){
             $options['error']($exception);
         }
-        $result = $options['return'];
+        if(isset($options['return'])){
+            $result = $options['return'];
+        }
     }
 
     return $result;
