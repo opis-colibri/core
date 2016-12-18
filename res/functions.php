@@ -162,6 +162,7 @@ function transaction(callable $callback, array $options = [])
         return $callback();
     }
 
+    $result = null;
     try{
         $pdo->beginTransaction();
         $result = $callback();
