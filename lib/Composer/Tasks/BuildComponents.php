@@ -73,7 +73,7 @@ class BuildComponents implements ITask
             $mainBundle = [
                 'files' => [],
                 'output' => $name . '--build.js',
-                'actions' => ['minify']
+                'actions' => []
             ];
 
             foreach ($component['scripts'] as $item){
