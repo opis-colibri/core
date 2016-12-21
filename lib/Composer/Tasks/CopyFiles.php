@@ -81,7 +81,7 @@ class CopyFiles implements ITask
      */
     private function doCopy(Filesystem $fs, array $component, string $packageDir, string $destination)
     {
-        $types = ['scripts', 'styles', 'files'];
+        $types = ['styles', 'files'];
         foreach ($types as $type){
             if(!isset($component[$type]) || !is_array($component[$type])){
                 continue;
