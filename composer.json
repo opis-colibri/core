@@ -13,7 +13,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Opis\\Colibri\\": "lib/"
+            "Opis\\Colibri\\": "src/"
         },
         "files": ["res/functions.php"]
     },
