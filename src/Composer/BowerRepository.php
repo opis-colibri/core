@@ -107,7 +107,7 @@ class BowerRepository extends ComposerRepository
 
         if($load){
             $this->syncMirror($url, $dir);
-            $packages = $this->mapPackages(Git::open($dir), $name, $dir);
+            $packages = $this->mapPackages(Git::open($dir), $url, $name, $dir);
             file_put_contents($targetFile, json_encode(['ttl' => time() + 24 * 3600, 'packages' => $packages]));
         }
 
@@ -123,7 +123,7 @@ class BowerRepository extends ComposerRepository
     }
 
 
-    protected function mapPackages(GitRepo $repo, $name, $dir)
+    protected function mapPackages(GitRepo $repo, $url, $name, $dir)
     {
         $packs = [];
 
@@ -138,6 +138,25 @@ class BowerRepository extends ComposerRepository
                 continue;
             }
 
+            $reference = trim($repo->run("rev-list -n 1 $tag"));
+
+            $composer = [
+                'source' => [
+                    'type' => 'git',
+                    'url' => $url,
+                    'reference' => $reference
+                ]
+            ];
+
+            if(preg_match('`^http(s)?\://github.com/([a-zA-Z0-9\-\_\.]+/[a-zA-Z0-9\-\_\.]+)(\.git)?$`', $url, $match)){
+                $composer['dist'] = [
+                    'type' => 'zip',
+                    'url' => 'https://api.github.com/repos/' . $match[2] .'/zipball/' . $reference,
+                    'reference' => $reference,
+                    'shasum' => ''
+                ];
+            }
+
             $package = [
                 'name' => $name,
                 'version' => $tag,
@@ -148,6 +167,7 @@ class BowerRepository extends ComposerRepository
                     'reference' => $tag
                 ],
                 'extra' => [
+                    'composer' => $composer,
                     'component' => [
                         'name' => $json['name'],
                         'files' => ['**']
