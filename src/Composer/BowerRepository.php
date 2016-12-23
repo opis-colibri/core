@@ -140,34 +140,16 @@ class BowerRepository extends ComposerRepository
 
             $reference = trim($repo->run("rev-list -n 1 $tag"));
 
-            $composer = [
-                'source' => [
-                    'type' => 'git',
-                    'url' => $url,
-                    'reference' => $reference
-                ]
-            ];
-
-            if(preg_match('`^http(s)?\://github.com/([a-zA-Z0-9\-\_\.]+/[a-zA-Z0-9\-\_\.]+)(\.git)?$`', $url, $match)){
-                $composer['dist'] = [
-                    'type' => 'zip',
-                    'url' => 'https://api.github.com/repos/' . $match[2] .'/zipball/' . $reference,
-                    'reference' => $reference,
-                    'shasum' => ''
-                ];
-            }
-
             $package = [
                 'name' => $name,
                 'version' => $tag,
                 'type' => 'component',
                 'source' => [
                     'type' => 'git',
-                    'url' => $dir,
-                    'reference' => $tag
+                    'url' => $url,
+                    'reference' => $reference
                 ],
                 'extra' => [
-                    'composer' => $composer,
                     'component' => [
                         'name' => $json['name'],
                         'files' => ['**']
@@ -175,6 +157,14 @@ class BowerRepository extends ComposerRepository
                 ]
             ];
 
+            if(preg_match('`^http(s)?\://github.com/([a-zA-Z0-9\-\_\.]+/[a-zA-Z0-9\-\_\.]+)\.git$`', $url, $match)){
+                $package['dist'] = [
+                    'type' => 'zip',
+                    'url' => 'https://api.github.com/repos/' . $match[2] .'/zipball/' . $reference,
+                    'reference' => $reference,
+                    'shasum' => ''
+                ];
+            }
 
             if(!isset($json['dependencies'])){
                 $packs[] = $package;
