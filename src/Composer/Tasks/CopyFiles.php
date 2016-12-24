@@ -35,6 +35,7 @@ class CopyFiles implements ITask
         $enabled = $assetsManager->getEnabledModules();
         $fs = new Filesystem();
 
+        $oldmask = umask(0002);
         foreach ($assetsManager->getPackages() as $package){
             $extra = $package->getExtra();
             $packageDir = $manager->getInstallPath($package);
@@ -71,6 +72,7 @@ class CopyFiles implements ITask
                 $this->doCopy($fs, $extra['component'] ?? ['files' => ['**']], $packageDir, $moduleDest);
             }
         }
+        umask($oldmask);
     }
 
     /**

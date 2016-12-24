@@ -35,6 +35,7 @@ class BuildComponents implements ITask
         $rebuild = $assetsManager->getAppInfo()->getSettings()['rebuild-components'] ?? true;
         $fs = new Filesystem();
 
+        $oldmask = umask(0002);
         foreach ($assetsManager->getPackages() as $package){
             $extra = $package->getExtra();
 
@@ -128,6 +129,7 @@ class BuildComponents implements ITask
                 file_put_contents($fileDestination, implode("", $content));
             }
         }
+        umask($oldmask);
     }
 
     /**

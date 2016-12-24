@@ -82,8 +82,10 @@ class BuildRequireJS implements ITask
             }
         }
 
+        $oldmask = umask(0002);
         copy(__DIR__ . '/../../../res/require.js', $assetsDir . '/require.js');
         file_put_contents($assetsDir . '/require.js', $this->getFileContent($requireJs), FILE_APPEND);
+        umask($oldmask);
     }
 
     private function getFileContent($json): string
