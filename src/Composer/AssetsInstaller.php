@@ -119,6 +119,9 @@ class AssetsInstaller extends LibraryInstaller
     protected function uninstallAssets(PackageInterface $package)
     {
         $extra = $package->getExtra();
+        if(!isset($extra['module']['assets'])){
+            return;
+        }
         $dirname = trim($extra['module']['assets'], DIRECTORY_SEPARATOR);
         $dir = $this->getInstallPath($package) . DIRECTORY_SEPARATOR . $dirname;
 
