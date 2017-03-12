@@ -91,9 +91,8 @@ class AssetsInstaller extends LibraryInstaller
             passthru("npm install --loglevel=error >> /dev/tty");
             $pack = json_decode(file_get_contents($dir . DIRECTORY_SEPARATOR . 'package.json'), true);
             if(isset($pack['scripts'])){
-                foreach ($pack['scripts'] as $script){
+                foreach ($pack['scripts'] as $script => $value){
                     if(substr($script, 0, 4) !== 'test'){
-                        echo $script, PHP_EOL;
                         chdir($dir);
                         passthru("npm run-script $script -- --log-level=error >> /dev/tty");
                     }
