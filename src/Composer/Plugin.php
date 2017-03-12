@@ -21,16 +21,11 @@ use Composer\Composer;
 use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\IO\IOInterface;
 use Composer\Package\CompletePackage;
-use Composer\Package\PackageInterface;
 use Composer\Plugin\PluginInterface;
 use Composer\Script\Event;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\Application;
-use Opis\Colibri\Composer\Installers\AssetsInstaller;
-use Opis\Colibri\Composer\Installers\ComponentInstaller;
-use Opis\Colibri\Composer\Tasks\BuildComponents;
-use Opis\Colibri\Composer\Tasks\BuildRequireJS;
-use Opis\Colibri\Composer\Tasks\CopyFiles;
+
 
 class Plugin implements PluginInterface, EventSubscriberInterface
 {
@@ -42,12 +37,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
     /** @var  AppInfo */
     protected $appInfo;
-
-    /** @var  ComponentInstaller */
-    protected $componentInstaller;
-
-    /** @var  AssetsInstaller */
-    protected $assetsInstaller;
 
     /**
      * Apply plugin modifications to Composer
@@ -62,14 +51,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $rootDir = realpath($this->composer->getConfig()->get('vendor-dir') . '/../');
         $settings = $this->composer->getPackage()->getExtra()['application'] ?? [];
         $this->appInfo = new AppInfo($rootDir, $settings);
-        $this->componentInstaller = new ComponentInstaller($this->appInfo, $io, $composer);
-        $this->assetsInstaller = new AssetsInstaller($this->appInfo, $io, $composer);
         $manager = $this->composer->getInstallationManager();
-        $manager->addInstaller($this->componentInstaller);
-        $manager->addInstaller($this->assetsInstaller);
-        $composer->getRepositoryManager()->addRepository(new BowerRepository([
-            'url' => 'https://opis.io'
-        ], $io, $composer->getConfig(), $composer->getEventDispatcher()));
+        $manager->addInstaller(new AssetsInstaller($this->appInfo, $io, $composer));
     }
 
     /**
@@ -116,12 +99,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         }
 
         $this->preparePacks($installMode, $enabled, $installed);
-
-        (new AssetsManager($this->composer,
-            $this->io, $this->appInfo,
-            $this->componentInstaller,
-            $this->assetsInstaller, $enabled))
-        ->run(new CopyFiles(), new BuildComponents(), new BuildRequireJS());
     }
 
     /**

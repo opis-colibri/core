@@ -17,7 +17,6 @@
 
 namespace Opis\Colibri\Composer;
 
-
 use Opis\Cache\CacheInterface;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\DefaultCollectorInterface;
