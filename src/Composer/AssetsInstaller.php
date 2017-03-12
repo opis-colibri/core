@@ -108,7 +108,7 @@ class AssetsInstaller extends LibraryInstaller
         } else {
             $fs = new Filesystem();
             $name = str_replace('/', '--', $package->getName());
-            $fs->copy($dir, $this->appInfo->assetsDir() . DIRECTORY_SEPARATOR . $name, true);
+            $fs->mirror($dir, $this->appInfo->assetsDir() . DIRECTORY_SEPARATOR . $name);
         }
         chdir($cwd);
     }
