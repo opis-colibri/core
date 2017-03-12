@@ -419,8 +419,9 @@ function asset(string $module, string $path, bool $full = false): string
         return getURL($assetsPath . '/' . ltrim($path, '/'), $full);
     }
 
-    $base = strpos($module, '/') === false ? $assetsPath : $assetsPath . '/module';
-    return getURL($base . '/' . $module . '/' . ltrim($path, '/'), $full);
+    $module = str_replace('/', '.', $module);
+
+    return getURL($assetsPath . '/' . $module . '/' . ltrim($path, '/'), $full);
 }
 
 /**
