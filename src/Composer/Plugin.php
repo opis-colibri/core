@@ -38,6 +38,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     /** @var  AppInfo */
     protected $appInfo;
 
+    /** @var  bool */
+    protected $isProject;
+
     /**
      * Apply plugin modifications to Composer
      *
@@ -51,8 +54,11 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $rootDir = realpath($this->composer->getConfig()->get('vendor-dir') . '/../');
         $settings = $this->composer->getPackage()->getExtra()['application'] ?? [];
         $this->appInfo = new AppInfo($rootDir, $settings);
-        $manager = $this->composer->getInstallationManager();
-        $manager->addInstaller(new AssetsInstaller($this->appInfo, $io, $composer));
+        $this->isProject = $composer->getPackage()->getType() === 'project';
+        if($this->isProject){
+            $manager = $this->composer->getInstallationManager();
+            $manager->addInstaller(new AssetsInstaller($this->appInfo, $io, $composer));
+        }
     }
 
     /**
@@ -87,6 +93,10 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     {
         $installMode = true;
         $installed = $enabled = [];
+
+        if(!$this->isProject){
+            return;
+        }
 
         if (!$this->appInfo->installMode()) {
             $installMode = false;
