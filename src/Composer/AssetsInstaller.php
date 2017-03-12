@@ -107,7 +107,7 @@ class AssetsInstaller extends LibraryInstaller
             passthru("bower install $dir --save --production >> /dev/tty");
         } else {
             $fs = new Filesystem();
-            $name = str_replace('/', '--', $package->getName());
+            $name = str_replace('/', '.', $package->getName());
             $fs->mirror($dir, $this->appInfo->assetsDir() . DIRECTORY_SEPARATOR . $name);
         }
         chdir($cwd);
@@ -134,7 +134,7 @@ class AssetsInstaller extends LibraryInstaller
             chdir($cwd);
         } else {
             $fs = new Filesystem();
-            $name = str_replace('/', '--', $package->getName());
+            $name = str_replace('/', '.', $package->getName());
             $fs->remove($this->appInfo->assetsDir() . DIRECTORY_SEPARATOR . $name);
         }
     }
