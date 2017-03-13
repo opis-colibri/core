@@ -44,17 +44,26 @@ class AssetsInstaller extends LibraryInstaller
         parent::__construct($io, $composer);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function supports($packageType)
     {
         return $packageType === Application::COMPOSER_TYPE;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
         parent::install($repo, $package);
         $this->installAssets($package);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target)
     {
         $this->uninstallAssets($initial);
@@ -62,6 +71,9 @@ class AssetsInstaller extends LibraryInstaller
         $this->installAssets($target);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
     {
         $this->uninstallAssets($package);
@@ -71,7 +83,7 @@ class AssetsInstaller extends LibraryInstaller
     /**
      * @param PackageInterface $package
      */
-    protected function installAssets(PackageInterface $package)
+    public function installAssets(PackageInterface $package)
     {
         $extra = $package->getExtra();
         if(!isset($extra['module']['assets'])){
@@ -115,7 +127,7 @@ class AssetsInstaller extends LibraryInstaller
     /**
      * @param PackageInterface $package
      */
-    protected function uninstallAssets(PackageInterface $package)
+    public function uninstallAssets(PackageInterface $package)
     {
         $extra = $package->getExtra();
         if(!isset($extra['module']['assets'])){
