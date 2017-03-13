@@ -106,7 +106,7 @@ class AssetsInstaller extends LibraryInstaller
                 foreach ($pack['scripts'] as $script => $value){
                     if(substr($script, 0, 4) !== 'test'){
                         chdir($dir);
-                        passthru("npm run-script $script -- --log-level=error >> /dev/tty");
+                        passthru("npm run-script $script -- --loglevel=error >> /dev/tty");
                     }
                 }
             }
