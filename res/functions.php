@@ -193,14 +193,14 @@ function transaction(callable $callback, array $options = [])
  */
 function entity(string $class, string $connection = 'default'): EntityQuery
 {
-    return entityManger($connection)->query($class);
+    return entityManager($connection)->query($class);
 }
 
 /**
  * @param string $connection
  * @return EntityManager
  */
-function entityManger(string $connection = 'default'): EntityManager
+function entityManager(string $connection = 'default'): EntityManager
 {
     static $em = [];
     return $em[$connection] ?? ($em[$connection] = app()->getEntityManager($connection));
