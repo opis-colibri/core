@@ -21,19 +21,19 @@ use Opis\Events\Event as BaseEvent;
 
 class CollectorEntry extends BaseEvent
 {
-    /** @var Collector */
+    /** @var CollectingContainer */
     protected $collector;
 
-    public function __construct(string $name, Collector $collector)
+    public function __construct(string $name, CollectingContainer $collector)
     {
         $this->collector = $collector;
         parent::__construct($name);
     }
 
     /**
-     * @return  Collector
+     * @return  CollectingContainer
      */
-    public function getCollector(): Collector
+    public function getCollector(): CollectingContainer
     {
         return $this->collector;
     }

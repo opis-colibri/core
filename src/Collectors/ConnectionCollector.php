@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Collector;
+use Opis\Colibri\CollectingContainer;
 use Opis\Colibri\Serializable\ConnectionList;
 
 /**
@@ -25,7 +25,7 @@ use Opis\Colibri\Serializable\ConnectionList;
  * @package Opis\Colibri\Collectors
  * @method ConnectionList   data()
  */
-class ConnectionCollector extends Collector
+class ConnectionCollector extends CollectingContainer
 {
 
     /**

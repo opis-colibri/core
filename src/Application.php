@@ -47,7 +47,7 @@ use Psr\Log\NullLogger;
 use SessionHandlerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
-class Application implements DefaultCollectorInterface
+class Application implements ISettingsContainer
 {
     const COMPOSER_TYPE = 'opis-colibri-module';
 
@@ -643,9 +643,9 @@ class Application implements DefaultCollectorInterface
 
     /**
      * @param ConfigInterface $driver
-     * @return DefaultCollectorInterface
+     * @return ISettingsContainer
      */
-    public function setConfigDriver(ConfigInterface $driver): DefaultCollectorInterface
+    public function setConfigDriver(ConfigInterface $driver): ISettingsContainer
     {
         $this->implicit['config'] = $driver;
         return $this;
@@ -653,9 +653,9 @@ class Application implements DefaultCollectorInterface
 
     /**
      * @param CacheInterface $driver
-     * @return DefaultCollectorInterface
+     * @return ISettingsContainer
      */
-    public function setCacheDriver(CacheInterface $driver): DefaultCollectorInterface
+    public function setCacheDriver(CacheInterface $driver): ISettingsContainer
     {
         $this->implicit['cache'] = $driver;
         return $this;
@@ -663,9 +663,9 @@ class Application implements DefaultCollectorInterface
 
     /**
      * @param ConfigInterface $driver
-     * @return DefaultCollectorInterface
+     * @return ISettingsContainer
      */
-    public function setTranslationsDriver(ConfigInterface $driver): DefaultCollectorInterface
+    public function setTranslationsDriver(ConfigInterface $driver): ISettingsContainer
     {
         $this->translations = $driver;
         return $this;
@@ -673,9 +673,9 @@ class Application implements DefaultCollectorInterface
 
     /**
      * @param Connection $connection
-     * @return DefaultCollectorInterface
+     * @return ISettingsContainer
      */
-    public function setDatabaseConnection(Connection $connection): DefaultCollectorInterface
+    public function setDatabaseConnection(Connection $connection): ISettingsContainer
     {
         $this->implicit['connection'] = $connection;
         return $this;
@@ -683,9 +683,9 @@ class Application implements DefaultCollectorInterface
 
     /**
      * @param SessionHandlerInterface $session
-     * @return DefaultCollectorInterface
+     * @return ISettingsContainer
      */
-    public function setSessionHandler(SessionHandlerInterface $session): DefaultCollectorInterface
+    public function setSessionHandler(SessionHandlerInterface $session): ISettingsContainer
     {
         $this->implicit['session'] = $session;
         return $this;
@@ -693,9 +693,9 @@ class Application implements DefaultCollectorInterface
 
     /**
      * @param LoggerInterface $logger
-     * @return DefaultCollectorInterface
+     * @return ISettingsContainer
      */
-    public function setDefaultLogger(LoggerInterface $logger): DefaultCollectorInterface
+    public function setDefaultLogger(LoggerInterface $logger): ISettingsContainer
     {
         $this->implicit['logger'] = $logger;
         return $this;
@@ -927,17 +927,17 @@ class Application implements DefaultCollectorInterface
     }
 
     /**
-     * @return BootstrapInterface
+     * @return IBootstrap
      */
-    protected function getBootstrapInstance(): BootstrapInterface
+    protected function getBootstrapInstance(): IBootstrap
     {
         if(!$this->info->installMode()){
             return require $this->info->bootstrapFile();
         }
 
-        return new class implements BootstrapInterface
+        return new class implements IBootstrap
         {
-            public function bootstrap(DefaultCollectorInterface $app)
+            public function bootstrap(ISettingsContainer $app)
             {
                 $app->setCacheDriver(new MemoryDriver())
                     ->setConfigDriver(new EphemeralConfig())

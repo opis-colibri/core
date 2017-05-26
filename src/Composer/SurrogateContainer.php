@@ -19,13 +19,13 @@ namespace Opis\Colibri\Composer;
 
 use Opis\Cache\CacheInterface;
 use Opis\Colibri\AppInfo;
-use Opis\Colibri\DefaultCollectorInterface;
+use Opis\Colibri\ISettingsContainer;
 use Opis\Config\ConfigInterface;
 use Opis\Database\Connection;
 use Psr\Log\LoggerInterface;
 use SessionHandlerInterface;
 
-class DefaultCollector implements DefaultCollectorInterface
+class SurrogateContainer implements ISettingsContainer
 {
     /** @var  ConfigInterface */
     protected $config;
@@ -70,9 +70,9 @@ class DefaultCollector implements DefaultCollectorInterface
 
     /**
      * @param ConfigInterface $driver
-     * @return DefaultCollectorInterface
+     * @return ISettingsContainer
      */
-    public function setConfigDriver(ConfigInterface $driver): DefaultCollectorInterface
+    public function setConfigDriver(ConfigInterface $driver): ISettingsContainer
     {
         $this->config = $driver;
         return $this;
@@ -80,45 +80,45 @@ class DefaultCollector implements DefaultCollectorInterface
 
     /**
      * @param CacheInterface $driver
-     * @return DefaultCollectorInterface
+     * @return ISettingsContainer
      */
-    public function setCacheDriver(CacheInterface $driver): DefaultCollectorInterface
+    public function setCacheDriver(CacheInterface $driver): ISettingsContainer
     {
         return $this;
     }
 
     /**
      * @param ConfigInterface $driver
-     * @return DefaultCollectorInterface
+     * @return ISettingsContainer
      */
-    public function setTranslationsDriver(ConfigInterface $driver): DefaultCollectorInterface
+    public function setTranslationsDriver(ConfigInterface $driver): ISettingsContainer
     {
         return $this;
     }
 
     /**
      * @param Connection $connection
-     * @return DefaultCollectorInterface
+     * @return ISettingsContainer
      */
-    public function setDatabaseConnection(Connection $connection): DefaultCollectorInterface
+    public function setDatabaseConnection(Connection $connection): ISettingsContainer
     {
         return $this;
     }
 
     /**
      * @param SessionHandlerInterface $session
-     * @return DefaultCollectorInterface
+     * @return ISettingsContainer
      */
-    public function setSessionHandler(SessionHandlerInterface $session): DefaultCollectorInterface
+    public function setSessionHandler(SessionHandlerInterface $session): ISettingsContainer
     {
         return $this;
     }
 
     /**
      * @param LoggerInterface $logger
-     * @return DefaultCollectorInterface
+     * @return ISettingsContainer
      */
-    public function setDefaultLogger(LoggerInterface $logger): DefaultCollectorInterface
+    public function setDefaultLogger(LoggerInterface $logger): ISettingsContainer
     {
         return $this;
     }

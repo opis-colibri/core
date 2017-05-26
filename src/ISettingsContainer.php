@@ -23,41 +23,41 @@ use SessionHandlerInterface;
 use Opis\Database\Connection;
 use Psr\Log\LoggerInterface;
 
-interface DefaultCollectorInterface
+interface ISettingsContainer
 {
     /**
      * @param ConfigInterface $driver
-     * @return DefaultCollectorInterface
+     * @return ISettingsContainer
      */
     public function setConfigDriver(ConfigInterface $driver): self;
 
     /**
      * @param CacheInterface $driver
-     * @return DefaultCollectorInterface
+     * @return ISettingsContainer
      */
     public function setCacheDriver(CacheInterface $driver): self;
 
     /**
      * @param ConfigInterface $driver
-     * @return DefaultCollectorInterface
+     * @return ISettingsContainer
      */
     public function setTranslationsDriver(ConfigInterface $driver): self;
 
     /**
      * @param Connection $connection
-     * @return DefaultCollectorInterface
+     * @return ISettingsContainer
      */
     public function setDatabaseConnection(Connection $connection): self;
 
     /**
      * @param SessionHandlerInterface $session
-     * @return DefaultCollectorInterface
+     * @return ISettingsContainer
      */
     public function setSessionHandler(SessionHandlerInterface $session): self;
 
     /**
      * @param LoggerInterface $logger
-     * @return DefaultCollectorInterface
+     * @return ISettingsContainer
      */
     public function setDefaultLogger(LoggerInterface $logger): self;
 

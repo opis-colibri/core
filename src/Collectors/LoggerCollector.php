@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Collector;
+use Opis\Colibri\CollectingContainer;
 use Opis\Colibri\Serializable\StorageCollection;
 use Psr\Log\LoggerInterface;
 
@@ -26,7 +26,7 @@ use Psr\Log\LoggerInterface;
  * @package Opis\Colibri\Collectors
  * @method StorageCollection data()
  */
-class LoggerCollector extends Collector
+class LoggerCollector extends CollectingContainer
 {
     /**
      * Constructor

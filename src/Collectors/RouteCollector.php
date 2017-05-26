@@ -17,19 +17,18 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Collector;
+use Opis\Colibri\CollectingContainer;
 use Opis\Colibri\Groups\RouteGroup;
 use Opis\Colibri\HttpRoute;
 use Opis\HttpRouting\RouteCollection;
 
 /**
  * Class RouteCollector
- * @package Opis\Colibri\Collectors
  *
  * @property RouteCollection $dataObject
  * @method RouteCollection data()
  */
-class RouteCollector extends Collector
+class RouteCollector extends CollectingContainer
 {
     /** @var string */
     protected $prefix = '';
@@ -126,7 +125,7 @@ class RouteCollector extends Collector
      */
     protected function handle($path, $action, $name = null)
     {
-        $route = new HttpRoute($this->prefix . $path, $action, $name);
+        $route = new HttpRoute($path, $action, $name);
         $this->dataObject->addRoute($route);
         return $route;
     }

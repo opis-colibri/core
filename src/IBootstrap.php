@@ -17,11 +17,11 @@
 
 namespace Opis\Colibri;
 
-interface BootstrapInterface
+interface IBootstrap
 {
     /**
-     * @param DefaultCollectorInterface $collector
+     * @param ISettingsContainer $collector
      * @return mixed
      */
-    public function bootstrap(DefaultCollectorInterface $collector);
+    public function bootstrap(ISettingsContainer $collector);
 }

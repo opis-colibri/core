@@ -25,9 +25,9 @@ abstract class ItemCollector
     /**
      * Collect items
      *
-     * @param   Collector $collector
+     * @param   CollectingContainer $collector
      */
-    public function collect(Collector $collector)
+    public function collect(CollectingContainer $collector)
     {
         $reflection = new ReflectionObject($this);
 

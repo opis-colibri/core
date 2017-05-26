@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Collector;
+use Opis\Colibri\CollectingContainer;
 use Opis\Routing\Route;
 use Opis\View\RouteCollection;
 
@@ -28,7 +28,7 @@ use Opis\View\RouteCollection;
  *
  * @method RouteCollection  data()
  */
-class ViewCollector extends Collector
+class ViewCollector extends CollectingContainer
 {
 
     /**
