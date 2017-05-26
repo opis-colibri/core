@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Collectors;
 
 use Closure;
-use Opis\Colibri\Collector;
+use Opis\Colibri\CollectingContainer;
 use Opis\Colibri\Container;
 
 /**
@@ -29,7 +29,7 @@ use Opis\Colibri\Container;
  * @method Container    data()
  * @property Container $dataObject
  */
-class ContractCollector extends Collector
+class ContractCollector extends CollectingContainer
 {
 
     /**

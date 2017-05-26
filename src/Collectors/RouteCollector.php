@@ -17,11 +17,11 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Collector;
+use Opis\Colibri\CollectingContainer;
 use Opis\Colibri\HttpRoute;
 use Opis\HttpRouting\RouteCollection;
 
-class RouteCollector extends Collector
+class RouteCollector extends CollectingContainer
 {
 
     /**

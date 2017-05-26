@@ -17,10 +17,10 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Collector;
+use Opis\Colibri\CollectingContainer;
 use Opis\Colibri\Serializable\ClassList;
 
-abstract class AbstractClassCollector extends Collector
+abstract class AbstractClassCollector extends CollectingContainer
 {
 
     /**

@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Collector;
+use Opis\Colibri\CollectingContainer;
 use Opis\Colibri\Serializable\StorageCollection;
 use Opis\Config\ConfigInterface;
 
@@ -28,7 +28,7 @@ use Opis\Config\ConfigInterface;
  *
  * @method StorageCollection    data()
  */
-class ConfigCollector extends Collector
+class ConfigCollector extends CollectingContainer
 {
 
     /**

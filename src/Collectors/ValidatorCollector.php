@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Collector;
+use Opis\Colibri\CollectingContainer;
 use Opis\Colibri\Serializable\CallbackList;
 
 /**
@@ -25,7 +25,7 @@ use Opis\Colibri\Serializable\CallbackList;
  * @package Opis\Colibri\Collectors
  * @method CallbackList data()
  */
-class ValidatorCollector extends Collector
+class ValidatorCollector extends CollectingContainer
 {
 
     /**

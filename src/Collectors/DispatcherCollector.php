@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Collector;
+use Opis\Colibri\CollectingContainer;
 use Opis\Routing\DispatcherCollection;
 
 /**
@@ -26,7 +26,7 @@ use Opis\Routing\DispatcherCollection;
  * @method DispatcherCollection data()
  * @property DispatcherCollection $dataObject
  */
-class DispatcherCollector extends Collector
+class DispatcherCollector extends CollectingContainer
 {
     /**
      * Constructor

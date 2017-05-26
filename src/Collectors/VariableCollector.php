@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Collector;
+use Opis\Colibri\CollectingContainer;
 use Opis\Colibri\Serializable\VariablesList;
 
 /**
@@ -27,7 +27,7 @@ use Opis\Colibri\Serializable\VariablesList;
  *
  * @method VariablesList    data()
  */
-class VariableCollector extends Collector
+class VariableCollector extends CollectingContainer
 {
 
     /**
