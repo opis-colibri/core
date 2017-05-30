@@ -15,11 +15,13 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri;
+namespace Opis\Colibri\Collector;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Opis\Cache\CacheInterface;
 use Opis\Colibri\Annotations\Collector as CollectorAnnotation;
+use Opis\Colibri\Container;
+use Opis\Colibri\ModuleCollector;
 use Opis\Config\ConfigInterface;
 use Opis\Database\Connection;
 use Opis\Database\Database;
@@ -41,7 +43,7 @@ use function Opis\Colibri\Functions\{app, cache, emit, config};
  * @author mari
  *
  */
-class CollectorManager
+class Manager
 {
     /** @var array */
     protected $cache = array();
@@ -49,7 +51,7 @@ class CollectorManager
     /** @var   Container */
     protected $container;
 
-    /** @var  CollectorTarget */
+    /** @var  Target */
     protected $collectorTarget;
 
     /** @var    boolean */
@@ -61,7 +63,7 @@ class CollectorManager
     public function __construct()
     {
         $this->container = $container = new Container();
-        $this->collectorTarget = new CollectorTarget();
+        $this->collectorTarget = new Target();
 
         foreach (app()->getCollectorList() as $name => $collector) {
             $container->alias($collector['class'], $name);
@@ -255,7 +257,7 @@ class CollectorManager
                 $hit = true;
                 $this->includeCollectors();
                 $instance = $this->container->make($entry);
-                return $this->collectorTarget->dispatch(new CollectorEntry($entry, $instance))->getCollector()->data();
+                return $this->collectorTarget->dispatch(new Entry($entry, $instance))->getCollector()->data();
             });
 
             if ($hit) {

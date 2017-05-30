@@ -15,11 +15,12 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri;
+namespace Opis\Colibri\Collector;
 
+use Opis\Colibri\CollectingContainer;
 use Opis\Events\Event as BaseEvent;
 
-class CollectorEntry extends BaseEvent
+class Entry extends BaseEvent
 {
     /** @var CollectingContainer */
     protected $collector;
