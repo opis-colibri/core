@@ -25,6 +25,7 @@ use Composer\Package\CompletePackage;
 use Composer\Repository\InstalledFilesystemRepository;
 use Opis\Cache\CacheInterface;
 use Opis\Cache\Drivers\Memory as MemoryDriver;
+use Opis\Colibri\Collector\Manager as CollectorManager;
 use Opis\Colibri\Composer\CLI;
 use Opis\Colibri\Composer\Plugin;
 use Opis\Config\ConfigInterface;

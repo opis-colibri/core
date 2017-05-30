@@ -15,25 +15,25 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri;
+namespace Opis\Colibri\Collector;
 
 use InvalidArgumentException;
 use Opis\Events\Event as BaseEvent;
 use Opis\Events\EventTarget;
 use Opis\Routing\Route;
 
-class CollectorTarget extends EventTarget
+class Target extends EventTarget
 {
 
     /**
-     * @param BaseEvent|CollectorEntry $event
+     * @param BaseEvent|Entry $event
      *
      * @return BaseEvent
      */
     public function dispatch(BaseEvent $event): BaseEvent
     {
-        if (!$event instanceof CollectorEntry) {
-            throw new InvalidArgumentException('Invalid event type. Expected ' . CollectorEntry::class);
+        if (!$event instanceof Entry) {
+            throw new InvalidArgumentException('Invalid event type. Expected ' . Entry::class);
         }
 
         $this->collection->sort();
