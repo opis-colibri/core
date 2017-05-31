@@ -31,7 +31,7 @@ trait RenderableViewTrait
     {
         if($this->renderedContent === null){
             try{
-                $this->renderedContent = \Opis\Colibri\Functions\render($this);
+                $this->renderedContent = \Opis\Colibri\render($this);
             }catch (\Exception $e){
                 $this->renderedContent = $e->getMessage();
             }

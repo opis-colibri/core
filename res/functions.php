@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Functions;
+namespace Opis\Colibri;
 
 use Opis\Cache\CacheInterface;
 use Opis\Colibri\AppInfo;

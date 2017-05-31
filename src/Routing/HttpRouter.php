@@ -24,7 +24,7 @@ use Opis\HttpRouting\DispatcherResolver;
 use Opis\HttpRouting\Router;
 use Opis\Routing\Context as BaseContext;
 use Opis\Routing\Router as AliasRouter;
-use function Opis\Colibri\Functions\{
+use function Opis\Colibri\{
     app, view
 };
 
