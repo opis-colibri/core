@@ -15,8 +15,9 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri;
+namespace Opis\Colibri\Collector;
 
+use Opis\Colibri\CollectingContainer;
 use ReflectionMethod;
 use ReflectionObject;
 
