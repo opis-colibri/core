@@ -22,7 +22,7 @@ use Opis\Routing\DispatcherCollection;
 
 /**
  * Class DispatcherCollector
- * @package Opis\Colibri\Collectors
+ * @package Opis\Colibri\Containers
  * @method DispatcherCollection data()
  * @property DispatcherCollection $dataObject
  */

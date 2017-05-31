@@ -24,7 +24,7 @@ use Opis\View\EngineResolver;
 /**
  * Class ViewEngineCollector
  *
- * @package Opis\Colibri\Collectors
+ * @package Opis\Colibri\Containers
  *
  * @method EngineResolver   data()
  * @property EngineResolver $dataObject

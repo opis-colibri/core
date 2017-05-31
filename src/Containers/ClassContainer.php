@@ -20,11 +20,11 @@ namespace Opis\Colibri\Containers;
 use Opis\Colibri\CollectingContainer;
 use Opis\Colibri\Serializable\ClassList;
 
-abstract class AbstractClassCollector extends CollectingContainer
+abstract class ClassContainer extends CollectingContainer
 {
 
     /**
-     * AbstractClassCollector constructor.
+     * ClassContainer constructor.
      */
     public function __construct()
     {

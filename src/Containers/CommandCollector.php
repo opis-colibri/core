@@ -22,7 +22,7 @@ use Opis\Colibri\Serializable\CallbackList;
 
 /**
  * Class CommandCollector
- * @package Opis\Colibri\Collectors
+ * @package Opis\Colibri\Containers
  * @method  CallbackList    data()
  */
 class CommandCollector extends CollectingContainer

@@ -23,7 +23,7 @@ use Opis\Routing\Route;
 
 /**
  * Class RouteAliasCollector
- * @package Opis\Colibri\Collectors
+ * @package Opis\Colibri\Containers
  * @method RouteCollection data()
  * @property \Opis\Routing\RouteCollection $dataObject
  */
@@ -43,7 +43,7 @@ class RouteAliasCollector extends CollectingContainer
      * @param   string $path The path to match
      * @param   callable $action An action that will be executed
      *
-     * @return  Route
+     * @return  RouteCollector
      */
     public function alias(string $path, callable $action): Route
     {
