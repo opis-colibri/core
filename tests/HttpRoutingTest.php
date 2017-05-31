@@ -46,12 +46,9 @@ class HttpRoutingTest extends TestCase
             ->accessDenied(function (){
                 return 403;
             });
-    }
 
-    public function testRoute()
-    {
         $this->route->get('/', function(){
-            return 'ok';
+            return 'home';
         });
 
         $this->route->get('/foo', function(){
@@ -63,15 +60,66 @@ class HttpRoutingTest extends TestCase
         })->filter('test', function(){
             return false;
         })->access('test');
-        $this->route->get('/param/{x}', function($x){
+
+        $this->route->get('/param1/{x}', function($x){
             return $x;
         });
 
-        $this->assertEquals('ok', $this->app->run(Request::create('/')));
-        $this->assertEquals('foo', $this->app->run(Request::create('/foo')));
-        $this->assertEquals(404, $this->app->run(Request::create('/404')));
-        $this->assertEquals(403, $this->app->run(Request::create('/bar')));
-        $this->assertEquals('foo', $this->app->run(Request::create('/param/foo')));
+        $this->route->get('/param2/{x?}', function($x = 'foo'){
+           return $x;
+        });
+
+        $this->route->get('/param3/{x?}', function($x){
+            return $x;
+        })->implicit('x', 'foo');
+
+        $this->route->get('/bind/{x}', function($x){
+           return $x;
+        })
+        ->bind('x', function($x){
+            return strtoupper($x);
+        });
     }
 
+    public function testHomePage()
+    {
+        $this->assertEquals('home', $this->app->run(Request::create('/')));
+    }
+
+    public function testRoute()
+    {
+        $this->assertEquals('foo', $this->app->run(Request::create('/foo')));
+    }
+
+    public function test404()
+    {
+        $this->assertEquals(404, $this->app->run(Request::create('/404')));
+    }
+
+    public function test403()
+    {
+        $this->assertEquals(403, $this->app->run(Request::create('/bar')));
+    }
+
+    public function testParam()
+    {
+        $this->assertEquals('foo', $this->app->run(Request::create('/param1/foo')));
+    }
+
+    public function testOptionalParam()
+    {
+        $this->assertEquals('foo', $this->app->run(Request::create('/param2')));
+        $this->assertEquals('bar', $this->app->run(Request::create('/param2/bar')));
+    }
+
+    public function testOptionalImplicitParam()
+    {
+        $this->assertEquals('foo', $this->app->run(Request::create('/param2')));
+        $this->assertEquals('bar', $this->app->run(Request::create('/param2/bar')));
+    }
+
+    public function testBindParam()
+    {
+        $this->assertEquals('FOO', $this->app->run(Request::create('/bind/foo')));
+    }
 }
