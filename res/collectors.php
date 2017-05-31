@@ -28,10 +28,6 @@ return array(
         'class' => 'Opis\\Colibri\\Containers\\ViewCollector',
         'description' => 'Collects views',
     ),
-    'dispatchers' => array(
-        'class' => 'Opis\\Colibri\\Containers\\DispatcherCollector',
-        'description' => 'Collects dispatchers',
-    ),
     'contracts' => array(
         'class' => 'Opis\\Colibri\\Containers\\ContractCollector',
         'description' => 'Collects contracts',
