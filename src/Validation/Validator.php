@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri;
+namespace Opis\Colibri\Validation;
 
 use Opis\Validation\DefaultValidatorTrait;
 use Opis\Validation\Validator as BaseValidator;

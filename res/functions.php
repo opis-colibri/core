@@ -20,7 +20,7 @@ namespace Opis\Colibri\Functions;
 use Opis\Cache\CacheInterface;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\Application;
-use Opis\Colibri\Validator;
+use Opis\Colibri\Validation\Validator;
 use Opis\Colibri\View;
 use Opis\Colibri\Module;
 use Opis\Colibri\Serializable\ControllerCallback;

@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Validators;
+namespace Opis\Colibri\Validation\Validators;
 
 use Opis\Validation\ValidatorInterface;
 use function Opis\Colibri\Functions\{validateCSRFToken};
