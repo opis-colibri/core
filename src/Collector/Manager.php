@@ -21,7 +21,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Opis\Cache\CacheInterface;
 use Opis\Colibri\Annotations\Collector as CollectorAnnotation;
 use Opis\Colibri\Container;
-use Opis\Colibri\ModuleCollector;
+use Opis\Colibri\Collector;
 use Opis\Config\ConfigInterface;
 use Opis\Database\Connection;
 use Opis\Database\Database;
@@ -343,7 +343,7 @@ class Manager
 
             $reflection = new ReflectionClass($instance);
 
-            if (!$reflection->isSubclassOf(ModuleCollector::class)) {
+            if (!$reflection->isSubclassOf(Collector::class)) {
                 continue;
             }
 

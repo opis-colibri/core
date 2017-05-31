@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri;
 
-abstract class ModuleInstaller
+abstract class Installer
 {
     /**
      * Install action

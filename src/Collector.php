@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri;
 
-abstract class ModuleCollector
+abstract class Collector
 {
 
 }
