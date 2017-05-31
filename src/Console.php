@@ -19,7 +19,7 @@ namespace Opis\Colibri;
 
 use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\Console\Command\Command;
-use function Opis\Colibri\Functions\{app};
+
 
 class Console
 {

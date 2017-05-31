@@ -17,7 +17,6 @@
 
 namespace Opis\Colibri;
 
-use function Opis\Colibri\Functions\{app};
 use Opis\Validation\Placeholder;
 
 class Translator
