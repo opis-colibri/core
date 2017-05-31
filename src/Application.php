@@ -29,6 +29,7 @@ use Opis\Colibri\Collector\Manager as CollectorManager;
 use Opis\Colibri\Composer\CLI;
 use Opis\Colibri\Composer\Plugin;
 use Opis\Colibri\Routing\HttpRouter;
+use Opis\Colibri\Util\CSRFToken;
 use Opis\Colibri\Validation\Validator;
 use Opis\Colibri\Validation\ValidatorCollection;
 use Opis\Config\ConfigInterface;
