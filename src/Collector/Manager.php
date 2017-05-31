@@ -50,8 +50,8 @@ class Manager
     /** @var   Container */
     protected $container;
 
-    /** @var  Target */
-    protected $collectorTarget;
+    /** @var Router */
+    protected $router;
 
     /** @var    boolean */
     protected $collectorsIncluded = false;
@@ -62,7 +62,7 @@ class Manager
     public function __construct()
     {
         $this->container = $container = new Container();
-        $this->collectorTarget = new Target();
+        $this->router = new Router();
 
         foreach (app()->getCollectorList() as $name => $collector) {
             $container->alias($collector['class'], $name);
@@ -247,7 +247,7 @@ class Manager
                 $hit = true;
                 $this->includeCollectors();
                 $instance = $this->container->make($entry);
-                return $this->collectorTarget->dispatch(new Entry($entry, $instance))->getCollector()->data();
+                return $this->router->route(new Entry($entry, $instance))->data();
             });
 
             if ($hit) {
@@ -359,7 +359,7 @@ class Manager
                     $instance->{$name}($collector);
                 };
 
-                $this->collectorTarget->handle(strtolower($annotation->name), $callback, $annotation->priority);
+                $this->router->handle($annotation->name, $callback, $annotation->priority);
             }
         }
     }

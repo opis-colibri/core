@@ -17,6 +17,11 @@
         },
         "files": ["res/functions.php"]
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Opis\\Colibri\\Test\\": "tests/"
+        }
+    },
     "require": {
         "php": ">=7.0.0",
         "opis/closure": "3.0.1 as 2.4.1",
@@ -37,6 +42,9 @@
         "symfony/filesystem": "^3.1.3",
         "doctrine/annotations": "1.2.*",
         "psr/log": "~1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "5.4.*"
     },
     "config": {
         "preferred-install": "dist"

@@ -52,7 +52,7 @@ class HttpRouter extends Router
         $router = new AliasRouter(app()->getCollector()->getRouteAliases());
         $alias = $router->route(new BaseContext($context->path()));
 
-        if ($alias !== false) {
+        if ($alias !== null) {
             $context = new Context(
                 (string) $alias, $context->domain(), $context->method(), $context->isSecure(), $context->request()
             );
