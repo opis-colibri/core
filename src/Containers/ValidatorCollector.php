@@ -22,7 +22,7 @@ use Opis\Colibri\Serializable\CallbackList;
 
 /**
  * Class ValidatorCollector
- * @package Opis\Colibri\Collectors
+ * @package Opis\Colibri\Containers
  * @method CallbackList data()
  */
 class ValidatorCollector extends CollectingContainer

@@ -24,7 +24,7 @@ use Opis\Colibri\Container;
 /**
  * Class ContractCollector
  *
- * @package Opis\Colibri\Collectors
+ * @package Opis\Colibri\Containers
  *
  * @method Container    data()
  * @property Container $dataObject

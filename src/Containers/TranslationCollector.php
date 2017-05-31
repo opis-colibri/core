@@ -22,7 +22,7 @@ use Opis\Colibri\Serializable\Translations;
 
 /**
  * Class TranslationCollector
- * @package Opis\Colibri\Collectors
+ * @package Opis\Colibri\Containers
  * @method Translations data()
  */
 class TranslationCollector extends CollectingContainer

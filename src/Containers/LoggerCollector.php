@@ -23,7 +23,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Class LoggerCollector
- * @package Opis\Colibri\Collectors
+ * @package Opis\Colibri\Containers
  * @method StorageCollection data()
  */
 class LoggerCollector extends CollectingContainer
