@@ -15,42 +15,40 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors;
+namespace Opis\Colibri\Containers;
 
 use Opis\Colibri\CollectingContainer;
-use Opis\Events\RouteCollection;
-use Opis\Routing\Route;
+use Opis\Colibri\Serializable\Translations;
 
 /**
- * Class EventHandlerCollector
+ * Class TranslationCollector
  * @package Opis\Colibri\Collectors
- * @method RouteCollection data()
- * @property RouteCollection $dataObject
+ * @method Translations data()
  */
-class EventHandlerCollector extends CollectingContainer
+class TranslationCollector extends CollectingContainer
 {
+    protected $language;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        parent::__construct(new RouteCollection());
+        parent::__construct(new Translations());
     }
 
     /**
-     * Register a new event handler
+     * Add the sentences that will be translated from english to current used language
      *
-     * @param   string $event Event name
-     * @param   callable $callback A callback that will be executed
-     * @param   int $priority Event handler's priority
-     *
-     * @return  Route
+     * @param   string $language Language
+     * @param   array $sentences Translated sentences
      */
-    public function handle(string $event, callable $callback, int $priority = 0): Route
+    public function translate($language, array $sentences)
     {
-        $handler = new Route($event, $callback);
-        $this->dataObject->addRoute($handler)->sort();
-        return $handler->set('priority', $priority);
+        if (empty($sentences)) {
+            return;
+        }
+
+        $this->dataObject->translate($language, $sentences);
     }
 }

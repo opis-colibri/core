@@ -15,35 +15,39 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors;
+namespace Opis\Colibri\Containers;
 
 use Opis\Colibri\CollectingContainer;
 use Opis\Colibri\Serializable\CallbackList;
 
 /**
- * Class CommandCollector
+ * Class ValidatorCollector
  * @package Opis\Colibri\Collectors
- * @method  CallbackList    data()
+ * @method CallbackList data()
  */
-class CommandCollector extends CollectingContainer
+class ValidatorCollector extends CollectingContainer
 {
 
     /**
-     * CommandCollector constructor
+     * Constructor
      */
     public function __construct()
     {
-        parent::__construct(new CallbackList());
+        parent::__construct(array());
     }
+
 
     /**
      * @param string $name
-     * @param callable $callback
-     * @return CommandCollector
+     * @param string $class
+     * @return $this
      */
-    public function register(string $name, callable $callback): self
+    public function register($name, $class)
     {
-        $this->dataObject->add($name, $callback);
+        if (class_exists($class)) {
+            $this->dataObject[$name] = $class;
+        }
+
         return $this;
     }
 }

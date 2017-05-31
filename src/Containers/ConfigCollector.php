@@ -15,20 +15,20 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors;
+namespace Opis\Colibri\Containers;
 
 use Opis\Colibri\CollectingContainer;
-use Opis\Routing\Route;
-use Opis\View\RouteCollection;
+use Opis\Colibri\Serializable\StorageCollection;
+use Opis\Config\ConfigInterface;
 
 /**
- * Class ViewCollector
+ * Class ConfigCollector
  *
  * @package Opis\Colibri\Collectors
  *
- * @method RouteCollection  data()
+ * @method StorageCollection    data()
  */
-class ViewCollector extends CollectingContainer
+class ConfigCollector extends CollectingContainer
 {
 
     /**
@@ -36,22 +36,27 @@ class ViewCollector extends CollectingContainer
      */
     public function __construct()
     {
-        parent::__construct(new RouteCollection());
+        parent::__construct(new StorageCollection(self::class . '::factory'));
     }
 
     /**
-     * Defines a new view route
-     *
-     * @param   string $pattern View's pattern
-     * @param   callable $resolver A callback that will resolve a view route into a path
-     * @param   int $priority Route's priority
-     *
-     * @return  Route
+     * @param string $storage
+     * @param callable $constructor
+     * @return ConfigCollector
      */
-    public function handle(string $pattern, callable $resolver, int $priority = 0)
+    public function register(string $storage, callable $constructor): self
     {
-        $route = new Route($pattern, $resolver);
-        $this->dataObject->addRoute($route);
-        return $route->set('priority', $priority);
+        $this->dataObject->add($storage, $constructor);
+        return $this;
+    }
+
+    /**
+     * @param string $storage
+     * @param callable $factory
+     * @return ConfigInterface
+     */
+    public static function factory(string $storage, callable $factory): ConfigInterface
+    {
+        return $factory($storage);
     }
 }

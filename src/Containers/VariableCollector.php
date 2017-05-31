@@ -15,17 +15,19 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors;
+namespace Opis\Colibri\Containers;
 
 use Opis\Colibri\CollectingContainer;
-use Opis\Colibri\Serializable\CallbackList;
+use Opis\Colibri\Serializable\VariablesList;
 
 /**
- * Class ValidatorCollector
+ * Class VariableCollector
+ *
  * @package Opis\Colibri\Collectors
- * @method CallbackList data()
+ *
+ * @method VariablesList    data()
  */
-class ValidatorCollector extends CollectingContainer
+class VariableCollector extends CollectingContainer
 {
 
     /**
@@ -33,19 +35,34 @@ class ValidatorCollector extends CollectingContainer
      */
     public function __construct()
     {
-        parent::__construct(array());
+        parent::__construct(new VariablesList());
     }
 
+    /**
+     * Register a new variable
+     *
+     * @param   string $name Variable's name
+     * @param   mixed $value Variable's value
+     *
+     * @return  self
+     */
+    public function register($name, $value)
+    {
+        $this->dataObject->add($name, $value);
+        return $this;
+    }
 
     /**
-     * @param string $name
-     * @param string $class
-     * @return $this
+     * Register multiple variable at once
+     *
+     * @param   array $variables An array of variables that will be registered
+     *
+     * @return  self
      */
-    public function register($name, $class)
+    public function bulkRegister(array $variables)
     {
-        if (class_exists($class)) {
-            $this->dataObject[$name] = $class;
+        foreach ($variables as $name => &$value) {
+            $this->dataObject->add($name, $value);
         }
 
         return $this;

@@ -15,19 +15,19 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors;
+namespace Opis\Colibri\Containers;
 
 use Opis\Colibri\CollectingContainer;
 use Opis\Colibri\Serializable\StorageCollection;
-use Psr\Log\LoggerInterface;
 
 /**
- * Class LoggerCollector
+ * Class SessionCollector
  * @package Opis\Colibri\Collectors
  * @method StorageCollection data()
  */
-class LoggerCollector extends CollectingContainer
+class SessionCollector extends CollectingContainer
 {
+
     /**
      * Constructor
      */
@@ -37,11 +37,11 @@ class LoggerCollector extends CollectingContainer
     }
 
     /**
-     * @param $storage
+     * @param string $storage
      * @param callable $constructor
-     * @return LoggerCollector
+     * @return SessionCollector
      */
-    public function register($storage, callable $constructor): self
+    public function register(string $storage, callable $constructor): self
     {
         $this->dataObject->add($storage, $constructor);
         return $this;
@@ -50,9 +50,9 @@ class LoggerCollector extends CollectingContainer
     /**
      * @param string $storage
      * @param callable $factory
-     * @return LoggerInterface
+     * @return \SessionHandlerInterface
      */
-    public static function factory(string $storage, callable $factory): LoggerInterface
+    public static function factory(string $storage, callable $factory): \SessionHandlerInterface
     {
         return $factory($storage);
     }

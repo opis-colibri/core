@@ -15,49 +15,40 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors;
+namespace Opis\Colibri\Containers;
 
-use Opis\Cache\CacheInterface;
 use Opis\Colibri\CollectingContainer;
-use Opis\Colibri\Serializable\StorageCollection;
+use Opis\Routing\RouteCollection;
+use Opis\Routing\Route;
 
 /**
- * Class CacheCollector
- *
+ * Class RouteAliasCollector
  * @package Opis\Colibri\Collectors
- *
- * @method  StorageCollection    data()
- * @property StorageCollection $dataObject
+ * @method RouteCollection data()
+ * @property \Opis\Routing\RouteCollection $dataObject
  */
-class CacheCollector extends CollectingContainer
+class RouteAliasCollector extends CollectingContainer
 {
-
     /**
      * Constructor
      */
     public function __construct()
     {
-        parent::__construct(new StorageCollection(self::class . '::factory'));
+        parent::__construct(new RouteCollection());
     }
 
     /**
-     * @param $storage
-     * @param callable $constructor
-     * @return CacheCollector
+     * Defines an alias for a route or a group of routes
+     *
+     * @param   string $path The path to match
+     * @param   callable $action An action that will be executed
+     *
+     * @return  Route
      */
-    public function register($storage, callable $constructor): self
+    public function alias(string $path, callable $action): Route
     {
-        $this->dataObject->add($storage, $constructor);
-        return $this;
-    }
-
-    /**
-     * @param string $storage
-     * @param callable $factory
-     * @return CacheInterface
-     */
-    public static function factory(string $storage, callable $factory): CacheInterface
-    {
-        return $factory($storage);
+        $route = new Route($path, $action);
+        $this->dataObject->addRoute($route);
+        return $route;
     }
 }

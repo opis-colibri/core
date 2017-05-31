@@ -15,45 +15,35 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors;
+namespace Opis\Colibri\Containers;
 
 use Opis\Colibri\CollectingContainer;
-use Opis\Colibri\Serializable\StorageCollection;
+use Opis\Routing\DispatcherCollection;
 
 /**
- * Class SessionCollector
+ * Class DispatcherCollector
  * @package Opis\Colibri\Collectors
- * @method StorageCollection data()
+ * @method DispatcherCollection data()
+ * @property DispatcherCollection $dataObject
  */
-class SessionCollector extends CollectingContainer
+class DispatcherCollector extends CollectingContainer
 {
-
     /**
      * Constructor
      */
     public function __construct()
     {
-        parent::__construct(new StorageCollection(self::class . '::factory'));
+        parent::__construct(new DispatcherCollection());
     }
 
     /**
-     * @param string $storage
-     * @param callable $constructor
-     * @return SessionCollector
-     */
-    public function register(string $storage, callable $constructor): self
-    {
-        $this->dataObject->add($storage, $constructor);
-        return $this;
-    }
-
-    /**
-     * @param string $storage
+     * @param string $name
      * @param callable $factory
-     * @return \SessionHandlerInterface
+     * @return DispatcherCollector
      */
-    public static function factory(string $storage, callable $factory): \SessionHandlerInterface
+    public function register(string $name, callable $factory): self
     {
-        return $factory($storage);
+        $this->dataObject->register($name, $factory);
+        return $this;
     }
 }

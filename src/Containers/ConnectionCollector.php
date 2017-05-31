@@ -15,40 +15,36 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors;
+namespace Opis\Colibri\Containers;
 
 use Opis\Colibri\CollectingContainer;
-use Opis\Colibri\Serializable\Translations;
+use Opis\Colibri\Serializable\ConnectionList;
 
 /**
- * Class TranslationCollector
+ * Class ConnectionCollector
  * @package Opis\Colibri\Collectors
- * @method Translations data()
+ * @method ConnectionList   data()
  */
-class TranslationCollector extends CollectingContainer
+class ConnectionCollector extends CollectingContainer
 {
-    protected $language;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        parent::__construct(new Translations());
+        parent::__construct(new ConnectionList());
     }
 
-    /**
-     * Add the sentences that will be translated from english to current used language
-     *
-     * @param   string $language Language
-     * @param   array $sentences Translated sentences
-     */
-    public function translate($language, array $sentences)
-    {
-        if (empty($sentences)) {
-            return;
-        }
 
-        $this->dataObject->translate($language, $sentences);
+    /**
+     * @param string $name
+     * @param callable $callback
+     * @return ConnectionCollector
+     */
+    public function create(string $name, callable $callback): self
+    {
+        $this->dataObject->set($name, $callback());
+        return $this;
     }
 }
