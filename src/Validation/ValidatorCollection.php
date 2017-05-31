@@ -15,9 +15,9 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri;
+namespace Opis\Colibri\Validation;
 
-use Opis\Colibri\Validators\Csrf;
+use Opis\Colibri\Validation\Validators\Csrf;
 use Opis\Validation\ValidatorCollection as BaseCollection;
 use Opis\Validation\ValidatorInterface;
 use Opis\Validation\Validators\Between;
