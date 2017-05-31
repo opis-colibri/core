@@ -17,35 +17,28 @@
 
 namespace Opis\Colibri\Collector;
 
-use InvalidArgumentException;
-use Opis\Events\Event as BaseEvent;
-use Opis\Events\EventTarget;
+use Opis\Events\RouteCollection;
+use Opis\Routing\Context;
 use Opis\Routing\Route;
+use Opis\Routing\Router as BaseRouter;
 
-class Target extends EventTarget
+/**
+ * Class Router
+ * @package Opis\Colibri\Collector
+ *
+ * @method \Opis\Colibri\CollectingContainer route(Context $context)
+ */
+class Router extends BaseRouter
 {
-
-    /**
-     * @param BaseEvent|Entry $event
-     *
-     * @return BaseEvent
-     */
-    public function dispatch(BaseEvent $event): BaseEvent
+    public function __construct()
     {
-        if (!$event instanceof Entry) {
-            throw new InvalidArgumentException('Invalid event type. Expected ' . Entry::class);
-        }
+        parent::__construct(new RouteCollection(), new Dispatcher());
+    }
 
-        $this->collection->sort();
-
-        $collector = $event->getCollector();
-
-        /** @var Route $handler */
-        foreach ($this->router->match($event) as $handler){
-            $callback = $handler->getAction();
-            $callback($collector);
-        }
-
-        return $event;
+    public function handle(string $name, callable $callback, int $priority = 0)
+    {
+        $route = new Route(strtolower($name), $callback);
+        $route->set('priority', $priority);
+        $this->getRouteCollection()->addRoute($route);
     }
 }

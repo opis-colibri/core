@@ -18,9 +18,9 @@
 namespace Opis\Colibri\Collector;
 
 use Opis\Colibri\CollectingContainer;
-use Opis\Events\Event as BaseEvent;
+use Opis\Routing\Context;
 
-class Entry extends BaseEvent
+class Entry extends Context
 {
     /** @var CollectingContainer */
     protected $collector;
@@ -28,7 +28,15 @@ class Entry extends BaseEvent
     public function __construct(string $name, CollectingContainer $collector)
     {
         $this->collector = $collector;
-        parent::__construct($name);
+        parent::__construct(strtolower($name));
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->path;
     }
 
     /**
