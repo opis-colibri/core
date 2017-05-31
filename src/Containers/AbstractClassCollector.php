@@ -15,40 +15,47 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors;
+namespace Opis\Colibri\Containers;
 
 use Opis\Colibri\CollectingContainer;
-use Opis\View\EngineEntry;
-use Opis\View\EngineResolver;
+use Opis\Colibri\Serializable\ClassList;
 
-/**
- * Class ViewEngineCollector
- *
- * @package Opis\Colibri\Collectors
- *
- * @method EngineResolver   data()
- * @property EngineResolver $dataObject
- */
-class ViewEngineCollector extends CollectingContainer
+abstract class AbstractClassCollector extends CollectingContainer
 {
 
     /**
-     * Constructor
+     * AbstractClassCollector constructor.
      */
     public function __construct()
     {
-        parent::__construct(new EngineResolver());
+        parent::__construct(new ClassList($this->singletonClasses()));
     }
 
     /**
-     * Defines a new view engine
-     *
-     * @param callable $factory
-     * @param int $priority Engine's priority
-     * @return EngineEntry
+     * @param string $name Type name
+     * @param string $class Class name
+     * @return bool
      */
-    public function register(callable $factory, $priority = 0): EngineEntry
+    public function register(string $name, string $class) : bool
     {
-        return $this->dataObject->register($factory, $priority);
+        if(!class_exists($class) || !is_subclass_of($class, $this->getClass(), true)){
+            return false;
+        }
+        $this->data()->add($name, $class);
+        return true;
     }
+
+    /**
+     * @return bool
+     */
+    protected function singletonClasses() : bool
+    {
+        return false;
+    }
+
+    /**
+     * @return string
+     */
+    abstract protected function getClass() : string;
+
 }

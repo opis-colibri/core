@@ -15,17 +15,21 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors;
+namespace Opis\Colibri\Containers;
 
 use Opis\Colibri\CollectingContainer;
-use Opis\Colibri\Serializable\ConnectionList;
+use Opis\View\EngineEntry;
+use Opis\View\EngineResolver;
 
 /**
- * Class ConnectionCollector
+ * Class ViewEngineCollector
+ *
  * @package Opis\Colibri\Collectors
- * @method ConnectionList   data()
+ *
+ * @method EngineResolver   data()
+ * @property EngineResolver $dataObject
  */
-class ConnectionCollector extends CollectingContainer
+class ViewEngineCollector extends CollectingContainer
 {
 
     /**
@@ -33,18 +37,18 @@ class ConnectionCollector extends CollectingContainer
      */
     public function __construct()
     {
-        parent::__construct(new ConnectionList());
+        parent::__construct(new EngineResolver());
     }
 
-
     /**
-     * @param string $name
-     * @param callable $callback
-     * @return ConnectionCollector
+     * Defines a new view engine
+     *
+     * @param callable $factory
+     * @param int $priority Engine's priority
+     * @return EngineEntry
      */
-    public function create(string $name, callable $callback): self
+    public function register(callable $factory, $priority = 0): EngineEntry
     {
-        $this->dataObject->set($name, $callback());
-        return $this;
+        return $this->dataObject->register($factory, $priority);
     }
 }

@@ -15,19 +15,19 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors;
+namespace Opis\Colibri\Containers;
 
 use Opis\Colibri\CollectingContainer;
-use Opis\Colibri\Serializable\VariablesList;
+use Opis\Events\RouteCollection;
+use Opis\Routing\Route;
 
 /**
- * Class VariableCollector
- *
+ * Class EventHandlerCollector
  * @package Opis\Colibri\Collectors
- *
- * @method VariablesList    data()
+ * @method RouteCollection data()
+ * @property RouteCollection $dataObject
  */
-class VariableCollector extends CollectingContainer
+class EventHandlerCollector extends CollectingContainer
 {
 
     /**
@@ -35,36 +35,22 @@ class VariableCollector extends CollectingContainer
      */
     public function __construct()
     {
-        parent::__construct(new VariablesList());
+        parent::__construct(new RouteCollection());
     }
 
     /**
-     * Register a new variable
+     * Register a new event handler
      *
-     * @param   string $name Variable's name
-     * @param   mixed $value Variable's value
+     * @param   string $event Event name
+     * @param   callable $callback A callback that will be executed
+     * @param   int $priority Event handler's priority
      *
-     * @return  self
+     * @return  Route
      */
-    public function register($name, $value)
+    public function handle(string $event, callable $callback, int $priority = 0): Route
     {
-        $this->dataObject->add($name, $value);
-        return $this;
-    }
-
-    /**
-     * Register multiple variable at once
-     *
-     * @param   array $variables An array of variables that will be registered
-     *
-     * @return  self
-     */
-    public function bulkRegister(array $variables)
-    {
-        foreach ($variables as $name => &$value) {
-            $this->dataObject->add($name, $value);
-        }
-
-        return $this;
+        $handler = new Route($event, $callback);
+        $this->dataObject->addRoute($handler)->sort();
+        return $handler->set('priority', $priority);
     }
 }

@@ -15,20 +15,21 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors;
+namespace Opis\Colibri\Containers;
 
+use Opis\Cache\CacheInterface;
 use Opis\Colibri\CollectingContainer;
 use Opis\Colibri\Serializable\StorageCollection;
-use Opis\Config\ConfigInterface;
 
 /**
- * Class ConfigCollector
+ * Class CacheCollector
  *
  * @package Opis\Colibri\Collectors
  *
- * @method StorageCollection    data()
+ * @method  StorageCollection    data()
+ * @property StorageCollection $dataObject
  */
-class ConfigCollector extends CollectingContainer
+class CacheCollector extends CollectingContainer
 {
 
     /**
@@ -40,11 +41,11 @@ class ConfigCollector extends CollectingContainer
     }
 
     /**
-     * @param string $storage
+     * @param $storage
      * @param callable $constructor
-     * @return ConfigCollector
+     * @return CacheCollector
      */
-    public function register(string $storage, callable $constructor): self
+    public function register($storage, callable $constructor): self
     {
         $this->dataObject->add($storage, $constructor);
         return $this;
@@ -53,9 +54,9 @@ class ConfigCollector extends CollectingContainer
     /**
      * @param string $storage
      * @param callable $factory
-     * @return ConfigInterface
+     * @return CacheInterface
      */
-    public static function factory(string $storage, callable $factory): ConfigInterface
+    public static function factory(string $storage, callable $factory): CacheInterface
     {
         return $factory($storage);
     }

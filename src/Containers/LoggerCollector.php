@@ -15,40 +15,45 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors;
+namespace Opis\Colibri\Containers;
 
 use Opis\Colibri\CollectingContainer;
-use Opis\Routing\RouteCollection;
-use Opis\Routing\Route;
+use Opis\Colibri\Serializable\StorageCollection;
+use Psr\Log\LoggerInterface;
 
 /**
- * Class RouteAliasCollector
+ * Class LoggerCollector
  * @package Opis\Colibri\Collectors
- * @method RouteCollection data()
- * @property \Opis\Routing\RouteCollection $dataObject
+ * @method StorageCollection data()
  */
-class RouteAliasCollector extends CollectingContainer
+class LoggerCollector extends CollectingContainer
 {
     /**
      * Constructor
      */
     public function __construct()
     {
-        parent::__construct(new RouteCollection());
+        parent::__construct(new StorageCollection(self::class . '::factory'));
     }
 
     /**
-     * Defines an alias for a route or a group of routes
-     *
-     * @param   string $path The path to match
-     * @param   callable $action An action that will be executed
-     *
-     * @return  Route
+     * @param $storage
+     * @param callable $constructor
+     * @return LoggerCollector
      */
-    public function alias(string $path, callable $action): Route
+    public function register($storage, callable $constructor): self
     {
-        $route = new Route($path, $action);
-        $this->dataObject->addRoute($route);
-        return $route;
+        $this->dataObject->add($storage, $constructor);
+        return $this;
+    }
+
+    /**
+     * @param string $storage
+     * @param callable $factory
+     * @return LoggerInterface
+     */
+    public static function factory(string $storage, callable $factory): LoggerInterface
+    {
+        return $factory($storage);
     }
 }

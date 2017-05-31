@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors;
+namespace Opis\Colibri\Containers;
 
 use Opis\Colibri\CollectingContainer;
 use Opis\Colibri\HttpRoute;

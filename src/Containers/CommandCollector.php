@@ -15,35 +15,35 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors;
+namespace Opis\Colibri\Containers;
 
 use Opis\Colibri\CollectingContainer;
-use Opis\Routing\DispatcherCollection;
+use Opis\Colibri\Serializable\CallbackList;
 
 /**
- * Class DispatcherCollector
+ * Class CommandCollector
  * @package Opis\Colibri\Collectors
- * @method DispatcherCollection data()
- * @property DispatcherCollection $dataObject
+ * @method  CallbackList    data()
  */
-class DispatcherCollector extends CollectingContainer
+class CommandCollector extends CollectingContainer
 {
+
     /**
-     * Constructor
+     * CommandCollector constructor
      */
     public function __construct()
     {
-        parent::__construct(new DispatcherCollection());
+        parent::__construct(new CallbackList());
     }
 
     /**
      * @param string $name
-     * @param callable $factory
-     * @return DispatcherCollector
+     * @param callable $callback
+     * @return CommandCollector
      */
-    public function register(string $name, callable $factory): self
+    public function register(string $name, callable $callback): self
     {
-        $this->dataObject->register($name, $factory);
+        $this->dataObject->add($name, $callback);
         return $this;
     }
 }
