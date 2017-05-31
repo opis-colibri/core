@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Containers;
 
 use Opis\Colibri\CollectingContainer;
-use Opis\Colibri\HttpRoute;
+use Opis\Colibri\Routing\HttpRoute;
 use Opis\HttpRouting\RouteCollection;
 
 class RouteCollector extends CollectingContainer
@@ -95,7 +95,7 @@ class RouteCollector extends CollectingContainer
      * @param   callable $action An action that will be executed
      * @param   string $name (optional) Route name
      *
-     * @return  \Opis\Colibri\HttpRoute
+     * @return  \Opis\Colibri\Routing\HttpRoute
      */
     protected function handle($path, $action, $name = null)
     {
@@ -179,7 +179,7 @@ class RouteCollector extends CollectingContainer
      * @param   callable $action An action that will be executed
      * @param   string $name (optional) Route name
      *
-     * @return  \Opis\Colibri\HttpRoute
+     * @return  \Opis\Colibri\Routing\HttpRoute
      */
     public function delete($path, $action, $name = null)
     {

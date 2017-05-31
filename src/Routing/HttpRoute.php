@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri;
+namespace Opis\Colibri\Routing;
 
 use Opis\Colibri\Serializable\ControllerCallback;
 use Opis\HttpRouting\Route;
