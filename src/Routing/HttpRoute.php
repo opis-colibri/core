@@ -18,6 +18,8 @@
 namespace Opis\Colibri\Routing;
 
 use Opis\Colibri\Serializable\ControllerCallback;
+use Opis\HttpRouting\CompiledRoute;
+use Opis\HttpRouting\Dispatcher;
 use Opis\HttpRouting\Route;
 use function Opis\Colibri\{
     app, make
@@ -39,8 +41,12 @@ class HttpRoute extends Route
 
         /** @var ControllerCallback $callback */
         $callback = $this->routeAction;
-        $router = app()->getHttpRouter();
-        $values = $router->bind($router->extract($router->getContext(), $this), $this->getBindings());
+        $dispatcher = app()->getHttpRouter()->getDispatcher();
+        /** @var CompiledRoute $compiled */
+        $compiled = (function (Dispatcher $dispatcher, HttpRoute $route){
+            return $dispatcher->compile($dispatcher->context, $route);
+        })->call($dispatcher, $dispatcher, $this);
+        $values = $compiled->getBindings();
         $method = $callback->getMethod();
         $class = $callback->getClass();
 

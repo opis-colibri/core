@@ -20,22 +20,17 @@ namespace Opis\Colibri\Routing;
 use Opis\Http\Error\AccessDenied;
 use Opis\Http\Error\NotFound;
 use Opis\HttpRouting\Context;
-use Opis\HttpRouting\DispatcherResolver;
 use Opis\HttpRouting\Router;
 use Opis\Routing\Context as BaseContext;
 use Opis\Routing\Router as AliasRouter;
-use function Opis\Colibri\{
-    app, view
-};
+use function Opis\Colibri\{app, view};
 
 class HttpRouter extends Router
 {
     public function __construct()
     {
-        $dispatchers = app()->getCollector()->getDispatcherCollection();
+        parent::__construct(app()->getCollector()->getRoutes());
 
-        parent::__construct(app()->getCollector()->getRoutes(), new DispatcherResolver($dispatchers));
-        
         $this->getRouteCollection()
             ->notFound(function ($path) {
                 return new NotFound(view('error.404', array('path' => $path)));
@@ -43,14 +38,6 @@ class HttpRouter extends Router
             ->accessDenied(function ($path) {
                 return new AccessDenied(view('error.403', array('path' => $path)));
             });
-    }
-
-    /**
-     * @return BaseContext
-     */
-    public function getContext(): BaseContext
-    {
-        return $this->currentContext;
     }
 
     /**

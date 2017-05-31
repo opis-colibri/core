@@ -27,7 +27,6 @@ use Opis\Database\Connection;
 use Opis\Database\Database;
 use Opis\Events\RouteCollection as EventsRouteCollection;
 use Opis\HttpRouting\RouteCollection as HttpRouteCollection;
-use Opis\Routing\DispatcherCollection;
 use Opis\Routing\RouteCollection as AliasRouteCollection;
 use Opis\View\RouteCollection as ViewRouteCollection;
 use Opis\View\EngineResolver;
@@ -128,15 +127,6 @@ class Manager
     public function getDatabase(string $name, bool $fresh = false): Database
     {
         return $this->collect('Connections', $fresh)->database($name);
-    }
-
-    /**
-     * @param bool $fresh
-     * @return DispatcherCollection
-     */
-    public function getDispatcherCollection(bool $fresh = false): DispatcherCollection
-    {
-        return $this->collect('Dispatchers', $fresh);
     }
 
     /**
