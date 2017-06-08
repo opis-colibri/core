@@ -483,3 +483,21 @@ function uuid4(string $sep = '-'): string
         random_int(0, 0xffffffffffff)
     );
 }
+
+/**
+ * @param int $length
+ * @return string
+ */
+function random_str(int $length): string
+{
+    static $key = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    static $limit = 61;
+
+    $str = '';
+
+    for ($i = 0; $i < $length; ++$i) {
+        $str .= $key[random_int(0, $limit)];
+    }
+
+    return $str;
+}
