@@ -50,7 +50,7 @@ class RouteCollector extends Collector
     public function group(callable $callback, string $prefix = ''): RouteGroup
     {
         $collector = new self();
-        $collector->prefix = $prefix;
+        $collector->prefix = $this->prefix . $prefix;
         $callback($collector);
         $routes = $collector->dataObject->getRoutes();
         foreach ($routes as $route){
