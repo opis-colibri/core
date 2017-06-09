@@ -18,9 +18,17 @@
 namespace Opis\Colibri\Collectors;
 
 use Opis\Colibri\Collector;
+use Opis\Colibri\Groups\RouteGroup;
 use Opis\Colibri\HttpRoute;
 use Opis\HttpRouting\RouteCollection;
 
+/**
+ * Class RouteCollector
+ * @package Opis\Colibri\Collectors
+ *
+ * @property RouteCollection $dataObject
+ * @method RouteCollection data()
+ */
 class RouteCollector extends Collector
 {
 
@@ -30,6 +38,21 @@ class RouteCollector extends Collector
     public function __construct()
     {
         parent::__construct(new RouteCollection());
+    }
+
+    /**
+     * @param callable $callback
+     * @return RouteGroup
+     */
+    public function group(callable $callback): RouteGroup
+    {
+        $collector = new self();
+        $callback($collector);
+        $routes = $collector->dataObject->getRoutes();
+        foreach ($routes as $route){
+            $this->dataObject->addRoute($route);
+        }
+        return new RouteGroup($routes);
     }
 
     /**
