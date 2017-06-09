@@ -31,6 +31,8 @@ use Opis\HttpRouting\RouteCollection;
  */
 class RouteCollector extends Collector
 {
+    /** @var string */
+    protected $prefix = '';
 
     /**
      * Constructor
@@ -42,11 +44,13 @@ class RouteCollector extends Collector
 
     /**
      * @param callable $callback
+     * @param string $prefix
      * @return RouteGroup
      */
-    public function group(callable $callback): RouteGroup
+    public function group(callable $callback, string $prefix = ''): RouteGroup
     {
         $collector = new self();
+        $collector->prefix = $prefix;
         $callback($collector);
         $routes = $collector->dataObject->getRoutes();
         foreach ($routes as $route){
@@ -122,7 +126,7 @@ class RouteCollector extends Collector
      */
     protected function handle($path, $action, $name = null)
     {
-        $route = new HttpRoute($path, $action, $name);
+        $route = new HttpRoute($this->prefix . $path, $action, $name);
         $this->dataObject->addRoute($route);
         return $route;
     }
