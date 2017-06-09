@@ -35,6 +35,8 @@ use Opis\Colibri\HttpRoute;
  * @method RouteGroup method(string $value)
  * @method RouteGroup secure(bool $value)
  * @method RouteGroup dispatcher(string $name)
+ * @method RouteGroup notFound(callable $callback)
+ * @method RouteGroup accessDenied(callable $callback)
  */
 class RouteGroup
 {
