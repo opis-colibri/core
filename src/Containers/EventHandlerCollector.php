@@ -45,7 +45,7 @@ class EventHandlerCollector extends CollectingContainer
      * @param   callable $callback A callback that will be executed
      * @param   int $priority Event handler's priority
      *
-     * @return  Route
+     * @return  RouteCollector
      */
     public function handle(string $event, callable $callback, int $priority = 0): Route
     {
