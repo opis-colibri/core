@@ -115,22 +115,6 @@ class RouteCollector extends CollectingContainer
     }
 
     /**
-     * Defines a new route
-     *
-     * @param   string $path The path to match
-     * @param   callable $action An action that will be executed
-     * @param   string $name (optional) Route name
-     *
-     * @return  \Opis\Colibri\Routing\HttpRoute
-     */
-    protected function handle($path, $action, $name = null)
-    {
-        $route = new HttpRoute($path, $action, $name);
-        $this->dataObject->addRoute($route);
-        return $route;
-    }
-
-    /**
      * Define a new route that will intercept  the specified methods
      *
      * @param   string|array $path The path to match
@@ -153,7 +137,7 @@ class RouteCollector extends CollectingContainer
             $method = 'GET';
         }
 
-        return $this->handle($path, $action, $name)->method($method);
+        return $this->handle($path, $action, $method, $name);
     }
 
     /**
@@ -167,7 +151,7 @@ class RouteCollector extends CollectingContainer
      */
     public function all($path, $action, $name = null)
     {
-        return $this->handle($path, $action, $name)->method(array('GET', 'POST', 'PUT', 'PATCH', 'DELETE'));
+        return $this->handle($path, $action, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], $name);
     }
 
     /**
@@ -181,7 +165,7 @@ class RouteCollector extends CollectingContainer
      */
     public function get($path, $action, $name = null)
     {
-        return $this->handle($path, $action, $name)->method('GET');
+        return $this->handle($path, $action, 'GET', $name);
     }
 
     /**
@@ -195,7 +179,7 @@ class RouteCollector extends CollectingContainer
      */
     public function post($path, $action, $name = null)
     {
-        return $this->handle($path, $action, $name)->method('POST');
+        return $this->handle($path, $action, 'POST', $name);
     }
 
     /**
@@ -205,11 +189,11 @@ class RouteCollector extends CollectingContainer
      * @param   callable $action An action that will be executed
      * @param   string $name (optional) Route name
      *
-     * @return  \Opis\Colibri\HttpRoute
+     * @return  HttpRoute
      */
     public function delete($path, $action, $name = null)
     {
-        return $this->handle($path, $action, $name)->method('DELETE');
+        return $this->handle($path, $action, 'DELETE', $name);
     }
 
     /**
@@ -223,7 +207,7 @@ class RouteCollector extends CollectingContainer
      */
     public function put($path, $action, $name = null)
     {
-        return $this->handle($path, $action, $name)->method('PUT');
+        return $this->handle($path, $action, 'PUT', $name);
     }
 
     /**
@@ -237,6 +221,23 @@ class RouteCollector extends CollectingContainer
      */
     public function patch($path, $action, $name = null)
     {
-        return $this->handle($path, $action, $name)->method('PATCH');
+        return $this->handle($path, $action, 'PATCH', $name);
+    }
+
+    /**
+     * Defines a new route
+     *
+     * @param   string $path The path to match
+     * @param   callable $action An action that will be executed
+     * @param   string|array $method Request's method
+     * @param   string $name (optional) Route name
+     *
+     * @return  HttpRoute
+     */
+    protected function handle($path, $action, $method, $name = null)
+    {
+        $route = new HttpRoute($path, $action, $name);
+        $this->dataObject->addRoute($route->method($method));
+        return $route;
     }
 }

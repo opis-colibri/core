@@ -77,7 +77,7 @@ class VariablesList implements Serializable
 
     public function unserialize($data)
     {
-        $object = SerializableClosure::unserializeData($data);
+        $object = unserialize($data);
         $this->variables = $this->mapFunction2($object);
     }
 }

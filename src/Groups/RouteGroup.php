@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Groups;
 
 
-use Opis\Colibri\HttpRoute;
+use Opis\Colibri\Routing\HttpRoute;
 
 /**
  * Class RouteGroup

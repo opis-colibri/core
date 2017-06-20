@@ -46,9 +46,9 @@ class ViewCollector extends CollectingContainer
      * @param   callable $resolver A callback that will resolve a view route into a path
      * @param   int $priority Route's priority
      *
-     * @return  RouteCollector
+     * @return  Route
      */
-    public function handle(string $pattern, callable $resolver, int $priority = 0)
+    public function handle(string $pattern, callable $resolver, int $priority = 0): Route
     {
         $route = new Route($pattern, $resolver);
         $this->dataObject->addRoute($route);
