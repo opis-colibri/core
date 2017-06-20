@@ -24,9 +24,9 @@
         "opis/database": "4.0.x-dev",
         "opis/container": "3.0.x-dev",
         "opis/http": "^2.0.0",
-        "opis/http-routing": "5.0.alpha.1",
-        "opis/view": "5.0-alpha.1",
-        "opis/events": "5.0-alpha.1",
+        "opis/http-routing": "~5.0.alpha",
+        "opis/view": "~5.0-alpha",
+        "opis/events": "~5.0-alpha",
         "opis/config": "3.0.x-dev",
         "opis/cache": "4.0.x-dev",
         "opis/session": "4.0.x-dev",
@@ -36,6 +36,11 @@
         "doctrine/annotations": "1.2.*",
         "psr/log": "~1.0"
     },
+    "config": {
+        "preferred-install": "dist"
+    },
+    "prefer-stable": true,
+    "minimum-stability": "dev",
     "extra": {
         "class": "Opis\\Colibri\\Composer\\Plugin",
         "branch-alias": {
