@@ -17,12 +17,18 @@
 
 namespace Opis\Colibri\Composer;
 
-use Composer\Composer;
-use Composer\Console\Application as ComposerConsole;
-use Composer\Factory;
-use Composer\IO\NullIO;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\NullOutput;
+use Composer\{
+    Composer,
+    Factory,
+    IO\BaseIO,
+    IO\NullIO,
+    Console\Application as ComposerConsole
+};
+use Symfony\Component\Console\{
+    Input\ArrayInput,
+    Output\NullOutput,
+    Output\OutputInterface
+};
 use function Opis\Colibri\{info};
 
 /**
@@ -32,8 +38,12 @@ use function Opis\Colibri\{info};
  */
 class CLI
 {
+    /** @var ComposerConsole */
     protected $instance;
 
+    /**
+     * CLI constructor.
+     */
     public function __construct()
     {
         if(getenv('HOME') === false){
@@ -41,28 +51,45 @@ class CLI
         }
     }
 
-    public function getComposer(): Composer
+    /**
+     * @param BaseIO|null $io
+     * @return Composer
+     */
+    public function getComposer(BaseIO $io = null): Composer
     {
         $rootDir = info()->rootDir();
         $composerFile = info()->composerFile();
-        return (new Factory())->createComposer(new NullIO(), $composerFile, false, $rootDir);
+        return (new Factory())->createComposer($io ?? new NullIO(), $composerFile, false, $rootDir);
     }
 
-    public function execute(array $command)
+    /**
+     * @param array $command
+     * @param OutputInterface|null $output
+     * @return int
+     */
+    public function execute(array $command, OutputInterface $output = null)
     {
         $cwd = getcwd();
         chdir(info()->rootDir());
-        $this->instance()->run(new ArrayInput($command), new NullOutput());
+        $code = $this->instance()->run(new ArrayInput($command), $output ?? new NullOutput());
         chdir($cwd);
+        return $code;
     }
 
-    public function dumpAutoload()
+    /**
+     * @param OutputInterface|null $output
+     * @return int
+     */
+    public function dumpAutoload(OutputInterface $output = null)
     {
-        $this->execute(array(
+        return $this->execute(array(
             'command' => 'dump-autoload',
-        ));
+        ), $output);
     }
 
+    /**
+     * @return ComposerConsole
+     */
     protected function instance()
     {
         $instance = new ComposerConsole();
