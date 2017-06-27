@@ -24,7 +24,6 @@
     },
     "require": {
         "php": ">=7.0.0",
-        "opis/closure": "3.0.1 as 2.4.1",
         "composer-plugin-api": "^1.0",
         "composer/composer": "1.2.*",
         "opis/routing": "dev-refactor",
