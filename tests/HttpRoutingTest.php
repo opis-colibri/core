@@ -57,7 +57,7 @@ class HttpRoutingTest extends TestCase
 
         $this->route->get('/bar', function(){
             return 'bar';
-        })->filter('test', function(){
+        })->callback('test', function(){
             return false;
         })->access('test');
 
