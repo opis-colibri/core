@@ -15,28 +15,27 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Partials;
+namespace Opis\Colibri;
 
-trait RenderableViewTrait
+abstract class CollectingContainer
 {
-    protected $renderedContent;
+    /** @var  mixed */
+    protected $dataObject;
 
     /**
-     * The __toString method allows a class to decide how it will react when it is converted to a string.
-     *
-     * @return string
-     * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.tostring
+     * Collector constructor.
+     * @param mixed $dataObject
      */
-    public function __toString()
+    public function __construct($dataObject)
     {
-        if($this->renderedContent === null){
-            try{
-                $this->renderedContent = \Opis\Colibri\render($this);
-            }catch (\Exception $e){
-                $this->renderedContent = $e->getMessage();
-            }
-        }
+        $this->dataObject = $dataObject;
+    }
 
-        return $this->renderedContent;
+    /**
+     * @return mixed
+     */
+    public function data()
+    {
+        return $this->dataObject;
     }
 }

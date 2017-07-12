@@ -15,28 +15,40 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Partials;
+namespace Opis\Colibri\Containers;
 
-trait RenderableViewTrait
+use Opis\Colibri\CollectingContainer;
+use Opis\Colibri\Serializable\Translations;
+
+/**
+ * Class TranslationCollector
+ * @package Opis\Colibri\Containers
+ * @method Translations data()
+ */
+class TranslationCollector extends CollectingContainer
 {
-    protected $renderedContent;
+    protected $language;
 
     /**
-     * The __toString method allows a class to decide how it will react when it is converted to a string.
-     *
-     * @return string
-     * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.tostring
+     * Constructor
      */
-    public function __toString()
+    public function __construct()
     {
-        if($this->renderedContent === null){
-            try{
-                $this->renderedContent = \Opis\Colibri\render($this);
-            }catch (\Exception $e){
-                $this->renderedContent = $e->getMessage();
-            }
+        parent::__construct(new Translations());
+    }
+
+    /**
+     * Add the sentences that will be translated from english to current used language
+     *
+     * @param   string $language Language
+     * @param   array $sentences Translated sentences
+     */
+    public function translate($language, array $sentences)
+    {
+        if (empty($sentences)) {
+            return;
         }
 
-        return $this->renderedContent;
+        $this->dataObject->translate($language, $sentences);
     }
 }

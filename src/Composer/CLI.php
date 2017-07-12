@@ -29,7 +29,7 @@ use Symfony\Component\Console\{
     Output\NullOutput,
     Output\OutputInterface
 };
-use function Opis\Colibri\Functions\{info};
+use function Opis\Colibri\{info};
 
 /**
  * Description of Composer

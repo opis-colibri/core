@@ -15,28 +15,50 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Partials;
+namespace Opis\Colibri\Validation\Validators;
 
-trait RenderableViewTrait
+use Opis\Validation\ValidatorInterface;
+use function Opis\Colibri\{validateCSRFToken};
+
+class Csrf implements ValidatorInterface
 {
-    protected $renderedContent;
-
     /**
-     * The __toString method allows a class to decide how it will react when it is converted to a string.
+     * Validator's name
      *
      * @return string
-     * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.tostring
      */
-    public function __toString()
+    public function name(): string
     {
-        if($this->renderedContent === null){
-            try{
-                $this->renderedContent = \Opis\Colibri\render($this);
-            }catch (\Exception $e){
-                $this->renderedContent = $e->getMessage();
-            }
-        }
-
-        return $this->renderedContent;
+        return 'csrf';
     }
+
+    /**
+     * @return string
+     */
+    public function getError(): string
+    {
+        return 'Invalid CSRF token';
+    }
+
+    /**
+     * @param array $arguments
+     * @return array
+     */
+    public function getFormattedArgs(array $arguments): array
+    {
+        return array();
+    }
+
+    /**
+     * Validate
+     *
+     * @param mixed $value
+     * @param array $arguments
+     * @return bool
+     */
+    public function validate($value, array $arguments): bool
+    {
+        return validateCSRFToken($value);
+    }
+
 }

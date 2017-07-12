@@ -15,14 +15,10 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Functions;
+namespace Opis\Colibri;
 
 use Opis\Cache\CacheInterface;
-use Opis\Colibri\AppInfo;
-use Opis\Colibri\Application;
-use Opis\Colibri\Validator;
-use Opis\Colibri\View;
-use Opis\Colibri\Module;
+use Opis\Colibri\Validation\Validator;
 use Opis\Colibri\Serializable\ControllerCallback;
 use Opis\Config\ConfigInterface;
 use Opis\Database\Connection as DBConnection;
@@ -35,7 +31,7 @@ use Opis\Http\Request;
 use Opis\Http\Response;
 use Opis\HttpRouting\HttpError;
 use Opis\Session\Session;
-use Opis\View\ViewableInterface;
+use Opis\View\IView;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -456,7 +452,7 @@ function view(string $name, array $arguments = []): View
 
 /**
  * @param $view
- * @return string|ViewableInterface
+ * @return string|IView
  */
 function render($view): string
 {

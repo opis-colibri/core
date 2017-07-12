@@ -19,23 +19,5 @@ namespace Opis\Colibri;
 
 abstract class Collector
 {
-    /** @var  mixed */
-    protected $dataObject;
 
-    /**
-     * Collector constructor.
-     * @param mixed $dataObject
-     */
-    public function __construct($dataObject)
-    {
-        $this->dataObject = $dataObject;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function data()
-    {
-        return $this->dataObject;
-    }
 }

@@ -15,28 +15,13 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Partials;
+namespace Opis\Colibri;
 
-trait RenderableViewTrait
+interface IBootstrap
 {
-    protected $renderedContent;
-
     /**
-     * The __toString method allows a class to decide how it will react when it is converted to a string.
-     *
-     * @return string
-     * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.tostring
+     * @param ISettingsContainer $collector
+     * @return mixed
      */
-    public function __toString()
-    {
-        if($this->renderedContent === null){
-            try{
-                $this->renderedContent = \Opis\Colibri\render($this);
-            }catch (\Exception $e){
-                $this->renderedContent = $e->getMessage();
-            }
-        }
-
-        return $this->renderedContent;
-    }
+    public function bootstrap(ISettingsContainer $collector);
 }

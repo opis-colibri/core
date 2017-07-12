@@ -15,28 +15,35 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Partials;
+namespace Opis\Colibri\Collector;
 
-trait RenderableViewTrait
+use Opis\Colibri\CollectingContainer;
+use Opis\Routing\Context;
+
+class Entry extends Context
 {
-    protected $renderedContent;
+    /** @var CollectingContainer */
+    protected $collector;
+
+    public function __construct(string $name, CollectingContainer $collector)
+    {
+        $this->collector = $collector;
+        parent::__construct(strtolower($name));
+    }
 
     /**
-     * The __toString method allows a class to decide how it will react when it is converted to a string.
-     *
      * @return string
-     * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.tostring
      */
-    public function __toString()
+    public function getName(): string
     {
-        if($this->renderedContent === null){
-            try{
-                $this->renderedContent = \Opis\Colibri\render($this);
-            }catch (\Exception $e){
-                $this->renderedContent = $e->getMessage();
-            }
-        }
+        return $this->path;
+    }
 
-        return $this->renderedContent;
+    /**
+     * @return  CollectingContainer
+     */
+    public function getCollector(): CollectingContainer
+    {
+        return $this->collector;
     }
 }

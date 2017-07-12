@@ -15,28 +15,39 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Partials;
+namespace Opis\Colibri;
 
-trait RenderableViewTrait
+abstract class Installer
 {
-    protected $renderedContent;
+    /**
+     * Install action
+     */
+    public function install()
+    {
+
+    }
 
     /**
-     * The __toString method allows a class to decide how it will react when it is converted to a string.
-     *
-     * @return string
-     * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.tostring
+     * Uninstall action
      */
-    public function __toString()
+    public function uninstall()
     {
-        if($this->renderedContent === null){
-            try{
-                $this->renderedContent = \Opis\Colibri\render($this);
-            }catch (\Exception $e){
-                $this->renderedContent = $e->getMessage();
-            }
-        }
 
-        return $this->renderedContent;
+    }
+
+    /**
+     * Enable action
+     */
+    public function enable()
+    {
+
+    }
+
+    /**
+     * Disable action
+     */
+    public function disable()
+    {
+
     }
 }

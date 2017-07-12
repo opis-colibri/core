@@ -15,28 +15,33 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Partials;
+namespace Opis\Colibri\Collector;
 
-trait RenderableViewTrait
+use Opis\Colibri\CollectingContainer;
+use ReflectionMethod;
+use ReflectionObject;
+
+abstract class ItemCollector
 {
-    protected $renderedContent;
-
     /**
-     * The __toString method allows a class to decide how it will react when it is converted to a string.
+     * Collect items
      *
-     * @return string
-     * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.tostring
+     * @param   CollectingContainer $collector
      */
-    public function __toString()
+    public function collect(CollectingContainer $collector)
     {
-        if($this->renderedContent === null){
-            try{
-                $this->renderedContent = \Opis\Colibri\render($this);
-            }catch (\Exception $e){
-                $this->renderedContent = $e->getMessage();
-            }
-        }
+        $reflection = new ReflectionObject($this);
 
-        return $this->renderedContent;
+        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+
+            if ($method->getShortName() == __FUNCTION__ ||
+                $method->isStatic() ||
+                $method->isConstructor() || $method->isDestructor()
+            ) {
+                continue;
+            }
+
+            $method->invoke($this, $collector);
+        }
     }
 }

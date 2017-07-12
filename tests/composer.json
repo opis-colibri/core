@@ -1,0 +1,44 @@
+{
+    "name": "opis-colibri/test-app",
+    "type": "project",
+    "description": "Test app",
+    "keywords": ["framework", "php", "opis", "opis colibri", "test app"],
+    "homepage": "http://opis.io",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Marius Sarca",
+            "email": "marius.sarca@gmail.com"
+        },
+        {
+            "name": "Sorin Sarca",
+            "email": "sarca_sorin@hotmail.com"
+        }
+    ],
+    "require": {
+        "filp/whoops": "2.*",
+        "opis/colibri": "2.0.*@dev",
+        "opis-colibri/install": "3.0.*@dev",
+        "opis-colibri/manager": "3.0.*@dev",
+        "opis-colibri/commands": "3.0.*@dev",
+        "opis-colibri/welcome": "3.0.*@dev",
+        "zindex/sitebuilder-core": "1.0.*@dev",
+        "zindex/sitebuilder-ui": "1.0.*@dev",
+        "opis-colibri/user-sql": "3.0.*@dev"
+    },
+    "config": {
+        "preferred-install": "dist"
+    },
+    "prefer-stable": true,
+    "minimum-stability": "dev",
+    "extra": {
+        "application": {
+            "installer": "opis-colibri/install",
+            "modules": ["opis-colibri/welcome", "opis-colibri/commands",
+                "opis-colibri/manager", "zindex/sitebuilder-core", "zindex/sitebuilder-ui"]
+        },
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}

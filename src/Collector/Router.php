@@ -15,28 +15,30 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Partials;
+namespace Opis\Colibri\Collector;
 
-trait RenderableViewTrait
+use Opis\Events\RouteCollection;
+use Opis\Routing\Context;
+use Opis\Routing\Route;
+use Opis\Routing\Router as BaseRouter;
+
+/**
+ * Class Router
+ * @package Opis\Colibri\Collector
+ *
+ * @method \Opis\Colibri\CollectingContainer route(Context $context)
+ */
+class Router extends BaseRouter
 {
-    protected $renderedContent;
-
-    /**
-     * The __toString method allows a class to decide how it will react when it is converted to a string.
-     *
-     * @return string
-     * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.tostring
-     */
-    public function __toString()
+    public function __construct()
     {
-        if($this->renderedContent === null){
-            try{
-                $this->renderedContent = \Opis\Colibri\render($this);
-            }catch (\Exception $e){
-                $this->renderedContent = $e->getMessage();
-            }
-        }
+        parent::__construct(new RouteCollection(), new Dispatcher());
+    }
 
-        return $this->renderedContent;
+    public function handle(string $name, callable $callback, int $priority = 0)
+    {
+        $route = new Route(strtolower($name), $callback);
+        $route->set('priority', $priority);
+        $this->getRouteCollection()->addRoute($route);
     }
 }

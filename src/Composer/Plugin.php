@@ -100,12 +100,12 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
         if (!$this->appInfo->installMode()) {
             $installMode = false;
-            $collector = new DefaultCollector($this->appInfo);
-            /** @var \Opis\Colibri\BootstrapInterface $bootstrap */
+            $container = new SurrogateContainer($this->appInfo);
+            /** @var \Opis\Colibri\IBootstrap $bootstrap */
             $bootstrap = require $this->appInfo->bootstrapFile();
-            $bootstrap->bootstrap($collector);
-            $installed = $collector->getInstalledModules();
-            $enabled = $collector->getEnabledModules();
+            $bootstrap->bootstrap($container);
+            $installed = $container->getInstalledModules();
+            $enabled = $container->getEnabledModules();
         }
 
         $this->preparePacks($installMode, $enabled, $installed);

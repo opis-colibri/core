@@ -53,7 +53,7 @@ class CallbackList implements Serializable
 
     public function unserialize($data)
     {
-        $object = SerializableClosure::unserializeData($data);
+        $object = unserialize($data);
 
         $this->callbacks = array_map(function ($value) {
             if ($value instanceof SerializableClosure) {

@@ -15,28 +15,39 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Partials;
+namespace Opis\Colibri\Containers;
 
-trait RenderableViewTrait
+use Opis\Colibri\CollectingContainer;
+use Opis\Colibri\Serializable\CallbackList;
+
+/**
+ * Class ValidatorCollector
+ * @package Opis\Colibri\Containers
+ * @method CallbackList data()
+ */
+class ValidatorCollector extends CollectingContainer
 {
-    protected $renderedContent;
 
     /**
-     * The __toString method allows a class to decide how it will react when it is converted to a string.
-     *
-     * @return string
-     * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.tostring
+     * Constructor
      */
-    public function __toString()
+    public function __construct()
     {
-        if($this->renderedContent === null){
-            try{
-                $this->renderedContent = \Opis\Colibri\render($this);
-            }catch (\Exception $e){
-                $this->renderedContent = $e->getMessage();
-            }
+        parent::__construct(array());
+    }
+
+
+    /**
+     * @param string $name
+     * @param string $class
+     * @return $this
+     */
+    public function register($name, $class)
+    {
+        if (class_exists($class)) {
+            $this->dataObject[$name] = $class;
         }
 
-        return $this->renderedContent;
+        return $this;
     }
 }

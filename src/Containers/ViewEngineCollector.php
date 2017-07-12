@@ -15,28 +15,40 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Partials;
+namespace Opis\Colibri\Containers;
 
-trait RenderableViewTrait
+use Opis\Colibri\CollectingContainer;
+use Opis\View\EngineEntry;
+use Opis\View\EngineResolver;
+
+/**
+ * Class ViewEngineCollector
+ *
+ * @package Opis\Colibri\Containers
+ *
+ * @method EngineResolver   data()
+ * @property EngineResolver $dataObject
+ */
+class ViewEngineCollector extends CollectingContainer
 {
-    protected $renderedContent;
 
     /**
-     * The __toString method allows a class to decide how it will react when it is converted to a string.
-     *
-     * @return string
-     * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.tostring
+     * Constructor
      */
-    public function __toString()
+    public function __construct()
     {
-        if($this->renderedContent === null){
-            try{
-                $this->renderedContent = \Opis\Colibri\render($this);
-            }catch (\Exception $e){
-                $this->renderedContent = $e->getMessage();
-            }
-        }
+        parent::__construct(new EngineResolver());
+    }
 
-        return $this->renderedContent;
+    /**
+     * Defines a new view engine
+     *
+     * @param callable $factory
+     * @param int $priority Engine's priority
+     * @return EngineEntry
+     */
+    public function register(callable $factory, $priority = 0): EngineEntry
+    {
+        return $this->dataObject->register($factory, $priority);
     }
 }

@@ -15,41 +15,49 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri;
+namespace Opis\Colibri\Validation;
 
-use Symfony\Component\Console\Application as ConsoleApplication;
-use Symfony\Component\Console\Command\Command;
+use Opis\Validation\DefaultValidatorTrait;
+use Opis\Validation\Validator as BaseValidator;
+use function Opis\Colibri\{t};
 
-
-class Console
+class Validator extends BaseValidator
 {
-    /**
-     * Run a command
-     */
-    public function run()
-    {
-        $application = new ConsoleApplication();
+    use DefaultValidatorTrait;
 
-        foreach ($this->commands() as $command) {
-            $application->add($command);
+    /**
+     * @return array
+     */
+    public function getErrors(): array
+    {
+        $errors = array();
+
+        foreach (parent::getErrors() as $key => $value) {
+            $errors[$key] = t($value);
         }
 
-        $application->run();
+        return $errors;
     }
 
     /**
-     *  Get a list of commands
-     *
-     * @return  Command[]
+     * @return Validator
      */
-    public function commands(): array
+    public function csrf(): self
     {
-        $commands = [];
-
-        foreach (app()->getCollector()->getCommands() as $name => $builder) {
-            $commands[$name] = call_user_func($builder);
-        }
-
-        return $commands;
+        return $this->push([
+            'name' => __FUNCTION__,
+            'arguments' => [],
+        ]);
     }
+
+    /**
+     * @param array $validator
+     * @return Validator
+     */
+    protected function push(array $validator): self
+    {
+        $this->stack[] = $validator;
+        return $this;
+    }
+
 }

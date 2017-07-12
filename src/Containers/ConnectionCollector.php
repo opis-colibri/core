@@ -15,28 +15,36 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Partials;
+namespace Opis\Colibri\Containers;
 
-trait RenderableViewTrait
+use Opis\Colibri\CollectingContainer;
+use Opis\Colibri\Serializable\ConnectionList;
+
+/**
+ * Class ConnectionCollector
+ * @package Opis\Colibri\Containers
+ * @method ConnectionList   data()
+ */
+class ConnectionCollector extends CollectingContainer
 {
-    protected $renderedContent;
 
     /**
-     * The __toString method allows a class to decide how it will react when it is converted to a string.
-     *
-     * @return string
-     * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.tostring
+     * Constructor
      */
-    public function __toString()
+    public function __construct()
     {
-        if($this->renderedContent === null){
-            try{
-                $this->renderedContent = \Opis\Colibri\render($this);
-            }catch (\Exception $e){
-                $this->renderedContent = $e->getMessage();
-            }
-        }
+        parent::__construct(new ConnectionList());
+    }
 
-        return $this->renderedContent;
+
+    /**
+     * @param string $name
+     * @param callable $callback
+     * @return ConnectionCollector
+     */
+    public function create(string $name, callable $callback): self
+    {
+        $this->dataObject->set($name, $callback());
+        return $this;
     }
 }
