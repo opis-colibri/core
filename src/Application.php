@@ -953,7 +953,7 @@ class Application implements ISettingsContainer
     }
 
     /**
-     * Reloac class loader
+     * Reload class loader
      */
     protected function reloadClassLoader()
     {

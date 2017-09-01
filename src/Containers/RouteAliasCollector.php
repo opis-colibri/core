@@ -43,7 +43,7 @@ class RouteAliasCollector extends CollectingContainer
      * @param   string $path The path to match
      * @param   callable $action An action that will be executed
      *
-     * @return  RouteCollector
+     * @return  Route
      */
     public function alias(string $path, callable $action): Route
     {

@@ -75,7 +75,7 @@ class Mutex
     }
 
     /**
-     * Realese the mutex
+     * Release the mutex
      *
      * @return  boolean
      */

@@ -17,6 +17,7 @@
 
 namespace Opis\Colibri\Collector;
 
+use Opis\Colibri\CollectingContainer;
 use Opis\Events\RouteCollection;
 use Opis\Routing\Context;
 use Opis\Routing\Route;
@@ -26,7 +27,7 @@ use Opis\Routing\Router as BaseRouter;
  * Class Router
  * @package Opis\Colibri\Collector
  *
- * @method \Opis\Colibri\CollectingContainer route(Context $context)
+ * @method CollectingContainer route(Context $context)
  */
 class Router extends BaseRouter
 {
