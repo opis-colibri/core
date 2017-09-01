@@ -23,7 +23,7 @@ use Opis\HttpRouting\Context;
 use Opis\HttpRouting\Router;
 use Opis\Routing\Context as BaseContext;
 use Opis\Routing\Router as AliasRouter;
-use function Opis\Colibri\{app, view};
+use function Opis\Colibri\Functions\{app, view};
 
 class HttpRouter extends Router
 {

@@ -17,6 +17,8 @@
 
 namespace Opis\Colibri\Traits;
 
+use function Opis\Colibri\Functions\render;
+
 trait RenderableViewTrait
 {
     protected $renderedContent;
@@ -31,7 +33,7 @@ trait RenderableViewTrait
     {
         if($this->renderedContent === null){
             try{
-                $this->renderedContent = \Opis\Colibri\render($this);
+                $this->renderedContent = render($this);
             }catch (\Exception $e){
                 $this->renderedContent = $e->getMessage();
             }

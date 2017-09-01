@@ -15,9 +15,10 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri;
+namespace Opis\Colibri\Functions;
 
 use Opis\Cache\CacheInterface;
+use Opis\Colibri\{Application, AppInfo, Module, View};
 use Opis\Colibri\Validation\Validator;
 use Opis\Colibri\Serializable\ControllerCallback;
 use Opis\Config\ConfigInterface;

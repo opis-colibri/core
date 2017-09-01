@@ -19,6 +19,7 @@ namespace Opis\Colibri;
 
 use Composer\Package\CompletePackage;
 use Exception;
+use function Opis\Colibri\Functions\{app, config};
 
 class Module
 {

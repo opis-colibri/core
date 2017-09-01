@@ -21,9 +21,7 @@ use Opis\Colibri\Serializable\ControllerCallback;
 use Opis\HttpRouting\CompiledRoute;
 use Opis\HttpRouting\Dispatcher;
 use Opis\HttpRouting\Route;
-use function Opis\Colibri\{
-    app, make
-};
+use function Opis\Colibri\Functions\{app, make};
 
 class HttpRoute extends Route
 {

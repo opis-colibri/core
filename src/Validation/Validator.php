@@ -19,7 +19,7 @@ namespace Opis\Colibri\Validation;
 
 use Opis\Validation\DefaultValidatorTrait;
 use Opis\Validation\Validator as BaseValidator;
-use function Opis\Colibri\{t};
+use function Opis\Colibri\Functions\{t};
 
 class Validator extends BaseValidator
 {

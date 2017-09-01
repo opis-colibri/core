@@ -18,7 +18,7 @@
 namespace Opis\Colibri;
 
 use Opis\View\PHPEngine;
-use function Opis\Colibri\{view as makeView};
+use function Opis\Colibri\Functions\{view as makeView, render, asset, getURL, generateCSRFToken, v, r, t};
 
 class ViewEngine extends PHPEngine
 {
