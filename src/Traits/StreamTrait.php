@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Partials;
+namespace Opis\Colibri\Traits;
 
 trait StreamTrait
 {

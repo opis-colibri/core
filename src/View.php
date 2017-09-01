@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri;
 
-use Opis\Colibri\Partials\RenderableViewTrait;
+use Opis\Colibri\Traits\RenderableViewTrait;
 use Opis\View\View as OpisView;
 
 class View extends OpisView
