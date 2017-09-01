@@ -73,16 +73,29 @@ class RouteCollector extends CollectingContainer
     }
 
     /**
-     * Defines a global filter
+     * Defines a global callback
      *
-     * @param   string $name The name of the filter
-     * @param   callable $callback A callback that will return the filter's value
+     * @param   string $name The name of the callback
+     * @param   callable $callback A callback
      *
      * @return  self   Self reference
      */
-    public function filter($name, $callback)
+    public function callback($name, callable $callback)
     {
-        $this->dataObject->filter($name, $callback);
+        $this->dataObject->callback($name, $callback);
+        return $this;
+    }
+
+    /**
+     * Add a middleware callback
+     *
+     * @param string $name
+     * @param callable $callback
+     * @return self Self reference
+     */
+    public function middleware(string $name, callable $callback): self
+    {
+        $this->dataObject->middleware($name, $callback);
         return $this;
     }
 
