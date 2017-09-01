@@ -18,18 +18,11 @@
 namespace Opis\Colibri\Functions;
 
 use Opis\Cache\CacheInterface;
-use Opis\Colibri\{Application, AppInfo, Module, View};
-use Opis\Colibri\Validation\Validator;
-use Opis\Colibri\Serializable\ControllerCallback;
+use Opis\Colibri\{Application, AppInfo, Module, View, Validation\Validator, Serializable\ControllerCallback};
 use Opis\Config\ConfigInterface;
-use Opis\Database\Connection as DBConnection;
-use Opis\Database\Database;
-use Opis\Database\EntityManager;
-use Opis\Database\ORM\EntityQuery;
-use Opis\Database\Schema;
+use Opis\Database\{Connection as DBConnection, Database, EntityManager, ORM\EntityQuery, Schema};
 use Opis\Events\Event;
-use Opis\Http\Request;
-use Opis\Http\Response;
+use Opis\Http\{Request, Response};
 use Opis\HttpRouting\HttpError;
 use Opis\Session\Session;
 use Opis\View\IView;
