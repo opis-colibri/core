@@ -26,7 +26,7 @@ use function Opis\Colibri\Functions\{
     module
 };
 
-class ModuleInfoCommand extends Command
+class About extends Command
 {
 
     protected function configure()

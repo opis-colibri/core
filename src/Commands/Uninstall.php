@@ -26,7 +26,7 @@ use function Opis\Colibri\Functions\{
     module, info
 };
 
-class ModuleUninstallCommand extends Command
+class Uninstall extends Command
 {
 
     protected function configure()

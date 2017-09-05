@@ -25,19 +25,19 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use function Opis\Colibri\Functions\{
-    module, info
+    info, module
 };
 
-class ModuleInstallCommand extends Command
+class Disable extends Command
 {
 
     protected function configure()
     {
         $this
-            ->setName('install')
-            ->setDescription('Install a module')
+            ->setName('disable')
+            ->setDescription('Disable a module')
             ->addArgument('module', InputArgument::IS_ARRAY, 'A list of modules separated by space')
-            ->addOption('enable', null, InputOption::VALUE_NONE, 'Enable modules');
+            ->addOption('uninstall', null, InputOption::VALUE_NONE, 'Uninstall modules');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -52,42 +52,40 @@ class ModuleInstallCommand extends Command
         $output->getFormatter()->setStyle('b-info', new OutputFormatterStyle('green', null, array('bold')));
 
         $modules = $input->getArgument('module');
-        $enable = $input->getOption('enable');
+        $uninstall = $input->getOption('uninstall');
 
         foreach ($modules as $moduleName) {
 
             $module = module($moduleName);
 
-            if (!$module->exists()) {
+            if(!$module->exists()){
                 $output->writeln('<error>Module <b-error>' . $moduleName . '</b-error> doesn\'t exist.</error>');
                 continue;
             }
 
-            if ($module->isInstalled()) {
-                $output->writeln('<warning>Module <b-warning>' . $moduleName . '</b-warning> is already installed.</warning>');
+            if(!$module->isEnabled()){
+                $output->writeln('<warning>Module <b-warning>' . $moduleName . '</b-warning> is already disabled.</warning>');
                 continue;
-            }
+            };
 
             if ($module->isHidden()) {
-                $output->writeln('<error>Module <b-error>' . $moduleName . '</b-error> is hidden and can\'t be installed.');
+                $output->writeln('<error>Module <b-error>' . $moduleName . '</b-error> is hidden and can\'t be disabled.');
                 continue;
             }
 
+            if ($module->disable()) {
+                $output->writeln('<info>Module <b-info>' . $moduleName . '</b-info> was disabled.</info>');
 
-            if ($module->install()) {
-                $output->writeln('<info>Module <b-info>' . $moduleName . '</b-info> was installed.</info>');
-
-                if ($enable) {
-                    $command = $this->getApplication()->find('enable');
+                if ($uninstall) {
+                    $command = $this->getApplication()->find('uninstall');
                     $args = array(
-                        'command' => 'enable',
+                        'command' => 'uninstall',
                         'module' => array($moduleName),
                     );
-
                     $command->run(new ArrayInput($args), $output);
                 }
             } else {
-                $output->writeln('<error>Module <b-error>' . $moduleName . '</b-error> could not be installed.</error>');
+                $output->writeln('<error>Module <b-error>' . $moduleName . '</b-error> could not be disbled.</error>');
             }
         }
     }

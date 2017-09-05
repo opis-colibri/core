@@ -24,7 +24,7 @@ use function Opis\Colibri\Functions\{
     app, info
 };
 
-class CollectCommand extends Command
+class Collect extends Command
 {
 
     protected function configure()
