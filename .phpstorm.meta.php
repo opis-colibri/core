@@ -1,4 +1,4 @@
 <?php
 namespace PHPSTORM_META {
-    override(\Opis\Colibri\make(0), type(0));
+    override(\Opis\Colibri\Functions\make(0), type(0));
 }
