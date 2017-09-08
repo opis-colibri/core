@@ -21,9 +21,29 @@ use function Opis\Colibri\Functions\view;
 use Opis\Http\Response;
 use Opis\HttpRouting\Context;
 use Opis\HttpRouting\Dispatcher as BaseDispatcher;
+use Opis\Routing\Context as BaseContext;
+use Opis\Routing\Router as BaseRouter;
 
 class Dispatcher extends BaseDispatcher
 {
+    public function dispatch(BaseRouter $router, BaseContext $context)
+    {
+        $content = parent::dispatch($router, $context);
+
+        if($this->route === null){
+            return $content;
+        }
+
+        if(null !== $handler = (string) $this->route->get('responseHandler')){
+            $cb = $this->route->getCallbacks();
+            if(isset($cb[$handler])){
+                $content = $cb[$handler]($content, $this->route);
+            }
+        }
+
+        return $content;
+    }
+
     /**
      * Get a 403 response
      * @param Context $context
@@ -31,7 +51,7 @@ class Dispatcher extends BaseDispatcher
      */
     protected function getNotFoundResponse(Context $context)
     {
-        return new Response(view('error.404', ['path' => $context->path()]));
+        return (new Response(view('error.404', ['path' => $context->path()])))->setStatusCode(404);
     }
 
     /**
@@ -41,6 +61,6 @@ class Dispatcher extends BaseDispatcher
      */
     protected function getAccessDeniedResponse(Context $context)
     {
-        return new Response(view('error.403', ['path' => $context->path()]));
+        return (new Response(view('error.403', ['path' => $context->path()])))->setStatusCode(403);
     }
 }
