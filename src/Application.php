@@ -787,7 +787,7 @@ class Application implements ISettingsContainer
             $response->setBody($result);
         }
 
-        if(getenv('PHPUNIT_TESTING') === false){
+        if(getenv('UNIT_TESTING') === false){
             $handler = new ResponseHandler($request);
             $handler->sendResponse($response);
         }
