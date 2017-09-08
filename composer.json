@@ -28,7 +28,7 @@
         "composer/composer": "1.2.*",
         "opis/database": "4.0.*@dev",
         "opis/container": "3.0.x-dev",
-        "opis/http": "^2.0.0",
+        "opis/http": "3.0.*@dev",
         "opis/http-routing": "5.0.x-dev",
         "opis/view": "5.0.x-dev",
         "opis/events": "5.0.x-dev",
