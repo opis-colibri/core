@@ -19,6 +19,11 @@ namespace Opis\Colibri\Functions;
 
 use Opis\Cache\CacheInterface;
 use Opis\Colibri\{Application, AppInfo, Module, View, Validation\Validator, Serializable\ControllerCallback};
+use Opis\Colibri\HttpResponse\{
+    Redirect as RedirectResponse,
+    PageNotFound as PageNotFoundResponse,
+    AccessDenied as AccessDeniedResponse
+};
 use Opis\Config\ConfigInterface;
 use Opis\Database\{Connection as DBConnection, Database, EntityManager, ORM\EntityQuery, Schema};
 use Opis\Events\Event;
@@ -238,9 +243,9 @@ function request(): Request
  * @param string $location
  * @param int $code
  * @param array $query
- * @return $this
+ * @return RedirectResponse
  */
-function redirect(string $location, int $code = 302, array $query = array())
+function redirect(string $location, int $code = 302, array $query = array()): RedirectResponse
 {
     if (!empty($query)) {
         foreach ($query as $key => $value) {
@@ -249,31 +254,33 @@ function redirect(string $location, int $code = 302, array $query = array())
         $location = rtrim($location) . '?' . implode('&', $query);
     }
 
-    return (new Response())->setStatusCode($code)->addHeader('Location', $location);
+    return new RedirectResponse($location, $code);
 }
 
 /**
- * @param null|\Closure|string $body
- * @return Response
+ * @param null|mixed|string $body
+ * @return PageNotFoundResponse
  */
-function pageNotFound($body = null): Response
+function pageNotFound($body = null): PageNotFoundResponse
 {
     if($body === null){
         $body = view('error.404', ['path' => request()->path()]);
     }
-    return (new Response($body))->setStatusCode(404);
+
+    return new PageNotFoundResponse($body);
 }
 
 /**
- * @param null|\Closure|string $body
- * @return Response
+ * @param null|string|mixed $body
+ * @return AccessDeniedResponse
  */
-function accessDenied($body = null): Response
+function accessDenied($body = null): AccessDeniedResponse
 {
     if($body === null){
         $body = view('error.403', ['path' => request()->path()]);
     }
-    return (new Response($body))->setStatusCode(403);
+
+    return new AccessDeniedResponse($body);
 }
 
 /**
