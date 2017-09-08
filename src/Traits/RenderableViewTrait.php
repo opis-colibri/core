@@ -36,6 +36,8 @@ trait RenderableViewTrait
                 $this->renderedContent = render($this);
             }catch (\Exception $e){
                 $this->renderedContent = $e->getMessage();
+            } catch (\Error $e){
+                $this->renderedContent = $e->getMessage();
             }
         }
 
