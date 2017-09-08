@@ -787,7 +787,7 @@ class Application implements ISettingsContainer
             $response->setBody($result);
         }
 
-        if(getenv('UNIT_TESTING') === false){
+        if(PHP_SAPI !== 'cli' || getenv('UNIT_TESTING') === false){
             $handler = new ResponseHandler($request);
             $handler->sendResponse($response);
         }
