@@ -20,7 +20,9 @@ namespace Opis\Colibri\Test;
 use Opis\Colibri\Application;
 use Opis\Colibri\Containers\RouteCollector;
 use Opis\Colibri\Containers\ViewCollector;
-use function Opis\Colibri\Functions\redirect;
+use function Opis\Colibri\Functions\{
+    redirect, request
+};
 use Opis\Http\Request;
 use Opis\Http\Response;
 use PHPUnit\Framework\TestCase;
@@ -99,6 +101,15 @@ class HttpRoutingTest extends TestCase
         ->callback('implode_array', function($content){
             return implode('.', $content);
         });
+
+        $this->route->post('/', function(){
+            return 'post:home';
+        });
+
+        $this->route->post('/foo', function($context){
+            return 'post:foo:' . $context->request()->query('param');
+        });
+
     }
 
     private function route(Request $request): Response
@@ -168,5 +179,17 @@ class HttpRoutingTest extends TestCase
     {
         $response = $this->route(Request::create('/redirect'));
         $this->assertEquals(302, $response->getStatusCode());
+    }
+
+    public function testHomePostMethod()
+    {
+        $response = $this->route(Request::create('/', 'POST'));
+        $this->assertEquals('post:home', $response->getBody());
+    }
+
+    public function testHomePostWithQuery()
+    {
+        $response = $this->route(Request::create('/foo?param=bar', 'POST'));
+        $this->assertEquals('post:foo:bar', $response->getBody());
     }
 }
