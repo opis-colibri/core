@@ -40,9 +40,9 @@ use Opis\Database\EntityManager;
 use Opis\Database\Schema;
 use Opis\Events\Event;
 use Opis\Events\EventTarget;
-use Opis\Http\Request;
 use Opis\Http\Request as HttpRequest;
-use Opis\Http\Response;
+use Opis\Http\Response as HttpResponse;
+use Opis\Http\ResponseHandler;
 use Opis\HttpRouting\Context;
 use Opis\Session\Session;
 use Opis\Validation\Placeholder;
@@ -541,9 +541,9 @@ class Application implements ISettingsContainer
     /**
      * Return the underlying HTTP request object
      *
-     * @return  Request
+     * @return  HttpRequest
      */
-    public function getHttpRequest(): Request
+    public function getHttpRequest(): HttpRequest
     {
         if ($this->httpRequestInstance === null) {
             $this->httpRequestInstance = HttpRequest::fromGlobals();
@@ -778,7 +778,21 @@ class Application implements ISettingsContainer
             $request->path(), $request->host(), $request->method(), $request->isSecure(), $request
         );
 
-        return $this->getHttpRouter()->route($context);
+        $result = $this->getHttpRouter()->route($context);
+
+        if($result instanceof HttpResponse){
+            $response = $result;
+        } else {
+            $response = new HttpResponse();
+            $response->setBody($result);
+        }
+
+        if(getenv('PHPUNIT_TESTING') === false){
+            $handler = new ResponseHandler($request);
+            $handler->sendResponse($response);
+        }
+
+        return $response;
     }
 
     /**
