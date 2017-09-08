@@ -23,7 +23,6 @@ use Opis\Config\ConfigInterface;
 use Opis\Database\{Connection as DBConnection, Database, EntityManager, ORM\EntityQuery, Schema};
 use Opis\Events\Event;
 use Opis\Http\{Request, Response};
-use Opis\HttpRouting\HttpError;
 use Opis\Session\Session;
 use Opis\View\IView;
 use Psr\Log\LoggerInterface;
@@ -239,6 +238,7 @@ function request(): Request
  * @param string $location
  * @param int $code
  * @param array $query
+ * @return $this
  */
 function redirect(string $location, int $code = 302, array $query = array())
 {
@@ -249,23 +249,31 @@ function redirect(string $location, int $code = 302, array $query = array())
         $location = rtrim($location) . '?' . implode('&', $query);
     }
 
-    response()->redirect($location, $code);
+    return (new Response())->setStatusCode($code)->addHeader('Location', $location);
 }
 
 /**
- * @return HttpError
+ * @param null|\Closure|string $body
+ * @return Response
  */
-function pageNotFound(): HttpError
+function pageNotFound($body = null): Response
 {
-    return HttpError::pageNotFound();
+    if($body === null){
+        $body = view('error.404', ['path' => request()->path()]);
+    }
+    return (new Response($body))->setStatusCode(404);
 }
 
 /**
- * @return HttpError
+ * @param null|\Closure|string $body
+ * @return Response
  */
-function accessDenied(): HttpError
+function accessDenied($body = null): Response
 {
-    return HttpError::accessDenied();
+    if($body === null){
+        $body = view('error.403', ['path' => request()->path()]);
+    }
+    return (new Response($body))->setStatusCode(403);
 }
 
 /**
