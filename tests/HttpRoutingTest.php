@@ -20,9 +20,7 @@ namespace Opis\Colibri\Test;
 use Opis\Colibri\Application;
 use Opis\Colibri\Containers\RouteCollector;
 use Opis\Colibri\Containers\ViewCollector;
-use function Opis\Colibri\Functions\{
-    redirect, request
-};
+use function Opis\Colibri\Functions\{redirect};
 use Opis\Http\Request;
 use Opis\Http\Response;
 use PHPUnit\Framework\TestCase;
