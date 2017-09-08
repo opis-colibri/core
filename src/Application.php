@@ -553,20 +553,6 @@ class Application implements ISettingsContainer
     }
 
     /**
-     * Return the underlying HTTP response object
-     *
-     * @return  Response
-     */
-    public function getHttpResponse(): Response
-    {
-        if ($this->httpResponseInstance === null) {
-            $this->httpResponseInstance = $this->getHttpRequest()->response();
-        }
-
-        return $this->httpResponseInstance;
-    }
-
-    /**
      * Get variables list
      *
      * @return array
