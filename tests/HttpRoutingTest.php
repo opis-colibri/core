@@ -20,6 +20,7 @@ namespace Opis\Colibri\Test;
 use Opis\Colibri\Application;
 use Opis\Colibri\Containers\RouteCollector;
 use Opis\Http\Request;
+use Opis\Http\Response;
 use PHPUnit\Framework\TestCase;
 
 class HttpRoutingTest extends TestCase
@@ -38,14 +39,6 @@ class HttpRoutingTest extends TestCase
             $this->dataObject = $data;
             return $this;
         })->call(new RouteCollector(), $this->app->getCollector()->getRoutes());
-
-        $this->app->getHttpRouter()->getRouteCollection()
-            ->notFound(function (){
-               return 404;
-            })
-            ->accessDenied(function (){
-                return 403;
-            });
 
         $this->route->get('/', function(){
             return 'home';
@@ -81,45 +74,60 @@ class HttpRoutingTest extends TestCase
         });
     }
 
+    private function route(Request $request): Response
+    {
+        return $this->app->run($request);
+    }
+
     public function testHomePage()
     {
-        $this->assertEquals('home', $this->app->run(Request::create('/')));
+        $response = $this->route(Request::create('/'));
+        $this->assertEquals('home', $response->getBody());
     }
 
     public function testRoute()
     {
-        $this->assertEquals('foo', $this->app->run(Request::create('/foo')));
+        $response = $this->route(Request::create('/foo'));
+        $this->assertEquals('foo', $response->getBody());
     }
 
     public function test404()
     {
-        $this->assertEquals(404, $this->app->run(Request::create('/404')));
+        $response = $this->route(Request::create('/404'));
+        $this->assertEquals(404, $response->getStatusCode());
     }
 
     public function test403()
     {
-        $this->assertEquals(403, $this->app->run(Request::create('/bar')));
+        $response = $this->route(Request::create('/bar'));
+        $this->assertEquals(403, $response->getStatusCode());
     }
 
     public function testParam()
     {
-        $this->assertEquals('foo', $this->app->run(Request::create('/param1/foo')));
+        $response = $this->route(Request::create('/param1/foo'));
+        $this->assertEquals('foo', $response->getBody());
     }
 
     public function testOptionalParam()
     {
-        $this->assertEquals('foo', $this->app->run(Request::create('/param2')));
-        $this->assertEquals('bar', $this->app->run(Request::create('/param2/bar')));
+        $response = $this->route(Request::create('/param2'));
+        $this->assertEquals('foo', $response->getBody());
+        $response = $this->route(Request::create('/param2/bar'));
+        $this->assertEquals('bar', $response->getBody());
     }
 
     public function testOptionalImplicitParam()
     {
-        $this->assertEquals('foo', $this->app->run(Request::create('/param2')));
-        $this->assertEquals('bar', $this->app->run(Request::create('/param2/bar')));
+        $response = $this->route(Request::create('/param2'));
+        $this->assertEquals('foo', $response->getBody());
+        $response = $this->route(Request::create('/param2/bar'));
+        $this->assertEquals('bar', $response->getBody());
     }
 
     public function testBindParam()
     {
-        $this->assertEquals('FOO', $this->app->run(Request::create('/bind/foo')));
+        $response = $this->route(Request::create('/bind/foo'));
+        $this->assertEquals('FOO', $response->getBody());
     }
 }
