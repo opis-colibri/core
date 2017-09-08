@@ -236,20 +236,6 @@ function request(): Request
 }
 
 /**
- * @return Response
- */
-function response(): Response
-{
-    static $response;
-
-    if($response === null){
-        $response = app()->getHttpResponse();
-    }
-
-    return $response;
-}
-
-/**
  * @param string $location
  * @param int $code
  * @param array $query
