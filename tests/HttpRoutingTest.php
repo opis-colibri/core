@@ -17,10 +17,10 @@
 
 namespace Opis\Colibri\Test;
 
-use function foo\func;
 use Opis\Colibri\Application;
 use Opis\Colibri\Containers\RouteCollector;
 use Opis\Colibri\Containers\ViewCollector;
+use function Opis\Colibri\Functions\redirect;
 use Opis\Http\Request;
 use Opis\Http\Response;
 use PHPUnit\Framework\TestCase;
@@ -87,6 +87,10 @@ class HttpRoutingTest extends TestCase
         })
         ->bind('x', function($x){
             return strtoupper($x);
+        });
+
+        $this->route->get('/redirect', function(){
+           return redirect('/');
         });
 
         $this->route->get('/handler', function(){
@@ -158,5 +162,11 @@ class HttpRoutingTest extends TestCase
     {
         $response = $this->route(Request::create('/handler'));
         $this->assertEquals('a.b.c', $response->getBody());
+    }
+
+    public function testRedirectResponse()
+    {
+        $response = $this->route(Request::create('/redirect'));
+        $this->assertEquals(302, $response->getStatusCode());
     }
 }

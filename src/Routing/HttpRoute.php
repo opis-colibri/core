@@ -23,6 +23,12 @@ use Opis\HttpRouting\Dispatcher;
 use Opis\HttpRouting\Route;
 use function Opis\Colibri\Functions\{app, make};
 
+/**
+ * Class HttpRoute
+ * @package Opis\Colibri\Routing
+ *
+ * @method HttpRoute responseHandler(string $handler)
+ */
 class HttpRoute extends Route
 {
     protected $resolvedAction;

@@ -18,7 +18,8 @@
 namespace Opis\Colibri\Routing;
 
 use function Opis\Colibri\Functions\view;
-use Opis\Http\Response;
+use Opis\Colibri\HttpResponse\AccessDenied;
+use Opis\Colibri\HttpResponse\PageNotFound;
 use Opis\HttpRouting\Context;
 use Opis\HttpRouting\Dispatcher as BaseDispatcher;
 use Opis\Routing\Context as BaseContext;
@@ -51,7 +52,7 @@ class Dispatcher extends BaseDispatcher
      */
     protected function getNotFoundResponse(Context $context)
     {
-        return (new Response(view('error.404', ['path' => $context->path()])))->setStatusCode(404);
+        return new PageNotFound(view('error.404', ['path' => $context->path()]));
     }
 
     /**
@@ -61,6 +62,6 @@ class Dispatcher extends BaseDispatcher
      */
     protected function getAccessDeniedResponse(Context $context)
     {
-        return (new Response(view('error.403', ['path' => $context->path()])))->setStatusCode(403);
+        return new AccessDenied(view('error.403', ['path' => $context->path()]));
     }
 }
