@@ -1,4 +1,7 @@
 <phpunit bootstrap="./vendor/autoload.php">
+    <php>
+        <env name="PHPUNIT_TESTING" value="1"/>
+    </php>
     <testsuites>
         <testsuite name="Routing">
             <directory suffix="RoutingTest.php">./tests</directory>

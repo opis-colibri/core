@@ -17,8 +17,10 @@
 
 namespace Opis\Colibri\Test;
 
+use function foo\func;
 use Opis\Colibri\Application;
 use Opis\Colibri\Containers\RouteCollector;
+use Opis\Colibri\Containers\ViewCollector;
 use Opis\Http\Request;
 use Opis\Http\Response;
 use PHPUnit\Framework\TestCase;
@@ -31,14 +33,28 @@ class HttpRoutingTest extends TestCase
     /** @var  RouteCollector */
     public $route;
 
+    /** @var  ViewCollector */
+    public $view;
+
     public function setUp()
     {
         $this->app = new Application(__DIR__, include __DIR__ . '/../vendor/autoload.php');
         $this->app->bootstrap();
+
         $this->route = (function($data){
             $this->dataObject = $data;
             return $this;
         })->call(new RouteCollector(), $this->app->getCollector()->getRoutes());
+
+        $this->view = (function ($data){
+            $this->dataObject = $data;
+            return $this;
+        })->call(new ViewCollector(), $this->app->getCollector()->getViews());
+
+        $this->view->handle('error.{error}', function($error){
+            return __DIR__ . '/view/error' . $error . '.php';
+        })->where('error', '403|404');
+
 
         $this->route->get('/', function(){
             return 'home';
@@ -71,6 +87,13 @@ class HttpRoutingTest extends TestCase
         })
         ->bind('x', function($x){
             return strtoupper($x);
+        });
+
+        $this->route->get('/handler', function(){
+            return ['a', 'b', 'c'];
+        })->responseHandler('implode_array')
+        ->callback('implode_array', function($content){
+            return implode('.', $content);
         });
     }
 
@@ -129,5 +152,11 @@ class HttpRoutingTest extends TestCase
     {
         $response = $this->route(Request::create('/bind/foo'));
         $this->assertEquals('FOO', $response->getBody());
+    }
+
+    public function testResponseHandler()
+    {
+        $response = $this->route(Request::create('/handler'));
+        $this->assertEquals('a.b.c', $response->getBody());
     }
 }
