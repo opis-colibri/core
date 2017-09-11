@@ -26,7 +26,7 @@
         "php": ">=7.0.0",
         "composer-plugin-api": "^1.0",
         "composer/composer": "1.2.*",
-        "opis/database": "4.0.*@dev",
+        "opis/orm": "1.0.*@dev",
         "opis/container": "3.0.x-dev",
         "opis/http": "3.0.*@dev",
         "opis/http-routing": "5.0.x-dev",
