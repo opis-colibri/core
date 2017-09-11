@@ -25,9 +25,10 @@ use Opis\Colibri\HttpResponse\{
     AccessDenied as AccessDeniedResponse
 };
 use Opis\Config\ConfigInterface;
-use Opis\Database\{Connection as DBConnection, Database, EntityManager, ORM\EntityQuery, Schema};
+use Opis\Database\{Connection as DBConnection, Database, Schema};
+use Opis\ORM\{EntityManager, Core\EntityQuery};
 use Opis\Events\Event;
-use Opis\Http\{Request, Response};
+use Opis\Http\{Request};
 use Opis\Session\Session;
 use Opis\View\IView;
 use Psr\Log\LoggerInterface;
