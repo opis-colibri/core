@@ -19,7 +19,7 @@ namespace Opis\Colibri\Containers;
 
 use Opis\Colibri\CollectingContainer;
 use Opis\Colibri\Routing\HttpRoute;
-use Opis\Colibri\Groups\RouteGroup;
+use Opis\Colibri\Containers\Misc\RouteGroup;
 use Opis\HttpRouting\RouteCollection;
 
 /**

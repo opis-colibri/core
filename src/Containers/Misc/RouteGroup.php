@@ -15,8 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Groups;
-
+namespace Opis\Colibri\Containers\Misc;
 
 use Opis\Colibri\Routing\HttpRoute;
 
