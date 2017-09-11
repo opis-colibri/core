@@ -27,15 +27,13 @@ use Opis\Colibri\Routing\HttpRoute;
  * @method RouteGroup filter(string $name, callable $callback)
  * @method RouteGroup implicit(string $name, $value)
  * @method RouteGroup where(string $name, $value)
- * @method RouteGroup before(string|array $filters)
- * @method RouteGroup after(string|array $filters)
+ * @method RouteGroup validate(string|array $filters)
+ * @method RouteGroup callback(string|array $filters)
  * @method RouteGroup access(string|array $filters)
  * @method RouteGroup domain(string $value)
  * @method RouteGroup method(string $value)
  * @method RouteGroup secure(bool $value)
- * @method RouteGroup dispatcher(string $name)
- * @method RouteGroup notFound(callable $callback)
- * @method RouteGroup accessDenied(callable $callback)
+ * @method RouteGroup responseHandler(string $name)
  */
 class RouteGroup
 {
