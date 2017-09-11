@@ -20,6 +20,14 @@ namespace Opis\Colibri;
 abstract class Installer
 {
     /**
+     * Installer constructor.
+     */
+    final public function __construct()
+    {
+        // Nothing here
+    }
+
+    /**
      * Install action
      */
     public function install()

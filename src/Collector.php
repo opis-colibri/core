@@ -19,5 +19,11 @@ namespace Opis\Colibri;
 
 abstract class Collector
 {
-
+    /**
+     * Collector constructor.
+     */
+    final public function __construct()
+    {
+        // Nothing here
+    }
 }
