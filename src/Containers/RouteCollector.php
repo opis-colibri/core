@@ -87,19 +87,6 @@ class RouteCollector extends CollectingContainer
     }
 
     /**
-     * Add a middleware callback
-     *
-     * @param string $name
-     * @param callable $callback
-     * @return self Self reference
-     */
-    public function middleware(string $name, callable $callback): self
-    {
-        $this->dataObject->middleware($name, $callback);
-        return $this;
-    }
-
-    /**
      * Set a global implicit value for a wildcard
      *
      * @param   string $name The name of the wildcard
