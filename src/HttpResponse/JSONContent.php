@@ -25,11 +25,12 @@ class JSONContent extends Response
      * JSONContent constructor.
      * @param mixed $content
      * @param int $status
+     * @param int $jsonOptions
      */
-    public function __construct($content, int $status = 200)
+    public function __construct($content, int $status = 200, int $jsonOptions = 0)
     {
         $this->contentType = 'application/json';
         $this->statusCode = $status;
-        parent::__construct(json_encode($content));
+        parent::__construct(json_encode($content, $jsonOptions));
     }
 }
