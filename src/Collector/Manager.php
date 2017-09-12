@@ -22,6 +22,7 @@ use Opis\Cache\CacheInterface;
 use Opis\Colibri\Annotations\Collector as CollectorAnnotation;
 use Opis\Colibri\Container;
 use Opis\Colibri\Collector;
+use Opis\Colibri\Serializable\ClassList;
 use Opis\Config\ConfigInterface;
 use Opis\Database\Connection;
 use Opis\Database\Database;
@@ -164,6 +165,15 @@ class Manager
     public function getRoutes(bool $fresh = false): HttpRouteCollection
     {
         return $this->collect('Routes', $fresh);
+    }
+
+    /**
+     * @param bool $fresh
+     * @return ClassList
+     */
+    public function getResponseHandlers(bool $fresh = false): ClassList
+    {
+        return $this->collect('ResponseHandlers', $fresh);
     }
 
     /**

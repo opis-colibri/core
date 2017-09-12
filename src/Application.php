@@ -275,7 +275,7 @@ class Application implements ISettingsContainer
     public function getHttpRouter(): HttpRouter
     {
         if ($this->httpRouter === null) {
-            $this->httpRouter = new HttpRouter();
+            $this->httpRouter = new HttpRouter($this);
         }
         return $this->httpRouter;
     }

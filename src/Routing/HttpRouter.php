@@ -17,17 +17,21 @@
 
 namespace Opis\Colibri\Routing;
 
+use Opis\Colibri\Application;
 use Opis\HttpRouting\Context;
 use Opis\HttpRouting\Router;
 use Opis\Routing\Context as BaseContext;
 use Opis\Routing\Router as AliasRouter;
-use function Opis\Colibri\Functions\{app};
 
 class HttpRouter extends Router
 {
-    public function __construct()
+    /** @var Application */
+    protected $app;
+
+    public function __construct(Application $app)
     {
-        parent::__construct(app()->getCollector()->getRoutes(), new Dispatcher());
+        $this->app = $app;
+        parent::__construct($app->getCollector()->getRoutes(), new Dispatcher($app));
     }
 
     /**
@@ -39,7 +43,7 @@ class HttpRouter extends Router
     public function route(BaseContext $context)
     {
         $this->currentPath = $context;
-        $router = new AliasRouter(app()->getCollector()->getRouteAliases());
+        $router = new AliasRouter($this->app->getCollector()->getRouteAliases());
         $alias = $router->route(new BaseContext($context->path()));
 
         if ($alias !== null) {

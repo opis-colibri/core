@@ -17,6 +17,7 @@
 
 namespace Opis\Colibri\Routing;
 
+use Opis\Colibri\Application;
 use function Opis\Colibri\Functions\view;
 use Opis\Colibri\HttpResponse\AccessDenied;
 use Opis\Colibri\HttpResponse\PageNotFound;
@@ -25,8 +26,26 @@ use Opis\HttpRouting\Dispatcher as BaseDispatcher;
 use Opis\Routing\Context as BaseContext;
 use Opis\Routing\Router as BaseRouter;
 
+/**
+ * Class Dispatcher
+ * @package Opis\Colibri\Routing
+ * @property HttpRoute $route
+ */
 class Dispatcher extends BaseDispatcher
 {
+    /** @var  Application */
+    protected $app;
+
+    public function __construct(Application $app)
+    {
+        $this->app = $app;
+    }
+
+    /**
+     * @param BaseRouter|HttpRouter $router
+     * @param BaseContext|Context $context
+     * @return mixed
+     */
     public function dispatch(BaseRouter $router, BaseContext $context)
     {
         $content = parent::dispatch($router, $context);
@@ -36,9 +55,9 @@ class Dispatcher extends BaseDispatcher
         }
 
         if(null !== $handler = (string) $this->route->get('responseHandler')){
-            $cb = $this->route->getCallbacks();
-            if(isset($cb[$handler])){
-                $content = $cb[$handler]($content, $this->route);
+            /** @var ResponseHandler $handler */
+            if(false !== $handler = $this->app->getCollector()->getResponseHandlers()->get($handler)){
+                $content = $handler->handle($content, $this->route, $context->request());
             }
         }
 
