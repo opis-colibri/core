@@ -236,7 +236,7 @@ class RouteCollector extends CollectingContainer
      */
     protected function handle($path, $action, $method, $name = null)
     {
-        $route = new HttpRoute($path, $action, $name);
+        $route = new HttpRoute($this->prefix . $path, $action, $name);
         $this->dataObject->addRoute($route->method($method));
         return $route;
     }
