@@ -63,15 +63,16 @@ class Mutex
     /**
      * Aquire the mutex
      *
+     * @param bool $wait
      * @return  boolean
      */
-    public function lock(): bool
+    public function lock(bool $wait = true): bool
     {
         if ($this->fp === null) {
             $this->fp = fopen($this->file, 'r');
         }
 
-        return flock($this->fp, LOCK_EX);
+        return flock($this->fp, $wait ? LOCK_EX : LOCK_EX | LOCK_NB);
     }
 
     /**
