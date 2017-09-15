@@ -23,6 +23,18 @@ use ReflectionObject;
 
 abstract class DelegateCollector
 {
+    /** @var string[] */
+    private $ignore;
+
+    /**
+     * DelegateCollector constructor.
+     * @param string[] $ignore
+     */
+    public function __construct(array $ignore = [])
+    {
+        $this->ignore = $ignore;
+    }
+
     /**
      * Collect items
      *
@@ -34,9 +46,8 @@ abstract class DelegateCollector
 
         foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
 
-            if ($method->getShortName() == __FUNCTION__ ||
-                $method->isStatic() ||
-                $method->isConstructor() || $method->isDestructor()
+            if ($method->getShortName() == __FUNCTION__ || in_array($method->getShortName(), $this->ignore) ||
+                $method->isStatic() || $method->isConstructor() || $method->isDestructor()
             ) {
                 continue;
             }
