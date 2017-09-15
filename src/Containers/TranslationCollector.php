@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Containers;
 
-use Opis\Colibri\CollectingContainer;
+use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Serializable\Translations;
 
 /**
@@ -25,7 +25,7 @@ use Opis\Colibri\Serializable\Translations;
  * @package Opis\Colibri\Containers
  * @method Translations data()
  */
-class TranslationCollector extends CollectingContainer
+class TranslationCollector extends ItemCollector
 {
     protected $language;
 

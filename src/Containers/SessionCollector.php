@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Containers;
 
-use Opis\Colibri\CollectingContainer;
+use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Serializable\StorageCollection;
 
 /**
@@ -25,7 +25,7 @@ use Opis\Colibri\Serializable\StorageCollection;
  * @package Opis\Colibri\Containers
  * @method StorageCollection data()
  */
-class SessionCollector extends CollectingContainer
+class SessionCollector extends ItemCollector
 {
 
     /**

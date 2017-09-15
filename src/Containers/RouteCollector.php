@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Containers;
 
-use Opis\Colibri\CollectingContainer;
+use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Routing\HttpRoute;
 use Opis\Colibri\Containers\Helpers\RouteGroup;
 use Opis\HttpRouting\RouteCollection;
@@ -28,7 +28,7 @@ use Opis\HttpRouting\RouteCollection;
  * @property RouteCollection $dataObject
  * @method RouteCollection data()
  */
-class RouteCollector extends CollectingContainer
+class RouteCollector extends ItemCollector
 {
     /** @var string */
     protected $prefix = '';

@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Containers;
 
-use Opis\Colibri\CollectingContainer;
+use Opis\Colibri\ItemCollector;
 use Opis\View\EngineEntry;
 use Opis\View\EngineResolver;
 
@@ -29,7 +29,7 @@ use Opis\View\EngineResolver;
  * @method EngineResolver   data()
  * @property EngineResolver $dataObject
  */
-class ViewEngineCollector extends CollectingContainer
+class ViewEngineCollector extends ItemCollector
 {
 
     /**

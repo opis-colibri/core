@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Containers;
 
-use Opis\Colibri\CollectingContainer;
+use Opis\Colibri\ItemCollector;
 use Opis\Routing\RouteCollection;
 use Opis\Routing\Route;
 
@@ -27,7 +27,7 @@ use Opis\Routing\Route;
  * @method RouteCollection data()
  * @property \Opis\Routing\RouteCollection $dataObject
  */
-class RouteAliasCollector extends CollectingContainer
+class RouteAliasCollector extends ItemCollector
 {
     /**
      * Constructor

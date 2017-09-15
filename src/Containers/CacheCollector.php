@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Containers;
 
 use Opis\Cache\CacheInterface;
-use Opis\Colibri\CollectingContainer;
+use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Serializable\StorageCollection;
 
 /**
@@ -29,7 +29,7 @@ use Opis\Colibri\Serializable\StorageCollection;
  * @method  StorageCollection    data()
  * @property StorageCollection $dataObject
  */
-class CacheCollector extends CollectingContainer
+class CacheCollector extends ItemCollector
 {
 
     /**

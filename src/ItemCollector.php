@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri;
 
-abstract class CollectingContainer
+abstract class ItemCollector
 {
     /** @var  mixed */
     protected $dataObject;

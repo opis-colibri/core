@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Collector;
 
-use Opis\Colibri\CollectingContainer;
+use Opis\Colibri\ItemCollector;
 use ReflectionMethod;
 use ReflectionObject;
 
@@ -26,9 +26,9 @@ abstract class DelegateCollector
     /**
      * Collect items
      *
-     * @param   CollectingContainer $collector
+     * @param   ItemCollector $collector
      */
-    public function collect(CollectingContainer $collector)
+    public function collect(ItemCollector $collector)
     {
         $reflection = new ReflectionObject($this);
 

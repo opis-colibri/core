@@ -17,15 +17,15 @@
 
 namespace Opis\Colibri\Collector;
 
-use Opis\Colibri\CollectingContainer;
+use Opis\Colibri\ItemCollector;
 use Opis\Routing\Context;
 
 class Entry extends Context
 {
-    /** @var CollectingContainer */
+    /** @var ItemCollector */
     protected $collector;
 
-    public function __construct(string $name, CollectingContainer $collector)
+    public function __construct(string $name, ItemCollector $collector)
     {
         $this->collector = $collector;
         parent::__construct(strtolower($name));
@@ -40,9 +40,9 @@ class Entry extends Context
     }
 
     /**
-     * @return  CollectingContainer
+     * @return  ItemCollector
      */
-    public function getCollector(): CollectingContainer
+    public function getCollector(): ItemCollector
     {
         return $this->collector;
     }
