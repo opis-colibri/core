@@ -171,9 +171,9 @@ class Manager
      * @param bool $fresh
      * @return ClassList
      */
-    public function getResponseHandlers(bool $fresh = false): ClassList
+    public function getResponseInterceptors(bool $fresh = false): ClassList
     {
-        return $this->collect('ResponseHandlers', $fresh);
+        return $this->collect('ResponseInterceptors', $fresh);
     }
 
     /**

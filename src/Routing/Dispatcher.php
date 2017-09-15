@@ -54,10 +54,10 @@ class Dispatcher extends BaseDispatcher
             return $content;
         }
 
-        if(null !== $handler = (string) $this->route->get('responseHandler')){
-            /** @var ResponseHandler $handler */
-            if(false !== $handler = $this->app->getCollector()->getResponseHandlers()->get($handler)){
-                $content = $handler->handle($content, $this->route, $context->request());
+        if(null !== $interceptor = (string) $this->route->get('responseInterceptor')){
+            /** @var ResponseInterceptor $interceptor */
+            if(false !== $interceptor = $this->app->getCollector()->getResponseInterceptors()->get($interceptor)){
+                $content = $interceptor->handle($content, $this->route, $context->request());
             }
         }
 

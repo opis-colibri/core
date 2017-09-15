@@ -24,8 +24,8 @@ return array(
         'class' => 'Opis\\Colibri\\ItemCollectors\\RouteAliasCollector',
         'description' => 'Collects aliases for web routes',
     ),
-    'responsehandlers' => array(
-        'class' => 'Opis\\Colibri\\ItemCollectors\\ResponseHandlerCollector',
+    'responseinterceptors' => array(
+        'class' => 'Opis\\Colibri\\ItemCollectors\\ResponseInterceptorCollector',
         'description' => 'Collects response handlers',
     ),
     'views' => array(

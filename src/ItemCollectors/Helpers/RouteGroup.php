@@ -33,7 +33,7 @@ use Opis\Colibri\Routing\HttpRoute;
  * @method RouteGroup domain(string $value)
  * @method RouteGroup method(string $value)
  * @method RouteGroup secure(bool $value)
- * @method RouteGroup responseHandler(string $name)
+ * @method RouteGroup responseInterceptor(string $name)
  */
 class RouteGroup
 {

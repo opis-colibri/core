@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2014-2017 The Opis Project
+ * Copyright 2013-2016 The Opis Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,17 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\ItemCollectors;
+namespace Opis\Colibri\Routing;
 
-use Opis\Colibri\Routing\ResponseHandler;
+use Opis\Http\Request;
 
-class ResponseHandlerCollector extends ClassContainer
+abstract class ResponseInterceptor
 {
     /**
-     * @return string
+     * @param mixed $response
+     * @param HttpRoute $route
+     * @param Request $request
+     * @return mixed
      */
-    protected function getClass(): string
-    {
-        return ResponseHandler::class;
-    }
+    abstract public function handle($response, HttpRoute $route, Request $request);
 }
