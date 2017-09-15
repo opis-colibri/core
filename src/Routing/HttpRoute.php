@@ -27,7 +27,7 @@ use function Opis\Colibri\Functions\{app, make};
  * Class HttpRoute
  * @package Opis\Colibri\Routing
  *
- * @method HttpRoute responseMutator(string $handler)
+ * @method HttpRoute responseInterceptor(string $handler)
  */
 class HttpRoute extends Route
 {
