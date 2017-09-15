@@ -21,7 +21,7 @@ use Opis\Colibri\CollectingContainer;
 use ReflectionMethod;
 use ReflectionObject;
 
-abstract class ItemCollector
+abstract class DelegateCollector
 {
     /**
      * Collect items
