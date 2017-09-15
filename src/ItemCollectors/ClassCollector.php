@@ -20,7 +20,7 @@ namespace Opis\Colibri\ItemCollectors;
 use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Serializable\ClassList;
 
-abstract class ClassContainer extends ItemCollector
+abstract class ClassCollector extends ItemCollector
 {
 
     /**

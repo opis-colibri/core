@@ -19,7 +19,7 @@ namespace Opis\Colibri\ItemCollectors;
 
 use Opis\Colibri\Routing\ResponseInterceptor;
 
-class ResponseInterceptorCollector extends ClassContainer
+class ResponseInterceptorCollector extends ClassCollector
 {
     /**
      * @return string
