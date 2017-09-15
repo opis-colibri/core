@@ -24,7 +24,7 @@ use Opis\Colibri\Serializable\StorageCollection;
 /**
  * Class CacheCollector
  *
- * @package Opis\Colibri\Containers
+ * @package Opis\Colibri\ItemCollectors
  *
  * @method  StorageCollection    data()
  * @property StorageCollection $dataObject

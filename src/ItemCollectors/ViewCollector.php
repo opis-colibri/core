@@ -24,7 +24,7 @@ use Opis\View\RouteCollection;
 /**
  * Class ViewCollector
  *
- * @package Opis\Colibri\Containers
+ * @package Opis\Colibri\ItemCollectors
  *
  * @method RouteCollection  data()
  */

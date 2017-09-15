@@ -24,7 +24,7 @@ use Opis\Config\ConfigInterface;
 /**
  * Class ConfigCollector
  *
- * @package Opis\Colibri\Containers
+ * @package Opis\Colibri\ItemCollectors
  *
  * @method StorageCollection    data()
  */

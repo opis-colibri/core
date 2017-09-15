@@ -23,7 +23,7 @@ use Opis\Colibri\Serializable\VariablesList;
 /**
  * Class VariableCollector
  *
- * @package Opis\Colibri\Containers
+ * @package Opis\Colibri\ItemCollectors
  *
  * @method VariablesList    data()
  */

@@ -22,7 +22,7 @@ use Opis\Colibri\Serializable\StorageCollection;
 
 /**
  * Class SessionCollector
- * @package Opis\Colibri\Containers
+ * @package Opis\Colibri\ItemCollectors
  * @method StorageCollection data()
  */
 class SessionCollector extends ItemCollector

@@ -22,7 +22,7 @@ use Opis\Colibri\Serializable\ConnectionList;
 
 /**
  * Class ConnectionCollector
- * @package Opis\Colibri\Containers
+ * @package Opis\Colibri\ItemCollectors
  * @method ConnectionList   data()
  */
 class ConnectionCollector extends ItemCollector

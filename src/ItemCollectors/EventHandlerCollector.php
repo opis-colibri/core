@@ -23,7 +23,7 @@ use Opis\Routing\Route;
 
 /**
  * Class EventHandlerCollector
- * @package Opis\Colibri\Containers
+ * @package Opis\Colibri\ItemCollectors
  * @method RouteCollection data()
  * @property RouteCollection $dataObject
  */
