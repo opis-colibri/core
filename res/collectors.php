@@ -26,7 +26,7 @@ return array(
     ),
     'responseinterceptors' => array(
         'class' => 'Opis\\Colibri\\ItemCollectors\\ResponseInterceptorCollector',
-        'description' => 'Collects response handlers',
+        'description' => 'Collects response interceptors',
     ),
     'views' => array(
         'class' => 'Opis\\Colibri\\ItemCollectors\\ViewCollector',
