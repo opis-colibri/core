@@ -15,47 +15,35 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Containers;
+namespace Opis\Colibri\ItemCollectors;
 
 use Opis\Colibri\ItemCollector;
-use Opis\Colibri\Serializable\ClassList;
+use Opis\Colibri\Serializable\CallbackList;
 
-abstract class ClassContainer extends ItemCollector
+/**
+ * Class CommandCollector
+ * @package Opis\Colibri\Containers
+ * @method  CallbackList    data()
+ */
+class CommandCollector extends ItemCollector
 {
 
     /**
-     * ClassContainer constructor.
+     * CommandCollector constructor
      */
     public function __construct()
     {
-        parent::__construct(new ClassList($this->singletonClasses()));
+        parent::__construct(new CallbackList());
     }
 
     /**
-     * @param string $name Type name
-     * @param string $class Class name
-     * @return bool
+     * @param string $name
+     * @param callable $callback
+     * @return CommandCollector
      */
-    public function register(string $name, string $class) : bool
+    public function register(string $name, callable $callback): self
     {
-        if(!class_exists($class) || !is_subclass_of($class, $this->getClass(), true)){
-            return false;
-        }
-        $this->data()->add($name, $class);
-        return true;
+        $this->dataObject->add($name, $callback);
+        return $this;
     }
-
-    /**
-     * @return bool
-     */
-    protected function singletonClasses() : bool
-    {
-        return false;
-    }
-
-    /**
-     * @return string
-     */
-    abstract protected function getClass() : string;
-
 }

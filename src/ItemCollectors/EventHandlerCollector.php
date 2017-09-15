@@ -15,20 +15,21 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Containers;
+namespace Opis\Colibri\ItemCollectors;
 
 use Opis\Colibri\ItemCollector;
-use Opis\Routing\RouteCollection;
+use Opis\Events\RouteCollection;
 use Opis\Routing\Route;
 
 /**
- * Class RouteAliasCollector
+ * Class EventHandlerCollector
  * @package Opis\Colibri\Containers
  * @method RouteCollection data()
- * @property \Opis\Routing\RouteCollection $dataObject
+ * @property RouteCollection $dataObject
  */
-class RouteAliasCollector extends ItemCollector
+class EventHandlerCollector extends ItemCollector
 {
+
     /**
      * Constructor
      */
@@ -38,17 +39,18 @@ class RouteAliasCollector extends ItemCollector
     }
 
     /**
-     * Defines an alias for a route or a group of routes
+     * Register a new event handler
      *
-     * @param   string $path The path to match
-     * @param   callable $action An action that will be executed
+     * @param   string $event Event name
+     * @param   callable $callback A callback that will be executed
+     * @param   int $priority Event handler's priority
      *
      * @return  Route
      */
-    public function alias(string $path, callable $action): Route
+    public function handle(string $event, callable $callback, int $priority = 0): Route
     {
-        $route = new Route($path, $action);
-        $this->dataObject->addRoute($route);
-        return $route;
+        $handler = new Route($event, $callback);
+        $this->dataObject->addRoute($handler)->sort();
+        return $handler->set('priority', $priority);
     }
 }

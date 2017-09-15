@@ -15,40 +15,17 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Containers;
+namespace Opis\Colibri\ItemCollectors;
 
-use Opis\Colibri\ItemCollector;
-use Opis\View\EngineEntry;
-use Opis\View\EngineResolver;
+use Opis\Colibri\Routing\ResponseHandler;
 
-/**
- * Class ViewEngineCollector
- *
- * @package Opis\Colibri\Containers
- *
- * @method EngineResolver   data()
- * @property EngineResolver $dataObject
- */
-class ViewEngineCollector extends ItemCollector
+class ResponseHandlerCollector extends ClassContainer
 {
-
     /**
-     * Constructor
+     * @return string
      */
-    public function __construct()
+    protected function getClass(): string
     {
-        parent::__construct(new EngineResolver());
-    }
-
-    /**
-     * Defines a new view engine
-     *
-     * @param callable $factory
-     * @param int $priority Engine's priority
-     * @return EngineEntry
-     */
-    public function register(callable $factory, $priority = 0): EngineEntry
-    {
-        return $this->dataObject->register($factory, $priority);
+        return ResponseHandler::class;
     }
 }

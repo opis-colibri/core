@@ -15,11 +15,11 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Containers;
+namespace Opis\Colibri\ItemCollectors;
 
 use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Routing\HttpRoute;
-use Opis\Colibri\Containers\Helpers\RouteGroup;
+use Opis\Colibri\ItemCollectors\Helpers\RouteGroup;
 use Opis\HttpRouting\RouteCollection;
 
 /**

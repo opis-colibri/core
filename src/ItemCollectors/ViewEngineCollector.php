@@ -15,21 +15,21 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Containers;
+namespace Opis\Colibri\ItemCollectors;
 
-use Opis\Cache\CacheInterface;
 use Opis\Colibri\ItemCollector;
-use Opis\Colibri\Serializable\StorageCollection;
+use Opis\View\EngineEntry;
+use Opis\View\EngineResolver;
 
 /**
- * Class CacheCollector
+ * Class ViewEngineCollector
  *
  * @package Opis\Colibri\Containers
  *
- * @method  StorageCollection    data()
- * @property StorageCollection $dataObject
+ * @method EngineResolver   data()
+ * @property EngineResolver $dataObject
  */
-class CacheCollector extends ItemCollector
+class ViewEngineCollector extends ItemCollector
 {
 
     /**
@@ -37,27 +37,18 @@ class CacheCollector extends ItemCollector
      */
     public function __construct()
     {
-        parent::__construct(new StorageCollection(self::class . '::factory'));
+        parent::__construct(new EngineResolver());
     }
 
     /**
-     * @param $storage
-     * @param callable $constructor
-     * @return CacheCollector
-     */
-    public function register($storage, callable $constructor): self
-    {
-        $this->dataObject->add($storage, $constructor);
-        return $this;
-    }
-
-    /**
-     * @param string $storage
+     * Defines a new view engine
+     *
      * @param callable $factory
-     * @return CacheInterface
+     * @param int $priority Engine's priority
+     * @return EngineEntry
      */
-    public static function factory(string $storage, callable $factory): CacheInterface
+    public function register(callable $factory, $priority = 0): EngineEntry
     {
-        return $factory($storage);
+        return $this->dataObject->register($factory, $priority);
     }
 }

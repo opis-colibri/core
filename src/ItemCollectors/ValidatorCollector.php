@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Containers;
+namespace Opis\Colibri\ItemCollectors;
 
 use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Serializable\CallbackList;

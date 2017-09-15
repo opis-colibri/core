@@ -15,40 +15,45 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Containers;
+namespace Opis\Colibri\ItemCollectors;
 
 use Opis\Colibri\ItemCollector;
-use Opis\Colibri\Serializable\Translations;
+use Opis\Colibri\Serializable\StorageCollection;
 
 /**
- * Class TranslationCollector
+ * Class SessionCollector
  * @package Opis\Colibri\Containers
- * @method Translations data()
+ * @method StorageCollection data()
  */
-class TranslationCollector extends ItemCollector
+class SessionCollector extends ItemCollector
 {
-    protected $language;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        parent::__construct(new Translations());
+        parent::__construct(new StorageCollection(self::class . '::factory'));
     }
 
     /**
-     * Add the sentences that will be translated from english to current used language
-     *
-     * @param   string $language Language
-     * @param   array $sentences Translated sentences
+     * @param string $storage
+     * @param callable $constructor
+     * @return SessionCollector
      */
-    public function translate($language, array $sentences)
+    public function register(string $storage, callable $constructor): self
     {
-        if (empty($sentences)) {
-            return;
-        }
+        $this->dataObject->add($storage, $constructor);
+        return $this;
+    }
 
-        $this->dataObject->translate($language, $sentences);
+    /**
+     * @param string $storage
+     * @param callable $factory
+     * @return \SessionHandlerInterface
+     */
+    public static function factory(string $storage, callable $factory): \SessionHandlerInterface
+    {
+        return $factory($storage);
     }
 }

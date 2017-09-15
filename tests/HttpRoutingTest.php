@@ -18,8 +18,8 @@
 namespace Opis\Colibri\Test;
 
 use Opis\Colibri\Application;
-use Opis\Colibri\Containers\RouteCollector;
-use Opis\Colibri\Containers\ViewCollector;
+use Opis\Colibri\ItemCollectors\RouteCollector;
+use Opis\Colibri\ItemCollectors\ViewCollector;
 use function Opis\Colibri\Functions\{redirect};
 use Opis\Http\Request;
 use Opis\Http\Response;

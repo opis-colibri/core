@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Containers;
+namespace Opis\Colibri\ItemCollectors;
 
 use Closure;
 use Opis\Colibri\ItemCollector;

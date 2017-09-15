@@ -15,17 +15,21 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Containers;
+namespace Opis\Colibri\ItemCollectors;
 
+use Opis\Cache\CacheInterface;
 use Opis\Colibri\ItemCollector;
-use Opis\Colibri\Serializable\ConnectionList;
+use Opis\Colibri\Serializable\StorageCollection;
 
 /**
- * Class ConnectionCollector
+ * Class CacheCollector
+ *
  * @package Opis\Colibri\Containers
- * @method ConnectionList   data()
+ *
+ * @method  StorageCollection    data()
+ * @property StorageCollection $dataObject
  */
-class ConnectionCollector extends ItemCollector
+class CacheCollector extends ItemCollector
 {
 
     /**
@@ -33,18 +37,27 @@ class ConnectionCollector extends ItemCollector
      */
     public function __construct()
     {
-        parent::__construct(new ConnectionList());
+        parent::__construct(new StorageCollection(self::class . '::factory'));
     }
 
+    /**
+     * @param $storage
+     * @param callable $constructor
+     * @return CacheCollector
+     */
+    public function register($storage, callable $constructor): self
+    {
+        $this->dataObject->add($storage, $constructor);
+        return $this;
+    }
 
     /**
-     * @param string $name
-     * @param callable $callback
-     * @return ConnectionCollector
+     * @param string $storage
+     * @param callable $factory
+     * @return CacheInterface
      */
-    public function create(string $name, callable $callback): self
+    public static function factory(string $storage, callable $factory): CacheInterface
     {
-        $this->dataObject->set($name, $callback());
-        return $this;
+        return $factory($storage);
     }
 }

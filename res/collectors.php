@@ -17,67 +17,67 @@
 
 return array(
     'routes' => array(
-        'class' => 'Opis\\Colibri\\Containers\\RouteCollector',
+        'class' => 'Opis\\Colibri\\ItemCollectors\\RouteCollector',
         'description' => 'Collects web routes',
     ),
     'routealiases' => array(
-        'class' => 'Opis\\Colibri\\Containers\\RouteAliasCollector',
+        'class' => 'Opis\\Colibri\\ItemCollectors\\RouteAliasCollector',
         'description' => 'Collects aliases for web routes',
     ),
     'responsehandlers' => array(
-        'class' => 'Opis\\Colibri\\Containers\\ResponseHandlerCollector',
+        'class' => 'Opis\\Colibri\\ItemCollectors\\ResponseHandlerCollector',
         'description' => 'Collects response handlers',
     ),
     'views' => array(
-        'class' => 'Opis\\Colibri\\Containers\\ViewCollector',
+        'class' => 'Opis\\Colibri\\ItemCollectors\\ViewCollector',
         'description' => 'Collects views',
     ),
     'contracts' => array(
-        'class' => 'Opis\\Colibri\\Containers\\ContractCollector',
+        'class' => 'Opis\\Colibri\\ItemCollectors\\ContractCollector',
         'description' => 'Collects contracts',
     ),
     'connections' => array(
-        'class' => 'Opis\\Colibri\\Containers\\ConnectionCollector',
+        'class' => 'Opis\\Colibri\\ItemCollectors\\ConnectionCollector',
         'description' => 'Collects database connections',
     ),
     'eventhandlers' => array(
-        'class' => 'Opis\\Colibri\\Containers\\EventHandlerCollector',
+        'class' => 'Opis\\Colibri\\ItemCollectors\\EventHandlerCollector',
         'description' => 'Collects event handlers',
     ),
     'viewengines' => array(
-        'class' => 'Opis\\Colibri\\Containers\\ViewEngineCollector',
+        'class' => 'Opis\\Colibri\\ItemCollectors\\ViewEngineCollector',
         'description' => 'Collects view engines',
     ),
     'cachedrivers' => array(
-        'class' => 'Opis\\Colibri\\Containers\\CacheCollector',
+        'class' => 'Opis\\Colibri\\ItemCollectors\\CacheCollector',
         'description' => 'Collects cache drivers',
     ),
     'sessionhandlers' => array(
-        'class' => 'Opis\\Colibri\\Containers\\SessionCollector',
+        'class' => 'Opis\\Colibri\\ItemCollectors\\SessionCollector',
         'description' => 'Collects session handlers',
     ),
     'configdrivers' => array(
-        'class' => 'Opis\\Colibri\\Containers\\ConfigCollector',
+        'class' => 'Opis\\Colibri\\ItemCollectors\\ConfigCollector',
         'description' => 'Collects config drivers'
     ),
     'validators' => array(
-        'class' => 'Opis\\Colibri\\Containers\\ValidatorCollector',
+        'class' => 'Opis\\Colibri\\ItemCollectors\\ValidatorCollector',
         'description' => 'Collects validators',
     ),
     'translations' => array(
-        'class' => 'Opis\\Colibri\\Containers\\TranslationCollector',
+        'class' => 'Opis\\Colibri\\ItemCollectors\\TranslationCollector',
         'description' => 'Collects translations',
     ),
     'variables' => array(
-        'class' => 'Opis\\Colibri\\Containers\\VariableCollector',
+        'class' => 'Opis\\Colibri\\ItemCollectors\\VariableCollector',
         'description' => 'Collects variables',
     ),
     'commands' => array(
-        'class' => 'Opis\\Colibri\\Containers\\CommandCollector',
+        'class' => 'Opis\\Colibri\\ItemCollectors\\CommandCollector',
         'description' => 'Collects commands',
     ),
     'loggers' => array(
-        'class' => 'Opis\\Colibri\\Containers\\LoggerCollector',
+        'class' => 'Opis\\Colibri\\ItemCollectors\\LoggerCollector',
         'description' => 'Collects log storages',
     ),
 );

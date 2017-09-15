@@ -15,19 +15,20 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Containers;
+namespace Opis\Colibri\ItemCollectors;
 
 use Opis\Colibri\ItemCollector;
-use Opis\Colibri\Serializable\VariablesList;
+use Opis\Routing\Route;
+use Opis\View\RouteCollection;
 
 /**
- * Class VariableCollector
+ * Class ViewCollector
  *
  * @package Opis\Colibri\Containers
  *
- * @method VariablesList    data()
+ * @method RouteCollection  data()
  */
-class VariableCollector extends ItemCollector
+class ViewCollector extends ItemCollector
 {
 
     /**
@@ -35,36 +36,22 @@ class VariableCollector extends ItemCollector
      */
     public function __construct()
     {
-        parent::__construct(new VariablesList());
+        parent::__construct(new RouteCollection());
     }
 
     /**
-     * Register a new variable
+     * Defines a new view route
      *
-     * @param   string $name Variable's name
-     * @param   mixed $value Variable's value
+     * @param   string $pattern View's pattern
+     * @param   callable $resolver A callback that will resolve a view route into a path
+     * @param   int $priority Route's priority
      *
-     * @return  self
+     * @return  Route
      */
-    public function register($name, $value)
+    public function handle(string $pattern, callable $resolver, int $priority = 0): Route
     {
-        $this->dataObject->add($name, $value);
-        return $this;
-    }
-
-    /**
-     * Register multiple variable at once
-     *
-     * @param   array $variables An array of variables that will be registered
-     *
-     * @return  self
-     */
-    public function bulkRegister(array $variables)
-    {
-        foreach ($variables as $name => &$value) {
-            $this->dataObject->add($name, $value);
-        }
-
-        return $this;
+        $route = new Route($pattern, $resolver);
+        $this->dataObject->addRoute($route);
+        return $route->set('priority', $priority);
     }
 }

@@ -15,17 +15,36 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Containers;
+namespace Opis\Colibri\ItemCollectors;
 
-use Opis\Colibri\Routing\ResponseHandler;
+use Opis\Colibri\ItemCollector;
+use Opis\Colibri\Serializable\ConnectionList;
 
-class ResponseHandlerCollector extends ClassContainer
+/**
+ * Class ConnectionCollector
+ * @package Opis\Colibri\Containers
+ * @method ConnectionList   data()
+ */
+class ConnectionCollector extends ItemCollector
 {
+
     /**
-     * @return string
+     * Constructor
      */
-    protected function getClass(): string
+    public function __construct()
     {
-        return ResponseHandler::class;
+        parent::__construct(new ConnectionList());
+    }
+
+
+    /**
+     * @param string $name
+     * @param callable $callback
+     * @return ConnectionCollector
+     */
+    public function create(string $name, callable $callback): self
+    {
+        $this->dataObject->set($name, $callback());
+        return $this;
     }
 }

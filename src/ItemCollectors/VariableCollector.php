@@ -15,20 +15,19 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Containers;
+namespace Opis\Colibri\ItemCollectors;
 
 use Opis\Colibri\ItemCollector;
-use Opis\Colibri\Serializable\StorageCollection;
-use Opis\Config\ConfigInterface;
+use Opis\Colibri\Serializable\VariablesList;
 
 /**
- * Class ConfigCollector
+ * Class VariableCollector
  *
  * @package Opis\Colibri\Containers
  *
- * @method StorageCollection    data()
+ * @method VariablesList    data()
  */
-class ConfigCollector extends ItemCollector
+class VariableCollector extends ItemCollector
 {
 
     /**
@@ -36,27 +35,36 @@ class ConfigCollector extends ItemCollector
      */
     public function __construct()
     {
-        parent::__construct(new StorageCollection(self::class . '::factory'));
+        parent::__construct(new VariablesList());
     }
 
     /**
-     * @param string $storage
-     * @param callable $constructor
-     * @return ConfigCollector
+     * Register a new variable
+     *
+     * @param   string $name Variable's name
+     * @param   mixed $value Variable's value
+     *
+     * @return  self
      */
-    public function register(string $storage, callable $constructor): self
+    public function register($name, $value)
     {
-        $this->dataObject->add($storage, $constructor);
+        $this->dataObject->add($name, $value);
         return $this;
     }
 
     /**
-     * @param string $storage
-     * @param callable $factory
-     * @return ConfigInterface
+     * Register multiple variable at once
+     *
+     * @param   array $variables An array of variables that will be registered
+     *
+     * @return  self
      */
-    public static function factory(string $storage, callable $factory): ConfigInterface
+    public function bulkRegister(array $variables)
     {
-        return $factory($storage);
+        foreach ($variables as $name => &$value) {
+            $this->dataObject->add($name, $value);
+        }
+
+        return $this;
     }
 }

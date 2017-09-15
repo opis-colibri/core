@@ -15,35 +15,48 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Containers;
+namespace Opis\Colibri\ItemCollectors;
 
 use Opis\Colibri\ItemCollector;
-use Opis\Colibri\Serializable\CallbackList;
+use Opis\Colibri\Serializable\StorageCollection;
+use Opis\Config\ConfigInterface;
 
 /**
- * Class CommandCollector
+ * Class ConfigCollector
+ *
  * @package Opis\Colibri\Containers
- * @method  CallbackList    data()
+ *
+ * @method StorageCollection    data()
  */
-class CommandCollector extends ItemCollector
+class ConfigCollector extends ItemCollector
 {
 
     /**
-     * CommandCollector constructor
+     * Constructor
      */
     public function __construct()
     {
-        parent::__construct(new CallbackList());
+        parent::__construct(new StorageCollection(self::class . '::factory'));
     }
 
     /**
-     * @param string $name
-     * @param callable $callback
-     * @return CommandCollector
+     * @param string $storage
+     * @param callable $constructor
+     * @return ConfigCollector
      */
-    public function register(string $name, callable $callback): self
+    public function register(string $storage, callable $constructor): self
     {
-        $this->dataObject->add($name, $callback);
+        $this->dataObject->add($storage, $constructor);
         return $this;
+    }
+
+    /**
+     * @param string $storage
+     * @param callable $factory
+     * @return ConfigInterface
+     */
+    public static function factory(string $storage, callable $factory): ConfigInterface
+    {
+        return $factory($storage);
     }
 }
