@@ -19,7 +19,6 @@ namespace Opis\Colibri\Collector;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Opis\Cache\CacheInterface;
-use Opis\Colibri\Annotations\Collector as CollectorAnnotation;
 use Opis\Colibri\Container;
 use Opis\Colibri\Collector;
 use Opis\Colibri\Serializable\ClassList;
@@ -355,10 +354,10 @@ class Manager
                     continue;
                 }
 
-                $annotation = $reader->getMethodAnnotation($method, CollectorAnnotation::class);
+                $annotation = $reader->getMethodAnnotation($method, Annotation::class);
 
                 if ($annotation == null) {
-                    $annotation = new CollectorAnnotation();
+                    $annotation = new Annotation();
                 }
 
                 if ($annotation->name === null) {

@@ -15,13 +15,13 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Annotations;
+namespace Opis\Colibri\Collector;
 
 /**
  * @Annotation
  * @Target("METHOD")
  */
-class Collector
+class Annotation
 {
     /**
      * Collector's name
@@ -36,5 +36,4 @@ class Collector
      * @var int
      */
     public $priority = 0;
-
 }
