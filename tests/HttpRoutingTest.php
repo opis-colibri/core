@@ -93,13 +93,6 @@ class HttpRoutingTest extends TestCase
            return redirect('/');
         });
 
-        $this->route->get('/handler', function(){
-            return ['a', 'b', 'c'];
-        })->responseHandler('implode_array')
-        ->callback('implode_array', function($content){
-            return implode('.', $content);
-        });
-
         $this->route->post('/', function(){
             return 'post:home';
         });
@@ -165,12 +158,6 @@ class HttpRoutingTest extends TestCase
     {
         $response = $this->route(Request::create('/bind/foo'));
         $this->assertEquals('FOO', $response->getBody());
-    }
-
-    public function testResponseHandler()
-    {
-        $response = $this->route(Request::create('/handler'));
-        $this->assertEquals('a.b.c', $response->getBody());
     }
 
     public function testRedirectResponse()
