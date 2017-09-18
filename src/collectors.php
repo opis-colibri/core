@@ -15,69 +15,69 @@
  * limitations under the License.
  * ============================================================================ */
 
-return array(
-    'routes' => array(
+return [
+    'routes' => [
         'class' => 'Opis\\Colibri\\ItemCollectors\\RouteCollector',
         'description' => 'Collects web routes',
-    ),
-    'routealiases' => array(
+    ],
+    'routealiases' => [
         'class' => 'Opis\\Colibri\\ItemCollectors\\RouteAliasCollector',
         'description' => 'Collects aliases for web routes',
-    ),
-    'responseinterceptors' => array(
+    ],
+    'responseinterceptors' => [
         'class' => 'Opis\\Colibri\\ItemCollectors\\ResponseInterceptorCollector',
         'description' => 'Collects response interceptors',
-    ),
-    'views' => array(
+    ],
+    'views' => [
         'class' => 'Opis\\Colibri\\ItemCollectors\\ViewCollector',
         'description' => 'Collects views',
-    ),
-    'contracts' => array(
+    ],
+    'contracts' => [
         'class' => 'Opis\\Colibri\\ItemCollectors\\ContractCollector',
         'description' => 'Collects contracts',
-    ),
-    'connections' => array(
+    ],
+    'connections' => [
         'class' => 'Opis\\Colibri\\ItemCollectors\\ConnectionCollector',
         'description' => 'Collects database connections',
-    ),
-    'eventhandlers' => array(
+    ],
+    'eventhandlers' => [
         'class' => 'Opis\\Colibri\\ItemCollectors\\EventHandlerCollector',
         'description' => 'Collects event handlers',
-    ),
-    'viewengines' => array(
+    ],
+    'viewengines' => [
         'class' => 'Opis\\Colibri\\ItemCollectors\\ViewEngineCollector',
         'description' => 'Collects view engines',
-    ),
-    'cachedrivers' => array(
+    ],
+    'cachedrivers' => [
         'class' => 'Opis\\Colibri\\ItemCollectors\\CacheCollector',
         'description' => 'Collects cache drivers',
-    ),
-    'sessionhandlers' => array(
+    ],
+    'sessionhandlers' => [
         'class' => 'Opis\\Colibri\\ItemCollectors\\SessionCollector',
         'description' => 'Collects session handlers',
-    ),
-    'configdrivers' => array(
+    ],
+    'configdrivers' => [
         'class' => 'Opis\\Colibri\\ItemCollectors\\ConfigCollector',
         'description' => 'Collects config drivers'
-    ),
-    'validators' => array(
+    ],
+    'validators' => [
         'class' => 'Opis\\Colibri\\ItemCollectors\\ValidatorCollector',
         'description' => 'Collects validators',
-    ),
-    'translations' => array(
+    ],
+    'translations' => [
         'class' => 'Opis\\Colibri\\ItemCollectors\\TranslationCollector',
         'description' => 'Collects translations',
-    ),
-    'variables' => array(
+    ],
+    'variables' => [
         'class' => 'Opis\\Colibri\\ItemCollectors\\VariableCollector',
         'description' => 'Collects variables',
-    ),
-    'commands' => array(
+    ],
+    'commands' => [
         'class' => 'Opis\\Colibri\\ItemCollectors\\CommandCollector',
         'description' => 'Collects commands',
-    ),
-    'loggers' => array(
+    ],
+    'loggers' => [
         'class' => 'Opis\\Colibri\\ItemCollectors\\LoggerCollector',
         'description' => 'Collects log storages',
-    ),
-);
+    ],
+];
