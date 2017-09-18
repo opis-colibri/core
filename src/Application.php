@@ -625,7 +625,7 @@ class Application implements ISettingsContainer
         }
 
         if($this->collectorList === null){
-            $default = require __DIR__ . '/collectors.php';
+            $default = require __DIR__ . '/../collectors.php';
             $this->collectorList = $this->getConfig()->read('collectors', array()) + $default;
         }
 
