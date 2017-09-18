@@ -19,12 +19,14 @@ namespace Opis\Colibri\Collector;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Opis\Cache\CacheInterface;
+use Opis\Colibri\Application;
 use Opis\Colibri\Container;
 use Opis\Colibri\Collector;
 use Opis\Colibri\Serializable\ClassList;
 use Opis\Config\ConfigInterface;
 use Opis\Database\Connection;
 use Opis\Database\Database;
+use Opis\Events\Event;
 use Opis\Events\RouteCollection as EventsRouteCollection;
 use Opis\HttpRouting\RouteCollection as HttpRouteCollection;
 use Opis\Routing\RouteCollection as AliasRouteCollection;
@@ -34,7 +36,6 @@ use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use RuntimeException;
-use function Opis\Colibri\Functions\{app, cache, emit, config};
 
 /**
  * Description of CollectorManager
@@ -56,15 +57,19 @@ class Manager
     /** @var    boolean */
     protected $collectorsIncluded = false;
 
+    /** @var  Application */
+    protected $app;
+
     /**
      * Constructor
      */
-    public function __construct()
+    public function __construct(Application $app)
     {
         $this->container = $container = new Container();
         $this->router = new Router();
+        $this->app = $app;
 
-        foreach (app()->getCollectorList() as $name => $collector) {
+        foreach ($app->getCollectorList() as $name => $collector) {
             $container->alias($collector['class'], $name);
             $container->singleton($collector['class']);
         }
@@ -245,14 +250,14 @@ class Manager
 
         if (!isset($this->cache[$entry])) {
 
-            $collectors = app()->getCollectorList($fresh);
+            $collectors = $this->app->getCollectorList($fresh);
 
             if (!isset($collectors[$entry])) {
                 throw new RuntimeException("Unknown collector type '$entry'");
             }
 
             $hit = false;
-            $this->cache[$entry] = cache()->load($entry, function ($entry) use (&$hit) {
+            $this->cache[$entry] = $this->app->getCache()->load($entry, function ($entry) use (&$hit) {
                 $hit = true;
                 $this->includeCollectors();
                 $instance = $this->container->make($entry);
@@ -260,7 +265,7 @@ class Manager
             });
 
             if ($hit) {
-                emit('system.collect.' . $entry);
+                $this->app->getEventTarget()->dispatch(new Event('system.collect.' . $entry));
             }
         }
 
@@ -276,17 +281,17 @@ class Manager
      */
     public function recollect(bool $fresh = true): bool
     {
-        if (!cache()->clear()) {
+        if (!$this->app->getCache()->clear()) {
             return false;
         }
 
         $this->collectorsIncluded = false;
 
-        foreach (array_keys(app()->getCollectorList($fresh)) as $entry) {
+        foreach (array_keys($this->app->getCollectorList($fresh)) as $entry) {
             $this->collect($entry, $fresh);
         }
 
-        emit('system.collect');
+        $this->app->getEventTarget()->dispatch(new Event('system.collect'));
 
         return true;
     }
@@ -302,7 +307,7 @@ class Manager
     {
         $name = strtolower($name);
 
-        config()->write('collectors.' . $name, array(
+        $this->app->getConfig()->write('collectors.' . $name, array(
             'class' => $class,
             'description' => $description,
         ));
@@ -317,7 +322,7 @@ class Manager
      */
     public function unregister(string $name)
     {
-        config()->delete('collectors.' . strtolower($name));
+        $this->app->getConfig()->delete('collectors.' . strtolower($name));
     }
 
     /**
@@ -332,7 +337,7 @@ class Manager
         $this->collectorsIncluded = true;
         $reader = new AnnotationReader();
 
-        foreach (app()->getModules() as $module) {
+        foreach ($this->app->getModules() as $module) {
 
             if (!$module->isEnabled() || $module->collector() === false) {
                 continue;

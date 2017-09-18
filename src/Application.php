@@ -594,7 +594,7 @@ class Application implements ISettingsContainer
     public function getCollector(): CollectorManager
     {
         if ($this->collector === null) {
-            $this->collector = new CollectorManager();
+            $this->collector = new CollectorManager($this);
         }
         return $this->collector;
     }
