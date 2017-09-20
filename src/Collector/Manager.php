@@ -61,7 +61,8 @@ class Manager
     protected $app;
 
     /**
-     * Constructor
+     * Manager constructor.
+     * @param Application $app
      */
     public function __construct(Application $app)
     {
