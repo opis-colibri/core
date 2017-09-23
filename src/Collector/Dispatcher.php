@@ -21,16 +21,16 @@ use Opis\Events\RouteCollection;
 use Opis\Routing\Context;
 use Opis\Routing\IDispatcher;
 use Opis\Routing\Route;
-use Opis\Routing\Router;
+use Opis\Routing\Router as BaseRouter;
 
 class Dispatcher implements IDispatcher
 {
     /**
-     * @param Router $router
+     * @param BaseRouter|Router $router
      * @param Context|Entry $context
      * @return mixed
      */
-    public function dispatch(Router $router, Context $context)
+    public function dispatch(BaseRouter $router, Context $context)
     {
         /** @var RouteCollection $collection */
         $collection = $router->getRouteCollection();
