@@ -710,6 +710,7 @@ class Application implements ISettingsContainer
         $canonicalPacks = [];
         /** @var CompletePackage[] $modules */
         $modules = [];
+        /** @var CompletePackage|null $installer */
         $installer = null;
 
         foreach ($composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages() as $package) {
@@ -722,14 +723,11 @@ class Application implements ISettingsContainer
             $modules[$package->getName()] = $package;
             $extra = $package->getExtra();
             if(isset($extra['module']['is-app-installer']) && $extra['module']['is-app-installer']){
+                if($installer !== null){
+                    throw new \RuntimeException($installer->getName() . ' was already defined as an installer');
+                }
                 $installer = $package;
             }
-        }
-
-        $extra = $composer->getPackage()->getExtra();
-
-        if(isset($extra['application']['installer']) && isset($modules[$extra['application']['installer']])){
-            $installer = $modules[$extra['application']['installer']];
         }
 
         if($installer === null){
