@@ -706,16 +706,11 @@ class Application implements ISettingsContainer
 
         $composer = $this->getComposerCLI()->getComposer();
         $generator = $composer->getAutoloadGenerator();
-        $extra = $composer->getPackage()->getExtra();
-        $enabled = array();
-        $canonicalPacks = array();
+        $enabled = [];
+        $canonicalPacks = [];
         /** @var CompletePackage[] $modules */
-        $modules = array();
+        $modules = [];
         $installer = null;
-
-        if(!isset($extra['application']['installer'])){
-            throw new \RuntimeException('No installer defined');
-        }
 
         foreach ($composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages() as $package) {
 
@@ -725,13 +720,16 @@ class Application implements ISettingsContainer
             }
 
             $modules[$package->getName()] = $package;
+            $extra = $package->getExtra();
+            if(isset($extra['module']['installer']) && $extra['module']['installer']){
+                $installer = $package;
+            }
         }
 
-        if(!isset($modules[$extra['application']['installer']])){
-            throw new \RuntimeException("The specified installer was not found");
+        if($installer === null){
+            throw new \RuntimeException("No application installer was found");
         }
 
-        $installer = $modules[$extra['application']['installer']];
         $canonicalPacks[] = $installer;
         $enabled[] = $installer->getName();
 
