@@ -89,7 +89,7 @@ class About extends Command
         }
 
 
-        $output->writeln('<p>Hidden</p>: <i>' . ($module->isHidden() ? 'TRUE' : 'FALSE') . '</i>');
+        $output->writeln('<p>Application installer</p>: <i>' . ($module->isApplicationInstaller() ? 'TRUE' : 'FALSE') . '</i>');
         $output->writeln('<p>Directory</p>: <i>' . $module->directory() . '</i>');
 
         if ($module->collector()) {

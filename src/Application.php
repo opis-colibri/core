@@ -721,9 +721,15 @@ class Application implements ISettingsContainer
 
             $modules[$package->getName()] = $package;
             $extra = $package->getExtra();
-            if(isset($extra['module']['installer']) && $extra['module']['installer']){
+            if(isset($extra['module']['is-app-installer']) && $extra['module']['is-app-installer']){
                 $installer = $package;
             }
+        }
+
+        $extra = $composer->getPackage()->getExtra();
+
+        if(isset($extra['application']['installer']) && isset($modules[$extra['application']['installer']])){
+            $installer = $modules[$extra['application']['installer']];
         }
 
         if($installer === null){

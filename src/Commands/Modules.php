@@ -34,7 +34,7 @@ class Modules extends Command
         $this
             ->setName('modules')
             ->setDescription('List all available modules')
-            ->addOption('hidden', null, InputOption::VALUE_NONE, 'List hidden modules');
+            ->addOption('all', null, InputOption::VALUE_NONE, 'List hidden modules');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -44,13 +44,13 @@ class Modules extends Command
         $output->getFormatter()->setStyle('white', new OutputFormatterStyle('white', null, array('bold')));
         $output->getFormatter()->setStyle('yellow', new OutputFormatterStyle('yellow', null, array('bold')));
 
-        $hidden = $input->getOption('hidden');
+        $all = $input->getOption('all');
 
         $ws = str_repeat(' ', 24);
 
         foreach (app()->getModules() as $name => $module) {
             
-            if (!$hidden && $module->isHidden()) {
+            if (!$all && $module->isApplicationInstaller()) {
                 continue;
             }
 

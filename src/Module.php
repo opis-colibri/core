@@ -156,9 +156,9 @@ class Module
      *
      * @return  boolean
      */
-    public function isHidden(): bool
+    public function isApplicationInstaller(): bool
     {
-        return $this->get('hidden');
+        return $this->get('is-app-installer');
     }
 
     /**
@@ -395,8 +395,8 @@ class Module
             case 'installer':
                 $value = $this->resolveInstaller();
                 break;
-            case 'hidden':
-                $value = $this->resolveHidden();
+            case 'is-app-installer':
+                $value = $this->resolveIsAppInstaller();
                 break;
         }
 
@@ -440,9 +440,9 @@ class Module
      *
      * @return  bool
      */
-    protected function resolveHidden(): bool
+    protected function resolveIsAppInstaller(): bool
     {
-        return $this->getModuleInfo()['hidden'] ?? false;
+        return $this->getModuleInfo()['is-app-installer'] ?? false;
     }
 
     /**
