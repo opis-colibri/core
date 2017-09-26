@@ -724,7 +724,9 @@ class Application implements ISettingsContainer
             $extra = $package->getExtra();
             if(isset($extra['module']['is-app-installer']) && $extra['module']['is-app-installer']){
                 if($installer !== null){
-                    throw new \RuntimeException($installer->getName() . ' was already defined as an installer');
+                    $formatText = '%s was defined as an application installer before %s';
+                    $formatArgs = [$installer->getName(), $package->getName()];
+                    throw new \RuntimeException(vsprintf($formatText, $formatArgs));
                 }
                 $installer = $package;
             }
