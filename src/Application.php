@@ -99,22 +99,22 @@ class Application implements ISettingsContainer
     protected $httpResponseInstance;
 
     /** @var  CacheInterface[] */
-    protected $cache = array();
+    protected $cache = [];
 
     /** @var  ConfigInterface[] */
-    protected $config = array();
+    protected $config = [];
 
     /** @var  Connection[] */
-    protected $connection = array();
+    protected $connection = [];
 
     /** @var  Database[] */
-    protected $database = array();
+    protected $database = [];
 
     /** @var  EntityManager[] */
-    protected $entityManager = array();
+    protected $entityManager = [];
 
     /** @var  Session */
-    protected $session = array();
+    protected $session = [];
 
     /** @var  ConfigInterface[] */
     protected $translations;
@@ -126,7 +126,7 @@ class Application implements ISettingsContainer
     protected $viewApp;
 
     /** @var \Psr\Log\LoggerInterface[] */
-    protected $loggers = array();
+    protected $loggers = [];
 
     /** @var  EventTarget */
     protected $eventTarget;
@@ -137,7 +137,7 @@ class Application implements ISettingsContainer
     /** @var  Validator */
     protected $validator;
 
-    /** @var array  */
+    /** @var array */
     protected $implicit = [];
 
     /** @var  array */
@@ -213,7 +213,7 @@ class Application implements ISettingsContainer
      */
     public function getFileSystem(): Filesystem
     {
-        if($this->fileSystem === null){
+        if ($this->fileSystem === null) {
             $this->fileSystem = new Filesystem();
         }
 
@@ -233,7 +233,7 @@ class Application implements ISettingsContainer
             return $this->packages;
         }
 
-        $packages = array();
+        $packages = [];
         $repository = new InstalledFilesystemRepository(new JsonFile($this->info->vendorDir() . '/composer/installed.json'));
         foreach ($repository->getCanonicalPackages() as $package) {
             if (!$package instanceof CompletePackage || $package->getType() !== static::COMPOSER_TYPE) {
@@ -258,7 +258,7 @@ class Application implements ISettingsContainer
             return $this->modules;
         }
 
-        $modules = array();
+        $modules = [];
 
         foreach ($this->getPackages($clear) as $module => $package) {
             $modules[$module] = new Module($module, $package);
@@ -277,6 +277,7 @@ class Application implements ISettingsContainer
         if ($this->httpRouter === null) {
             $this->httpRouter = new HttpRouter($this);
         }
+
         return $this->httpRouter;
     }
 
@@ -293,6 +294,7 @@ class Application implements ISettingsContainer
             $resolver = $collector->getViewEngineResolver();
             $this->viewApp = new ViewApp($routes, $resolver, new ViewEngine());
         }
+
         return $this->viewApp;
     }
 
@@ -307,6 +309,7 @@ class Application implements ISettingsContainer
             $container = $this->getCollector()->getContracts();
             $this->containerInstance = $container;
         }
+
         return $this->containerInstance;
     }
 
@@ -318,6 +321,7 @@ class Application implements ISettingsContainer
         if ($this->translatorInstance === null) {
             $this->translatorInstance = new Translator();
         }
+
         return $this->translatorInstance;
     }
 
@@ -355,7 +359,7 @@ class Application implements ISettingsContainer
      */
     public function getValidator(): Validator
     {
-        if ($this->validator === null){
+        if ($this->validator === null) {
             $this->validator = new Validator(new ValidatorCollection(), $this->getPlaceholder());
         }
 
@@ -372,8 +376,8 @@ class Application implements ISettingsContainer
     public function getCache(string $storage = 'default'): CacheInterface
     {
         if (!isset($this->cache[$storage])) {
-            if($storage === 'default'){
-                if(!isset($this->implicit['cache'])){
+            if ($storage === 'default') {
+                if (!isset($this->implicit['cache'])) {
                     throw new \RuntimeException('The default cache storage was not set');
                 }
                 $this->cache[$storage] = $this->implicit['cache'];
@@ -395,8 +399,8 @@ class Application implements ISettingsContainer
     public function getSession(string $storage = 'default'): Session
     {
         if (!isset($this->session[$storage])) {
-            if($storage === 'default'){
-                if(!isset($this->implicit['session'])){
+            if ($storage === 'default') {
+                if (!isset($this->implicit['session'])) {
                     throw new \RuntimeException('The default session storage was not set');
                 }
                 $this->session[$storage] = new Session($this->implicit['session']);
@@ -418,8 +422,8 @@ class Application implements ISettingsContainer
     public function getConfig(string $driver = 'default'): ConfigInterface
     {
         if (!isset($this->config[$driver])) {
-            if($driver === 'default') {
-                if(!isset($this->implicit['config'])){
+            if ($driver === 'default') {
+                if (!isset($this->implicit['config'])) {
                     throw new \RuntimeException('The default config storage was not set');
                 }
                 $this->config[$driver] = $this->implicit['config'];
@@ -461,8 +465,8 @@ class Application implements ISettingsContainer
      */
     public function getConnection(string $name = 'default'): Connection
     {
-        if(!isset($this->connection[$name])){
-            if($name === 'default' && isset($this->implicit['connection'])){
+        if (!isset($this->connection[$name])) {
+            if ($name === 'default' && isset($this->implicit['connection'])) {
                 $this->connection[$name] = $this->implicit['connection'];
             } else {
                 $this->connection[$name] = $this->getCollector()->getConnection($name);
@@ -481,7 +485,7 @@ class Application implements ISettingsContainer
      */
     public function getDatabase(string $connection = 'default'): Database
     {
-        if(!isset($this->database[$connection])){
+        if (!isset($this->database[$connection])) {
             $this->database[$connection] = new Database($this->getConnection($connection));
         }
 
@@ -509,9 +513,10 @@ class Application implements ISettingsContainer
      */
     public function getEntityManager(string $connection = 'default'): EntityManager
     {
-        if(!isset($this->entityManager[$connection])){
+        if (!isset($this->entityManager[$connection])) {
             $this->entityManager[$connection] = new EntityManager($this->getConnection($connection));
         }
+
         return $this->entityManager[$connection];
     }
 
@@ -525,12 +530,12 @@ class Application implements ISettingsContainer
     public function getLog(string $logger = 'default'): LoggerInterface
     {
         if (!isset($this->loggers[$logger])) {
-            if($logger === 'default'){
-                if(!isset($this->implicit['logger'])){
+            if ($logger === 'default') {
+                if (!isset($this->implicit['logger'])) {
                     throw new \RuntimeException('The default logger was not set');
                 }
                 $this->loggers[$logger] = $this->implicit['logger'];
-            } else{
+            } else {
                 $this->loggers[$logger] = $this->getCollector()->getLogger($logger);
             }
         }
@@ -559,9 +564,10 @@ class Application implements ISettingsContainer
      */
     public function getVariables(): array
     {
-        if($this->variables === null){
+        if ($this->variables === null) {
             $this->variables = $this->getCollector()->getVariables();
         }
+
         return $this->variables;
     }
 
@@ -570,9 +576,10 @@ class Application implements ISettingsContainer
      */
     public function getEventTarget(): EventTarget
     {
-        if($this->eventTarget === null){
+        if ($this->eventTarget === null) {
             $this->eventTarget = new EventTarget($this->getCollector()->getEventHandlers());
         }
+
         return $this->eventTarget;
     }
 
@@ -596,6 +603,7 @@ class Application implements ISettingsContainer
         if ($this->collector === null) {
             $this->collector = new CollectorManager($this);
         }
+
         return $this->collector;
     }
 
@@ -604,9 +612,9 @@ class Application implements ISettingsContainer
      */
     public function getSpecials(): array
     {
-        if($this->specials === null){
+        if ($this->specials === null) {
             $this->specials = [
-                'app' => $this,
+                'app'  => $this,
                 'lang' => $this->getTranslator()->getLanguage(),
             ];
         }
@@ -620,13 +628,13 @@ class Application implements ISettingsContainer
      */
     public function getCollectorList(bool $fresh = false): array
     {
-        if($fresh){
+        if ($fresh) {
             $this->collectorList = null;
         }
 
-        if($this->collectorList === null){
+        if ($this->collectorList === null) {
             $default = require __DIR__ . '/../collectors.php';
-            $this->collectorList = $this->getConfig()->read('collectors', array()) + $default;
+            $this->collectorList = $this->getConfig()->read('collectors', []) + $default;
         }
 
         return $this->collectorList;
@@ -639,6 +647,7 @@ class Application implements ISettingsContainer
     public function setConfigDriver(ConfigInterface $driver): ISettingsContainer
     {
         $this->implicit['config'] = $driver;
+
         return $this;
     }
 
@@ -649,6 +658,7 @@ class Application implements ISettingsContainer
     public function setCacheDriver(CacheInterface $driver): ISettingsContainer
     {
         $this->implicit['cache'] = $driver;
+
         return $this;
     }
 
@@ -659,6 +669,7 @@ class Application implements ISettingsContainer
     public function setTranslationsDriver(ConfigInterface $driver): ISettingsContainer
     {
         $this->translations = $driver;
+
         return $this;
     }
 
@@ -669,6 +680,7 @@ class Application implements ISettingsContainer
     public function setDatabaseConnection(Connection $connection): ISettingsContainer
     {
         $this->implicit['connection'] = $connection;
+
         return $this;
     }
 
@@ -679,6 +691,7 @@ class Application implements ISettingsContainer
     public function setSessionHandler(SessionHandlerInterface $session): ISettingsContainer
     {
         $this->implicit['session'] = $session;
+
         return $this;
     }
 
@@ -689,6 +702,7 @@ class Application implements ISettingsContainer
     public function setDefaultLogger(LoggerInterface $logger): ISettingsContainer
     {
         $this->implicit['logger'] = $logger;
+
         return $this;
     }
 
@@ -701,6 +715,7 @@ class Application implements ISettingsContainer
         if (!$this->info->installMode()) {
             $this->getBootstrapInstance()->bootstrap($this);
             $this->emit('system.init');
+
             return $this;
         }
 
@@ -722,8 +737,8 @@ class Application implements ISettingsContainer
 
             $modules[$package->getName()] = $package;
             $extra = $package->getExtra();
-            if(isset($extra['module']['is-app-installer']) && $extra['module']['is-app-installer']){
-                if($installer !== null){
+            if (isset($extra['module']['is-app-installer']) && $extra['module']['is-app-installer']) {
+                if ($installer !== null) {
                     $formatText = '%s was defined as an application installer before %s';
                     $formatArgs = [$installer->getName(), $package->getName()];
                     throw new \RuntimeException(vsprintf($formatText, $formatArgs));
@@ -732,14 +747,14 @@ class Application implements ISettingsContainer
             }
         }
 
-        if($installer === null){
+        if ($installer === null) {
             throw new \RuntimeException("No application installer was found");
         }
 
         $canonicalPacks[] = $installer;
         $enabled[] = $installer->getName();
 
-        foreach ($installer->getRequires() as $require){
+        foreach ($installer->getRequires() as $require) {
             $target = $require->getTarget();
             if (isset($modules[$target])) {
                 $canonicalPacks[] = $modules[$target];
@@ -760,6 +775,7 @@ class Application implements ISettingsContainer
         $this->getConfig()->write('modules.enabled', $enabled);
 
         $this->emit('system.init');
+
         return $this;
     }
 
@@ -784,14 +800,14 @@ class Application implements ISettingsContainer
 
         $result = $this->getHttpRouter()->route($context);
 
-        if($result instanceof HttpResponse){
+        if ($result instanceof HttpResponse) {
             $response = $result;
         } else {
             $response = new HttpResponse();
             $response->setBody($result);
         }
 
-        if(PHP_SAPI !== 'cli'){
+        if (PHP_SAPI !== 'cli') {
             $handler = new ResponseHandler($request);
             $handler->sendResponse($response);
         }
@@ -814,14 +830,28 @@ class Application implements ISettingsContainer
         }
 
         $config = $this->getConfig();
-        $modules = $config->read('modules.installed', array());
-        $modules[] = $module->name();
-        $config->write('modules.installed', $modules);
+
+        $installed = $config->read('modules.installed', []);
+        $installed[] = $module->name();
+        $config->write('modules.installed', $installed);
 
         $this->getComposerCLI()->dumpAutoload();
         $this->reloadClassLoader();
-        if(false !== $installer = $module->installer()){
-            $this->getContainer()->make($installer)->install();
+
+        if (false !== $installer = $module->installer()) {
+            /** @var Installer $installer */
+            $installer = $this->getContainer()->make($installer);
+            try {
+                $installer->install();
+            } catch (\Exception $e) {
+                $installer->installError($e);
+                // Revert
+                array_pop($installed);
+                $config->write('modules.installed', $installed);
+                $this->getComposerCLI()->dumpAutoload();
+                $this->reloadClassLoader();
+                return false;
+            }
         }
 
         if ($recollect) {
@@ -847,13 +877,26 @@ class Application implements ISettingsContainer
             return false;
         }
 
-        $config = $this->getConfig();
-        $modules = $config->read('modules.installed', array());
-        $config->write('modules.installed', array_diff($modules, array($module->name())));
-
-        if(false !== $installer = $module->installer()){
-            $this->getContainer()->make($installer)->uninstall();
+        if (false !== $installer = $module->installer()) {
+            /** @var Installer $installer */
+            $installer = $this->getContainer()->make($installer);
+            try {
+                $installer->uninstall();
+            } catch (\Exception $e) {
+                $installer->uninstallError($e);
+                return false;
+            }
         }
+
+        $config = $this->getConfig();
+        $installed = $config->read('modules.installed', []);
+        $pos = array_search($module->name(), $installed);
+        if ($pos === false) {
+            return false;
+        }
+        array_splice($installed, $pos, 1);
+        $config->write('modules.installed', $installed);
+
         $this->getComposerCLI()->dumpAutoload();
         $this->reloadClassLoader();
 
@@ -881,16 +924,29 @@ class Application implements ISettingsContainer
         }
 
         $config = $this->getConfig();
-        $modules = $config->read('modules.enabled', array());
-        $modules[] = $module->name();
-        $config->write('modules.enabled', $modules);
+        $enabled = $config->read('modules.enabled', []);
+        $enabled[] = $module->name();
+        $config->write('modules.enabled', $enabled);
 
         $this->getComposerCLI()->dumpAutoload();
         $this->reloadClassLoader();
 
-        if(false !== $installer = $module->installer()){
-            $this->getContainer()->make($installer)->enable();
+        if (false !== $installer = $module->installer()) {
+            /** @var Installer $installer */
+            $installer = $this->getContainer()->make($installer);
+            try {
+                $installer->enable();
+            } catch (\Exception $e) {
+                $installer->enableError($e);
+                // Revert
+                array_pop($enabled);
+                $config->write('modules.enabled', $enabled);
+                $this->getComposerCLI()->dumpAutoload();
+                $this->reloadClassLoader();
+                return false;
+            }
         }
+
 
         if ($recollect) {
             $this->getCollector()->recollect();
@@ -915,13 +971,26 @@ class Application implements ISettingsContainer
             return false;
         }
 
-        $config = $this->getConfig();
-        $modules = $config->read('modules.enabled', array());
-        $config->write('modules.enabled', array_diff($modules, array($module->name())));
+        if (false !== $installer = $module->installer()) {
+            /** @var Installer $installer */
+            $installer = $this->getContainer()->make($installer);
+            try {
+                $installer->disable();
+            } catch (\Exception $e) {
+                $installer->disableError($e);
 
-        if(false !== $installer = $module->installer()){
-            $this->getContainer()->make($installer)->disable();
+                return false;
+            }
         }
+
+        $config = $this->getConfig();
+        $enabled = $config->read('modules.enabled', []);
+        $pos = array_search($module->name(), $enabled);
+        if ($pos === false) {
+            return false;
+        }
+        array_splice($enabled, $pos, 1);
+        $config->write('modules.enabled', $enabled);
 
         $this->getComposerCLI()->dumpAutoload();
         $this->reloadClassLoader();
@@ -940,7 +1009,8 @@ class Application implements ISettingsContainer
      */
     protected function getBootstrapInstance(): IBootstrap
     {
-        if(!$this->info->installMode()){
+        if (!$this->info->installMode()) {
+            /** @noinspection PhpIncludeInspection */
             return require $this->info->bootstrapFile();
         }
 
@@ -984,6 +1054,7 @@ class Application implements ISettingsContainer
         $generator = $composer->getAutoloadGenerator();
         $packMap = $generator->buildPackageMap($composer->getInstallationManager(), $composer->getPackage(), $packages);
         $autoload = $generator->parseAutoloads($packMap, $composer->getPackage());
+
         return $generator->createLoader($autoload);
     }
 

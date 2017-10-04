@@ -17,6 +17,8 @@
 
 namespace Opis\Colibri;
 
+use Exception;
+
 abstract class Installer
 {
     /**
@@ -55,6 +57,38 @@ abstract class Installer
      * Disable action
      */
     public function disable()
+    {
+
+    }
+
+    /**
+     * @param Exception $e
+     */
+    public function installError(Exception $e)
+    {
+
+    }
+
+    /**
+     * @param Exception $e
+     */
+    public function enableError(Exception $e)
+    {
+
+    }
+
+    /**
+     * @param Exception $e
+     */
+    public function uninstallError(Exception $e)
+    {
+
+    }
+
+    /**
+     * @param Exception $e
+     */
+    public function disableError(Exception $e)
     {
 
     }
