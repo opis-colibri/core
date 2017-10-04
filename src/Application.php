@@ -30,6 +30,7 @@ use Opis\Colibri\Composer\CLI;
 use Opis\Colibri\Composer\Plugin;
 use Opis\Colibri\Routing\HttpRouter;
 use Opis\Colibri\Util\CSRFToken;
+use Opis\Colibri\Util\Mutex;
 use Opis\Colibri\Validation\Validator;
 use Opis\Colibri\Validation\ValidatorCollection;
 use Opis\Config\ConfigInterface;
@@ -825,7 +826,13 @@ class Application implements ISettingsContainer
      */
     public function install(Module $module, bool $recollect = true): bool
     {
+        $mutex = $this->getMutex();
+        if (!$mutex->lock(false)) {
+            return false;
+        }
+
         if (!$module->canBeInstalled()) {
+            $mutex->unlock();
             return false;
         }
 
@@ -850,6 +857,7 @@ class Application implements ISettingsContainer
                 $config->write('modules.installed', $installed);
                 $this->getComposerCLI()->dumpAutoload();
                 $this->reloadClassLoader();
+                $mutex->unlock();
                 return false;
             }
         }
@@ -860,6 +868,7 @@ class Application implements ISettingsContainer
 
         $this->emit('module.installed.' . $module->name());
 
+        $mutex->unlock();
         return true;
     }
 
@@ -873,7 +882,13 @@ class Application implements ISettingsContainer
      */
     public function uninstall(Module $module, bool $recollect = true): bool
     {
+        $mutex = $this->getMutex();
+        if (!$mutex->lock(false)) {
+            return false;
+        }
+
         if (!$module->canBeUninstalled()) {
+            $mutex->unlock();
             return false;
         }
 
@@ -884,6 +899,7 @@ class Application implements ISettingsContainer
                 $installer->uninstall();
             } catch (\Exception $e) {
                 $installer->uninstallError($e);
+                $mutex->unlock();
                 return false;
             }
         }
@@ -892,6 +908,7 @@ class Application implements ISettingsContainer
         $installed = $config->read('modules.installed', []);
         $pos = array_search($module->name(), $installed);
         if ($pos === false) {
+            $mutex->unlock();
             return false;
         }
         array_splice($installed, $pos, 1);
@@ -906,6 +923,7 @@ class Application implements ISettingsContainer
 
         $this->emit('module.uninstalled.' . $module->name());
 
+        $mutex->unlock();
         return true;
     }
 
@@ -919,7 +937,13 @@ class Application implements ISettingsContainer
      */
     public function enable(Module $module, bool $recollect = true): bool
     {
+        $mutex = $this->getMutex();
+        if (!$mutex->lock(false)) {
+            return false;
+        }
+
         if (!$module->canBeEnabled()) {
+            $mutex->unlock();
             return false;
         }
 
@@ -943,10 +967,10 @@ class Application implements ISettingsContainer
                 $config->write('modules.enabled', $enabled);
                 $this->getComposerCLI()->dumpAutoload();
                 $this->reloadClassLoader();
+                $mutex->unlock();
                 return false;
             }
         }
-
 
         if ($recollect) {
             $this->getCollector()->recollect();
@@ -954,6 +978,7 @@ class Application implements ISettingsContainer
 
         $this->emit('module.enabled.' . $module->name());
 
+        $mutex->unlock();
         return true;
     }
 
@@ -967,7 +992,13 @@ class Application implements ISettingsContainer
      */
     public function disable(Module $module, bool $recollect = true): bool
     {
+        $mutex = $this->getMutex();
+        if (!$mutex->lock(false)) {
+            return false;
+        }
+
         if (!$module->canBeDisabled()) {
+            $mutex->unlock();
             return false;
         }
 
@@ -978,7 +1009,7 @@ class Application implements ISettingsContainer
                 $installer->disable();
             } catch (\Exception $e) {
                 $installer->disableError($e);
-
+                $mutex->unlock();
                 return false;
             }
         }
@@ -987,6 +1018,7 @@ class Application implements ISettingsContainer
         $enabled = $config->read('modules.enabled', []);
         $pos = array_search($module->name(), $enabled);
         if ($pos === false) {
+            $mutex->unlock();
             return false;
         }
         array_splice($enabled, $pos, 1);
@@ -1001,6 +1033,7 @@ class Application implements ISettingsContainer
 
         $this->emit('module.disabled.' . $module->name());
 
+        $mutex->unlock();
         return true;
     }
 
@@ -1068,4 +1101,11 @@ class Application implements ISettingsContainer
         return $this->getEventTarget()->dispatch(new Event($name, $cancelable));
     }
 
+    /**
+     * @return Mutex
+     */
+    protected function getMutex(): Mutex
+    {
+        return new Mutex(__FILE__);
+    }
 }
