@@ -151,6 +151,56 @@ class AssetsInstaller extends LibraryInstaller
         chdir($cwd);
     }
 
+    public function installWebpack(PackageInterface $package)
+    {
+        $extra = $package->getExtra();
+        if(!isset($extra['module']['webpack'])){
+            return;
+        }
+
+        $webpack = $extra['module']['webpack'];
+        $module_dir = $this->getInstallPath($package);
+        $fs = new Filesystem();
+
+        foreach ($webpack as $name => $pack){
+            if(!isset($pack['dir']) || !isset($pack['entry'])){
+                continue;
+            }
+
+            $dir = $module_dir . '/' . $pack['dir'];
+
+            if(!is_dir($dir) || !file_exists($dir . '/' . $pack['entry']) || !file_exists($dir . '/package.json')){
+                continue;
+            }
+
+            $wp_dir = $this->appInfo->writableDir() . '/webpack/' . $name;
+            if(!is_dir($wp_dir)){
+                $fs->mkdir($wp_dir);
+                file_put_contents($wp_dir . '/package.json', '{}');
+            }
+
+            $wp_status = $wp_dir . '/status.json';
+            if(!file_exists($wp_status)){
+                $status = ['add' => [], 'remove' => []];
+            } else {
+                $status = json_decode(file_get_contents($wp_status), true);
+            }
+
+            $status['add'][$package->getName()] = [
+                'dir' => $dir,
+                'entry' => $dir . '/' . $pack['entry']
+            ];
+
+            file_put_contents($wp_status, json_encode($status));
+
+            $cwd = getcwd();
+
+            chdir($wp_dir);
+            passthru("npm install $dir --save --loglevel=error >> /dev/tty");
+            chdir($cwd);
+        }
+    }
+
     /**
      * @param PackageInterface $package
      */

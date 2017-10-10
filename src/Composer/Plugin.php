@@ -25,6 +25,7 @@ use Composer\Plugin\PluginInterface;
 use Composer\Script\Event;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\Application;
+use Symfony\Component\Filesystem\Filesystem;
 
 
 class Plugin implements PluginInterface, EventSubscriberInterface
@@ -82,7 +83,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            'pre-autoload-dump' => 'handleDumpAutoload'
+            'pre-autoload-dump' => 'handleDumpAutoload',
         ];
     }
 
@@ -109,6 +110,10 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         }
 
         $this->preparePacks($installMode, $enabled, $installed);
+
+        if(!$installMode){
+            $this->buildSinglePageApps();
+        }
     }
 
     /**
@@ -160,5 +165,79 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         }
 
         return $packages;
+    }
+
+
+    /**
+     * Build SPAs
+     */
+    public function buildSinglePageApps()
+    {
+        $base_dir = $this->appInfo->writableDir() . '/spa';
+
+        if(!file_exists($base_dir . '/data.json')){
+            return;
+        }
+
+        $data = json_decode(file_get_contents($base_dir . '/data.json'), true);
+        $apps = &$data['apps'];
+        $modules = &$data['modules'];
+        $rebuild = &$data['rebuild'];
+
+        $rebuild_apps = [];
+
+        foreach ($rebuild as $module){
+            if(!isset($modules[$module])){
+                continue;
+            }
+            foreach (array_keys($modules[$module]) as $app){
+                if(!in_array($app, $rebuild_apps)){
+                    $rebuild_apps[] = $app;
+                }
+            }
+        }
+
+        $rebuild = [];
+        file_put_contents($base_dir . '/data.json', json_encode($data));
+
+        $cwd = getcwd();
+        $fs = new Filesystem();
+        $source = '';
+
+        $assets_dir = $this->appInfo->assetsDir();
+
+        if(!is_dir($assets_dir . '/spa')){
+            $fs->mkdir($assets_dir . '/spa');
+        }
+
+        foreach ($rebuild_apps as $app) {
+            if (!isset($apps[$app])) {
+                continue;
+            }
+
+            $app = $apps[$app];
+            $dir = $assets_dir . '/spa/' . $app['name'];
+            if(!is_dir($dir)){
+                $fs->mkdir($dir);
+            }
+
+            $fs->remove($dir);
+
+            if(!empty($app['entries'])){
+                $webpack_config = str_replace('{{entries}}', json_encode($app['entries']), $source);
+                file_put_contents($app['dir'] . '/webpack.config.js', $webpack_config);
+
+                chdir($app['dir']);
+                passthru('npm update --loglevel=error >> /dev/tty');
+                passthru('webpack >> /dev/tty');
+                chdir($cwd);
+
+                $fs->mirror($app['dir'], $dir);
+            }
+
+            if(empty($app['modules'])){
+                $fs->remove($app['dir']);
+            }
+        }
     }
 }
