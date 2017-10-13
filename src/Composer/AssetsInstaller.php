@@ -89,38 +89,65 @@ class AssetsInstaller extends LibraryInstaller
         if(!isset($extra['module']['assets'])){
             return;
         }
-        $dirname = trim($extra['module']['assets'], DIRECTORY_SEPARATOR);
-        $dir = $this->getInstallPath($package) . DIRECTORY_SEPARATOR . $dirname;
+
+        if(!is_array($extra['module']['assets'])){
+            if(!is_string($extra['module']['assets'])){
+                return;
+            }
+            $assets = [
+                'source' => trim($extra['module']['assets'], DIRECTORY_SEPARATOR),
+                'build' => null,
+                'build_script' => null
+            ];
+        } else {
+            $assets = $extra['module']['assets'];
+            $assets += [
+                'source' => null,
+                'build' => null,
+                'build_script' => 'build'
+            ];
+
+            if(!is_string($assets['source'])){
+                return;
+            }
+            if(!is_null($assets['build']) && !is_string($assets['build'])){
+                return;
+            }
+            if(!is_string($assets['build_script'])){
+                return;
+            }
+        }
+
+        $base_dir = $this->getInstallPath($package);
+        $cwd = getcwd();
+
+        if($assets['build'] !== null){
+            $dir = $base_dir . DIRECTORY_SEPARATOR . $assets['build'];
+            if(file_exists($dir . DIRECTORY_SEPARATOR . 'package.json')){
+                chdir($dir);
+                passthru("yarn install --production >> /dev/tty");
+                if($assets['build_script'] !== null){
+                    passthru("yarn run " . escapeshellarg($assets['build_script']) . " >> /dev/tty");
+                }
+            }
+        }
+
+        $dir = $base_dir . DIRECTORY_SEPARATOR . $assets['source'];
 
         if(!is_dir($dir)){
             return;
         }
 
-        $cwd = getcwd();
-
         if(file_exists($dir . DIRECTORY_SEPARATOR . 'package.json')){
-            chdir($dir);
-            passthru("npm install --loglevel=error >> /dev/tty");
-            $pack = json_decode(file_get_contents($dir . DIRECTORY_SEPARATOR . 'package.json'), true);
-            if(isset($pack['scripts'])){
-                foreach ($pack['scripts'] as $script => $value){
-                    if(substr($script, 0, 4) !== 'test'){
-                        chdir($dir);
-                        passthru("npm run-script $script -- --loglevel=error >> /dev/tty");
-                    }
-                }
-            }
-        }
-
-        if(file_exists($dir . DIRECTORY_SEPARATOR . 'bower.json')){
             $dir = escapeshellarg($dir);
             chdir($this->appInfo->rootDir());
-            passthru("bower install $dir --save --production >> /dev/tty");
+            passthru("yarn add $dir >> /dev/tty");
         } else {
             $fs = new Filesystem();
             $name = str_replace('/', '.', $package->getName());
             $fs->mirror($dir, $this->appInfo->assetsDir() . DIRECTORY_SEPARATOR . $name);
         }
+
         chdir($cwd);
     }
 
@@ -133,15 +160,31 @@ class AssetsInstaller extends LibraryInstaller
         if(!isset($extra['module']['assets'])){
             return;
         }
-        $dirname = trim($extra['module']['assets'], DIRECTORY_SEPARATOR);
-        $dir = $this->getInstallPath($package) . DIRECTORY_SEPARATOR . $dirname;
 
-        if(file_exists($dir . DIRECTORY_SEPARATOR . 'bower.json')){
-            $bower = json_decode(file_get_contents($dir . DIRECTORY_SEPARATOR . 'bower.json'), true);
-            $pack = escapeshellarg($bower['name']);
+        if(is_array($extra['module']['assets'])){
+            $assets = [
+                'source' => trim($extra['module']['assets'], DIRECTORY_SEPARATOR),
+                'build' => null,
+                'build_script' => null,
+            ];
+        } else {
+            $assets = $extra['module']['assets'];
+            $assets += [
+                'source' => null,
+                'build' => null,
+                'build_script' => 'build'
+            ];
+        }
+
+        $base_dir = $this->getInstallPath($package);
+        $dir = $base_dir . DIRECTORY_SEPARATOR . $assets['source'];
+
+        if(file_exists($dir . DIRECTORY_SEPARATOR . 'package.json')){
+            $json = json_decode(file_get_contents($dir . DIRECTORY_SEPARATOR . 'package.json'), true);
+            $pack = escapeshellarg($json['name']);
             $cwd = getcwd();
             chdir($this->appInfo->rootDir());
-            passthru("bower uninstall $pack --save >> /dev/tty");
+            passthru("yarn remove $pack >> /dev/tty");
             chdir($cwd);
         } else {
             $fs = new Filesystem();
