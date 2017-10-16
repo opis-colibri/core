@@ -52,7 +52,7 @@ class AppInfo
         $this->settings += [
             static::VENDOR_DIR => 'vendor',
             static::PUBLIC_DIR => 'public',
-            static::ASSETS_DIR => 'node_modules',
+            static::ASSETS_DIR => 'assets',
             static::WRITABLE_DIR => 'storage',
             static::BOOTSTRAP_FILE => 'bootstrap.php',
             static::ASSETS_PATH => '/assets',

@@ -125,9 +125,9 @@ class AssetsInstaller extends LibraryInstaller
             $dir = $base_dir . DIRECTORY_SEPARATOR . $assets['build'];
             if(file_exists($dir . DIRECTORY_SEPARATOR . 'package.json')){
                 chdir($dir);
-                passthru("yarn install >> /dev/tty");
+                $this->yarn('install');
                 if($assets['build_script'] !== null){
-                    passthru("yarn run " . escapeshellarg($assets['build_script']) . " >> /dev/tty");
+                    $this->yarn(['run' => $assets['build_script']]);
                 }
             }
         }
@@ -138,12 +138,17 @@ class AssetsInstaller extends LibraryInstaller
             return;
         }
 
+        $fs = new Filesystem();
         if(file_exists($dir . DIRECTORY_SEPARATOR . 'package.json')){
-            $dir = escapeshellarg($dir);
-            chdir($this->appInfo->rootDir());
-            passthru("yarn add $dir >> /dev/tty");
+            $root = $this->appInfo->rootDir();
+            // Make dir relative
+            $dir = $fs->makePathRelative($dir, $root);
+            if (isset($dir[0]) && $dir[0] !== '.' && $dir[0] !== DIRECTORY_SEPARATOR) {
+                $dir = '.' . DIRECTORY_SEPARATOR . $dir;
+            }
+            chdir($root);
+            $this->yarn(['add' => $dir, '--modules-folder' => $this->appInfo->assetsDir()]);
         } else {
-            $fs = new Filesystem();
             $name = str_replace('/', '.', $package->getName());
             $fs->mirror($dir, $this->appInfo->assetsDir() . DIRECTORY_SEPARATOR . $name);
         }
@@ -181,15 +186,45 @@ class AssetsInstaller extends LibraryInstaller
 
         if(file_exists($dir . DIRECTORY_SEPARATOR . 'package.json')){
             $json = json_decode(file_get_contents($dir . DIRECTORY_SEPARATOR . 'package.json'), true);
-            $pack = escapeshellarg($json['name']);
             $cwd = getcwd();
             chdir($this->appInfo->rootDir());
-            passthru("yarn remove $pack >> /dev/tty");
+            $this->yarn(['remove' => $json['name'], '--modules-folder' => $this->appInfo->assetsDir()]);
             chdir($cwd);
         } else {
             $fs = new Filesystem();
             $name = str_replace('/', '.', $package->getName());
             $fs->remove($this->appInfo->assetsDir() . DIRECTORY_SEPARATOR . $name);
         }
+    }
+
+    /**
+     * Runs a yarn command
+     * @param array|string $args
+     * @param string $redirect
+     */
+    protected function yarn($args, string $redirect = '/dev/tty')
+    {
+        $command = 'yarn';
+        if (is_string($args)) {
+            $command .= ' ' . $args;
+        }
+        else {
+            foreach ($args as $name => $arg) {
+                $command .= ' ' . $name;
+                if ($arg === null) {
+                    continue;
+                }
+                if (is_array($arg)) {
+                    $arg = implode(' ', array_map('escapeshellarg', $arg));
+                } elseif (is_scalar($arg)) {
+                    $arg = escapeshellarg($arg);
+                }
+                $command .= ' ' . $arg;
+            }
+        }
+        if ($redirect !== '') {
+            $command .= ' >> ' . $redirect;
+        }
+        passthru($command);
     }
 }
