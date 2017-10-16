@@ -125,7 +125,7 @@ class AssetsInstaller extends LibraryInstaller
             $dir = $base_dir . DIRECTORY_SEPARATOR . $assets['build'];
             if(file_exists($dir . DIRECTORY_SEPARATOR . 'package.json')){
                 chdir($dir);
-                passthru("yarn install --production >> /dev/tty");
+                passthru("yarn install >> /dev/tty");
                 if($assets['build_script'] !== null){
                     passthru("yarn run " . escapeshellarg($assets['build_script']) . " >> /dev/tty");
                 }
