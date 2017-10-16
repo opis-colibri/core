@@ -161,7 +161,7 @@ class AssetsInstaller extends LibraryInstaller
             return;
         }
 
-        if(is_array($extra['module']['assets'])){
+        if(!is_array($extra['module']['assets'])){
             $assets = [
                 'source' => trim($extra['module']['assets'], DIRECTORY_SEPARATOR),
                 'build' => null,
