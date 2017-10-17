@@ -149,7 +149,7 @@ class SpaInstaller extends LibraryInstaller
             $cwd = getcwd();
 
             chdir($app_dir);
-            passthru("npm install $dir --save --loglevel=error >> /dev/tty");
+            passthru("yarn add $dir >> /dev/tty");
             chdir($cwd);
         }
 
@@ -200,7 +200,7 @@ class SpaInstaller extends LibraryInstaller
             $cwd = getcwd();
 
             chdir($app_dir);
-            passthru("npm uninstall $entry --save --loglevel=error >> /dev/tty");
+            passthru("yarn remove $entry >> /dev/tty");
             chdir($cwd);
         }
 

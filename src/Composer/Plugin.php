@@ -228,8 +228,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                 file_put_contents($app['dir'] . '/webpack.config.js', $webpack_config);
 
                 chdir($app['dir']);
-                passthru('npm update --loglevel=error >> /dev/tty');
-                passthru('webpack >> /dev/tty');
+                passthru('yarn install >> /dev/tty');
+                passthru('./node_modules/.bin/webpack >> /dev/tty');
                 chdir($cwd);
 
                 $fs->mirror($app['dir'], $dir);
