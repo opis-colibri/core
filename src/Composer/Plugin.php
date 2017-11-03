@@ -90,7 +90,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     /**
      * @param Event $event
      */
-    public function handleDumpAutoload(Event $event)
+    public function handleDumpAutoload(/** @noinspection PhpUnusedParameterInspection */Event $event)
     {
         $installMode = true;
         $installed = $enabled = [];
@@ -103,6 +103,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             $installMode = false;
             $container = new SurrogateContainer($this->appInfo);
             /** @var \Opis\Colibri\IBootstrap $bootstrap */
+            /** @noinspection PhpIncludeInspection */
             $bootstrap = require $this->appInfo->bootstrapFile();
             $bootstrap->bootstrap($container);
             $installed = $container->getInstalledModules();
