@@ -26,6 +26,7 @@ use Opis\Colibri\HttpResponse\{
 };
 use Opis\Config\ConfigInterface;
 use Opis\Database\{Connection as DBConnection, Database, Schema};
+use Opis\Intl\Translator\LanguageInfo;
 use Opis\ORM\{EntityManager, Core\EntityQuery};
 use Opis\Events\Event;
 use Opis\Http\{Request};
@@ -309,16 +310,15 @@ function r(string $text, array $placeholders): string
 }
 
 /**
- * Translate
- *
- * @param string $sentence
- * @param array $placeholders
- * @param string|null $lang
+ * @param string $key
+ * @param array $params
+ * @param int $count
+ * @param string|LanguageInfo|null $language
  * @return string
  */
-function t(string $sentence, array $placeholders = [], string $lang = null): string
+function t(string $key, array $params = [], int $count = 1, $language = null): string
 {
-    return Application::getInstance()->getTranslator()->translate($sentence, $placeholders, $lang);
+    return Application::getInstance()->getTranslator()->translateKey($key, $params, $count, $language);
 }
 
 /**

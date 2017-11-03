@@ -22,6 +22,7 @@ use Opis\Colibri\AppInfo;
 use Opis\Colibri\ISettingsContainer;
 use Opis\Config\ConfigInterface;
 use Opis\Database\Connection;
+use Opis\Intl\Translator\IDriver as TranslatorDriver;
 use Psr\Log\LoggerInterface;
 use SessionHandlerInterface;
 
@@ -88,13 +89,23 @@ class SurrogateContainer implements ISettingsContainer
     }
 
     /**
-     * @param ConfigInterface $driver
+     * @param TranslatorDriver $driver
      * @return ISettingsContainer
      */
-    public function setTranslationsDriver(ConfigInterface $driver): ISettingsContainer
+    public function setTranslatorDriver(TranslatorDriver $driver): ISettingsContainer
     {
         return $this;
     }
+
+    /**
+     * @param string $language
+     * @return ISettingsContainer
+     */
+    public function setDefaultLanguage(string $language): ISettingsContainer
+    {
+        return $this;
+    }
+
 
     /**
      * @param Connection $connection

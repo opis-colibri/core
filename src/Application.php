@@ -48,6 +48,7 @@ use Opis\HttpRouting\Context;
 use Opis\Session\Session;
 use Opis\Validation\Placeholder;
 use Opis\View\ViewApp;
+use Opis\Intl\Translator\IDriver as TranslatorDriver;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SessionHandlerInterface;
@@ -84,8 +85,14 @@ class Application implements ISettingsContainer
     /** @var  Container */
     protected $containerInstance;
 
+    /** @var TranslatorDriver */
+    protected $translatorDriver;
+
     /** @var  Translator */
     protected $translatorInstance;
+
+    /** @var string|null */
+    protected $defaultLanguage = null;
 
     /** @var  CSRFToken */
     protected $csrfTokenInstance;
@@ -116,9 +123,6 @@ class Application implements ISettingsContainer
 
     /** @var  Session */
     protected $session = [];
-
-    /** @var  ConfigInterface[] */
-    protected $translations;
 
     /** @var  HttpRouter */
     protected $httpRouter;
@@ -315,12 +319,25 @@ class Application implements ISettingsContainer
     }
 
     /**
+     * @inheritDoc
+     */
+    public function setDefaultLanguage(string $language): ISettingsContainer
+    {
+        $this->defaultLanguage = $language;
+        if ($this->translatorInstance !== null) {
+            $this->translatorInstance->setDefaultLanguage($language);
+        }
+        return $this;
+    }
+
+
+    /**
      * @return  Translator
      */
     public function getTranslator(): Translator
     {
         if ($this->translatorInstance === null) {
-            $this->translatorInstance = new Translator();
+            $this->translatorInstance = new Translator($this->translatorDriver, $this->defaultLanguage);
         }
 
         return $this->translatorInstance;
@@ -434,20 +451,6 @@ class Application implements ISettingsContainer
         }
 
         return $this->config[$driver];
-    }
-
-    /**
-     * Returns a translation storage
-     *
-     * @return  ConfigInterface
-     */
-    public function getTranslations(): ConfigInterface
-    {
-        if ($this->translations === null) {
-            $this->translations = $this->getConfig();
-        }
-
-        return $this->translations;
     }
 
     /**
@@ -616,7 +619,7 @@ class Application implements ISettingsContainer
         if ($this->specials === null) {
             $this->specials = [
                 'app'  => $this,
-                'lang' => $this->getTranslator()->getLanguage(),
+                'lang' => $this->getTranslator()->getDefaultLanguage(),
             ];
         }
 
@@ -664,13 +667,12 @@ class Application implements ISettingsContainer
     }
 
     /**
-     * @param ConfigInterface $driver
+     * @param TranslatorDriver $driver
      * @return ISettingsContainer
      */
-    public function setTranslationsDriver(ConfigInterface $driver): ISettingsContainer
+    public function setTranslatorDriver(TranslatorDriver $driver): ISettingsContainer
     {
-        $this->translations = $driver;
-
+        $this->translatorDriver = $driver;
         return $this;
     }
 

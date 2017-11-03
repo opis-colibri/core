@@ -17,97 +17,63 @@
 
 namespace Opis\Colibri;
 
-use Opis\Validation\Placeholder;
+use Opis\Colibri\Serializable\Translations;
+use Opis\Intl\{
+    Locale,
+    Translator\AbstractTranslator,
+    Translator\Driver\Memory,
+    Translator\IDriver,
+    Translator\LanguageInfo
+};
+use Opis\Colibri\Serializable\ClassList;
 use function Opis\Colibri\Functions\app;
 
-class Translator
+class Translator extends AbstractTranslator
 {
-    /** @var    string */
-    protected $language;
-
-    /** @var    Placeholder */
-    protected $placeholder;
-
-    /** @var    array */
-    protected $translations = array();
-
     /**
-     * Constructor
-     *
-     * @param   string $language (optional)
-     * @param   Placeholder|null $placeholder (optional)
+     * @inheritDoc
      */
-    public function __construct(string $language = 'en', Placeholder $placeholder = null)
+    public function __construct(IDriver $driver = null, $default_language = null)
     {
-        if ($placeholder === null) {
-            $placeholder = new Placeholder();
+        if ($driver === null) {
+            $driver = new Memory([], []);
         }
-
-        $this->language = $language;
-        $this->placeholder = $placeholder;
-    }
-
-    /**
-     * Get the current language
-     *
-     * @return  string
-     */
-    public function getLanguage(): string
-    {
-        return $this->language;
-    }
-
-    /**
-     * Set the current language
-     *
-     * @param   string $language
-     * @return $this|Translator
-     */
-    public function setLanguage(string $language): self
-    {
-        $this->language = $language;
-        return $this;
-    }
-
-    /**
-     * Translate a sentence
-     *
-     * @param   string $sentence
-     * @param   array $placeholders (optional)
-     * @param   string|null $lang (optional)
-     *
-     * @return  string
-     */
-    public function __invoke(string $sentence, array $placeholders = array(), string $lang = null): string
-    {
-        return $this->translate($sentence, $placeholders, $lang);
-    }
-
-    /**
-     * Translate a sentence
-     *
-     * @param   string $sentence
-     * @param   array $placeholders (optional)
-     * @param   string|null $lang (optional)
-     *
-     * @return  string
-     */
-    public function translate(string $sentence, array $placeholders = [], string $lang = null): string
-    {
-        if ($lang === null) {
-            $lang = $this->language;
+        if ($default_language === null) {
+            $default_language = Locale::SYSTEM_LOCALE;
         }
-
-        if (!isset($this->translations[$lang])) {
-            $this->translations[$lang] = app()->getTranslations()->read($lang, []);
-        }
-
-        $translation = &$this->translations[$lang];
-
-        if (isset($translation[$sentence])) {
-            $sentence = $translation[$sentence];
-        }
-
-        return $this->placeholder->replace($sentence, $placeholders);
+        parent::__construct($driver, $default_language);
     }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadSystemNS(string $ns)
+    {
+        /** @var Translations $tr */
+        $tr = app()->getCollector()->collect('translations');
+        return $tr->getTranslations($ns);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getFilter(string $name)
+    {
+        /** @var ClassList $filters */
+        $filters = app()->getCollector()->collect('translationfilters');
+        return $filters->get($name);
+    }
+
+    /**
+     * @param string $key
+     * @param array $params
+     * @param int $count
+     * @param string|LanguageInfo|null $language
+     * @return string
+     */
+    public function __invoke(string $key, array $params = [], int $count = 1, $language = null)
+    {
+        return $this->translateKey($key, $params, $count, $language);
+    }
+
 }

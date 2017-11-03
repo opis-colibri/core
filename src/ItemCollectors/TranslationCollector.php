@@ -24,10 +24,10 @@ use Opis\Colibri\Serializable\Translations;
  * Class TranslationCollector
  * @package Opis\Colibri\ItemCollectors
  * @method Translations data()
+ * @property Translations $dataObject
  */
 class TranslationCollector extends ItemCollector
 {
-    protected $language;
 
     /**
      * Constructor
@@ -38,17 +38,26 @@ class TranslationCollector extends ItemCollector
     }
 
     /**
-     * Add the sentences that will be translated from english to current used language
-     *
-     * @param   string $language Language
-     * @param   array $sentences Translated sentences
+     * @param string $ns
+     * @param string $key
+     * @param string|null $comment
+     * @param string|null $translator_comment
+     * @return TranslationCollector
      */
-    public function translate($language, array $sentences)
+    public function addComment(string $ns, string $key, string $comment = null, string $translator_comment = null): self
     {
-        if (empty($sentences)) {
-            return;
-        }
+        $this->dataObject->addComment($ns, $key, $comment, $translator_comment);
+        return $this;
+    }
 
-        $this->dataObject->translate($language, $sentences);
+    /**
+     * @param string $ns
+     * @param array $data
+     * @return TranslationCollector
+     */
+    public function addTranslations(string $ns, array $data): self
+    {
+        $this->dataObject->addTranslations($ns, $data);
+        return $this;
     }
 }

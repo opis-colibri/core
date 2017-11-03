@@ -17,6 +17,7 @@
 
 namespace Opis\Colibri;
 
+use Opis\Intl\Translator\LanguageInfo;
 use Opis\View\PHPEngine;
 use function Opis\Colibri\Functions\{view as makeView, render, asset, getURL, generateCSRFToken, v, r, t};
 
@@ -72,20 +73,26 @@ class ViewEngine extends PHPEngine
         return v($name, $default);
     }
 
+    /**
+     * @param string $text
+     * @param array $placeholders
+     * @return string
+     */
     public function r(string $text, array $placeholders): string
     {
         return r($text, $placeholders);
     }
 
     /**
-     * @param string $sentence
-     * @param array $placeholders
-     * @param string|null $lang
+     * @param string $key
+     * @param array $params
+     * @param int $count
+     * @param string|LanguageInfo|null $language
      * @return string
      */
-    public function t(string $sentence, array $placeholders = [], string $lang = null): string
+    public function t(string $key, array $params = [], int $count = 1, $language = null): string
     {
-        return t($sentence, $placeholders, $lang);
+        return t($key, $params, $count, $language);
     }
 
     /**

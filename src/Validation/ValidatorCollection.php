@@ -44,6 +44,7 @@ class ValidatorCollection extends  BaseCollection
     /** @var  array */
     protected $classes;
 
+    /** @noinspection PhpMissingParentConstructorInspection */
     /**
      * ValidatorCollection constructor
      */

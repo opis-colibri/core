@@ -18,41 +18,80 @@
 namespace Opis\Colibri\Serializable;
 
 use Serializable;
-use function Opis\Colibri\Functions\{app};
 
 class Translations implements Serializable
 {
-    protected $translations = array();
-    protected $oldTranslations = array();
 
-    public function translate($language, array $sentences)
+    /** @var array */
+    protected $data = [];
+
+    /** @var array */
+    protected $comments = [];
+
+    /**
+     * @param string $ns
+     * @param array $data
+     * @return Translations
+     */
+    public function addTranslations(string $ns, array $data): self
     {
-        if (!isset($this->translations[$language])) {
-            $this->translations[$language] = array();
-        }
-
-        $this->translations[$language] += $sentences;
+        $this->data[$ns] = $data;
+        return $this;
     }
 
+    /**
+     * @param string $ns
+     * @return array
+     */
+    public function getTranslations(string $ns): array
+    {
+        return $this->data[$ns] ?? [];
+    }
+
+    /**
+     * @param string $ns
+     * @param string $key
+     * @param string|null $comment
+     * @param string|null $translators_comment
+     * @return Translations
+     */
+    public function addComment(string $ns, string $key, string $comment = null, string $translators_comment = null): self
+    {
+        $this->comments[$ns][$key] = [
+            'comment' => $comment,
+            'translators' => $translators_comment,
+        ];
+        return $this;
+    }
+
+    /**
+     * @param string $ns
+     * @param string $key
+     * @return array|null
+     */
+    public function getComment(string $ns, string $key)
+    {
+        return $this->comments[$ns][$key] ?? null;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function serialize()
     {
-        $storage = app()->getTranslations();
-
-        foreach ($this->oldTranslations as $translation) {
-            $storage->delete($translation);
-        }
-
-        $this->oldTranslations = array_keys($this->translations);
-
-        foreach ($this->oldTranslations as $translation) {
-            $storage->write($translation, $this->translations[$translation]);
-        }
-
-        return serialize($this->oldTranslations);
+        return serialize([
+            'data' => $this->data,
+            'comments' => $this->comments,
+        ]);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function unserialize($data)
     {
-        $this->oldTranslations = unserialize($data);
+        $un = unserialize($data);
+        $this->data = $un['data'] ?? [];
+        $this->comments = $un['comments'] ?? [];
     }
 }

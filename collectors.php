@@ -68,6 +68,10 @@ return [
         'class' => 'Opis\\Colibri\\ItemCollectors\\TranslationCollector',
         'description' => 'Collects translations',
     ],
+    'translationfilters' => [
+        'class' => 'Opis\\Colibri\\ItemCollectors\\TranslationFilterCollector',
+        'description' => 'Collect translation filters',
+    ],
     'variables' => [
         'class' => 'Opis\\Colibri\\ItemCollectors\\VariableCollector',
         'description' => 'Collects variables',

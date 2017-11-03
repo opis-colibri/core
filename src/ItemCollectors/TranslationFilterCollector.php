@@ -15,34 +15,26 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Validation;
+namespace Opis\Colibri\ItemCollectors;
 
-use Opis\Validation\DefaultValidatorTrait;
-use Opis\Validation\Validator as BaseValidator;
+use Opis\Intl\Translator\IFilter;
 
-class Validator extends BaseValidator
+class TranslationFilterCollector extends ClassCollector
 {
-    use DefaultValidatorTrait;
 
     /**
-     * @return Validator
+     * @inheritDoc
      */
-    public function csrf(): self
+    protected function getClass(): string
     {
-        return $this->push([
-            'name' => __FUNCTION__,
-            'arguments' => [],
-        ]);
+        return IFilter::class;
     }
 
     /**
-     * @param array $validator
-     * @return Validator
+     * @inheritDoc
      */
-    protected function push(array $validator): self
+    protected function singletonClasses(): bool
     {
-        $this->stack[] = $validator;
-        return $this;
+        return true;
     }
-
 }
