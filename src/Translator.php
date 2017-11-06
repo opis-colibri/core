@@ -21,7 +21,7 @@ use Opis\Colibri\Serializable\Translations;
 use Opis\Intl\{
     Locale,
     Translator\AbstractTranslator,
-    Translator\Driver\Memory,
+    Translator\Drivers\Memory,
     Translator\IDriver,
     Translator\LanguageInfo
 };
