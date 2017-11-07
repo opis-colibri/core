@@ -85,12 +85,12 @@ class ViewEngine extends PHPEngine
 
     /**
      * @param string $key
-     * @param array $params
+     * @param array|null $params
      * @param int $count
      * @param string|LanguageInfo|null $language
      * @return string
      */
-    public function t(string $key, array $params = [], int $count = 1, $language = null): string
+    public function t(string $key, array $params = null, int $count = 1, $language = null): string
     {
         return t($key, $params, $count, $language);
     }

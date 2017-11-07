@@ -311,14 +311,14 @@ function r(string $text, array $placeholders): string
 
 /**
  * @param string $key
- * @param array $params
+ * @param array|null $params
  * @param int $count
  * @param string|LanguageInfo|null $language
  * @return string
  */
-function t(string $key, array $params = [], int $count = 1, $language = null): string
+function t(string $key, array $params = null, int $count = 1, $language = null): string
 {
-    return Application::getInstance()->getTranslator()->translateKey($key, $params, $count, $language);
+    return Application::getInstance()->getTranslator()->translateKey($key, $params ?? [], $count, $language);
 }
 
 /**
