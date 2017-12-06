@@ -66,9 +66,8 @@ class SpaInstaller extends LibraryInstaller
      */
     public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target)
     {
-        $this->uninstallAssets($initial);
         parent::update($repo, $initial, $target);
-        $this->installAssets($target);
+        $this->updateAssets($target);
     }
 
     /**
@@ -92,65 +91,262 @@ class SpaInstaller extends LibraryInstaller
         }
 
         $spa = $extra['module']['spa'];
-        $module_dir = $this->getInstallPath($package);
-        $fs = new Filesystem();
-        $base_dir = $this->appInfo->writableDir() . '/spa';
-        $data = $this->getSpaData();
+        $spa += [
+            'register' => [],
+            'extend' => []
+        ];
 
+        $module = $package->getName();
+        $package_name = str_replace('/', '.', $module);
+        $module_dir = $this->getInstallPath($package);
+        $base_dir = $this->appInfo->writableDir() . DIRECTORY_SEPARATOR . 'spa';
+        $data = $this->getSpaData();
         $apps = &$data['apps'];
         $modules = &$data['modules'];
 
-        foreach ($spa as $app => $settings){
-            if(!isset($settings['dir']) || !isset($settings['entry'])){
-                continue;
-            }
+        $fs = new Filesystem();
 
-            $module = $package->getName();
-            $settings += [
-                'name' => str_replace('/', '.', $module)
+        foreach ($spa['register'] as $local_app_name => $app){
+            $app += [
+                'webpack' => 'webpack.conf.js',
+                'source' => 'spa/' . $local_app_name,
+                'dist' => 'dist'
             ];
 
-            $dir = $module_dir . '/' . $settings['dir'];
+            // normalize
+            foreach (['source', 'webpack', 'dist'] as $item){
+                $app[$item] = implode(DIRECTORY_SEPARATOR, explode('/', trim($item, '/')));
+            }
 
-            if(!is_dir($dir) ||
-                !file_exists($dir . '/' . $settings['entry']) ||
-                !file_exists($dir . '/package.json')){
+            $source_dir = $module_dir . DIRECTORY_SEPARATOR . $app['source'];
+            $webpack_file = $source_dir . DIRECTORY_SEPARATOR . $app['webpack'];
+            $package_json = $source_dir . DIRECTORY_SEPARATOR . 'package.json';
+
+            if(!file_exists($package_json) || !file_exists($webpack_file)){
                 continue;
             }
 
-            $app_dir = $base_dir . '/' . $app;
+            $pkg = json_decode(file_get_contents($package_json), true);
 
-            if(!is_dir($app_dir)){
-                $fs->mkdir($app_dir);
-                file_put_contents($app_dir . '/package.json', '{}');
+            if(!isset($pkg['name']) || $pkg['name'] !== $package_name){
+                continue;
             }
 
-            if(!isset($modules[$module])){
-                $modules[$module][$app] = [
-                    'name' => $settings['name'],
-                    'dir' => $dir,
-                    'entry' => $dir . '/' . $settings['entry']
-                ];
-            }
+            $app_name = $package_name . '.' . $local_app_name;
+            $dir = implode(DIRECTORY_SEPARATOR, [$base_dir, $app_name]);
 
-            if(!isset($apps[$app])){
-                $apps[$app] = [
-                    'name' => $app,
-                    'dir' => $app_dir,
-                    'entries' => [],
-                    'modules' => [],
-                ];
-            }
 
-            if(!in_array($module, $apps[$app]['modules'])){
-                $apps[$app]['modules'][] = $module;
-            }
+            $apps[$app_name] = [
+                'name' => $local_app_name,
+                'webpack' => $webpack_file,
+                'dir' => $dir,
+                'dist' => $dir . DIRECTORY_SEPARATOR . $app['dist'],
+                'owner' => $module,
+                'modules' => [$module]
+            ];
+
+            $modules[$module][$app_name] = $source_dir;
+
+
+            $fs->mkdir($dir);
+            $fs->copy($webpack_file, $dir . DIRECTORY_SEPARATOR . 'webpack.conf.js');
+            $target_package_file = $dir . DIRECTORY_SEPARATOR . 'package.json';
+            $package_json_content = (object)[];
+            $package_json_content->devDependencies = $pkg['devDependencies'] ?? (object)[];
+            file_put_contents($target_package_file, json_encode($package_json_content));
 
             $cwd = getcwd();
-
-            chdir($app_dir);
-            passthru("yarn add $dir >> /dev/tty");
+            chdir($dir);
+            passthru("yarn install >> /dev/tty");
+            passthru("yarn add $source_dir >> /dev/tty");
             chdir($cwd);
+        }
+
+        foreach ($spa['extend'] as $ext_module => $ext_app) {
+            if($module === $ext_module){
+                continue;
+            }
+            foreach ($ext_app as $local_app_name => $source_dir){
+                $app_name = str_replace('/', '.', $ext_module) . '.' . $local_app_name;
+                if(!isset($apps[$app_name])){
+                    continue;
+                }
+                $app = &$apps[$app_name];
+                $source_dir = implode(DIRECTORY_SEPARATOR, explode('/', trim($source_dir, '/')));
+                $source_dir = $module_dir . DIRECTORY_SEPARATOR . $source_dir;
+
+                $package_json = $source_dir . DIRECTORY_SEPARATOR . 'package.json';
+                if(!file_exists($package_json)){
+                    continue;
+                }
+
+                $pkg = json_decode(file_get_contents($package_json), true);
+                if(!isset($pkg['name']) || $pkg['name'] !== $package_name){
+                    continue;
+                }
+
+                $app['modules'][] = $module;
+                $modules[$module][$app_name] = $source_dir;
+
+                $cwd = getcwd();
+                chdir($app['dir']);
+                passthru("yarn add $source_dir >> /dev/tty");
+                chdir($cwd);
+            }
+        }
+
+        $this->setSpaData($data);
+    }
+
+    /**
+     * @param PackageInterface $package
+     */
+    public function updateAssets(PackageInterface $package)
+    {
+        $extra = $package->getExtra();
+        $spa = $extra['module']['spa'] ?? ['register' => [], 'extend' => []];
+        $module = $package->getName();
+        $package_name = str_replace('/', '.', $module);
+        $module_dir = $this->getInstallPath($package);
+        $base_dir = $this->appInfo->writableDir() . DIRECTORY_SEPARATOR . 'spa';
+        $data = $this->getSpaData();
+        $apps = &$data['apps'];
+        $modules = &$data['modules'];
+        $rebuild = &$data['rebuild'];
+
+        $fs = new Filesystem();
+
+        foreach (array_keys($modules[$module]) as $app_name) {
+            $app = &$apps[$app_name];
+            if($app['owner'] === $module){
+                if(!isset($spa['register'][$app['name']])){
+                    //remove spa
+                    foreach ($app['modules'] as $module_name){
+                        unset($modules[$module_name][$app_name]);
+                    }
+                    $fs->remove($app['dir']);
+                    $fs->remove($this->appInfo->assetsDir() . DIRECTORY_SEPARATOR . $app_name);
+                    unset($apps[$app_name]);
+                } else {
+                    unset($spa['register'][$app['name']]);
+                    if(!in_array($app_name, $rebuild)){
+                        $rebuild[] = $app_name;
+                    }
+                }
+            } else {
+                if(!isset($spa['extend'][$app['owner']][$app['name']])){
+                    $app_modules = $app['modules'];
+                    if(false !== $key = array_search($module, $app_modules)){
+                       unset($app_modules[$key]);
+                    }
+                    $app['modules'] = array_values($app_modules);
+                    $cwd = getcwd();
+                    chdir($app['dir']);
+                    passthru("yarn remove $package_name >> /dev/tty");
+                    chdir($cwd);
+                } else {
+                    unset($spa['extend'][$app['owner']][$app['name']]);
+                }
+
+                if(!in_array($app_name, $rebuild)){
+                    $rebuild[] = $app_name;
+                }
+            }
+        }
+
+        foreach ($spa['register'] as $local_app_name => $app){
+            $app += [
+                'webpack' => 'webpack.conf.js',
+                'source' => 'spa/' . $local_app_name,
+                'dist' => 'dist'
+            ];
+
+            // normalize
+            foreach (['source', 'webpack', 'dist'] as $item){
+                $app[$item] = implode(DIRECTORY_SEPARATOR, explode('/', trim($item, '/')));
+            }
+
+            $source_dir = $module_dir . DIRECTORY_SEPARATOR . $app['source'];
+            $webpack_file = $source_dir . DIRECTORY_SEPARATOR . $app['webpack'];
+            $package_json = $source_dir . DIRECTORY_SEPARATOR . 'package.json';
+
+            if(!file_exists($package_json) || !file_exists($webpack_file)){
+                continue;
+            }
+
+            $pkg = json_decode(file_get_contents($package_json), true);
+
+            if(!isset($pkg['name']) || $pkg['name'] !== $package_name){
+                continue;
+            }
+
+            $app_name = $package_name . '.' . $local_app_name;
+            $dir = implode(DIRECTORY_SEPARATOR, [$base_dir, $app_name]);
+
+
+            $apps[$app_name] = [
+                'name' => $local_app_name,
+                'webpack' => $webpack_file,
+                'dir' => $dir,
+                'dist' => $dir . DIRECTORY_SEPARATOR . $app['dist'],
+                'owner' => $module,
+                'modules' => [$module]
+            ];
+
+            $modules[$module][$app_name] = $source_dir;
+
+
+            $fs->mkdir($dir);
+            $fs->copy($webpack_file, $dir . DIRECTORY_SEPARATOR . 'webpack.conf.js');
+            $target_package_file = $dir . DIRECTORY_SEPARATOR . 'package.json';
+            $package_json_content = (object)[];
+            $package_json_content->devDependencies = $pkg['devDependencies'] ?? (object)[];
+            file_put_contents($target_package_file, json_encode($package_json_content));
+
+            $cwd = getcwd();
+            chdir($dir);
+            passthru("yarn install >> /dev/tty");
+            passthru("yarn add $source_dir >> /dev/tty");
+            chdir($cwd);
+
+            if(!in_array($app_name, $rebuild)){
+                $rebuild[] = $app_name;
+            }
+        }
+
+
+        foreach ($spa['extend'] as $ext_module => $ext_app) {
+            foreach ($ext_app as $local_app_name => $source_dir){
+                $app_name = str_replace('/', '.', $ext_module) . '.' . $local_app_name;
+                if(!isset($apps[$app_name])){
+                    continue;
+                }
+                $app = &$apps[$app_name];
+                $source_dir = implode(DIRECTORY_SEPARATOR, explode('/', trim($source_dir, '/')));
+                $source_dir = $module_dir . DIRECTORY_SEPARATOR . $source_dir;
+
+                $package_json = $source_dir . DIRECTORY_SEPARATOR . 'package.json';
+                if(!file_exists($package_json)){
+                    continue;
+                }
+
+                $pkg = json_decode(file_get_contents($package_json), true);
+                if(!isset($pkg['name']) || $pkg['name'] !== $package_name){
+                    continue;
+                }
+
+                $app['modules'][] = $module;
+                $modules[$module][$app_name] = $source_dir;
+
+                $cwd = getcwd();
+                chdir($app['dir']);
+                passthru("yarn add $source_dir >> /dev/tty");
+                chdir($cwd);
+
+                if(!in_array($app_name, $rebuild)){
+                    $rebuild[] = $app_name;
+                }
+            }
         }
 
         $this->setSpaData($data);
@@ -162,46 +358,63 @@ class SpaInstaller extends LibraryInstaller
     public function uninstallAssets(PackageInterface $package)
     {
         $extra = $package->getExtra();
+
         if(!isset($extra['module']['spa'])){
             return;
         }
 
-        $spa = $extra['module']['spa'];
+        $spa = $extra['module']['spa'] + ['register' => [], 'extend' => []];
         $module = $package->getName();
-        $base_dir = $this->appInfo->writableDir() . '/spa';
+        $package_name = str_replace('/', '.', $module);
+        $base_dir = $this->appInfo->writableDir() . DIRECTORY_SEPARATOR . 'spa';
         $data = $this->getSpaData();
 
         $apps = &$data['apps'];
         $modules = &$data['modules'];
         $rebuild = &$data['rebuild'];
 
-        foreach ($spa as $app => $settings){
-            $settings += [
-                'name' => str_replace('/', '.', $module)
-            ];
+        $fs = new Filesystem();
 
-            $entry = $settings['name'];
-            $app_dir = $base_dir . '/' . $app;
+        foreach ($spa['register'] as $local_app_name => $app_data) {
+            $app_name = $package_name . '.' . $local_app_name;
+            if(!isset($apps[$app_name])){
+                continue;
+            }
+            $fs->remove($base_dir . DIRECTORY_SEPARATOR . $app_name);
+            $fs->remove($this->appInfo->assetsDir() . DIRECTORY_SEPARATOR . $app_name);
+            $app = $apps[$app_name];
+            foreach ($app['modules'] as $app_module) {
+                unset($modules[$app_module][$app_name]);
+            }
+            unset($apps[$app_name]);
+        }
 
-            unset($modules[$module]);
+        foreach ($spa['extend'] as $ext_module => $ext_app){
+            if($ext_module === $module){
+                continue;
+            }
+            foreach ($ext_app as $local_app_name => $source) {
+                $app_name = str_replace('/', '.', $ext_module) . '.' . $local_app_name;
+                if(!isset($apps[$app_name])){
+                    continue;
+                }
+                $app = &$apps[$app_name];
+                if(!in_array($module, $app['modules'])){
+                    continue;
+                }
+                if(false !== $key = array_search($module, $app['modules'])){
+                    unset($app['modules'][$key]);
+                }
 
-            if(isset($apps[$app])){
-                if(in_array($module, $apps[$app]['modules'])){
-                    $key = array_search($module, $apps[$app]['modules']);
-                    unset($apps[$app]['modules'][$key]);
-                    if(in_array($module, $apps[$app]['entries'])){
-                        if(!in_array($module, $rebuild)){
-                            $rebuild[] = $module;
-                        }
-                    }
+                $cwd = getcwd();
+                chdir($app['dir']);
+                passthru("yarn remove $package_name >> /dev/tty");
+                chdir($cwd);
+
+                if(!in_array($app_name, $rebuild)){
+                    $rebuild[] = $app_name;
                 }
             }
-
-            $cwd = getcwd();
-
-            chdir($app_dir);
-            passthru("yarn remove $entry >> /dev/tty");
-            chdir($cwd);
         }
 
         $this->setSpaData($data);
@@ -209,7 +422,7 @@ class SpaInstaller extends LibraryInstaller
 
     private function getSpaData(): array
     {
-        $file = $this->appInfo->writableDir() . '/spa/data.json';
+        $file = implode(DIRECTORY_SEPARATOR, $this->appInfo->writableDir(), 'spa', 'data.json');
         if(file_exists($file)){
             return json_decode(file_get_contents($file), true);
         }
@@ -222,7 +435,7 @@ class SpaInstaller extends LibraryInstaller
 
     private function setSpaData(array $data)
     {
-        $file = $this->appInfo->writableDir() . '/spa/data.json';
+        $file = $file = implode(DIRECTORY_SEPARATOR, $this->appInfo->writableDir(), 'spa', 'data.json');
         file_put_contents($file, json_encode($data));
     }
 }

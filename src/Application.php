@@ -954,6 +954,7 @@ class Application implements ISettingsContainer
         $enabled[] = $module->name();
         $config->write('modules.enabled', $enabled);
 
+        $this->rebuildSPA($module);
         $this->getComposerCLI()->dumpAutoload();
         $this->reloadClassLoader();
 
@@ -1026,6 +1027,7 @@ class Application implements ISettingsContainer
         array_splice($enabled, $pos, 1);
         $config->write('modules.enabled', $enabled);
 
+        $this->rebuildSPA($module);
         $this->getComposerCLI()->dumpAutoload();
         $this->reloadClassLoader();
 
@@ -1109,5 +1111,51 @@ class Application implements ISettingsContainer
     protected function getMutex(): Mutex
     {
         return new Mutex(__FILE__);
+    }
+
+    protected function rebuildSPA(Module $module)
+    {
+        try {
+            $extra = $module->getPackage()->getExtra();
+        } catch (\Exception $exception){
+            return;
+        }
+
+        if(!isset($extra['module']['spa'])){
+            return;
+        }
+
+        $spa = $extra['module']['spa'];
+        $spa += ['register' => [], 'extend' => []];
+        $data_file = implode(DIRECTORY_SEPARATOR, [$this->info->writableDir(), 'spa', 'data.json']);
+        if(!file_exists($data_file)){
+            return;
+        }
+
+        $data = json_decode(file_get_contents($data_file), true);
+        $rebuild = &$data['rebuild'];
+        $module_name = $module->name();
+        $package_name = str_replace('/', '.', $module_name);
+
+        foreach ($spa['register'] as $local_app_name => $app_data) {
+            $app_name = $package_name . '.' . $local_app_name;
+            if(!in_array($app_name, $rebuild)){
+                $rebuild[] = $app_name;
+            }
+        }
+
+        foreach ($spa['extend'] as $ext_module => $ext_app){
+            if($module_name === $ext_module){
+                continue;
+            }
+            foreach ($ext_app as $local_app_name => $source){
+                $app_name = str_replace('/', '.', $ext_module) . '.' . $local_app_name;
+                if(!in_array($app_name, $rebuild)){
+                    $rebuild[] = $app_name;
+                }
+            }
+        }
+
+        file_put_contents($data_file, json_encode($data));
     }
 }

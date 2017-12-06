@@ -25,6 +25,7 @@ use Composer\Plugin\PluginInterface;
 use Composer\Script\Event;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\Application;
+use Opis\Colibri\Module;
 use Symfony\Component\Filesystem\Filesystem;
 
 
@@ -174,71 +175,67 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     public function buildSinglePageApps()
     {
-        $base_dir = $this->appInfo->writableDir() . '/spa';
+        $base_dir = $this->appInfo->writableDir() . DIRECTORY_SEPARATOR . 'spa';
+        $data_file = $base_dir . DIRECTORY_SEPARATOR . 'spa';
 
-        if(!file_exists($base_dir . '/data.json')){
+        if(!file_exists($data_file)){
             return;
         }
 
-        $data = json_decode(file_get_contents($base_dir . '/data.json'), true);
+        $data = json_decode(file_get_contents($data_file), true);
         $apps = &$data['apps'];
         $modules = &$data['modules'];
         $rebuild = &$data['rebuild'];
 
-        $rebuild_apps = [];
+        $fs = new Filesystem();
 
-        foreach ($rebuild as $module){
-            if(!isset($modules[$module])){
+        foreach ($rebuild as $app_name) {
+            if(!isset($apps[$app_name])){
                 continue;
             }
-            foreach (array_keys($modules[$module]) as $app){
-                if(!in_array($app, $rebuild_apps)){
-                    $rebuild_apps[] = $app;
+
+            $app = $apps[$app_name];
+            $owner = new Module($app['owner']);
+
+            if(!$owner->exists()){
+                continue;
+            }
+
+            $dir = $this->appInfo->assetsDir() . DIRECTORY_SEPARATOR . $app_name;
+
+            if(!$owner->isEnabled()){
+                if(is_dir($dir)){
+                    $fs->remove($dir);
+                }
+                continue;
+            }
+
+            $import_modules = [];
+
+            foreach ($app['modules'] as $app_module_name){
+                $app_module = new Module($app_module_name);
+                if($app_module->exists() && $app_module->isEnabled()){
+                    $app_module_name = str_replace('/', '.', $app_module_name);
+                    $import_modules[] = "import '$app_module_name';";
                 }
             }
+
+            $import_modules = implode(PHP_EOL, $import_modules);
+            file_put_contents($app['dir'] . DIRECTORY_SEPARATOR . 'index.js', $import_modules);
+
+            $cwd = getcwd();
+            chdir($app['dir']);
+            passthru('yarn update >> /dev/tty');
+            passthru("./node_modules/.bin/webpack >> /dev/tty");
+            chdir($cwd);
+
+            if(is_dir($dir)){
+                $fs->remove($dir);
+            }
+            $fs->mirror($app['dist'], $dir);
         }
 
         $rebuild = [];
-        file_put_contents($base_dir . '/data.json', json_encode($data));
-
-        $cwd = getcwd();
-        $fs = new Filesystem();
-        $source = '';
-
-        $assets_dir = $this->appInfo->assetsDir();
-
-        if(!is_dir($assets_dir . '/spa')){
-            $fs->mkdir($assets_dir . '/spa');
-        }
-
-        foreach ($rebuild_apps as $app) {
-            if (!isset($apps[$app])) {
-                continue;
-            }
-
-            $app = $apps[$app];
-            $dir = $assets_dir . '/spa/' . $app['name'];
-            if(!is_dir($dir)){
-                $fs->mkdir($dir);
-            }
-
-            $fs->remove($dir);
-
-            if(!empty($app['entries'])){
-                $webpack_config = str_replace('{{entries}}', json_encode($app['entries']), $source);
-                file_put_contents($app['dir'] . '/webpack.config.js', $webpack_config);
-
-                chdir($app['dir']);
-                passthru('yarn install >> /dev/tty');
-                passthru('./node_modules/.bin/webpack >> /dev/tty');
-                chdir($cwd);
-
-                $fs->mirror($app['dir'], $dir);
-            }
-
-            if(empty($app['modules'])){
-                $fs->remove($app['dir']);
-            }
-        }
+        file_put_contents($data_file, json_encode($data));
     }
 }
