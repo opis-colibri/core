@@ -74,7 +74,7 @@ class Manager
         $this->container = $container = new Container();
         $this->router = new Router();
         $this->app = $app;
-        $this->proxy = new class extends ItemCollector {
+        $this->proxy = new class(null) extends ItemCollector {
             public function update(ItemCollector $collector, Module $module, string $name, int $priority){
                 $collector->crtModule = $module;
                 $collector->crtCollectorName = $name;
