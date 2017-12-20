@@ -17,7 +17,6 @@
 
 namespace Opis\Colibri\Collector;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Opis\Cache\CacheInterface;
 use Opis\Colibri\Application;
 use Opis\Colibri\Container;
@@ -352,7 +351,6 @@ class Manager
         }
 
         $this->collectorsIncluded = true;
-        $reader = new AnnotationReader();
 
         foreach ($this->app->getModules() as $module) {
 
