@@ -23,11 +23,11 @@ use Opis\Colibri\Serializable\ConnectionList;
 /**
  * Class ConnectionCollector
  * @package Opis\Colibri\ItemCollectors
- * @method ConnectionList   data()
+ *
+ * @property  ConnectionList  $data
  */
 class ConnectionCollector extends ItemCollector
 {
-
     /**
      * Constructor
      */
@@ -36,7 +36,6 @@ class ConnectionCollector extends ItemCollector
         parent::__construct(new ConnectionList());
     }
 
-
     /**
      * @param string $name
      * @param callable $callback
@@ -44,7 +43,7 @@ class ConnectionCollector extends ItemCollector
      */
     public function create(string $name, callable $callback): self
     {
-        $this->dataObject->set($name, $callback());
+        $this->data->set($name, $callback());
         return $this;
     }
 }

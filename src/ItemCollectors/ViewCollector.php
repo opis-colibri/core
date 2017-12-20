@@ -26,11 +26,10 @@ use Opis\View\RouteCollection;
  *
  * @package Opis\Colibri\ItemCollectors
  *
- * @method RouteCollection  data()
+ * @property  RouteCollection  $data
  */
 class ViewCollector extends ItemCollector
 {
-
     /**
      * Constructor
      */
@@ -44,14 +43,14 @@ class ViewCollector extends ItemCollector
      *
      * @param   string $pattern View's pattern
      * @param   callable $resolver A callback that will resolve a view route into a path
-     * @param   int $priority Route's priority
      *
      * @return  Route
      */
-    public function handle(string $pattern, callable $resolver, int $priority = 0): Route
+    public function handle(string $pattern, callable $resolver): Route
     {
         $route = new Route($pattern, $resolver);
-        $this->dataObject->addRoute($route);
-        return $route->set('priority', $priority);
+        $route->set('priority', $this->crtPriority);
+        $this->data->addRoute($route)->sort();
+        return $route;
     }
 }

@@ -20,9 +20,14 @@ namespace Opis\Colibri\ItemCollectors;
 use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Serializable\ClassList;
 
+/**
+ * Class ClassCollector
+ * @package Opis\Colibri\ItemCollectors
+ *
+ * @property ClassList $data
+ */
 abstract class ClassCollector extends ItemCollector
 {
-
     /**
      * ClassContainer constructor.
      */
@@ -41,7 +46,7 @@ abstract class ClassCollector extends ItemCollector
         if(!class_exists($class) || !is_subclass_of($class, $this->getClass(), true)){
             return false;
         }
-        $this->data()->add($name, $class);
+        $this->data->add($name, $class);
         return true;
     }
 

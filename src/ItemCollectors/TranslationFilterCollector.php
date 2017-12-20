@@ -21,7 +21,6 @@ use Opis\Intl\Translator\IFilter;
 
 class TranslationFilterCollector extends ClassCollector
 {
-
     /**
      * @inheritDoc
      */

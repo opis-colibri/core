@@ -26,12 +26,10 @@ use Opis\Colibri\Container;
  *
  * @package Opis\Colibri\ItemCollectors
  *
- * @method Container    data()
- * @property Container $dataObject
+ * @property Container $data
  */
 class ContractCollector extends ItemCollector
 {
-
     /**
      * ContractCollector constructor
      */
@@ -50,7 +48,7 @@ class ContractCollector extends ItemCollector
      */
     public function bind($abstract, $concrete = null)
     {
-        return $this->dataObject->bind($abstract, $concrete);
+        return $this->data->bind($abstract, $concrete);
     }
 
     /**
@@ -63,7 +61,7 @@ class ContractCollector extends ItemCollector
      */
     public function alias($concrete, $alias)
     {
-        $this->dataObject->alias($concrete, $alias);
+        $this->data->alias($concrete, $alias);
         return $this;
     }
 
@@ -76,7 +74,7 @@ class ContractCollector extends ItemCollector
      */
     public function extend($abstract, Closure $extender)
     {
-        return $this->dataObject->extend($abstract, $extender);
+        return $this->data->extend($abstract, $extender);
     }
 
     /**
@@ -89,6 +87,6 @@ class ContractCollector extends ItemCollector
      */
     public function singleton($abstract, $concrete = null)
     {
-        return $this->dataObject->singleton($abstract, $concrete);
+        return $this->data->singleton($abstract, $concrete);
     }
 }

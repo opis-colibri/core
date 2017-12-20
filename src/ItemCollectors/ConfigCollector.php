@@ -26,11 +26,10 @@ use Opis\Config\ConfigInterface;
  *
  * @package Opis\Colibri\ItemCollectors
  *
- * @method StorageCollection    data()
+ * @property  StorageCollection $data
  */
 class ConfigCollector extends ItemCollector
 {
-
     /**
      * Constructor
      */
@@ -46,7 +45,7 @@ class ConfigCollector extends ItemCollector
      */
     public function register(string $storage, callable $constructor): self
     {
-        $this->dataObject->add($storage, $constructor);
+        $this->data->add($storage, $constructor);
         return $this;
     }
 

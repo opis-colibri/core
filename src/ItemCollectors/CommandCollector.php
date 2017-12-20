@@ -23,11 +23,11 @@ use Opis\Colibri\Serializable\CallbackList;
 /**
  * Class CommandCollector
  * @package Opis\Colibri\ItemCollectors
- * @method  CallbackList    data()
+ *
+ * @property CallbackList $data
  */
 class CommandCollector extends ItemCollector
 {
-
     /**
      * CommandCollector constructor
      */
@@ -43,7 +43,7 @@ class CommandCollector extends ItemCollector
      */
     public function register(string $name, callable $callback): self
     {
-        $this->dataObject->add($name, $callback);
+        $this->data->add($name, $callback);
         return $this;
     }
 }

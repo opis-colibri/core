@@ -25,8 +25,7 @@ use Opis\HttpRouting\RouteCollection;
 /**
  * Class RouteCollector
  *
- * @property RouteCollection $dataObject
- * @method RouteCollection data()
+ * @property RouteCollection $data
  */
 class RouteCollector extends ItemCollector
 {
@@ -51,9 +50,9 @@ class RouteCollector extends ItemCollector
         $collector = new self();
         $collector->prefix = $this->prefix . $prefix;
         $callback($collector);
-        $routes = $collector->dataObject->getRoutes();
+        $routes = $collector->data->getRoutes();
         foreach ($routes as $route){
-            $this->dataObject->addRoute($route);
+            $this->data->addRoute($route);
         }
         return new RouteGroup($routes);
     }
@@ -68,7 +67,7 @@ class RouteCollector extends ItemCollector
      */
     public function bind($name, $callback)
     {
-        $this->dataObject->bind($name, $callback);
+        $this->data->bind($name, $callback);
         return $this;
     }
 
@@ -82,7 +81,7 @@ class RouteCollector extends ItemCollector
      */
     public function callback($name, callable $callback)
     {
-        $this->dataObject->callback($name, $callback);
+        $this->data->callback($name, $callback);
         return $this;
     }
 
@@ -96,7 +95,7 @@ class RouteCollector extends ItemCollector
      */
     public function implicit($name, $value)
     {
-        $this->dataObject->implicit($name, $value);
+        $this->data->implicit($name, $value);
         return $this;
     }
 
@@ -110,7 +109,7 @@ class RouteCollector extends ItemCollector
      */
     public function wildcard($name, $value)
     {
-        $this->dataObject->wildcard($name, $value);
+        $this->data->wildcard($name, $value);
         return $this;
     }
 
@@ -237,7 +236,7 @@ class RouteCollector extends ItemCollector
     protected function handle($path, $action, $method, $name = null)
     {
         $route = new HttpRoute($this->prefix . $path, $action, $name);
-        $this->dataObject->addRoute($route->method($method));
+        $this->data->addRoute($route->method($method));
         return $route;
     }
 }

@@ -24,7 +24,8 @@ use Psr\Log\LoggerInterface;
 /**
  * Class LoggerCollector
  * @package Opis\Colibri\ItemCollectors
- * @method StorageCollection data()
+ *
+ * @property  StorageCollection $data
  */
 class LoggerCollector extends ItemCollector
 {
@@ -43,7 +44,7 @@ class LoggerCollector extends ItemCollector
      */
     public function register($storage, callable $constructor): self
     {
-        $this->dataObject->add($storage, $constructor);
+        $this->data->add($storage, $constructor);
         return $this;
     }
 

@@ -22,6 +22,8 @@ use Opis\Cache\CacheInterface;
 use Opis\Colibri\Application;
 use Opis\Colibri\Container;
 use Opis\Colibri\Collector;
+use Opis\Colibri\ItemCollector;
+use Opis\Colibri\Module;
 use Opis\Colibri\Serializable\ClassList;
 use Opis\Config\ConfigInterface;
 use Opis\Database\Connection;
@@ -60,6 +62,9 @@ class Manager
     /** @var  Application */
     protected $app;
 
+    /** @var ItemCollector */
+    protected $proxy;
+
     /**
      * Manager constructor.
      * @param Application $app
@@ -69,6 +74,16 @@ class Manager
         $this->container = $container = new Container();
         $this->router = new Router();
         $this->app = $app;
+        $this->proxy = new class extends ItemCollector {
+            public function update(ItemCollector $collector, Module $module, string $name, int $priority){
+                $collector->crtModule = $module;
+                $collector->crtCollectorName = $name;
+                $collector->crtPriority = $priority;
+            }
+            public function getData(ItemCollector $collector){
+                return $collector->data;
+            }
+        };
 
         foreach ($app->getCollectorList() as $name => $collector) {
             $container->alias($collector['class'], $name);
@@ -262,7 +277,8 @@ class Manager
                 $hit = true;
                 $this->includeCollectors();
                 $instance = $this->container->make($entry);
-                return $this->router->route(new Entry($entry, $instance))->data();
+                $result = $this->router->route(new Entry($entry, $instance));
+                return $this->proxy->getData($result);
             });
 
             if ($hit) {
@@ -352,29 +368,43 @@ class Manager
                 continue;
             }
 
+            $map = [];
+
+            foreach ($instance() as $key => $value){
+                if(is_array($value)){
+                    list($name, $priority) = $value;
+                } elseif (is_int($value)){
+                    $name = $key;
+                    $priority = (int) $value;
+                } else {
+                    $name = (string) $value;
+                    $priority = 0;
+                }
+
+                $map[$key] = [$name, $priority];
+            }
+
             foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
 
-                $name = $method->getShortName();
+                $methodName = $method->getShortName();
 
-                if (substr($name, 0, 2) === '__') {
+                if (substr($methodName, 0, 2) === '__') {
                     continue;
                 }
 
-                $annotation = $reader->getMethodAnnotation($method, Annotation::class);
-
-                if ($annotation == null) {
-                    $annotation = new Annotation();
+                if(isset($map[$methodName])){
+                    list($name, $priority) = $map[$methodName];
+                } else {
+                    $name = $methodName;
+                    $priority = 0;
                 }
 
-                if ($annotation->name === null) {
-                    $annotation->name = $name;
-                }
-
-                $callback = function ($collector) use ($instance, $name) {
-                    $instance->{$name}($collector);
+                $callback = function (ItemCollector $collector) use ($instance, $methodName, $module, $name, $priority) {
+                    $this->proxy->update($collector, $module, $name, $priority);
+                    $instance->{$methodName}($collector);
                 };
 
-                $this->router->handle($annotation->name, $callback, $annotation->priority);
+                $this->router->handle($name, $callback, $priority);
             }
         }
     }

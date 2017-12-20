@@ -23,12 +23,11 @@ use Opis\Colibri\Serializable\Translations;
 /**
  * Class TranslationCollector
  * @package Opis\Colibri\ItemCollectors
- * @method Translations data()
- * @property Translations $dataObject
+ *
+ * @property Translations $data
  */
 class TranslationCollector extends ItemCollector
 {
-
     /**
      * Constructor
      */
@@ -46,7 +45,7 @@ class TranslationCollector extends ItemCollector
      */
     public function addComment(string $ns, string $key, string $comment = null, string $translator_comment = null): self
     {
-        $this->dataObject->addComment($ns, $key, $comment, $translator_comment);
+        $this->data->addComment($ns, $key, $comment, $translator_comment);
         return $this;
     }
 
@@ -57,7 +56,7 @@ class TranslationCollector extends ItemCollector
      */
     public function addTranslations(string $ns, array $data): self
     {
-        $this->dataObject->addTranslations($ns, $data);
+        $this->data->addTranslations($ns, $data);
         return $this;
     }
 }

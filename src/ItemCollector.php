@@ -20,22 +20,23 @@ namespace Opis\Colibri;
 abstract class ItemCollector
 {
     /** @var  mixed */
-    protected $dataObject;
+    protected $data;
+
+    /** @var Module|null */
+    protected $crtModule;
+
+    /** @var string|null */
+    protected $crtCollectorName;
+
+    /** @var int|null */
+    protected $crtPriority;
 
     /**
      * Collector constructor.
-     * @param mixed $dataObject
+     * @param mixed $data
      */
-    public function __construct($dataObject)
+    public function __construct($data)
     {
-        $this->dataObject = $dataObject;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function data()
-    {
-        return $this->dataObject;
+        $this->data = $data;
     }
 }

@@ -25,11 +25,10 @@ use Opis\Colibri\Serializable\VariablesList;
  *
  * @package Opis\Colibri\ItemCollectors
  *
- * @method VariablesList    data()
+ * @property  VariablesList $data
  */
 class VariableCollector extends ItemCollector
 {
-
     /**
      * Constructor
      */
@@ -48,7 +47,7 @@ class VariableCollector extends ItemCollector
      */
     public function register($name, $value)
     {
-        $this->dataObject->add($name, $value);
+        $this->data->add($name, $value);
         return $this;
     }
 
@@ -62,7 +61,7 @@ class VariableCollector extends ItemCollector
     public function bulkRegister(array $variables)
     {
         foreach ($variables as $name => &$value) {
-            $this->dataObject->add($name, $value);
+            $this->data->add($name, $value);
         }
 
         return $this;

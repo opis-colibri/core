@@ -26,12 +26,10 @@ use Opis\View\EngineResolver;
  *
  * @package Opis\Colibri\ItemCollectors
  *
- * @method EngineResolver   data()
- * @property EngineResolver $dataObject
+ * @property EngineResolver $data
  */
 class ViewEngineCollector extends ItemCollector
 {
-
     /**
      * Constructor
      */
@@ -44,11 +42,11 @@ class ViewEngineCollector extends ItemCollector
      * Defines a new view engine
      *
      * @param callable $factory
-     * @param int $priority Engine's priority
+     *
      * @return EngineEntry
      */
-    public function register(callable $factory, $priority = 0): EngineEntry
+    public function register(callable $factory): EngineEntry
     {
-        return $this->dataObject->register($factory, $priority);
+        return $this->data->register($factory, $this->crtPriority);
     }
 }

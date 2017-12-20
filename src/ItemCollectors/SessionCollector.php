@@ -23,11 +23,11 @@ use Opis\Colibri\Serializable\StorageCollection;
 /**
  * Class SessionCollector
  * @package Opis\Colibri\ItemCollectors
- * @method StorageCollection data()
+ *
+ * @property StorageCollection $data
  */
 class SessionCollector extends ItemCollector
 {
-
     /**
      * Constructor
      */
@@ -43,7 +43,7 @@ class SessionCollector extends ItemCollector
      */
     public function register(string $storage, callable $constructor): self
     {
-        $this->dataObject->add($storage, $constructor);
+        $this->data->add($storage, $constructor);
         return $this;
     }
 

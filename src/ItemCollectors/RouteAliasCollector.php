@@ -24,8 +24,8 @@ use Opis\Routing\Route;
 /**
  * Class RouteAliasCollector
  * @package Opis\Colibri\ItemCollectors
- * @method RouteCollection data()
- * @property \Opis\Routing\RouteCollection $dataObject
+ *
+ * @property \Opis\Routing\RouteCollection $data
  */
 class RouteAliasCollector extends ItemCollector
 {
@@ -48,7 +48,7 @@ class RouteAliasCollector extends ItemCollector
     public function alias(string $path, callable $action): Route
     {
         $route = new Route($path, $action);
-        $this->dataObject->addRoute($route);
+        $this->data->addRoute($route);
         return $route;
     }
 }

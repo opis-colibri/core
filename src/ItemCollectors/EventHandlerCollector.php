@@ -24,12 +24,11 @@ use Opis\Routing\Route;
 /**
  * Class EventHandlerCollector
  * @package Opis\Colibri\ItemCollectors
- * @method RouteCollection data()
- * @property RouteCollection $dataObject
+ *
+ * @property RouteCollection $data
  */
 class EventHandlerCollector extends ItemCollector
 {
-
     /**
      * Constructor
      */
@@ -43,14 +42,14 @@ class EventHandlerCollector extends ItemCollector
      *
      * @param   string $event Event name
      * @param   callable $callback A callback that will be executed
-     * @param   int $priority Event handler's priority
      *
      * @return  Route
      */
-    public function handle(string $event, callable $callback, int $priority = 0): Route
+    public function handle(string $event, callable $callback): Route
     {
         $handler = new Route($event, $callback);
-        $this->dataObject->addRoute($handler)->sort();
-        return $handler->set('priority', $priority);
+        $handler->set('priority', $this->crtPriority);
+        $this->data->addRoute($handler)->sort();
+        return $handler;
     }
 }
