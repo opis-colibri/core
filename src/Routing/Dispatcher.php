@@ -21,8 +21,8 @@ use Opis\Colibri\Application;
 use function Opis\Colibri\Functions\view;
 use Opis\Colibri\HttpResponse\AccessDenied;
 use Opis\Colibri\HttpResponse\PageNotFound;
-use Opis\HttpRouting\Context;
-use Opis\HttpRouting\Dispatcher as BaseDispatcher;
+use Opis\Http\Response;
+use Opis\HttpRouting\{Context, HttpError, Dispatcher as BaseDispatcher};
 use Opis\Routing\Context as BaseContext;
 use Opis\Routing\Router as BaseRouter;
 
@@ -54,7 +54,7 @@ class Dispatcher extends BaseDispatcher
             return $content;
         }
 
-        if(null !== $interceptor = (string) $this->route->get('responseInterceptor')){
+        if(!empty($interceptor = (string) $this->route->get('responseInterceptor'))){
             /** @var ResponseInterceptor $interceptor */
             if(false !== $interceptor = $this->app->getCollector()->getResponseInterceptors()->get($interceptor)){
                 $content = $interceptor->handle($content, $this->route, $context->request());
@@ -65,22 +65,19 @@ class Dispatcher extends BaseDispatcher
     }
 
     /**
-     * Get a 403 response
      * @param Context $context
-     * @return mixed
+     * @param HttpError $error
+     * @return Response
      */
-    protected function getNotFoundResponse(Context $context)
+    protected function getErrorResponse(Context $context, HttpError $error)
     {
-        return new PageNotFound(view('error.404', ['path' => $context->path()]));
-    }
+        switch ($error->getCode()){
+            case 404:
+                return new PageNotFound(view('error.404', ['path' => $context->path()]));
+            case 403:
+                return new AccessDenied(view('error.403', ['path' => $context->path()]));
+        }
 
-    /**
-     * Get a 403 response
-     * @param Context $context
-     * @return mixed
-     */
-    protected function getAccessDeniedResponse(Context $context)
-    {
-        return new AccessDenied(view('error.403', ['path' => $context->path()]));
+        return (new Response($error->getBody()))->setStatusCode($error->getCode())->addHeaders($error->getHeaders());
     }
 }
