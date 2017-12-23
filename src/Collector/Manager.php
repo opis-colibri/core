@@ -318,16 +318,16 @@ class Manager
      * @param string $name
      * @param string $class
      * @param string $description
-     * @param bool $inverted
+     * @param array $options
      */
-    public function register(string $name, string $class, string $description, bool $inverted = true)
+    public function register(string $name, string $class, string $description, array $options = [])
     {
         $name = strtolower($name);
 
         $this->app->getConfig()->write('collectors.' . $name, array(
             'class' => $class,
             'description' => $description,
-            'invertedPriority' => $inverted,
+            'options' => $options,
         ));
         $this->container->singleton($class);
         $this->container->alias($class, $name);
@@ -401,11 +401,11 @@ class Manager
                 }
 
                 if(isset($collectorList[$name])){
-                    $collector = $collectorList[$name];
-                    $collector += [
+                    $options = $collectorList[$name]['options'] ?? [];
+                    $options += [
                         'invertedPriority' => true,
                     ];
-                    if($collector['invertedPriority']){
+                    if($options['invertedPriority']){
                         $priority *= -1;
                     }
                 }
