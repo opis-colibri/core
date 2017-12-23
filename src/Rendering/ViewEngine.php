@@ -15,11 +15,12 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri;
+namespace Opis\Colibri\Rendering;
 
+use Opis\Colibri\View;
 use Opis\Intl\Translator\LanguageInfo;
 use Opis\View\PHPEngine;
-use function Opis\Colibri\Functions\{view as makeView, render, asset, getURL, generateCSRFToken, v, r, t};
+use function Opis\Colibri\Functions\{view, render, asset, getURL, generateCSRFToken, v, r, t};
 
 class ViewEngine extends PHPEngine
 {
@@ -30,7 +31,7 @@ class ViewEngine extends PHPEngine
      */
     public function view(string $name, array $arguments = []): View
     {
-        return makeView($name, $arguments);
+        return view($name, $arguments);
     }
 
     /**
