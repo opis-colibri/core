@@ -318,14 +318,16 @@ class Manager
      * @param string $name
      * @param string $class
      * @param string $description
+     * @param bool $inverted
      */
-    public function register(string $name, string $class, string $description)
+    public function register(string $name, string $class, string $description, bool $inverted = true)
     {
         $name = strtolower($name);
 
         $this->app->getConfig()->write('collectors.' . $name, array(
             'class' => $class,
             'description' => $description,
+            'invertedPriority' => $inverted,
         ));
         $this->container->singleton($class);
         $this->container->alias($class, $name);
@@ -351,6 +353,7 @@ class Manager
         }
 
         $this->collectorsIncluded = true;
+        $collectorList = $this->app->getCollectorList();
 
         foreach ($this->app->getModules() as $module) {
 
@@ -395,6 +398,16 @@ class Manager
                 } else {
                     $name = $methodName;
                     $priority = 0;
+                }
+
+                if(isset($collectorList[$name])){
+                    $collector = $collectorList[$name];
+                    $collector += [
+                        'invertedPriority' => true,
+                    ];
+                    if($collector['invertedPriority']){
+                        $priority *= -1;
+                    }
                 }
 
                 $callback = function (ItemCollector $collector) use ($instance, $methodName, $module, $name, $priority) {
