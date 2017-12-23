@@ -71,13 +71,63 @@ class Dispatcher extends BaseDispatcher
      */
     protected function getErrorResponse(Context $context, HttpError $error)
     {
+        $logo = function (){
+            return 'data:image/svg+xml;base64, '
+                . base64_encode(file_get_contents(__DIR__ . '/../../logo.svg'));
+        };
+
         switch ($error->getCode()){
             case 404:
-                return new PageNotFound(view('error.404', ['path' => $context->path()]));
+                return new PageNotFound(view('error.404', [
+                    'status' => 404,
+                    'message' => 'Not Found',
+                    'path' => $context->path(),
+                    'context' => $context,
+                    'logo' => $logo
+                ]));
             case 403:
-                return new AccessDenied(view('error.403', ['path' => $context->path()]));
+                return new AccessDenied(view('error.403', [
+                    'status' => 403,
+                    'message' => 'Forbidden',
+                    'path' => $context->path(),
+                    'context' => $context,
+                    'logo' => $logo,
+                ]));
+            case 405:
+                return (new Response(view('error.405', [
+                    'status' => 405,
+                    'message' => 'Method Not Allowed',
+                    'path' => $context->path(),
+                    'context' => $context,
+                    'logo' => $logo,
+                ])))
+                    ->setStatusCode(405)
+                    ->addHeaders($error->getHeaders())
+                    ->addHeader('Allow', implode(', ', $this->route->get('method', [])));
+            case 500:
+                return (new Response(view('error.500', [
+                    'status' => 500,
+                    'message' => 'Internal Server Error',
+                    'path' => $context->path(),
+                    'context' => $context,
+                    'logo' => $logo,
+                ])))
+                    ->setStatusCode(500)
+                    ->addHeaders($error->getHeaders());
+            case 503:
+                return (new Response(view('error.503', [
+                    'status' => 503,
+                    'message' => 'Service Unavailable',
+                    'path' => $context->path(),
+                    'context' => $context,
+                    'logo' => $logo,
+                ])))
+                    ->setStatusCode(500)
+                    ->addHeaders($error->getHeaders());
         }
 
-        return (new Response($error->getBody()))->setStatusCode($error->getCode())->addHeaders($error->getHeaders());
+        return (new Response($error->getBody()))
+            ->setStatusCode($error->getCode())
+            ->addHeaders($error->getHeaders());
     }
 }

@@ -28,6 +28,7 @@ use Opis\Cache\Drivers\Memory as MemoryDriver;
 use Opis\Colibri\Collector\Manager as CollectorManager;
 use Opis\Colibri\Composer\CLI;
 use Opis\Colibri\Composer\Plugin;
+use Opis\Colibri\Rendering\TemplateStream;
 use Opis\Colibri\Routing\HttpRouter;
 use Opis\Colibri\Util\CSRFToken;
 use Opis\Colibri\Util\Mutex;
@@ -170,6 +171,9 @@ class Application implements ISettingsContainer
         $this->composer = $composer;
         $this->classLoader = $loader;
         $this->info = new AppInfo($rootDir, $json['extra']['application'] ?? []);
+
+        TemplateStream::register();
+
         static::$instance = $this;
     }
 
@@ -298,6 +302,9 @@ class Application implements ISettingsContainer
             $routes = $collector->getViews();
             $resolver = $collector->getViewEngineResolver();
             $this->viewApp = new ViewApp($routes, $resolver, new ViewEngine());
+            $this->viewApp->handle('error.{error}', function($error){
+                return 'template://\Opis\Colibri\Rendering\Template::error' . $error;
+            }, -100)->where('error', '401|403|404|405|500|503');
         }
 
         return $this->viewApp;
