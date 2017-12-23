@@ -177,7 +177,7 @@ class AppInfo
             if($this->settings[static::BOOTSTRAP_FILE][0] === '/') {
                 $this->cache[static::BOOTSTRAP_FILE] = $this->settings[static::BOOTSTRAP_FILE];
             } else {
-                $this->cache[static::BOOTSTRAP_FILE] = $this->vendorDir() . '/' . $this->settings[static::BOOTSTRAP_FILE];
+                $this->cache[static::BOOTSTRAP_FILE] = $this->writableDir() . '/' . $this->settings[static::BOOTSTRAP_FILE];
             }
         }
 
