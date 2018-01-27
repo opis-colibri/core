@@ -18,118 +18,84 @@
 namespace Opis\Colibri\Routing;
 
 use Opis\Colibri\Application;
-use function Opis\Colibri\Functions\view;
-use Opis\Colibri\HttpResponse\AccessDenied;
-use Opis\Colibri\HttpResponse\PageNotFound;
-use Opis\Http\Response;
-use Opis\HttpRouting\{
-    Context, HttpError, Dispatcher as BaseDispatcher
-};
-use Opis\Routing\Context as BaseContext;
-use Opis\Routing\Router as BaseRouter;
+use Opis\HttpRouting\HttpError;
+use Opis\Routing\CompiledRoute;
+use Opis\Routing\Context;
+use Opis\Routing\DispatcherTrait;
+use Opis\Routing\IDispatcher;
+use Opis\Routing\Router;
+use function Opis\Colibri\Functions\{notFound};
 
-/**
- * Class Dispatcher
- * @package Opis\Colibri\Routing
- * @property HttpRoute $route
- */
-class Dispatcher extends BaseDispatcher
+class Dispatcher implements IDispatcher
 {
-    /** @var  Application */
-    protected $app;
+    use DispatcherTrait;
 
+    /** @var Application */
+    private $app;
+
+    /**
+     * Dispatcher constructor.
+     * @param Application $app
+     */
     public function __construct(Application $app)
     {
         $this->app = $app;
     }
 
     /**
-     * @param BaseRouter|HttpRouter $router
-     * @param BaseContext|Context $context
+     * @param Router $router
+     * @param Context $context
      * @return mixed
      */
-    public function dispatch(BaseRouter $router, BaseContext $context)
+    public function dispatch(Router $router, Context $context)
     {
-        $content = parent::dispatch($router, $context);
+        $this->router = $router;
+        $this->context = $context;
 
-        if ($this->route === null) {
-            return $content;
+        /** @var HttpRoute $route */
+        $route = $this->findRoute();
+
+        if($route === null) {
+            return notFound();
         }
 
-        if (!empty($interceptor = (string)$this->route->get('responseInterceptor'))) {
-            /** @var ResponseInterceptor $interceptor */
-            if (false !== $interceptor = $this->app->getCollector()->getResponseInterceptors()->get($interceptor)) {
-                $content = $interceptor->handle($content, $this->route, $context->request());
+        $compiled = new CompiledRoute($context, $route, $this->getExtraVariables());
+
+        $callbacks = $route->getCallbacks();
+
+        foreach ($route->get('guard', []) as $guard){
+            if(isset($callbacks[$guard])){
+                $callback = $callbacks[$guard];
+                $args = $compiled->getArguments($callback);
+                if(false === $callback(...$args)){
+                    return notFound();
+                }
             }
         }
 
-        return $content;
-    }
+        $list = $route->get('middleware', []);
 
-    /**
-     * @param Context $context
-     * @param HttpError $error
-     * @return Response
-     */
-    protected function getErrorResponse(Context $context, HttpError $error)
-    {
-        $logo = function () {
-            return 'data:image/svg+xml;base64, '
-                . base64_encode(file_get_contents(__DIR__ . '/../../logo.svg'));
-        };
-
-        switch ($error->getCode()) {
-            case 404:
-                return new PageNotFound(view('error.404', [
-                    'status' => 404,
-                    'message' => 'Not Found',
-                    'path' => $context->path(),
-                    'context' => $context,
-                    'logo' => $logo
-                ]));
-            case 403:
-                return new AccessDenied(view('error.403', [
-                    'status' => 403,
-                    'message' => 'Forbidden',
-                    'path' => $context->path(),
-                    'context' => $context,
-                    'logo' => $logo,
-                ]));
-            case 405:
-                return (new Response(view('error.405', [
-                    'status' => 405,
-                    'message' => 'Method Not Allowed',
-                    'path' => $context->path(),
-                    'context' => $context,
-                    'logo' => $logo,
-                ])))
-                    ->setStatusCode(405)
-                    ->addHeaders($error->getHeaders())
-                    ->addHeader('Allow', implode(', ', $this->route->get('method', [])));
-            case 500:
-                return (new Response(view('error.500', [
-                    'status' => 500,
-                    'message' => 'Internal Server Error',
-                    'path' => $context->path(),
-                    'context' => $context,
-                    'logo' => $logo,
-                ])))
-                    ->setStatusCode(500)
-                    ->addHeaders($error->getHeaders());
-            case 503:
-                return (new Response(view('error.503', [
-                    'status' => 503,
-                    'message' => 'Service Unavailable',
-                    'path' => $context->path(),
-                    'context' => $context,
-                    'logo' => $logo,
-                ])))
-                    ->setStatusCode(500)
-                    ->addHeaders($error->getHeaders());
+        if(empty($list)){
+            return $compiled->invokeAction();
         }
 
-        return (new Response($error->getBody()))
-            ->setStatusCode($error->getCode())
-            ->addHeaders($error->getHeaders());
+        $queue = new \SplQueue();
+
+        foreach ($this->app->getCollector()->getMiddleware()->getList() as $class){
+            if(class_exists($class)){
+                $queue->enqueue(new $class($queue, $compiled));
+            }
+        }
+
+        do {
+            if($queue->isEmpty()){
+                return $compiled->invokeAction();
+            }
+            /** @var Middleware $middleware */
+            $middleware = $queue->dequeue();
+        } while(!is_callable($middleware));
+
+        $args = $compiled->getArguments($middleware);
+        return $middleware(...$args);
     }
 }

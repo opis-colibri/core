@@ -34,6 +34,10 @@ return [
         'class' => 'Opis\\Colibri\\ItemCollectors\\ResponseInterceptorCollector',
         'description' => 'Collects response interceptors',
     ],
+    'middleware' => [
+        'class' => 'Opis\\Colibri\\ItemCollectors\\MiddlewareCollector',
+        'description' => 'Collects middleware items',
+    ],
     'views' => [
         'class' => 'Opis\\Colibri\\ItemCollectors\\ViewCollector',
         'description' => 'Collects views',

@@ -22,6 +22,7 @@ use Opis\Colibri\Application;
 use Opis\Colibri\Container;
 use Opis\Colibri\Collector;
 use Opis\Colibri\ItemCollector;
+use Opis\Colibri\ItemCollectors\MiddlewareCollector;
 use Opis\Colibri\Module;
 use Opis\Colibri\Serializable\ClassList;
 use Opis\Config\ConfigInterface;
@@ -198,6 +199,16 @@ class Manager
     {
         return $this->collect('ResponseInterceptors', $fresh);
     }
+
+    /**
+     * @param bool $fresh
+     * @return ClassList
+     */
+    public function getMiddleware(bool $fresh = false): ClassList
+    {
+        return $this->collect('Middleware', $fresh);
+    }
+
 
     /**
      * @param string $name
