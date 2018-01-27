@@ -30,10 +30,6 @@ return [
             'invertedPriority' => false,
         ],
     ],
-    'responseinterceptors' => [
-        'class' => 'Opis\\Colibri\\ItemCollectors\\ResponseInterceptorCollector',
-        'description' => 'Collects response interceptors',
-    ],
     'middleware' => [
         'class' => 'Opis\\Colibri\\ItemCollectors\\MiddlewareCollector',
         'description' => 'Collects middleware items',
