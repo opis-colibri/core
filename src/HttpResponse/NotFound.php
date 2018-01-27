@@ -19,10 +19,10 @@ namespace Opis\Colibri\HttpResponse;
 
 use Opis\Http\Response;
 
-class PageNotFound extends Response
+class NotFound extends Response
 {
     /**
-     * PageNotFound constructor.
+     * NotFound constructor.
      * @param null $content
      */
     public function __construct($content = null)

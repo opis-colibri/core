@@ -19,10 +19,10 @@ namespace Opis\Colibri\HttpResponse;
 
 use Opis\Http\Response;
 
-class AccessDenied extends Response
+class Forbidden extends Response
 {
     /**
-     * AccessDenied constructor.
+     * Forbidden constructor.
      * @param null $content
      */
     public function __construct($content = null)

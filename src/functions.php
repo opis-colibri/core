@@ -19,26 +19,34 @@ namespace Opis\Colibri\Functions;
 
 use Opis\Cache\CacheInterface;
 use Opis\Colibri\{
-    Application, AppInfo, Module, View, Validation\Validator, Serializable\ControllerCallback
+    Application,
+    AppInfo,
+    Module,
+    View,
+    Validation\Validator,
+    Serializable\ControllerCallback
 };
 use Opis\Colibri\HttpResponse\{
     Redirect as RedirectResponse,
-    PageNotFound as PageNotFoundResponse,
-    AccessDenied as AccessDeniedResponse
+    NotFound as NotFoundResponse,
+    Forbidden as ForbiddenResponse
 };
 use Opis\Config\ConfigInterface;
 use Opis\Database\{
-    Connection as DBConnection, Database, Schema
+    Connection as DBConnection,
+    Database,
+    Schema
 };
-use Opis\Intl\Translator\LanguageInfo;
-use Opis\Intl\Translator\SubTranslator;
+use Opis\Intl\Translator\{
+    LanguageInfo,
+    SubTranslator
+};
 use Opis\ORM\{
-    EntityManager, Core\EntityQuery
+    EntityManager,
+    Core\EntityQuery
 };
 use Opis\Events\Event;
-use Opis\Http\{
-    Request
-};
+use Opis\Http\Request;
 use Opis\Session\Session;
 use Opis\View\IView;
 use Psr\Log\LoggerInterface;
@@ -141,27 +149,27 @@ function transaction(callable $callback, array $options = [])
 
     $pdo = connection($options['connection'])->getPDO();
 
-    if ($pdo->inTransaction()) {
+    if($pdo->inTransaction()){
         return $callback();
     }
 
     $result = null;
-    try {
+    try{
         $pdo->beginTransaction();
         $result = $callback();
         $pdo->commit();
-        if (isset($options['success']) && is_callable($options['success'])) {
+        if(isset($options['success']) && is_callable($options['success'])){
             $options['success']();
         }
-    } catch (\Exception $exception) {
+    } catch (\Exception $exception){
         $pdo->rollBack();
-        if ($options['throw']) {
+        if($options['throw']){
             throw  $exception;
         }
-        if (isset($options['error']) && is_callable($options['error'])) {
+        if(isset($options['error']) && is_callable($options['error'])){
             $options['error']($exception);
         }
-        if (isset($options['return'])) {
+        if(isset($options['return'])){
             $result = $options['return'];
         }
     }
@@ -235,28 +243,36 @@ function redirect(string $location, int $code = 302, array $query = array()): Re
 
 /**
  * @param null|mixed|string $body
- * @return PageNotFoundResponse
+ * @return NotFoundResponse
  */
-function pageNotFound($body = null): PageNotFoundResponse
+function notFound($body = null): NotFoundResponse
 {
-    if ($body === null) {
-        $body = view('error.404', ['path' => request()->path()]);
+    if($body === null){
+        $body = view('error.404', [
+            'status' => 404,
+            'message' => 'Not found',
+            'path' => request()->path(),
+        ]);
     }
 
-    return new PageNotFoundResponse($body);
+    return new NotFoundResponse($body);
 }
 
 /**
  * @param null|string|mixed $body
- * @return AccessDeniedResponse
+ * @return ForbiddenResponse
  */
-function accessDenied($body = null): AccessDeniedResponse
+function forbidden($body = null): ForbiddenResponse
 {
-    if ($body === null) {
-        $body = view('error.403', ['path' => request()->path()]);
+    if($body === null){
+        $body = view('error.403', [
+            'status' => 403,
+            'message' => 'Forbidden',
+            'path' => request()->path(),
+        ]);
     }
 
-    return new AccessDeniedResponse($body);
+    return new ForbiddenResponse($body);
 }
 
 /**
@@ -359,11 +375,11 @@ function asset(string $module, string $path, bool $full = false): string
 {
     static $assetsPath;
 
-    if ($assetsPath === null) {
+    if($assetsPath === null){
         $assetsPath = info()->assetsPath();
     }
 
-    if ($module === '*') {
+    if($module === '*'){
         return getURL($assetsPath . '/' . ltrim($path, '/'), $full);
     }
 
