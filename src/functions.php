@@ -29,7 +29,8 @@ use Opis\Colibri\{
 use Opis\Colibri\HttpResponse\{
     Redirect as RedirectResponse,
     NotFound as NotFoundResponse,
-    Forbidden as ForbiddenResponse
+    Forbidden as ForbiddenResponse,
+    Unauthorized as UnauthorizedResponse
 };
 use Opis\Config\ConfigInterface;
 use Opis\Database\{
@@ -273,6 +274,23 @@ function forbidden($body = null): ForbiddenResponse
     }
 
     return new ForbiddenResponse($body);
+}
+
+/**
+ * @param null|string|mixed $body
+ * @return UnauthorizedResponse
+ */
+function unauthorized($body = null): UnauthorizedResponse
+{
+    if($body === null){
+        $body = view('error.401', [
+            'status' => 401,
+            'message' => 'Unauthorized',
+            'path' => request()->path(),
+        ]);
+    }
+
+    return new UnauthorizedResponse($body);
 }
 
 /**
