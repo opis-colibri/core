@@ -422,7 +422,7 @@ class SpaInstaller extends LibraryInstaller
 
     private function getSpaData(): array
     {
-        $file = implode(DIRECTORY_SEPARATOR, $this->appInfo->writableDir(), 'spa', 'data.json');
+        $file = implode(DIRECTORY_SEPARATOR, [$this->appInfo->writableDir(), 'spa', 'data.json']);
         if(file_exists($file)){
             return json_decode(file_get_contents($file), true);
         }
@@ -435,7 +435,7 @@ class SpaInstaller extends LibraryInstaller
 
     private function setSpaData(array $data)
     {
-        $file = $file = implode(DIRECTORY_SEPARATOR, $this->appInfo->writableDir(), 'spa', 'data.json');
+        $file = $file = implode(DIRECTORY_SEPARATOR, [$this->appInfo->writableDir(), 'spa', 'data.json']);
         file_put_contents($file, json_encode($data));
     }
 }
