@@ -27,7 +27,7 @@ class Mutex
 
     /**
      * Mutex constructor
-     * 
+     *
      * @param string|null $file
      * @param bool $create
      */

@@ -48,7 +48,7 @@ class HttpRouter extends Router
 
         if ($alias !== null) {
             $context = new Context(
-                (string) $alias, $context->domain(), $context->method(), $context->isSecure(), $context->request()
+                (string)$alias, $context->domain(), $context->method(), $context->isSecure(), $context->request()
             );
         }
 

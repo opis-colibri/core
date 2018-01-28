@@ -86,12 +86,12 @@ class AssetsInstaller extends LibraryInstaller
     public function installAssets(PackageInterface $package)
     {
         $extra = $package->getExtra();
-        if(!isset($extra['module']['assets'])){
+        if (!isset($extra['module']['assets'])) {
             return;
         }
 
-        if(!is_array($extra['module']['assets'])){
-            if(!is_string($extra['module']['assets'])){
+        if (!is_array($extra['module']['assets'])) {
+            if (!is_string($extra['module']['assets'])) {
                 return;
             }
             $assets = [
@@ -107,13 +107,13 @@ class AssetsInstaller extends LibraryInstaller
                 'build_script' => 'build'
             ];
 
-            if(!is_string($assets['source'])){
+            if (!is_string($assets['source'])) {
                 return;
             }
-            if(!is_null($assets['build']) && !is_string($assets['build'])){
+            if (!is_null($assets['build']) && !is_string($assets['build'])) {
                 return;
             }
-            if(!is_string($assets['build_script'])){
+            if (!is_string($assets['build_script'])) {
                 return;
             }
         }
@@ -121,12 +121,12 @@ class AssetsInstaller extends LibraryInstaller
         $base_dir = $this->getInstallPath($package);
         $cwd = getcwd();
 
-        if($assets['build'] !== null){
+        if ($assets['build'] !== null) {
             $dir = $base_dir . DIRECTORY_SEPARATOR . $assets['build'];
-            if(file_exists($dir . DIRECTORY_SEPARATOR . 'package.json')){
+            if (file_exists($dir . DIRECTORY_SEPARATOR . 'package.json')) {
                 chdir($dir);
                 $this->yarn('install');
-                if($assets['build_script'] !== null){
+                if ($assets['build_script'] !== null) {
                     $this->yarn(['run' => $assets['build_script']]);
                 }
             }
@@ -134,12 +134,12 @@ class AssetsInstaller extends LibraryInstaller
 
         $dir = $base_dir . DIRECTORY_SEPARATOR . $assets['source'];
 
-        if(!is_dir($dir)){
+        if (!is_dir($dir)) {
             return;
         }
 
         $fs = new Filesystem();
-        if(file_exists($dir . DIRECTORY_SEPARATOR . 'package.json')){
+        if (file_exists($dir . DIRECTORY_SEPARATOR . 'package.json')) {
             $root = $this->appInfo->rootDir();
             // Make dir relative
             $dir = $fs->makePathRelative($dir, $root);
@@ -162,11 +162,11 @@ class AssetsInstaller extends LibraryInstaller
     public function uninstallAssets(PackageInterface $package)
     {
         $extra = $package->getExtra();
-        if(!isset($extra['module']['assets'])){
+        if (!isset($extra['module']['assets'])) {
             return;
         }
 
-        if(!is_array($extra['module']['assets'])){
+        if (!is_array($extra['module']['assets'])) {
             $assets = [
                 'source' => trim($extra['module']['assets'], DIRECTORY_SEPARATOR),
                 'build' => null,
@@ -184,7 +184,7 @@ class AssetsInstaller extends LibraryInstaller
         $base_dir = $this->getInstallPath($package);
         $dir = $base_dir . DIRECTORY_SEPARATOR . $assets['source'];
 
-        if(file_exists($dir . DIRECTORY_SEPARATOR . 'package.json')){
+        if (file_exists($dir . DIRECTORY_SEPARATOR . 'package.json')) {
             $json = json_decode(file_get_contents($dir . DIRECTORY_SEPARATOR . 'package.json'), true);
             $cwd = getcwd();
             chdir($this->appInfo->rootDir());
@@ -207,8 +207,7 @@ class AssetsInstaller extends LibraryInstaller
         $command = 'yarn';
         if (is_string($args)) {
             $command .= ' ' . $args;
-        }
-        else {
+        } else {
             foreach ($args as $name => $arg) {
                 $command .= ' ' . $name;
                 if ($arg === null) {

@@ -22,7 +22,9 @@ use function Opis\Colibri\Functions\view;
 use Opis\Colibri\HttpResponse\AccessDenied;
 use Opis\Colibri\HttpResponse\PageNotFound;
 use Opis\Http\Response;
-use Opis\HttpRouting\{Context, HttpError, Dispatcher as BaseDispatcher};
+use Opis\HttpRouting\{
+    Context, HttpError, Dispatcher as BaseDispatcher
+};
 use Opis\Routing\Context as BaseContext;
 use Opis\Routing\Router as BaseRouter;
 
@@ -50,13 +52,13 @@ class Dispatcher extends BaseDispatcher
     {
         $content = parent::dispatch($router, $context);
 
-        if($this->route === null){
+        if ($this->route === null) {
             return $content;
         }
 
-        if(!empty($interceptor = (string) $this->route->get('responseInterceptor'))){
+        if (!empty($interceptor = (string)$this->route->get('responseInterceptor'))) {
             /** @var ResponseInterceptor $interceptor */
-            if(false !== $interceptor = $this->app->getCollector()->getResponseInterceptors()->get($interceptor)){
+            if (false !== $interceptor = $this->app->getCollector()->getResponseInterceptors()->get($interceptor)) {
                 $content = $interceptor->handle($content, $this->route, $context->request());
             }
         }
@@ -71,12 +73,12 @@ class Dispatcher extends BaseDispatcher
      */
     protected function getErrorResponse(Context $context, HttpError $error)
     {
-        $logo = function (){
+        $logo = function () {
             return 'data:image/svg+xml;base64, '
                 . base64_encode(file_get_contents(__DIR__ . '/../../logo.svg'));
         };
 
-        switch ($error->getCode()){
+        switch ($error->getCode()) {
             case 404:
                 return new PageNotFound(view('error.404', [
                     'status' => 404,

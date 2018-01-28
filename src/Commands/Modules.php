@@ -55,7 +55,7 @@ class Modules extends Command
         $ws = str_repeat(' ', 24);
 
         foreach (app()->getModules() as $name => $module) {
-            
+
             if (!$all && $module->isApplicationInstaller()) {
                 continue;
             }

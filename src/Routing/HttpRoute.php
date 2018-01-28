@@ -21,7 +21,9 @@ use Opis\Colibri\Serializable\ControllerCallback;
 use Opis\HttpRouting\CompiledRoute;
 use Opis\HttpRouting\Dispatcher;
 use Opis\HttpRouting\Route;
-use function Opis\Colibri\Functions\{app, make};
+use function Opis\Colibri\Functions\{
+    app, make
+};
 
 /**
  * Class HttpRoute
@@ -35,11 +37,11 @@ class HttpRoute extends Route
 
     public function getAction(): callable
     {
-        if($this->resolvedAction !== null){
+        if ($this->resolvedAction !== null) {
             return $this->resolvedAction;
         }
 
-        if(!($this->routeAction instanceof ControllerCallback)){
+        if (!($this->routeAction instanceof ControllerCallback)) {
             return $this->resolvedAction = $this->routeAction;
         }
 
@@ -47,30 +49,30 @@ class HttpRoute extends Route
         $callback = $this->routeAction;
         $dispatcher = app()->getHttpRouter()->getDispatcher();
         /** @var CompiledRoute $compiled */
-        $compiled = (function (Dispatcher $dispatcher, HttpRoute $route){
+        $compiled = (function (Dispatcher $dispatcher, HttpRoute $route) {
             return $dispatcher->compile($dispatcher->context, $route);
         })->call($dispatcher, $dispatcher, $this);
         $values = $compiled->getBindings();
         $method = $callback->getMethod();
         $class = $callback->getClass();
 
-        if($class[0] === '@'){
+        if ($class[0] === '@') {
             $class = substr($class, 1);
-            if(!isset($values[$class])){
+            if (!isset($values[$class])) {
                 throw new \RuntimeException("Unknown controller variable '$class'");
             }
             $class = $values[$class]->value();
         }
 
-        if($method[0] === '@'){
+        if ($method[0] === '@') {
             $method = substr($method, 1);
-            if(!isset($values[$method])){
+            if (!isset($values[$method])) {
                 throw new \RuntimeException("Unknown controller variable '$method'");
             }
             $method = $values[$method]->value();
         }
 
-        if(!$callback->isStatic()){
+        if (!$callback->isStatic()) {
             $class = make($class);
         }
 

@@ -72,8 +72,8 @@ class StorageCollection implements Serializable
     {
         SerializableClosure::enterContext();
 
-        $map = function ($value){
-            if($value instanceof \Closure){
+        $map = function ($value) {
+            if ($value instanceof \Closure) {
                 return SerializableClosure::from($value);
             }
             return $value;
@@ -96,8 +96,8 @@ class StorageCollection implements Serializable
     {
         $object = unserialize($data);
 
-        $map = function ($value){
-            if($value instanceof SerializableClosure){
+        $map = function ($value) {
+            if ($value instanceof SerializableClosure) {
                 return $value->getClosure();
             }
             return $value;

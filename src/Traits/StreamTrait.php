@@ -19,7 +19,7 @@ namespace Opis\Colibri\Traits;
 
 trait StreamTrait
 {
-    /** @var bool  */
+    /** @var bool */
     protected static $isRegistered = false;
 
     /** @var  string */
@@ -28,14 +28,14 @@ trait StreamTrait
     /** @var  int */
     protected $length;
 
-    /** @var int  */
+    /** @var int */
     protected $pointer = 0;
 
     /**
      * @param string $path
      * @return string Content
      */
-    abstract public function getContent(string $path) : string;
+    abstract public function getContent(string $path): string;
 
     /**
      * @param $path
@@ -44,7 +44,8 @@ trait StreamTrait
      * @param $opened_path
      * @return bool
      */
-    function stream_open(/** @noinspection PhpUnusedParameterInspection */$path, $mode, $options, &$opened_path)
+    function stream_open(/** @noinspection PhpUnusedParameterInspection */
+        $path, $mode, $options, &$opened_path)
     {
         $this->content = $this->getContent(substr($path, strlen(static::getProtocol() . '://')));
         $this->length = strlen($this->content);
@@ -85,7 +86,8 @@ trait StreamTrait
      * @param $flags
      * @return array
      */
-    public function url_stat(/** @noinspection PhpUnusedParameterInspection */$path, $flags)
+    public function url_stat(/** @noinspection PhpUnusedParameterInspection */
+        $path, $flags)
     {
         $stat = stat(__FILE__);
         $stat[7] = $stat['size'] = $this->length;
@@ -133,7 +135,7 @@ trait StreamTrait
      * @param string $path
      * @return string
      */
-    public static function getPath(string $path) : string
+    public static function getPath(string $path): string
     {
         return static::getProtocol() . '://' . $path;
     }
@@ -162,7 +164,7 @@ trait StreamTrait
     /**
      * @return bool
      */
-    public static function isRegistered() : bool
+    public static function isRegistered(): bool
     {
         return static::$isRegistered;
     }
@@ -172,5 +174,5 @@ trait StreamTrait
      *
      * @return string
      */
-    abstract public static function getProtocol() : string;
+    abstract public static function getProtocol(): string;
 }

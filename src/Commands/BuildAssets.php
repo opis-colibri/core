@@ -26,7 +26,9 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use function Opis\Colibri\Functions\{info, app, module};
+use function Opis\Colibri\Functions\{
+    info, app, module
+};
 use Symfony\Component\Filesystem\Filesystem;
 
 class BuildAssets extends Command
@@ -55,22 +57,22 @@ class BuildAssets extends Command
         $modules = $input->getArgument('module');
         $dependencies = $input->getOption('dependencies');
 
-        if(empty($modules)){
+        if (empty($modules)) {
             $modules = app()->getModules();
         } else {
-            $modules = array_map(function($value){
+            $modules = array_map(function ($value) {
                 return module($value);
             }, $modules);
         }
 
         /** @var \Opis\Colibri\Module $module */
-        foreach ($modules as $module){
+        foreach ($modules as $module) {
 
-            if(!$module->exists()){
+            if (!$module->exists()) {
                 continue;
             }
 
-            if(!$module->assets()){
+            if (!$module->assets()) {
                 continue;
             }
 
@@ -78,13 +80,13 @@ class BuildAssets extends Command
 
             $name = str_replace('/', '.', $module->name());
 
-            if($dependencies){
+            if ($dependencies) {
                 $installer->uninstallAssets($module->getPackage());
             } else {
                 $fs->remove(info()->assetsDir() . DIRECTORY_SEPARATOR . $name);
             }
 
-            if($dependencies){
+            if ($dependencies) {
                 $installer->installAssets($module->getPackage());
             } else {
                 $fs->mirror($module->assets(), info()->assetsDir() . DIRECTORY_SEPARATOR . $name);

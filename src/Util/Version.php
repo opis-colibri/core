@@ -117,14 +117,14 @@ class Version
                 'p' => -1,
             );
 
-            static::$mapFunction = function($value) use(&$map) {
+            static::$mapFunction = function ($value) use (&$map) {
 
                 if (isset($map[$value])) {
                     return $map[$value];
                 }
 
                 if (is_numeric($value)) {
-                    return (int) $value;
+                    return (int)$value;
                 }
 
                 return $value;

@@ -73,13 +73,17 @@ class Manager
         $this->container = $container = new Container();
         $this->router = new Router();
         $this->app = $app;
-        $this->proxy = new class(null) extends ItemCollector {
-            public function update(ItemCollector $collector, Module $module, string $name, int $priority){
+        $this->proxy = new class(null) extends ItemCollector
+        {
+            public function update(ItemCollector $collector, Module $module, string $name, int $priority)
+            {
                 $collector->crtModule = $module;
                 $collector->crtCollectorName = $name;
                 $collector->crtPriority = $priority;
             }
-            public function getData(ItemCollector $collector){
+
+            public function getData(ItemCollector $collector)
+            {
                 return $collector->data;
             }
         };
@@ -372,14 +376,14 @@ class Manager
 
             $map = [];
 
-            foreach ($instance() as $key => $value){
-                if(is_array($value)){
+            foreach ($instance() as $key => $value) {
+                if (is_array($value)) {
                     list($name, $priority) = $value;
-                } elseif (is_int($value)){
+                } elseif (is_int($value)) {
                     $name = $key;
-                    $priority = (int) $value;
+                    $priority = (int)$value;
                 } else {
-                    $name = (string) $value;
+                    $name = (string)$value;
                     $priority = 0;
                 }
 
@@ -394,19 +398,19 @@ class Manager
                     continue;
                 }
 
-                if(isset($map[$methodName])){
+                if (isset($map[$methodName])) {
                     list($name, $priority) = $map[$methodName];
                 } else {
                     $name = $methodName;
                     $priority = 0;
                 }
 
-                if(isset($collectorList[$name])){
+                if (isset($collectorList[$name])) {
                     $options = $collectorList[$name]['options'] ?? [];
                     $options += [
                         'invertedPriority' => true,
                     ];
-                    if($options['invertedPriority']){
+                    if ($options['invertedPriority']) {
                         $priority *= -1;
                     }
                 }

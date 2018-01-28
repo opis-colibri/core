@@ -24,12 +24,12 @@ use Opis\Colibri\Routing\HttpRoute;
  * @package Opis\Colibri\Groups
  *
  * @method RouteGroup bind(string $name, callable $callback)
- * @method RouteGroup filter(string|array $filters)
+ * @method RouteGroup filter(string | array $filters)
  * @method RouteGroup implicit(string $name, $value)
  * @method RouteGroup where(string $name, $value)
- * @method RouteGroup validate(string|array $filters)
+ * @method RouteGroup validate(string | array $filters)
  * @method RouteGroup callback(string $name, callable $callback)
- * @method RouteGroup access(string|array $filters)
+ * @method RouteGroup access(string | array $filters)
  * @method RouteGroup domain(string $value)
  * @method RouteGroup method(string $value)
  * @method RouteGroup secure(bool $value)
@@ -56,7 +56,7 @@ class RouteGroup
      */
     public function __call($name, $arguments)
     {
-        foreach ($this->routes as $route){
+        foreach ($this->routes as $route) {
             $route->{$name}(...$arguments);
         }
         return $this;

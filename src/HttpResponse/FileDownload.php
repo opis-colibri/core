@@ -18,19 +18,21 @@
 namespace Opis\Colibri\HttpResponse;
 
 use RuntimeException;
-use Opis\Http\{Mime, ResponseHandler, Response};
+use Opis\Http\{
+    Mime, ResponseHandler, Response
+};
 
 class FileDownload extends Response
 {
     public function __construct(string $file, array $options = [])
     {
-        if(!file_exists($file) || !is_readable($file)) {
+        if (!file_exists($file) || !is_readable($file)) {
             throw new RuntimeException(vsprintf('File %s is not readable or not exist', [$file]));
         }
 
         $options += [
-            'fileName'    => basename($file),
-            'disposition'  => 'attachment',
+            'fileName' => basename($file),
+            'disposition' => 'attachment',
             'contentType' => Mime::get($file),
         ];
 
@@ -40,7 +42,7 @@ class FileDownload extends Response
             ->addHeader('Content-Length', filesize($file))
             ->addHeader('Content-Disposition', vsprintf('%s; filename="%s"', [$o['disposition'], $o['fileName']]));
 
-        parent::__construct(function(Response $response, ResponseHandler $handler) use($file){
+        parent::__construct(function (Response $response, ResponseHandler $handler) use ($file) {
             $handler->sendHeaders($response);
             readfile($file);
         });

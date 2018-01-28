@@ -19,7 +19,9 @@ namespace Opis\Colibri;
 
 use Composer\Package\CompletePackage;
 use Exception;
-use function Opis\Colibri\Functions\{app, config};
+use function Opis\Colibri\Functions\{
+    app, config
+};
 
 class Module
 {
@@ -201,7 +203,7 @@ class Module
         if (!$this->exists()) {
             return false;
         }
-        
+
         $list = config()->read('modules.enabled', array());
         return in_array($this->name, $list);
     }
@@ -428,7 +430,7 @@ class Module
      */
     protected function getModuleInfo(): array
     {
-        if($this->moduleInfo === null){
+        if ($this->moduleInfo === null) {
             $this->moduleInfo = $this->getPackage()->getExtra()['module'] ?? [];
         }
 
@@ -521,8 +523,8 @@ class Module
     protected function resolveDirectory(): string
     {
         return app()->getComposer()
-                    ->getInstallationManager()
-                    ->getInstallPath($this->getPackage());
+            ->getInstallationManager()
+            ->getInstallPath($this->getPackage());
     }
 
     /**
@@ -534,7 +536,7 @@ class Module
     protected function resolveCollector()
     {
         $collector = $this->getModuleInfo()['collector'] ?? false;
-        if(!is_array($collector) || !isset($collector['class']) || !isset($collector['file'])){
+        if (!is_array($collector) || !isset($collector['class']) || !isset($collector['file'])) {
             return false;
         }
         return $collector['class'];
@@ -549,7 +551,7 @@ class Module
     protected function resolveInstaller()
     {
         $installer = $this->getModuleInfo()['installer'] ?? false;
-        if(!is_array($installer) || !isset($installer['class']) || !isset($installer['file'])){
+        if (!is_array($installer) || !isset($installer['class']) || !isset($installer['file'])) {
             return false;
         }
         return $installer['class'];

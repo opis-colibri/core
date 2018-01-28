@@ -24,7 +24,7 @@ use Opis\Colibri\Serializable\ConnectionList;
  * Class ConnectionCollector
  * @package Opis\Colibri\ItemCollectors
  *
- * @property  ConnectionList  $data
+ * @property  ConnectionList $data
  */
 class ConnectionCollector extends ItemCollector
 {

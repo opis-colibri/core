@@ -37,9 +37,11 @@ use Opis\Validation\Validators\Number;
 use Opis\Validation\Validators\Regex;
 use Opis\Validation\Validators\Required;
 use Opis\Validation\Validators\RequiredFile;
-use function Opis\Colibri\Functions\{app, make};
+use function Opis\Colibri\Functions\{
+    app, make
+};
 
-class ValidatorCollection extends  BaseCollection
+class ValidatorCollection extends BaseCollection
 {
     /** @var  array */
     protected $classes;
@@ -84,8 +86,8 @@ class ValidatorCollection extends  BaseCollection
      */
     public function get(string $name)
     {
-        if(!isset($this->validators[$name])){
-            if (isset($this->classes[$name])){
+        if (!isset($this->validators[$name])) {
+            if (isset($this->classes[$name])) {
                 $validator = make($this->classes[$name]);
                 if (!($validator instanceof ValidatorInterface)) {
                     return false;

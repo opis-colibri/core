@@ -20,7 +20,9 @@ namespace Opis\Colibri\Rendering;
 use Opis\Colibri\View;
 use Opis\Intl\Translator\LanguageInfo;
 use Opis\View\PHPEngine;
-use function Opis\Colibri\Functions\{view, render, asset, getURL, generateCSRFToken, v, r, t};
+use function Opis\Colibri\Functions\{
+    view, render, asset, getURL, generateCSRFToken, v, r, t
+};
 
 class ViewEngine extends PHPEngine
 {

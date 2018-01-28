@@ -41,9 +41,9 @@ abstract class ClassCollector extends ItemCollector
      * @param string $class Class name
      * @return bool
      */
-    public function register(string $name, string $class) : bool
+    public function register(string $name, string $class): bool
     {
-        if(!class_exists($class) || !is_subclass_of($class, $this->getClass(), true)){
+        if (!class_exists($class) || !is_subclass_of($class, $this->getClass(), true)) {
             return false;
         }
         $this->data->add($name, $class);
@@ -53,7 +53,7 @@ abstract class ClassCollector extends ItemCollector
     /**
      * @return bool
      */
-    protected function singletonClasses() : bool
+    protected function singletonClasses(): bool
     {
         return false;
     }
@@ -61,6 +61,6 @@ abstract class ClassCollector extends ItemCollector
     /**
      * @return string
      */
-    abstract protected function getClass() : string;
+    abstract protected function getClass(): string;
 
 }

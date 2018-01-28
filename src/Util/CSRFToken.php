@@ -17,7 +17,9 @@
 
 namespace Opis\Colibri\Util;
 
-use function Opis\Colibri\Functions\{session};
+use function Opis\Colibri\Functions\{
+    session
+};
 
 class CSRFToken
 {

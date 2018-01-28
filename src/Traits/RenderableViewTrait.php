@@ -31,12 +31,12 @@ trait RenderableViewTrait
      */
     public function __toString()
     {
-        if($this->renderedContent === null){
-            try{
+        if ($this->renderedContent === null) {
+            try {
                 $this->renderedContent = render($this);
-            }catch (\Exception $e){
+            } catch (\Exception $e) {
                 $this->renderedContent = $e->getMessage();
-            } catch (\Error $e){
+            } catch (\Error $e) {
                 $this->renderedContent = $e->getMessage();
             }
         }

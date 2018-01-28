@@ -30,7 +30,7 @@ class TemplateStream
      */
     public function getContent(string $path): string
     {
-        if(!isset(static::$cache[$path])){
+        if (!isset(static::$cache[$path])) {
             static::$cache[$path] = $path();
         }
 

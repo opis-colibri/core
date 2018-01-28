@@ -51,7 +51,7 @@ class RouteCollector extends ItemCollector
         $collector->prefix = $this->prefix . $prefix;
         $callback($collector);
         $routes = $collector->data->getRoutes();
-        foreach ($routes as $route){
+        foreach ($routes as $route) {
             $this->data->addRoute($route);
         }
         return new RouteGroup($routes);

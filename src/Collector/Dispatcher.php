@@ -37,7 +37,7 @@ class Dispatcher implements IDispatcher
         $collection->sort();
         $collector = $context->getCollector();
         /** @var Route $route */
-        foreach ($this->match($collection, (string) $context) as $route){
+        foreach ($this->match($collection, (string)$context) as $route) {
             $callback = $route->getAction();
             $callback($collector);
         }
@@ -52,8 +52,8 @@ class Dispatcher implements IDispatcher
      */
     protected function match(RouteCollection $routes, string $path): \Generator
     {
-        foreach ($routes->getRegexPatterns() as $routeID => $pattern){
-            if(preg_match($pattern, $path)){
+        foreach ($routes->getRegexPatterns() as $routeID => $pattern) {
+            if (preg_match($pattern, $path)) {
                 yield $routes->getRoute($routeID);
             }
         }

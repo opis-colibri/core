@@ -18,25 +18,27 @@
 namespace Opis\Colibri\HttpResponse;
 
 use RuntimeException;
-use Opis\Http\{Mime, ResponseHandler, Response};
+use Opis\Http\{
+    Mime, ResponseHandler, Response
+};
 
 
 class AssetFile extends Response
 {
     public function __construct(string $file, string $contentType = null)
     {
-        if(!file_exists($file) || !is_readable($file)) {
+        if (!file_exists($file) || !is_readable($file)) {
             throw new RuntimeException(vsprintf('File %s is not readable or not exist', [$file]));
         }
 
-        if($contentType === null){
+        if ($contentType === null) {
             $contentType = Mime::get($file);
         }
 
         $this->setContentType($contentType)
             ->addHeader('Content-Length', filesize($file));
 
-        parent::__construct(function (Response $response, ResponseHandler $handler) use($file){
+        parent::__construct(function (Response $response, ResponseHandler $handler) use ($file) {
             $handler->sendHeaders($response);
             readfile($file);
         });

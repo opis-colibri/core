@@ -29,7 +29,9 @@ use Symfony\Component\Console\{
     Output\NullOutput,
     Output\OutputInterface
 };
-use function Opis\Colibri\Functions\{info};
+use function Opis\Colibri\Functions\{
+    info
+};
 
 /**
  * Description of Composer
@@ -46,7 +48,7 @@ class CLI
      */
     public function __construct()
     {
-        if(getenv('HOME') === false){
+        if (getenv('HOME') === false) {
             putenv('HOME=' . posix_getpwuid(fileowner(info()->rootDir()))['dir']);
         }
     }

@@ -72,15 +72,15 @@ class About extends Command
 
         $dependencies = [];
 
-        foreach ($module->dependencies() as $name => $dependency){
-            if($dependency->exists()){
-                if($dependency->isInstalled()){
-                    if($dependency->isEnabled()){
+        foreach ($module->dependencies() as $name => $dependency) {
+            if ($dependency->exists()) {
+                if ($dependency->isInstalled()) {
+                    if ($dependency->isEnabled()) {
                         $dependencies[] = $name . '(<b>enabled</b>)';
                     } else {
                         $dependencies[] = $name . '(<b>disabled</b>)';
                     }
-                } else{
+                } else {
                     $dependencies[] = $name . '(<e>uninstalled</e>)';
                 }
             } else {
@@ -88,7 +88,7 @@ class About extends Command
             }
         }
 
-        if(!empty($dependencies)){
+        if (!empty($dependencies)) {
             $output->writeln('<p>Dependencies:</p> <i>' . implode(', ', $dependencies) . '</i>');
         } else {
             $output->writeln('<p>Dependencies:</p> <e>No dependencies</e>');

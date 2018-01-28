@@ -86,7 +86,7 @@ class SpaInstaller extends LibraryInstaller
     {
         $extra = $package->getExtra();
 
-        if(!isset($extra['module']['spa'])){
+        if (!isset($extra['module']['spa'])) {
             return;
         }
 
@@ -106,7 +106,7 @@ class SpaInstaller extends LibraryInstaller
 
         $fs = new Filesystem();
 
-        foreach ($spa['register'] as $local_app_name => $app){
+        foreach ($spa['register'] as $local_app_name => $app) {
             $app += [
                 'webpack' => 'webpack.conf.js',
                 'source' => 'spa/' . $local_app_name,
@@ -114,7 +114,7 @@ class SpaInstaller extends LibraryInstaller
             ];
 
             // normalize
-            foreach (['source', 'webpack', 'dist'] as $item){
+            foreach (['source', 'webpack', 'dist'] as $item) {
                 $app[$item] = implode(DIRECTORY_SEPARATOR, explode('/', trim($item, '/')));
             }
 
@@ -122,13 +122,13 @@ class SpaInstaller extends LibraryInstaller
             $webpack_file = $source_dir . DIRECTORY_SEPARATOR . $app['webpack'];
             $package_json = $source_dir . DIRECTORY_SEPARATOR . 'package.json';
 
-            if(!file_exists($package_json) || !file_exists($webpack_file)){
+            if (!file_exists($package_json) || !file_exists($webpack_file)) {
                 continue;
             }
 
             $pkg = json_decode(file_get_contents($package_json), true);
 
-            if(!isset($pkg['name']) || $pkg['name'] !== $package_name){
+            if (!isset($pkg['name']) || $pkg['name'] !== $package_name) {
                 continue;
             }
 
@@ -163,12 +163,12 @@ class SpaInstaller extends LibraryInstaller
         }
 
         foreach ($spa['extend'] as $ext_module => $ext_app) {
-            if($module === $ext_module){
+            if ($module === $ext_module) {
                 continue;
             }
-            foreach ($ext_app as $local_app_name => $source_dir){
+            foreach ($ext_app as $local_app_name => $source_dir) {
                 $app_name = str_replace('/', '.', $ext_module) . '.' . $local_app_name;
-                if(!isset($apps[$app_name])){
+                if (!isset($apps[$app_name])) {
                     continue;
                 }
                 $app = &$apps[$app_name];
@@ -176,12 +176,12 @@ class SpaInstaller extends LibraryInstaller
                 $source_dir = $module_dir . DIRECTORY_SEPARATOR . $source_dir;
 
                 $package_json = $source_dir . DIRECTORY_SEPARATOR . 'package.json';
-                if(!file_exists($package_json)){
+                if (!file_exists($package_json)) {
                     continue;
                 }
 
                 $pkg = json_decode(file_get_contents($package_json), true);
-                if(!isset($pkg['name']) || $pkg['name'] !== $package_name){
+                if (!isset($pkg['name']) || $pkg['name'] !== $package_name) {
                     continue;
                 }
 
@@ -218,10 +218,10 @@ class SpaInstaller extends LibraryInstaller
 
         foreach (array_keys($modules[$module]) as $app_name) {
             $app = &$apps[$app_name];
-            if($app['owner'] === $module){
-                if(!isset($spa['register'][$app['name']])){
+            if ($app['owner'] === $module) {
+                if (!isset($spa['register'][$app['name']])) {
                     //remove spa
-                    foreach ($app['modules'] as $module_name){
+                    foreach ($app['modules'] as $module_name) {
                         unset($modules[$module_name][$app_name]);
                     }
                     $fs->remove($app['dir']);
@@ -229,15 +229,15 @@ class SpaInstaller extends LibraryInstaller
                     unset($apps[$app_name]);
                 } else {
                     unset($spa['register'][$app['name']]);
-                    if(!in_array($app_name, $rebuild)){
+                    if (!in_array($app_name, $rebuild)) {
                         $rebuild[] = $app_name;
                     }
                 }
             } else {
-                if(!isset($spa['extend'][$app['owner']][$app['name']])){
+                if (!isset($spa['extend'][$app['owner']][$app['name']])) {
                     $app_modules = $app['modules'];
-                    if(false !== $key = array_search($module, $app_modules)){
-                       unset($app_modules[$key]);
+                    if (false !== $key = array_search($module, $app_modules)) {
+                        unset($app_modules[$key]);
                     }
                     $app['modules'] = array_values($app_modules);
                     $cwd = getcwd();
@@ -248,13 +248,13 @@ class SpaInstaller extends LibraryInstaller
                     unset($spa['extend'][$app['owner']][$app['name']]);
                 }
 
-                if(!in_array($app_name, $rebuild)){
+                if (!in_array($app_name, $rebuild)) {
                     $rebuild[] = $app_name;
                 }
             }
         }
 
-        foreach ($spa['register'] as $local_app_name => $app){
+        foreach ($spa['register'] as $local_app_name => $app) {
             $app += [
                 'webpack' => 'webpack.conf.js',
                 'source' => 'spa/' . $local_app_name,
@@ -262,7 +262,7 @@ class SpaInstaller extends LibraryInstaller
             ];
 
             // normalize
-            foreach (['source', 'webpack', 'dist'] as $item){
+            foreach (['source', 'webpack', 'dist'] as $item) {
                 $app[$item] = implode(DIRECTORY_SEPARATOR, explode('/', trim($item, '/')));
             }
 
@@ -270,13 +270,13 @@ class SpaInstaller extends LibraryInstaller
             $webpack_file = $source_dir . DIRECTORY_SEPARATOR . $app['webpack'];
             $package_json = $source_dir . DIRECTORY_SEPARATOR . 'package.json';
 
-            if(!file_exists($package_json) || !file_exists($webpack_file)){
+            if (!file_exists($package_json) || !file_exists($webpack_file)) {
                 continue;
             }
 
             $pkg = json_decode(file_get_contents($package_json), true);
 
-            if(!isset($pkg['name']) || $pkg['name'] !== $package_name){
+            if (!isset($pkg['name']) || $pkg['name'] !== $package_name) {
                 continue;
             }
 
@@ -309,16 +309,16 @@ class SpaInstaller extends LibraryInstaller
             passthru("yarn add $source_dir >> /dev/tty");
             chdir($cwd);
 
-            if(!in_array($app_name, $rebuild)){
+            if (!in_array($app_name, $rebuild)) {
                 $rebuild[] = $app_name;
             }
         }
 
 
         foreach ($spa['extend'] as $ext_module => $ext_app) {
-            foreach ($ext_app as $local_app_name => $source_dir){
+            foreach ($ext_app as $local_app_name => $source_dir) {
                 $app_name = str_replace('/', '.', $ext_module) . '.' . $local_app_name;
-                if(!isset($apps[$app_name])){
+                if (!isset($apps[$app_name])) {
                     continue;
                 }
                 $app = &$apps[$app_name];
@@ -326,12 +326,12 @@ class SpaInstaller extends LibraryInstaller
                 $source_dir = $module_dir . DIRECTORY_SEPARATOR . $source_dir;
 
                 $package_json = $source_dir . DIRECTORY_SEPARATOR . 'package.json';
-                if(!file_exists($package_json)){
+                if (!file_exists($package_json)) {
                     continue;
                 }
 
                 $pkg = json_decode(file_get_contents($package_json), true);
-                if(!isset($pkg['name']) || $pkg['name'] !== $package_name){
+                if (!isset($pkg['name']) || $pkg['name'] !== $package_name) {
                     continue;
                 }
 
@@ -343,7 +343,7 @@ class SpaInstaller extends LibraryInstaller
                 passthru("yarn add $source_dir >> /dev/tty");
                 chdir($cwd);
 
-                if(!in_array($app_name, $rebuild)){
+                if (!in_array($app_name, $rebuild)) {
                     $rebuild[] = $app_name;
                 }
             }
@@ -359,7 +359,7 @@ class SpaInstaller extends LibraryInstaller
     {
         $extra = $package->getExtra();
 
-        if(!isset($extra['module']['spa'])){
+        if (!isset($extra['module']['spa'])) {
             return;
         }
 
@@ -377,7 +377,7 @@ class SpaInstaller extends LibraryInstaller
 
         foreach ($spa['register'] as $local_app_name => $app_data) {
             $app_name = $package_name . '.' . $local_app_name;
-            if(!isset($apps[$app_name])){
+            if (!isset($apps[$app_name])) {
                 continue;
             }
             $fs->remove($base_dir . DIRECTORY_SEPARATOR . $app_name);
@@ -389,20 +389,20 @@ class SpaInstaller extends LibraryInstaller
             unset($apps[$app_name]);
         }
 
-        foreach ($spa['extend'] as $ext_module => $ext_app){
-            if($ext_module === $module){
+        foreach ($spa['extend'] as $ext_module => $ext_app) {
+            if ($ext_module === $module) {
                 continue;
             }
             foreach ($ext_app as $local_app_name => $source) {
                 $app_name = str_replace('/', '.', $ext_module) . '.' . $local_app_name;
-                if(!isset($apps[$app_name])){
+                if (!isset($apps[$app_name])) {
                     continue;
                 }
                 $app = &$apps[$app_name];
-                if(!in_array($module, $app['modules'])){
+                if (!in_array($module, $app['modules'])) {
                     continue;
                 }
-                if(false !== $key = array_search($module, $app['modules'])){
+                if (false !== $key = array_search($module, $app['modules'])) {
                     unset($app['modules'][$key]);
                 }
 
@@ -411,7 +411,7 @@ class SpaInstaller extends LibraryInstaller
                 passthru("yarn remove $package_name >> /dev/tty");
                 chdir($cwd);
 
-                if(!in_array($app_name, $rebuild)){
+                if (!in_array($app_name, $rebuild)) {
                     $rebuild[] = $app_name;
                 }
             }
@@ -423,7 +423,7 @@ class SpaInstaller extends LibraryInstaller
     private function getSpaData(): array
     {
         $file = implode(DIRECTORY_SEPARATOR, [$this->appInfo->writableDir(), 'spa', 'data.json']);
-        if(file_exists($file)){
+        if (file_exists($file)) {
             return json_decode(file_get_contents($file), true);
         }
         return [

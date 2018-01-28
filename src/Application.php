@@ -303,7 +303,7 @@ class Application implements ISettingsContainer
             $routes = $collector->getViews();
             $resolver = $collector->getViewEngineResolver();
             $this->viewApp = new ViewApp($routes, $resolver, new ViewEngine());
-            $this->viewApp->handle('error.{error}', function($error){
+            $this->viewApp->handle('error.{error}', function ($error) {
                 return 'template://\Opis\Colibri\Rendering\Template::error' . $error;
             }, -100)->where('error', '401|403|404|405|500|503');
         }
@@ -626,7 +626,7 @@ class Application implements ISettingsContainer
     {
         if ($this->specials === null) {
             $this->specials = [
-                'app'  => $this,
+                'app' => $this,
                 'lang' => $this->getTranslator()->getDefaultLanguage(),
             ];
         }
@@ -1133,18 +1133,18 @@ class Application implements ISettingsContainer
     {
         try {
             $extra = $module->getPackage()->getExtra();
-        } catch (\Exception $exception){
+        } catch (\Exception $exception) {
             return;
         }
 
-        if(!isset($extra['module']['spa'])){
+        if (!isset($extra['module']['spa'])) {
             return;
         }
 
         $spa = $extra['module']['spa'];
         $spa += ['register' => [], 'extend' => []];
         $data_file = implode(DIRECTORY_SEPARATOR, [$this->info->writableDir(), 'spa', 'data.json']);
-        if(!file_exists($data_file)){
+        if (!file_exists($data_file)) {
             return;
         }
 
@@ -1155,18 +1155,18 @@ class Application implements ISettingsContainer
 
         foreach ($spa['register'] as $local_app_name => $app_data) {
             $app_name = $package_name . '.' . $local_app_name;
-            if(!in_array($app_name, $rebuild)){
+            if (!in_array($app_name, $rebuild)) {
                 $rebuild[] = $app_name;
             }
         }
 
-        foreach ($spa['extend'] as $ext_module => $ext_app){
-            if($module_name === $ext_module){
+        foreach ($spa['extend'] as $ext_module => $ext_app) {
+            if ($module_name === $ext_module) {
                 continue;
             }
-            foreach ($ext_app as $local_app_name => $source){
+            foreach ($ext_app as $local_app_name => $source) {
                 $app_name = str_replace('/', '.', $ext_module) . '.' . $local_app_name;
-                if(!in_array($app_name, $rebuild)){
+                if (!in_array($app_name, $rebuild)) {
                     $rebuild[] = $app_name;
                 }
             }

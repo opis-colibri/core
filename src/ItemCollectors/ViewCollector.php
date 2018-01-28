@@ -26,7 +26,7 @@ use Opis\View\RouteCollection;
  *
  * @package Opis\Colibri\ItemCollectors
  *
- * @property  RouteCollection  $data
+ * @property  RouteCollection $data
  */
 class ViewCollector extends ItemCollector
 {

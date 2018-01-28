@@ -57,7 +57,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $settings = $this->composer->getPackage()->getExtra()['application'] ?? [];
         $this->appInfo = new AppInfo($rootDir, $settings);
         $this->isProject = $composer->getPackage()->getType() === 'project';
-        if($this->isProject){
+        if ($this->isProject) {
             $manager = $this->composer->getInstallationManager();
             $manager->addInstaller(new AssetsInstaller($this->appInfo, $io, $composer));
         }
@@ -91,12 +91,13 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     /**
      * @param Event $event
      */
-    public function handleDumpAutoload(/** @noinspection PhpUnusedParameterInspection */Event $event)
+    public function handleDumpAutoload(/** @noinspection PhpUnusedParameterInspection */
+        Event $event)
     {
         $installMode = true;
         $installed = $enabled = [];
 
-        if(!$this->isProject){
+        if (!$this->isProject) {
             return;
         }
 
@@ -113,7 +114,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
         $this->preparePacks($installMode, $enabled, $installed);
 
-        if(!$installMode){
+        if (!$installMode) {
             $this->buildSinglePageApps();
         }
     }
@@ -178,7 +179,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $base_dir = $this->appInfo->writableDir() . DIRECTORY_SEPARATOR . 'spa';
         $data_file = $base_dir . DIRECTORY_SEPARATOR . 'spa';
 
-        if(!file_exists($data_file)){
+        if (!file_exists($data_file)) {
             return;
         }
 
@@ -190,21 +191,21 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $fs = new Filesystem();
 
         foreach ($rebuild as $app_name) {
-            if(!isset($apps[$app_name])){
+            if (!isset($apps[$app_name])) {
                 continue;
             }
 
             $app = $apps[$app_name];
             $owner = new Module($app['owner']);
 
-            if(!$owner->exists()){
+            if (!$owner->exists()) {
                 continue;
             }
 
             $dir = $this->appInfo->assetsDir() . DIRECTORY_SEPARATOR . $app_name;
 
-            if(!$owner->isEnabled()){
-                if(is_dir($dir)){
+            if (!$owner->isEnabled()) {
+                if (is_dir($dir)) {
                     $fs->remove($dir);
                 }
                 continue;
@@ -212,9 +213,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
             $import_modules = [];
 
-            foreach ($app['modules'] as $app_module_name){
+            foreach ($app['modules'] as $app_module_name) {
                 $app_module = new Module($app_module_name);
-                if($app_module->exists() && $app_module->isEnabled()){
+                if ($app_module->exists() && $app_module->isEnabled()) {
                     $app_module_name = str_replace('/', '.', $app_module_name);
                     $import_modules[] = "import '$app_module_name';";
                 }
@@ -229,7 +230,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             passthru("./node_modules/.bin/webpack >> /dev/tty");
             chdir($cwd);
 
-            if(is_dir($dir)){
+            if (is_dir($dir)) {
                 $fs->remove($dir);
             }
             $fs->mirror($app['dist'], $dir);

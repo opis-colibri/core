@@ -76,7 +76,7 @@ class AppInfo
     public function assetsDir(): string
     {
         if (!isset($this->cache[static::ASSETS_DIR])) {
-            if($this->settings[static::ASSETS_DIR][0] === '/') {
+            if ($this->settings[static::ASSETS_DIR][0] === '/') {
                 $this->cache[static::ASSETS_DIR] = $this->settings[static::ASSETS_DIR];
             } else {
                 $this->cache[static::ASSETS_DIR] = $this->rootDir() . '/' . $this->settings[static::ASSETS_DIR];
@@ -94,7 +94,7 @@ class AppInfo
     public function publicDir(): string
     {
         if (!isset($this->cache[static::PUBLIC_DIR])) {
-            if($this->settings[static::PUBLIC_DIR][0] === '/') {
+            if ($this->settings[static::PUBLIC_DIR][0] === '/') {
                 $this->cache[static::PUBLIC_DIR] = $this->settings[static::PUBLIC_DIR];
             } else {
                 $this->cache[static::PUBLIC_DIR] = $this->rootDir() . '/' . $this->settings[static::PUBLIC_DIR];
@@ -112,7 +112,7 @@ class AppInfo
     public function writableDir(): string
     {
         if (!isset($this->cache[static::WRITABLE_DIR])) {
-            if($this->settings[static::WRITABLE_DIR][0] === '/') {
+            if ($this->settings[static::WRITABLE_DIR][0] === '/') {
                 $this->cache[static::WRITABLE_DIR] = $this->settings[static::WRITABLE_DIR];
             } else {
                 $this->cache[static::WRITABLE_DIR] = $this->rootDir() . '/' . $this->settings[static::WRITABLE_DIR];
@@ -130,7 +130,7 @@ class AppInfo
     public function vendorDir(): string
     {
         if (!isset($this->cache[static::VENDOR_DIR])) {
-            if($this->settings[static::VENDOR_DIR][0] === '/') {
+            if ($this->settings[static::VENDOR_DIR][0] === '/') {
                 $this->cache[static::WRITABLE_DIR] = $this->settings[static::VENDOR_DIR];
             } else {
                 $this->cache[static::VENDOR_DIR] = $this->rootDir() . '/' . $this->settings[static::VENDOR_DIR];
@@ -174,7 +174,7 @@ class AppInfo
     public function bootstrapFile(): string
     {
         if (!isset($this->cache[static::BOOTSTRAP_FILE])) {
-            if($this->settings[static::BOOTSTRAP_FILE][0] === '/') {
+            if ($this->settings[static::BOOTSTRAP_FILE][0] === '/') {
                 $this->cache[static::BOOTSTRAP_FILE] = $this->settings[static::BOOTSTRAP_FILE];
             } else {
                 $this->cache[static::BOOTSTRAP_FILE] = $this->writableDir() . '/' . $this->settings[static::BOOTSTRAP_FILE];
@@ -203,7 +203,7 @@ class AppInfo
      *
      * @return  boolean
      */
-    public function cliMode(): bool 
+    public function cliMode(): bool
     {
         if (!isset($this->cache[static::CLI_MODE])) {
             $this->cache[static::CLI_MODE] = php_sapi_name() === 'cli';

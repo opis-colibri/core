@@ -64,12 +64,12 @@ class Disable extends Command
 
             $module = module($moduleName);
 
-            if(!$module->exists()){
+            if (!$module->exists()) {
                 $output->writeln('<error>Module <b-error>' . $moduleName . '</b-error> doesn\'t exist.</error>');
                 continue;
             }
 
-            if(!$module->isEnabled()){
+            if (!$module->isEnabled()) {
                 $output->writeln('<warning>Module <b-warning>' . $moduleName . '</b-warning> is already disabled.</warning>');
                 continue;
             };
