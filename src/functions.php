@@ -253,6 +253,7 @@ function notFound($body = null): NotFoundResponse
             'status' => 404,
             'message' => 'Not found',
             'path' => request()->path(),
+            'logo' => logo(),
         ]);
     }
 
@@ -270,6 +271,7 @@ function forbidden($body = null): ForbiddenResponse
             'status' => 403,
             'message' => 'Forbidden',
             'path' => request()->path(),
+            'logo' => logo(),
         ]);
     }
 
@@ -287,6 +289,7 @@ function unauthorized($body = null): UnauthorizedResponse
             'status' => 401,
             'message' => 'Unauthorized',
             'path' => request()->path(),
+            'logo' => logo(),
         ]);
     }
 

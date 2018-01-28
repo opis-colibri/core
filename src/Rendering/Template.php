@@ -122,7 +122,7 @@ class Template
     </head>
     <body>
         <div id="message">
-            <img src="<?= $logo() ?>">
+            <img src="<?= $logo ?>">
             <h1><?= $status ?> <small><?= $message ?></small></h1>
         </div>
     </body>
