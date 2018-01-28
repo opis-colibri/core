@@ -66,7 +66,7 @@ class Uninstall extends Command
             }
 
             if (!$module->isInstalled()) {
-                $output->writeln('<warning>Module <b-warning>' . $moduleName . '</b-warning> is already uninstaled.</warning>');
+                $output->writeln('<warning>Module <b-warning>' . $moduleName . '</b-warning> is already uninstalled.</warning>');
                 continue;
             }
 

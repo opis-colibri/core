@@ -33,7 +33,7 @@ class About extends Command
     {
         $this
             ->setName('about')
-            ->setDescription('Displays informations about a module')
+            ->setDescription('Displays information about a module')
             ->addArgument('module', InputArgument::REQUIRED, 'Module name');
     }
 

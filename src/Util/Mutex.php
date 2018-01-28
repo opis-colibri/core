@@ -61,7 +61,7 @@ class Mutex
     }
 
     /**
-     * Aquire the mutex
+     * Acquire the mutex
      *
      * @param bool $wait
      * @return  boolean

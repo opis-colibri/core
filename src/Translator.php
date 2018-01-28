@@ -60,7 +60,7 @@ class Translator extends AbstractTranslator
     protected function getFilter(string $name)
     {
         /** @var ClassList $filters */
-        $filters = app()->getCollector()->collect('translationfilters');
+        $filters = app()->getCollector()->collect('TranslationFilters');
         return $filters->get($name);
     }
 

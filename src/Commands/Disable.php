@@ -91,7 +91,7 @@ class Disable extends Command
                     $command->run(new ArrayInput($args), $output);
                 }
             } else {
-                $output->writeln('<error>Module <b-error>' . $moduleName . '</b-error> could not be disbled.</error>');
+                $output->writeln('<error>Module <b-error>' . $moduleName . '</b-error> could not be disabled.</error>');
             }
         }
     }
