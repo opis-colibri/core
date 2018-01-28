@@ -23,7 +23,9 @@ use Opis\Routing\Context;
 use Opis\Routing\DispatcherTrait;
 use Opis\Routing\IDispatcher;
 use Opis\Routing\Router;
-use function Opis\Colibri\Functions\{notFound};
+use function Opis\Colibri\Functions\{
+    notFound
+};
 
 class Dispatcher implements IDispatcher
 {
@@ -54,7 +56,7 @@ class Dispatcher implements IDispatcher
         /** @var HttpRoute $route */
         $route = $this->findRoute();
 
-        if($route === null) {
+        if ($route === null) {
             return notFound();
         }
 
@@ -62,11 +64,11 @@ class Dispatcher implements IDispatcher
 
         $callbacks = $route->getCallbacks();
 
-        foreach ($route->get('guard', []) as $guard){
-            if(isset($callbacks[$guard])){
+        foreach ($route->get('guard', []) as $guard) {
+            if (isset($callbacks[$guard])) {
                 $callback = $callbacks[$guard];
                 $args = $compiled->getArguments($callback);
-                if(false === $callback(...$args)){
+                if (false === $callback(...$args)) {
                     return notFound();
                 }
             }
@@ -74,29 +76,29 @@ class Dispatcher implements IDispatcher
 
         $list = $route->get('middleware', []);
 
-        if(empty($list)){
+        if (empty($list)) {
             return $compiled->invokeAction();
         }
 
         $queue = new \SplQueue();
         $collectedMidleware = $this->app->getCollector()->getMiddleware()->getList();
 
-        foreach ($list as $item){
-            if(isset($collectedMidleware[$item])){
+        foreach ($list as $item) {
+            if (isset($collectedMidleware[$item])) {
                 $class = $collectedMidleware[$item];
                 $queue->enqueue(new $class($queue, $compiled));
-            } elseif (is_subclass_of($item, Middleware::class, true)){
+            } elseif (is_subclass_of($item, Middleware::class, true)) {
                 $queue->enqueue(new $item($queue, $compiled));
             }
         }
 
         do {
-            if($queue->isEmpty()){
+            if ($queue->isEmpty()) {
                 return $compiled->invokeAction();
             }
             /** @var Middleware $middleware */
             $middleware = $queue->dequeue();
-        } while(!is_callable($middleware));
+        } while (!is_callable($middleware));
 
         $args = $compiled->getArguments($middleware);
         return $middleware(...$args);

@@ -150,27 +150,27 @@ function transaction(callable $callback, array $options = [])
 
     $pdo = connection($options['connection'])->getPDO();
 
-    if($pdo->inTransaction()){
+    if ($pdo->inTransaction()) {
         return $callback();
     }
 
     $result = null;
-    try{
+    try {
         $pdo->beginTransaction();
         $result = $callback();
         $pdo->commit();
-        if(isset($options['success']) && is_callable($options['success'])){
+        if (isset($options['success']) && is_callable($options['success'])) {
             $options['success']();
         }
-    } catch (\Exception $exception){
+    } catch (\Exception $exception) {
         $pdo->rollBack();
-        if($options['throw']){
+        if ($options['throw']) {
             throw  $exception;
         }
-        if(isset($options['error']) && is_callable($options['error'])){
+        if (isset($options['error']) && is_callable($options['error'])) {
             $options['error']($exception);
         }
-        if(isset($options['return'])){
+        if (isset($options['return'])) {
             $result = $options['return'];
         }
     }
@@ -248,7 +248,7 @@ function redirect(string $location, int $code = 302, array $query = array()): Re
  */
 function notFound($body = null): NotFoundResponse
 {
-    if($body === null){
+    if ($body === null) {
         $body = view('error.404', [
             'status' => 404,
             'message' => 'Not found',
@@ -266,7 +266,7 @@ function notFound($body = null): NotFoundResponse
  */
 function forbidden($body = null): ForbiddenResponse
 {
-    if($body === null){
+    if ($body === null) {
         $body = view('error.403', [
             'status' => 403,
             'message' => 'Forbidden',
@@ -284,7 +284,7 @@ function forbidden($body = null): ForbiddenResponse
  */
 function unauthorized($body = null): UnauthorizedResponse
 {
-    if($body === null){
+    if ($body === null) {
         $body = view('error.401', [
             'status' => 401,
             'message' => 'Unauthorized',
@@ -396,11 +396,11 @@ function asset(string $module, string $path, bool $full = false): string
 {
     static $assetsPath;
 
-    if($assetsPath === null){
+    if ($assetsPath === null) {
         $assetsPath = info()->assetsPath();
     }
 
-    if($module === '*'){
+    if ($module === '*') {
         return getURL($assetsPath . '/' . ltrim($path, '/'), $full);
     }
 
@@ -490,7 +490,7 @@ function logo(): string
 {
     static $logo = null;
 
-    if($logo === null){
+    if ($logo === null) {
         $logo = 'data:image/svg+xml;base64, ' . base64_encode(file_get_contents(__DIR__ . '/../logo.svg'));
 
     }

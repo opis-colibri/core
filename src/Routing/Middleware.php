@@ -42,13 +42,13 @@ abstract class Middleware
     final public function next()
     {
         do {
-            if($this->queue->isEmpty()){
+            if ($this->queue->isEmpty()) {
                 return $this->compiledRoute->invokeAction();
             }
             /** @var Middleware $middleware */
             $middleware = $this->queue->dequeue();
 
-        } while(!is_callable($middleware));
+        } while (!is_callable($middleware));
 
         $args = $this->compiledRoute->getArguments($middleware);
         return $middleware(...$args);
