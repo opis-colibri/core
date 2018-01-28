@@ -18,7 +18,6 @@
 namespace Opis\Colibri\Routing;
 
 use Opis\Colibri\Application;
-use Opis\HttpRouting\HttpError;
 use Opis\Routing\CompiledRoute;
 use Opis\Routing\Context;
 use Opis\Routing\DispatcherTrait;
@@ -80,10 +79,14 @@ class Dispatcher implements IDispatcher
         }
 
         $queue = new \SplQueue();
+        $collectedMidleware = $this->app->getCollector()->getMiddleware()->getList();
 
-        foreach ($this->app->getCollector()->getMiddleware()->getList() as $class){
-            if(class_exists($class)){
+        foreach ($list as $item){
+            if(isset($collectedMidleware[$item])){
+                $class = $collectedMidleware[$item];
                 $queue->enqueue(new $class($queue, $compiled));
+            } elseif (is_subclass_of($item, Middleware::class, true)){
+                $queue->enqueue(new $item($queue, $compiled));
             }
         }
 
