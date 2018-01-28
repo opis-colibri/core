@@ -833,6 +833,7 @@ class Application implements ISettingsContainer
      * @param   boolean $recollect (optional)
      *
      * @return  boolean
+     * @throws \Exception
      */
     public function install(Module $module, bool $recollect = true): bool
     {
@@ -889,6 +890,7 @@ class Application implements ISettingsContainer
      * @param   boolean $recollect (optional)
      *
      * @return  boolean
+     * @throws \Exception
      */
     public function uninstall(Module $module, bool $recollect = true): bool
     {
@@ -944,6 +946,7 @@ class Application implements ISettingsContainer
      * @param   boolean $recollect (optional)
      *
      * @return  boolean
+     * @throws \Exception
      */
     public function enable(Module $module, bool $recollect = true): bool
     {
@@ -1000,6 +1003,7 @@ class Application implements ISettingsContainer
      * @param   boolean $recollect (optional)
      *
      * @return  boolean
+     * @throws \Exception
      */
     public function disable(Module $module, bool $recollect = true): bool
     {
@@ -1121,6 +1125,10 @@ class Application implements ISettingsContainer
         return new Mutex(__FILE__);
     }
 
+    /**
+     * @param Module $module
+     * @throws \Exception
+     */
     protected function rebuildSPA(Module $module)
     {
         try {

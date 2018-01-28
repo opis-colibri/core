@@ -40,6 +40,12 @@ class Disable extends Command
             ->addOption('uninstall', null, InputOption::VALUE_NONE, 'Uninstall modules');
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|null|void
+     * @throws \Exception
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (info()->installMode()) {

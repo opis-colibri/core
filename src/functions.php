@@ -406,6 +406,7 @@ function render($view): string
 /**
  * @param string $sep
  * @return string
+ * @throws \Exception
  */
 function uuid4(string $sep = '-'): string
 {
@@ -421,6 +422,7 @@ function uuid4(string $sep = '-'): string
 /**
  * @param int $length
  * @return string
+ * @throws \Exception
  */
 function random_str(int $length): string
 {

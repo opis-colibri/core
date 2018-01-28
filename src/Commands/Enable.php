@@ -37,6 +37,12 @@ class Enable extends Command
             ->addArgument('module', InputArgument::IS_ARRAY, 'A list of modules separated by space');
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|null|void
+     * @throws \Exception
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (info()->installMode()) {

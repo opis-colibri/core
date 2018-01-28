@@ -37,6 +37,12 @@ class Modules extends Command
             ->addOption('all', null, InputOption::VALUE_NONE, 'List hidden modules');
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|null|void
+     * @throws \Exception
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->getFormatter()->setStyle('green', new OutputFormatterStyle('green', null, array('bold')));

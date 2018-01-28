@@ -74,6 +74,7 @@ class Module
      * Get the module's name
      *
      * @return  string
+     * @throws Exception
      */
     public function name(): string
     {
@@ -85,6 +86,7 @@ class Module
      * Get the module's version
      *
      * @return  string
+     * @throws Exception
      */
     public function version(): string
     {
@@ -95,6 +97,7 @@ class Module
      * Get the module's title
      *
      * @return  string
+     * @throws Exception
      */
     public function title(): string
     {
@@ -105,6 +108,7 @@ class Module
      * Get the module's description
      *
      * @return  string
+     * @throws Exception
      */
     public function description(): string
     {
@@ -115,6 +119,7 @@ class Module
      * Get the module's location
      *
      * @return  string
+     * @throws Exception
      */
     public function directory(): string
     {
@@ -125,6 +130,7 @@ class Module
      * Get the module's collector instance
      *
      * @return  string|false
+     * @throws Exception
      */
     public function collector()
     {
@@ -135,6 +141,7 @@ class Module
      * Get the module's collector class
      *
      * @return  string|false
+     * @throws Exception
      */
     public function installer()
     {
@@ -145,6 +152,7 @@ class Module
      * Get the module's assets folder
      *
      * @return  string|false
+     * @throws Exception
      */
     public function assets()
     {
@@ -155,6 +163,7 @@ class Module
      * Checks if the module is hidden
      *
      * @return  boolean
+     * @throws Exception
      */
     public function isApplicationInstaller(): bool
     {
@@ -165,6 +174,7 @@ class Module
      * Checks if the module can be enabled
      *
      * @return  boolean
+     * @throws Exception
      */
     public function canBeEnabled(): bool
     {
@@ -230,6 +240,7 @@ class Module
      * Get the module's dependencies
      *
      * @return  Module[]
+     * @throws Exception
      */
     public function dependencies(): array
     {
@@ -240,6 +251,7 @@ class Module
      * Checks if the module can be disabled
      *
      * @return  boolean
+     * @throws Exception
      */
     public function canBeDisabled(): bool
     {
@@ -260,6 +272,7 @@ class Module
      * Get the module's dependents
      *
      * @return  Module[]
+     * @throws Exception
      */
     public function dependents(): array
     {
@@ -270,6 +283,7 @@ class Module
      * Checks if the module can be installed
      *
      * @return  boolean
+     * @throws Exception
      */
     public function canBeInstalled(): bool
     {
@@ -290,6 +304,7 @@ class Module
      * Checks if the module can be uninstalled
      *
      * @return  boolean
+     * @throws Exception
      */
     public function canBeUninstalled(): bool
     {
@@ -311,6 +326,7 @@ class Module
      *
      * @param bool $recollect
      * @return  boolean
+     * @throws Exception
      */
     public function enable(bool $recollect = true): bool
     {
@@ -322,6 +338,7 @@ class Module
      *
      * @param bool $recollect
      * @return  boolean
+     * @throws Exception
      */
     public function disable(bool $recollect = true): bool
     {
@@ -333,6 +350,7 @@ class Module
      *
      * @param bool $recollect
      * @return  boolean
+     * @throws Exception
      */
     public function install(bool $recollect = true): bool
     {
@@ -344,6 +362,7 @@ class Module
      *
      * @param bool $recollect
      * @return  boolean
+     * @throws Exception
      */
     public function uninstall(bool $recollect = true): bool
     {
@@ -405,6 +424,7 @@ class Module
 
     /**
      * @return array
+     * @throws Exception
      */
     protected function getModuleInfo(): array
     {
@@ -419,6 +439,7 @@ class Module
      * Get title
      *
      * @return  string
+     * @throws Exception
      */
     protected function resolveTitle(): string
     {
@@ -439,6 +460,7 @@ class Module
      * Get hidden
      *
      * @return  bool
+     * @throws Exception
      */
     protected function resolveIsAppInstaller(): bool
     {
@@ -449,6 +471,7 @@ class Module
      * Resolve dependencies
      *
      * @return  Module[]
+     * @throws Exception
      */
     protected function resolveDependencies(): array
     {
@@ -469,6 +492,7 @@ class Module
      * Resolve dependants
      *
      * @return  Module[]
+     * @throws Exception
      */
     protected function resolveDependents(): array
     {
@@ -492,6 +516,7 @@ class Module
      * Resolve directory
      *
      * @return  string
+     * @throws Exception
      */
     protected function resolveDirectory(): string
     {
@@ -504,6 +529,7 @@ class Module
      * Resolve collector class
      *
      * @return  string|false
+     * @throws Exception
      */
     protected function resolveCollector()
     {
@@ -518,6 +544,7 @@ class Module
      * Resolve installer class
      *
      * @return  string|false
+     * @throws Exception
      */
     protected function resolveInstaller()
     {
@@ -530,8 +557,9 @@ class Module
 
     /**
      * Resolve assets
-     * 
+     *
      * @return  string|false
+     * @throws Exception
      */
     protected function resolveAssets()
     {

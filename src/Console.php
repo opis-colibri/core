@@ -30,6 +30,7 @@ class Console
 {
     /**
      * Run a command
+     * @throws \Exception
      */
     public function run()
     {

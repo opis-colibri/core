@@ -345,6 +345,7 @@ class Manager
 
     /**
      * Include modules
+     * @throws \Exception
      */
     protected function includeCollectors()
     {

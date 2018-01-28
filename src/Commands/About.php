@@ -37,6 +37,12 @@ class About extends Command
             ->addArgument('module', InputArgument::REQUIRED, 'Module name');
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|null|void
+     * @throws \Exception
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->getFormatter()->setStyle('p', new OutputFormatterStyle('yellow', null, array('bold')));
