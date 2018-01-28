@@ -479,3 +479,19 @@ function random_str(int $length): string
 
     return $str;
 }
+
+/**
+ * @return string
+ */
+function logo(): string
+{
+    static $logo = null;
+
+    if($logo === null){
+        $logo = 'data:image/svg+xml;base64, ' . base64_encode(file_get_contents(__DIR__ . '/../logo.svg'));
+
+    }
+
+    return $logo;
+}
+
