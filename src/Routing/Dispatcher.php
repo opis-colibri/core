@@ -18,14 +18,15 @@
 namespace Opis\Colibri\Routing;
 
 use Opis\Colibri\Application;
+use Opis\Colibri\HttpResponse\MethodNotAllowed;
+use Opis\Http\Request;
 use Opis\Http\Response;
-use Opis\Routing\CompiledRoute;
-use Opis\Routing\Context;
 use Opis\Routing\DispatcherTrait;
 use Opis\Routing\IDispatcher;
-use Opis\Routing\Router;
+use Opis\Routing\Router as BaseRouter;
+use Opis\HttpRouting\Router;
 use function Opis\Colibri\Functions\{
-    notFound
+    logo, notFound, view
 };
 
 class Dispatcher implements IDispatcher
@@ -45,30 +46,39 @@ class Dispatcher implements IDispatcher
     }
 
     /**
-     * @param Router $router
-     * @param Context $context
+     * @param Router|BaseRouter $router
      * @return mixed
+     * @throws \Exception
      */
-    public function dispatch(Router $router, Context $context)
+    public function dispatch(BaseRouter $router)
     {
-        $this->router = $router;
-        $this->context = $context;
-
         /** @var HttpRoute $route */
-        $route = $this->findRoute();
+        $route = $this->findRoute($router);
 
         if ($route === null) {
             return notFound();
         }
 
-        $compiled = new CompiledRoute($context, $route, $this->getExtraVariables());
+        /** @var Request $request */
+        $request = $router->getContext()->data();
+
+        if (!in_array($request->method(), $route->get('method', ['GET']))) {
+            return new MethodNotAllowed(view('error.405', [
+                'status' => 405,
+                'message' => 'Method not allowed',
+                'path' => $request->path(),
+                'logo' => logo(),
+            ]));
+        }
 
         $callbacks = $route->getCallbacks();
+        $compacted = $router->compact($route);
+
 
         foreach ($route->get('guard', []) as $guard) {
             if (isset($callbacks[$guard])) {
                 $callback = $callbacks[$guard];
-                $args = $compiled->getArguments($callback);
+                $args = $compacted->getArguments($callback);
                 if (false === $callback(...$args)) {
                     return notFound();
                 }
@@ -79,7 +89,7 @@ class Dispatcher implements IDispatcher
 
 
         if (!empty($list)) {
-            $result = $compiled->invokeAction();
+            $result = $compacted->invokeAction();
             if (!$result instanceof Response) {
                 $result = new Response($result);
             }
@@ -88,10 +98,10 @@ class Dispatcher implements IDispatcher
 
         $queue = new \SplQueue();
         $collectedMiddleware = $this->app->getCollector()->getMiddleware()->getList();
-        $next = function () use (&$next, $queue, $compiled) {
+        $next = function () use (&$next, $queue, $compacted) {
             do {
                 if ($queue->isEmpty()) {
-                    $result = $compiled->invokeAction();
+                    $result = $compacted->invokeAction();
                     if (!$result instanceof Response) {
                         $result = new Response($result);
                     }
@@ -101,7 +111,7 @@ class Dispatcher implements IDispatcher
                 $middleware = $queue->dequeue();
             } while (!is_callable($middleware));
 
-            $args = $compiled->getArguments($middleware);
+            $args = $compacted->getArguments($middleware);
             $args[] = $next;
             $result = $middleware(...$args);
             if (!$result instanceof Response) {

@@ -15,27 +15,19 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Routing;
+namespace Opis\Colibri\HttpResponse;
 
-use Opis\Colibri\Application;
-use Opis\HttpRouting\Router;
+use Opis\Http\Response;
 
-class HttpRouter extends Router
+class MethodNotAllowed extends Response
 {
-    /** @var Application */
-    protected $app;
-
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-        parent::__construct($app->getCollector()->getRoutes(), new Dispatcher($app), null, $app->getGlobalValues());
-    }
-
     /**
-     * @return Application
+     * MethodNotAllowed constructor.
+     * @param mixed|null $content
      */
-    public function getApp(): Application
+    public function __construct(mixed $content = null)
     {
-        return $this->app;
+        $this->statusCode = 405;
+        parent::__construct($content);
     }
 }

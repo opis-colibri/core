@@ -18,41 +18,32 @@
 namespace Opis\Colibri\Routing;
 
 use Opis\Colibri\Serializable\ControllerCallback;
-use Opis\HttpRouting\CompiledRoute;
-use Opis\HttpRouting\Dispatcher;
 use Opis\HttpRouting\Route;
 use function Opis\Colibri\Functions\{
     app, make
 };
 
-/**
- * Class HttpRoute
- * @package Opis\Colibri\Routing
- *
- * @method HttpRoute responseInterceptor(string $handler)
- */
 class HttpRoute extends Route
 {
     protected $resolvedAction;
 
+    /**
+     * @inheritdoc
+     */
     public function getAction(): callable
     {
         if ($this->resolvedAction !== null) {
             return $this->resolvedAction;
         }
 
-        if (!($this->routeAction instanceof ControllerCallback)) {
+        if (!$this->routeAction instanceof ControllerCallback) {
             return $this->resolvedAction = $this->routeAction;
         }
 
         /** @var ControllerCallback $callback */
         $callback = $this->routeAction;
-        $dispatcher = app()->getHttpRouter()->getDispatcher();
-        /** @var CompiledRoute $compiled */
-        $compiled = (function (Dispatcher $dispatcher, HttpRoute $route) {
-            return $dispatcher->compile($dispatcher->context, $route);
-        })->call($dispatcher, $dispatcher, $this);
-        $values = $compiled->getBindings();
+        $compacted = app()->getHttpRouter()->compact($this);
+        $values = $compacted->getBindings();
         $method = $callback->getMethod();
         $class = $callback->getClass();
 

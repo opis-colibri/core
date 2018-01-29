@@ -46,7 +46,8 @@ use Opis\Events\EventTarget;
 use Opis\Http\Request as HttpRequest;
 use Opis\Http\Response as HttpResponse;
 use Opis\Http\ResponseHandler;
-use Opis\HttpRouting\Context;
+use Opis\Routing\Context;
+use Opis\Routing\GlobalValues;
 use Opis\Session\Session;
 use Opis\Validation\Placeholder;
 use Opis\View\ViewApp;
@@ -147,8 +148,8 @@ class Application implements ISettingsContainer
     /** @var array */
     protected $implicit = [];
 
-    /** @var  array */
-    protected $specials;
+    /** @var  GlobalValues */
+    protected $global;
 
     /** @var  array|null */
     protected $collectorList;
@@ -295,6 +296,7 @@ class Application implements ISettingsContainer
      * Get the View router
      *
      * @return  ViewApp
+     * @throws \Exception
      */
     public function getViewApp(): ViewApp
     {
@@ -620,18 +622,18 @@ class Application implements ISettingsContainer
     }
 
     /**
-     * @return array
+     * @return GlobalValues
      */
-    public function getSpecials(): array
+    public function getGlobalValues(): GlobalValues
     {
-        if ($this->specials === null) {
-            $this->specials = [
+        if ($this->global === null) {
+            $this->global = new GlobalValues([
                 'app' => $this,
                 'lang' => $this->getTranslator()->getDefaultLanguage(),
-            ];
+            ]);
         }
 
-        return $this->specials;
+        return $this->global;
     }
 
     /**
@@ -805,17 +807,12 @@ class Application implements ISettingsContainer
 
         $this->httpRequestInstance = $request;
 
-        $context = new Context(
-            $request->path(), $request->host(), $request->method(), $request->isSecure(), $request
-        );
+        $context = new Context($request->path(),  $request);
 
-        $result = $this->getHttpRouter()->route($context);
+        $response = $this->getHttpRouter()->route($context);
 
-        if ($result instanceof HttpResponse) {
-            $response = $result;
-        } else {
-            $response = new HttpResponse();
-            $response->setBody($result);
+        if(!$response instanceof HttpResponse) {
+            $response = new HttpResponse($response);
         }
 
         if (PHP_SAPI !== 'cli') {

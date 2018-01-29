@@ -44,6 +44,7 @@ class RouteCollector extends ItemCollector
      * @param callable $callback
      * @param string $prefix
      * @return RouteGroup
+     * @throws \Exception
      */
     public function group(callable $callback, string $prefix = ''): RouteGroup
     {
@@ -100,16 +101,16 @@ class RouteCollector extends ItemCollector
     }
 
     /**
-     * Set a global wildcard
+     * Set a global placeholder
      *
      * @param   string $name The name of the wildcard
      * @param   string $value A regex expression
      *
      * @return  self   Self reference
      */
-    public function wildcard($name, $value)
+    public function placeholder($name, $value)
     {
-        $this->data->wildcard($name, $value);
+        $this->data->placeholder($name, $value);
         return $this;
     }
 

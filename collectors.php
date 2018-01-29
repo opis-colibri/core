@@ -23,13 +23,6 @@ return [
             'invertedPriority' => false,
         ],
     ],
-    'routealiases' => [
-        'class' => 'Opis\\Colibri\\ItemCollectors\\RouteAliasCollector',
-        'description' => 'Collects aliases for web routes',
-        'options' => [
-            'invertedPriority' => false,
-        ],
-    ],
     'middleware' => [
         'class' => 'Opis\\Colibri\\ItemCollectors\\MiddlewareCollector',
         'description' => 'Collects middleware items',
