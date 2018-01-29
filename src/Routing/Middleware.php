@@ -17,40 +17,13 @@
 
 namespace Opis\Colibri\Routing;
 
-use Opis\Routing\CompiledRoute;
-use SplQueue;
-
 abstract class Middleware
 {
-    private $queue;
-    private $compiledRoute;
-
     /**
      * Middleware constructor.
-     * @param SplQueue $queue
-     * @param CompiledRoute $compiledRoute
      */
-    final function __construct(SplQueue $queue, CompiledRoute $compiledRoute)
+    final function __construct()
     {
-        $this->queue = $queue;
-        $this->compiledRoute = $compiledRoute;
-    }
-
-    /**
-     * @return mixed
-     */
-    final public function next()
-    {
-        do {
-            if ($this->queue->isEmpty()) {
-                return $this->compiledRoute->invokeAction();
-            }
-            /** @var Middleware $middleware */
-            $middleware = $this->queue->dequeue();
-
-        } while (!is_callable($middleware));
-
-        $args = $this->compiledRoute->getArguments($middleware);
-        return $middleware(...$args);
+        //Nothing here
     }
 }
