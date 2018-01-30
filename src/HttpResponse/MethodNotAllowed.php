@@ -25,7 +25,7 @@ class MethodNotAllowed extends Response
      * MethodNotAllowed constructor.
      * @param mixed|null $content
      */
-    public function __construct(mixed $content = null)
+    public function __construct($content = null)
     {
         $this->statusCode = 405;
         parent::__construct($content);
