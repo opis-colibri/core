@@ -30,6 +30,7 @@ use Opis\Database\Database;
 use Opis\Events\Event;
 use Opis\Events\RouteCollection as EventsRouteCollection;
 use Opis\HttpRouting\RouteCollection as HttpRouteCollection;
+use Opis\Routing\Context;
 use Opis\Routing\RouteCollection as PathAliasCollection;
 use Opis\View\RouteCollection as ViewRouteCollection;
 use Opis\View\EngineResolver;
@@ -286,11 +287,12 @@ class Manager
             }
 
             $hit = false;
-            $this->cache[$entry] = $this->app->getCache()->load($entry, function ($entry) use (&$hit) {
+            $this->cache[$entry] = $this->app->getCache()->load($entry, function ($entryName) use (&$hit) {
                 $hit = true;
                 $this->includeCollectors();
-                $instance = $this->container->make($entry);
-                $result = $this->router->route(new Entry($entry, $instance));
+                $instance = $this->container->make($entryName);
+                $entry = new Entry($entryName, $instance);
+                $result = $this->router->route(new Context($entryName, $entry));
                 return $this->proxy->getData($result);
             });
 
