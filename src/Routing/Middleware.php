@@ -17,13 +17,27 @@
 
 namespace Opis\Colibri\Routing;
 
+use Closure;
+use Opis\Http\Response;
+
 abstract class Middleware
 {
+    /** @var Closure */
+    private $next;
+
     /**
      * Middleware constructor.
      */
-    final function __construct()
+    final function __construct(Closure $next)
     {
-        //Nothing here
+        $this->next = $next;
+    }
+
+    /**
+     * @return Response
+     */
+    protected function next(): Response
+    {
+        return ($this->next)();
     }
 }

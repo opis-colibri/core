@@ -87,8 +87,7 @@ class Dispatcher implements IDispatcher
 
         $list = $route->get('middleware', []);
 
-
-        if (!empty($list)) {
+        if (empty($list)) {
             $result = $compacted->invokeAction();
             if (!$result instanceof Response) {
                 $result = new Response($result);
@@ -112,7 +111,6 @@ class Dispatcher implements IDispatcher
             } while (!is_callable($middleware));
 
             $args = $compacted->getArguments($middleware);
-            $args[] = $next;
             $result = $middleware(...$args);
             if (!$result instanceof Response) {
                 $result = new Response($result);

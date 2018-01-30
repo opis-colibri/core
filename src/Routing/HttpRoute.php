@@ -69,4 +69,14 @@ class HttpRoute extends Route
 
         return $this->resolvedAction = [$class, $method];
     }
+
+    /**
+     * @param string[] ...$middleware
+     * @return HttpRoute
+     */
+    public function middleware(string ...$middleware): self
+    {
+        $this->set('middleware', $middleware);
+        return $this;
+    }
 }
