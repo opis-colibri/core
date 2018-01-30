@@ -19,6 +19,8 @@ namespace Opis\Colibri\Routing;
 
 use Opis\Colibri\Application;
 use Opis\HttpRouting\Router;
+use Opis\Routing\Context;
+use Opis\Routing\Router as AliasRouter;
 
 class HttpRouter extends Router
 {
@@ -29,6 +31,21 @@ class HttpRouter extends Router
     {
         $this->app = $app;
         parent::__construct($app->getCollector()->getRoutes(), new Dispatcher($app), null, $app->getGlobalValues());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function route(Context $context)
+    {
+        $router = new AliasRouter($this->app->getCollector()->getPathAliases());
+        $alias = $router->route(new Context($context->path()));
+
+        if ($alias !== null && is_string($alias)) {
+            $context = new Context($alias, $context->data());
+        }
+
+        return parent::route($context);
     }
 
     /**

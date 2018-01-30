@@ -30,7 +30,7 @@ use Opis\Database\Database;
 use Opis\Events\Event;
 use Opis\Events\RouteCollection as EventsRouteCollection;
 use Opis\HttpRouting\RouteCollection as HttpRouteCollection;
-use Opis\Routing\RouteCollection as AliasRouteCollection;
+use Opis\Routing\RouteCollection as PathAliasCollection;
 use Opis\View\RouteCollection as ViewRouteCollection;
 use Opis\View\EngineResolver;
 use Psr\Log\LoggerInterface;
@@ -174,11 +174,11 @@ class Manager
 
     /**
      * @param bool $fresh
-     * @return AliasRouteCollection
+     * @return PathAliasCollection
      */
-    public function getRouteAliases(bool $fresh = false): AliasRouteCollection
+    public function getPathAliases(bool $fresh = false): PathAliasCollection
     {
-        return $this->collect('RouteAliases', $fresh);
+        return $this->collect('PathAliases', $fresh);
     }
 
     /**
