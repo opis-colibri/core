@@ -199,4 +199,28 @@ class RoutingTest extends BaseClass
         $this->assertEquals(200, $result->getStatusCode());
         $this->assertEquals('foo', $result->getBody());
     }
+
+    public function testMiddlewareAuth()
+    {
+        $result = $this->exec('/foo/protected');
+
+        $this->assertEquals(401, $result->getStatusCode());
+        $this->assertEquals('Unauthorized', $result->getBody());
+    }
+
+    public function testMiddlewareChanin1()
+    {
+        $result = $this->exec('/foo/chain/1');
+
+        $this->assertEquals(200, $result->getStatusCode());
+        $this->assertEquals('PREFIX-FOO', $result->getBody());
+    }
+
+    public function testMiddlewareChanin2()
+    {
+        $result = $this->exec('/foo/chain/2');
+
+        $this->assertEquals(200, $result->getStatusCode());
+        $this->assertEquals('prefix-FOO', $result->getBody());
+    }
 }

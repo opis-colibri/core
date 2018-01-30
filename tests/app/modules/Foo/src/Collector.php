@@ -19,6 +19,9 @@ namespace Test\Foo;
 
 use Opis\Colibri\Collector as BaseCollector;
 use Opis\Colibri\ItemCollectors\RouteCollector;
+use Test\Foo\Middleware\AuthMiddleware;
+use Test\Foo\Middleware\ToUpperMiddleware;
+use Test\Foo\Middleware\PrefixMiddleware;
 
 class Collector extends BaseCollector
 {
@@ -80,6 +83,18 @@ class Collector extends BaseCollector
             return 'foo';
         })->guard('guard_uk1', 'guard_uk2');
 
+
+        $route('/foo/protected', function(){
+            return 'foo';
+        })->middleware(AuthMiddleware::class);
+
+        $route('/foo/chain/1', function(){
+            return 'foo';
+        })->middleware(ToUpperMiddleware::class, PrefixMiddleware::class);
+
+        $route('/foo/chain/2', function(){
+            return 'foo';
+        })->middleware(PrefixMiddleware::class, ToUpperMiddleware::class);
 
     }
 }
