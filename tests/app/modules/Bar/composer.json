@@ -1,0 +1,43 @@
+{
+    "name": "test/bar",
+    "require": {
+        "php": ">=7.0.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.5"
+    },
+    "type": "opis-colibri-module",
+    "extra": {
+        "module": {
+            "title": "Bar",
+            "collector": {
+                "file": "src/Collector.php",
+                "class": "Test\\Bar\\Collector"
+            }
+        },
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Test\\Bar\\": "src/"
+        }
+    },
+    "license": [
+        "Apache-2.0"
+    ],
+    "authors": [
+        {
+            "name": "Marius Sarca",
+            "email": "marius.sarca@gmail.com"
+        }
+    ],
+    "description": "Test Bar module",
+    "homepage": "http://example.com/bar",
+    "keywords": [
+        "test",
+        "foo",
+        "module"
+    ]
+}
