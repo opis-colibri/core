@@ -24,9 +24,6 @@ use Opis\Routing\Route;
 use Opis\Routing\Router as BaseRouter;
 
 /**
- * Class Router
- * @package Opis\Colibri\Collector
- *
  * @method ItemCollector route(Context $context)
  */
 class Router extends BaseRouter

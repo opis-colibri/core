@@ -296,7 +296,6 @@ class Application implements ISettingsContainer
      * Get the View router
      *
      * @return  ViewApp
-     * @throws \Exception
      */
     public function getViewApp(): ViewApp
     {

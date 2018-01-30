@@ -27,17 +27,22 @@ class Dispatcher implements IDispatcher
 {
     /**
      * @param BaseRouter|Router $router
-     * @param Context|Entry $context
      * @return mixed
      */
-    public function dispatch(BaseRouter $router, Context $context)
+    public function dispatch(BaseRouter $router)
     {
         /** @var RouteCollection $collection */
         $collection = $router->getRouteCollection();
         $collection->sort();
-        $collector = $context->getCollector();
+
+        $context = $router->getContext();
+
+        /** @var Entry $entry */
+        $entry = $context->data();
+        $collector = $entry->getCollector();
+
         /** @var Route $route */
-        foreach ($this->match($collection, (string)$context) as $route) {
+        foreach ($this->match($collection, $context->path()) as $route) {
             $callback = $route->getAction();
             $callback($collector);
         }

@@ -22,7 +22,6 @@ use Opis\Colibri\Application;
 use Opis\Colibri\Container;
 use Opis\Colibri\Collector;
 use Opis\Colibri\ItemCollector;
-use Opis\Colibri\ItemCollectors\MiddlewareCollector;
 use Opis\Colibri\Module;
 use Opis\Colibri\Serializable\ClassList;
 use Opis\Config\ConfigInterface;

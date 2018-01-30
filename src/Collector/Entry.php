@@ -18,17 +18,19 @@
 namespace Opis\Colibri\Collector;
 
 use Opis\Colibri\ItemCollector;
-use Opis\Routing\Context;
 
-class Entry extends Context
+class Entry
 {
     /** @var ItemCollector */
     protected $collector;
 
+    /** @var string */
+    protected $name;
+
     public function __construct(string $name, ItemCollector $collector)
     {
+        $this->name = strtolower($name);
         $this->collector = $collector;
-        parent::__construct(strtolower($name));
     }
 
     /**
@@ -36,7 +38,7 @@ class Entry extends Context
      */
     public function getName(): string
     {
-        return $this->path;
+        return $this->name;
     }
 
     /**
