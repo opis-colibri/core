@@ -200,6 +200,38 @@ class RoutingTest extends BaseClass
         $this->assertEquals('foo', $result->getBody());
     }
 
+    public function testBind1()
+    {
+        $result = $this->exec('/foo/bind/1/foo');
+
+        $this->assertEquals(200, $result->getStatusCode());
+        $this->assertEquals('fooFOO', $result->getBody());
+    }
+
+    public function testBind2()
+    {
+        $result = $this->exec('/foo/bind/2/foo');
+
+        $this->assertEquals(200, $result->getStatusCode());
+        $this->assertEquals('FOO', $result->getBody());
+    }
+
+    public function testBindGlobal1()
+    {
+        $result = $this->exec('/foo/bind/3/foo');
+
+        $this->assertEquals(200, $result->getStatusCode());
+        $this->assertEquals('bind_g1_foo', $result->getBody());
+    }
+
+    public function testBindGlobal2()
+    {
+        $result = $this->exec('/foo/bind/4/foo');
+
+        $this->assertEquals(200, $result->getStatusCode());
+        $this->assertEquals('bind_g2_foo', $result->getBody());
+    }
+
     public function testMiddlewareAuth()
     {
         $result = $this->exec('/foo/protected');
@@ -222,5 +254,13 @@ class RoutingTest extends BaseClass
 
         $this->assertEquals(200, $result->getStatusCode());
         $this->assertEquals('prefix-FOO', $result->getBody());
+    }
+
+    public function testPathAlias1()
+    {
+        $result = $this->exec('/foo/alias/1');
+
+        $this->assertEquals(200, $result->getStatusCode());
+        $this->assertEquals('Front page', $result->getBody());
     }
 }

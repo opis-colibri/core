@@ -18,6 +18,7 @@
 namespace Test\Foo;
 
 use Opis\Colibri\Collector as BaseCollector;
+use Opis\Colibri\ItemCollectors\PathAliasCollector;
 use Opis\Colibri\ItemCollectors\RouteCollector;
 use Test\Foo\Middleware\AuthMiddleware;
 use Test\Foo\Middleware\ToUpperMiddleware;
@@ -31,6 +32,14 @@ class Collector extends BaseCollector
 
         $route->callback('filter_g1', function(){
             return false;
+        });
+
+        $route->bind('bind_g1', function($foo1){
+            return 'bind_g1_' . $foo1;
+        });
+
+        $route->bind('bind_g2', function($bind_g2){
+            return 'bind_g2_' . $bind_g2;
         });
 
         $route('/', function(){
@@ -83,6 +92,25 @@ class Collector extends BaseCollector
             return 'foo';
         })->guard('guard_uk1', 'guard_uk2');
 
+        $route('/foo/bind/1/{foo1}', function($foo1, $foo2){
+            return $foo1 . $foo2;
+        })->bind('foo2', function($foo1){
+            return strtoupper($foo1);
+        });
+
+        $route('/foo/bind/2/{foo1}', function($foo1){
+            return $foo1;
+        })->bind('foo1', function($foo1){
+            return strtoupper($foo1);
+        });
+
+        $route('/foo/bind/3/{foo1}', function($bind_g1){
+            return $bind_g1;
+        });
+
+        $route('/foo/bind/4/{bind_g2}', function($bind_g2){
+            return $bind_g2;
+        });
 
         $route('/foo/protected', function(){
             return 'foo';
@@ -96,5 +124,12 @@ class Collector extends BaseCollector
             return 'foo';
         })->middleware(PrefixMiddleware::class, ToUpperMiddleware::class);
 
+    }
+
+    public function pathAliases(PathAliasCollector $alias)
+    {
+        $alias->alias('/foo/alias/1', function(){
+            return '/';
+        });
     }
 }
