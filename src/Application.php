@@ -106,9 +106,6 @@ class Application implements ISettingsContainer
     /** @var  HttpRequest */
     protected $httpRequestInstance;
 
-    /** @var  \Opis\Http\Response */
-    protected $httpResponseInstance;
-
     /** @var  CacheInterface[] */
     protected $cache = [];
 
