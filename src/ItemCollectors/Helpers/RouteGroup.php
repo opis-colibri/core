@@ -20,20 +20,18 @@ namespace Opis\Colibri\ItemCollectors\Helpers;
 use Opis\Colibri\Routing\HttpRoute;
 
 /**
- * Class RouteGroup
- * @package Opis\Colibri\Groups
  *
  * @method RouteGroup bind(string $name, callable $callback)
- * @method RouteGroup filter(string | array $filters)
+ * @method RouteGroup filter(string ...$callbacks)
  * @method RouteGroup implicit(string $name, $value)
  * @method RouteGroup where(string $name, $value)
- * @method RouteGroup validate(string | array $filters)
+ * @method RouteGroup guard(string ...$callbacks)
  * @method RouteGroup callback(string $name, callable $callback)
- * @method RouteGroup access(string | array $filters)
+ * @method RouteGroup middleware(string ...$middleware)
  * @method RouteGroup domain(string $value)
- * @method RouteGroup method(string $value)
- * @method RouteGroup secure(bool $value)
- * @method RouteGroup responseInterceptor(string $name)
+ * @method RouteGroup method(string ...$value)
+ * @method RouteGroup secure(bool $value = true)
+ *
  */
 class RouteGroup
 {
