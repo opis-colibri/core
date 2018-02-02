@@ -561,10 +561,24 @@ class Application implements ISettingsContainer
     public function getHttpRequest(): HttpRequest
     {
         if ($this->httpRequestInstance === null) {
-            $this->httpRequestInstance = HttpRequest::fromGlobals();
+            $global = $this->getGlobalValues();
+            if(!isset($global['request'])){
+                $global['request'] = HttpRequest::fromGlobals();
+            }
+            $this->httpRequestInstance = $global['request'];
         }
 
         return $this->httpRequestInstance;
+    }
+
+    /**
+     * Set the underlying HTTP request object
+     * @param HttpRequest $request
+     */
+    public function setHttpRequest(HttpRequest $request)
+    {
+        $global = $this->getGlobalValues();
+        $global['request'] = $this->httpRequestInstance = $request;
     }
 
     /**
@@ -801,7 +815,7 @@ class Application implements ISettingsContainer
             $request = HttpRequest::fromGlobals();
         }
 
-        $this->httpRequestInstance = $request;
+        $this->setHttpRequest($request);
 
         $context = new Context($request->path(),  $request);
 
