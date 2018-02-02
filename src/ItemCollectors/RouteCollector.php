@@ -44,7 +44,6 @@ class RouteCollector extends ItemCollector
      * @param callable $callback
      * @param string $prefix
      * @return RouteGroup
-     * @throws \Exception
      */
     public function group(callable $callback, string $prefix = ''): RouteGroup
     {
