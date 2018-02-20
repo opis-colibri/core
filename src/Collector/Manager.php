@@ -23,6 +23,7 @@ use Opis\Colibri\Container;
 use Opis\Colibri\Collector;
 use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Module;
+use Opis\Colibri\Serializable\CallbackList;
 use Opis\Colibri\Serializable\ClassList;
 use Opis\Config\ConfigInterface;
 use Opis\Database\Connection;
@@ -263,6 +264,15 @@ class Manager
     public function getTranslations(bool $fresh = true)
     {
         return $this->collect('Translations', $fresh);
+    }
+
+    /**
+     * @param bool $fresh
+     * @return CallbackList
+     */
+    public function getAssetHandlers(bool $fresh = true)
+    {
+        return $this->collect('AssetHandlers', $fresh);
     }
 
     /**

@@ -665,6 +665,37 @@ class Application implements ISettingsContainer
     }
 
     /**
+     * @param string $module
+     * @param string $path
+     * @param bool $full
+     * @return string
+     */
+    public function resolveAsset(string $module, string $path, bool $full = false)
+    {
+        static $list = null;
+
+        if ($list === null) {
+            $list = $this->collector->getAssetHandlers()->getList();
+        }
+
+        if (isset($list[$module])) {
+            return $list[$module]($module, $path, $full);
+        } elseif (isset($list['*'])){
+            return $list['*']($module, $path, $full);
+        }
+
+        $assetsPath = $this->info->assetsPath();
+        $module = str_replace('/', '.', $module);
+        $fullPath = $assetsPath . '/' . $module . '/' . ltrim($path, '/');
+
+        if ($full) {
+            return $this->httpRequestInstance->uriForPath($fullPath);
+        }
+
+        return $this->httpRequestInstance->basePath() . '/' . ltrim($fullPath, '/');
+    }
+
+    /**
      * @param ConfigInterface $driver
      * @return ISettingsContainer
      */

@@ -394,19 +394,7 @@ function getURL(string $path, bool $full = false): string
  */
 function asset(string $module, string $path, bool $full = false): string
 {
-    static $assetsPath;
-
-    if ($assetsPath === null) {
-        $assetsPath = info()->assetsPath();
-    }
-
-    if ($module === '*') {
-        return getURL($assetsPath . '/' . ltrim($path, '/'), $full);
-    }
-
-    $module = str_replace('/', '.', $module);
-
-    return getURL($assetsPath . '/' . $module . '/' . ltrim($path, '/'), $full);
+    return Application::getInstance()->resolveAsset($module, $path, $full);
 }
 
 /**
