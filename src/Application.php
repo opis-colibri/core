@@ -692,7 +692,7 @@ class Application implements ISettingsContainer
             return $this->httpRequestInstance->uriForPath($fullPath);
         }
 
-        return $this->httpRequestInstance->basePath() . '/' . ltrim($fullPath, '/');
+        return rtrim($this->httpRequestInstance->basePath(), '/') . $fullPath;
     }
 
     /**
