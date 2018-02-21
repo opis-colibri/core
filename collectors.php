@@ -97,7 +97,7 @@ return [
         'description' => 'Collects log storages',
     ],
     'assethandlers' => [
-        'class' => 'Opis\\Colibri\\ItemCollectors\\AssetsHandler',
+        'class' => 'Opis\\Colibri\\ItemCollectors\\AssetsHandlerCollector',
         'description' => 'Collects asset handlers',
     ],
 ];
