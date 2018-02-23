@@ -18,13 +18,10 @@
 namespace Opis\Colibri\ItemCollectors;
 
 use Opis\Colibri\ItemCollector;
-use Opis\Colibri\Serializable\StorageCollection;
+use Opis\Colibri\Serializable\CallbackList;
 
 /**
- * Class SessionCollector
- * @package Opis\Colibri\ItemCollectors
- *
- * @property StorageCollection $data
+ * @property CallbackList $data
  */
 class SessionCollector extends ItemCollector
 {
@@ -33,27 +30,16 @@ class SessionCollector extends ItemCollector
      */
     public function __construct()
     {
-        parent::__construct(new StorageCollection(self::class . '::factory'));
+        parent::__construct(new CallbackList());
     }
 
     /**
-     * @param string $storage
      * @param callable $constructor
      * @return SessionCollector
      */
-    public function register(string $storage, callable $constructor): self
+    public function register(callable $constructor): self
     {
-        $this->data->add($storage, $constructor);
+        $this->data->add('session', $constructor);
         return $this;
-    }
-
-    /**
-     * @param string $storage
-     * @param callable $factory
-     * @return \SessionHandlerInterface
-     */
-    public static function factory(string $storage, callable $factory): \SessionHandlerInterface
-    {
-        return $factory($storage);
     }
 }

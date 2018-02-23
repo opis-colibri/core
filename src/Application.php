@@ -122,7 +122,7 @@ class Application implements ISettingsContainer
     protected $entityManager = [];
 
     /** @var  Session */
-    protected $session = [];
+    protected $session;
 
     /** @var  HttpRouter */
     protected $httpRouter;
@@ -416,24 +416,18 @@ class Application implements ISettingsContainer
     /**
      * Returns a session storage
      *
-     * @param   string $storage (optional) Storage name
-     *
      * @return  Session
      */
-    public function getSession(string $storage = 'default'): Session
+    public function getSession(): Session
     {
-        if (!isset($this->session[$storage])) {
-            if ($storage === 'default') {
-                if (!isset($this->implicit['session'])) {
-                    throw new \RuntimeException('The default session storage was not set');
-                }
-                $this->session[$storage] = new Session($this->implicit['session']);
-            } else {
-                $this->session[$storage] = new Session($this->getCollector()->getSessionHandler($storage));
+        if($this->session === null){
+            if (!isset($this->implicit['session'])) {
+                throw new \RuntimeException('The default session storage was not set');
             }
+            $this->session = new Session($this->getCollector()->getSessionHandler($this->implicit['session']));
         }
 
-        return $this->session[$storage];
+        return $this->session;
     }
 
     /**
