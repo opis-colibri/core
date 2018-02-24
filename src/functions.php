@@ -322,12 +322,11 @@ function logger(string $logger = 'default'): LoggerInterface
 }
 
 /**
- * @param string|null $storage
  * @return Session
  */
-function session(string $storage = 'default'): Session
+function session(): Session
 {
-    return Application::getInstance()->getSession($storage);
+    return Application::getInstance()->getSession();
 }
 
 /**

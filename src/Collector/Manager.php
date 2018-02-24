@@ -212,13 +212,22 @@ class Manager
 
 
     /**
-     * @param string $name
+     * @param \SessionHandlerInterface $default
      * @param bool $fresh
      * @return \SessionHandlerInterface
      */
-    public function getSessionHandler(string $name, bool $fresh = false): \SessionHandlerInterface
+    public function getSessionHandler(\SessionHandlerInterface $default, bool $fresh = false): \SessionHandlerInterface
     {
-        return $this->collect('SessionHandlers', $fresh)->get($name);
+        $list = $this->collect('SessionHandlers', $fresh)->getList();
+
+        if(isset($list['session'])){
+            $instance = $list['session']();
+            if($instance instanceof \SessionHandlerInterface){
+                return $instance;
+            }
+        }
+
+        return $default;
     }
 
     /**
