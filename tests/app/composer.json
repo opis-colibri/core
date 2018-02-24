@@ -25,6 +25,7 @@
     "minimum-stability": "dev",
     "extra": {
         "application": {
+            "vendor-dir": "vendor-alt"
         },
         "branch-alias": {
             "dev-master": "1.0-dev"
