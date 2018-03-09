@@ -134,48 +134,12 @@ function schema(string $connection = 'default'): Schema
 
 /**
  * @param callable $callback
- * @param array $options
- * @return mixed
- * @throws \Exception
+ * @param string $connection
+ * @return mixed|false
  */
-function transaction(callable $callback, array $options = [])
+function transaction(callable $callback, string $connection = 'default')
 {
-    $options += [
-        'connection' => 'default',
-        'return' => null,
-        'throw' => false,
-        'error' => null,
-        'success' => null,
-    ];
-
-    $pdo = connection($options['connection'])->getPDO();
-
-    if ($pdo->inTransaction()) {
-        return $callback();
-    }
-
-    $result = null;
-    try {
-        $pdo->beginTransaction();
-        $result = $callback();
-        $pdo->commit();
-        if (isset($options['success']) && is_callable($options['success'])) {
-            $options['success']();
-        }
-    } catch (\Exception $exception) {
-        $pdo->rollBack();
-        if ($options['throw']) {
-            throw  $exception;
-        }
-        if (isset($options['error']) && is_callable($options['error'])) {
-            $options['error']($exception);
-        }
-        if (isset($options['return'])) {
-            $result = $options['return'];
-        }
-    }
-
-    return $result;
+    return connection($connection)->transaction($callback, null, false);
 }
 
 /**
