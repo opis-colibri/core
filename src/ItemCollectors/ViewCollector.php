@@ -18,14 +18,11 @@
 namespace Opis\Colibri\ItemCollectors;
 
 use Opis\Colibri\ItemCollector;
-use Opis\Routing\Route;
-use Opis\View\RouteCollection;
+use Opis\View\{
+    Route, RouteCollection
+};
 
 /**
- * Class ViewCollector
- *
- * @package Opis\Colibri\ItemCollectors
- *
  * @property  RouteCollection $data
  */
 class ViewCollector extends ItemCollector
