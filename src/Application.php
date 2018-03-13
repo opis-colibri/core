@@ -55,7 +55,6 @@ use Opis\Intl\Translator\IDriver as TranslatorDriver;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SessionHandlerInterface;
-use Symfony\Component\Filesystem\Filesystem;
 
 class Application implements ISettingsContainer
 {
@@ -151,9 +150,6 @@ class Application implements ISettingsContainer
     /** @var  array|null */
     protected $collectorList;
 
-    /** @var  Filesystem */
-    protected $fileSystem;
-
     /** @var  Application */
     protected static $instance;
 
@@ -214,18 +210,6 @@ class Application implements ISettingsContainer
     public function getClassLoader(): ClassLoader
     {
         return $this->classLoader;
-    }
-
-    /**
-     * @return Filesystem
-     */
-    public function getFileSystem(): Filesystem
-    {
-        if ($this->fileSystem === null) {
-            $this->fileSystem = new Filesystem();
-        }
-
-        return $this->fileSystem;
     }
 
     /**
