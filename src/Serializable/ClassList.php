@@ -81,7 +81,7 @@ class ClassList implements Serializable
     /**
      * @param string $type
      * @param array $args
-     * @return null|object
+     * @return null|mixed
      */
     public function get(string $type, array $args = [])
     {
@@ -92,7 +92,7 @@ class ClassList implements Serializable
             return make($this->list[$type], $args);
         }
         if (!isset($this->cache[$type])) {
-            $this->cache[$type] = isset($this->list[$type]) ? make($this->list[$type]) : null;
+            $this->cache[$type] = make($this->list[$type]);
         }
         return $this->cache[$type];
     }
