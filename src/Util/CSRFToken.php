@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Util;
 
 use function Opis\Colibri\Functions\{
-    session
+    random_str, session
 };
 
 class CSRFToken
@@ -58,30 +58,11 @@ class CSRFToken
             $tokens = array_slice($tokens, 0, $this->maxNumber - 1);
         }
 
-        $token = $this->getRandomToken();
+        $token = random_str(32);
 
         array_unshift($tokens, $token);
 
         session()->set($this->sessionKey, $tokens);
-
-        return $token;
-    }
-
-    /**
-     * Generate random token
-     *
-     * @param   int $length (optional) Token's length
-     *
-     * @return  string
-     */
-    protected function getRandomToken(int $length = 32): string
-    {
-        $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $token = '';
-
-        for ($i = 0, $l = strlen($chars); $i < $length; $i++) {
-            $token .= $chars[rand(0, $l - 1)];
-        }
 
         return $token;
     }
