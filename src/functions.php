@@ -418,7 +418,6 @@ function uuid4(string $sep = '-'): string
 /**
  * @param int $length
  * @return string
- * @throws \Exception
  */
 function random_str(int $length): string
 {
@@ -427,8 +426,15 @@ function random_str(int $length): string
 
     $str = '';
 
-    for ($i = 0; $i < $length; ++$i) {
-        $str .= $key[random_int(0, $limit)];
+    try {
+        for ($i = 0; $i < $length; $i++) {
+            $str .= $key[random_int(0, $limit)];
+        }
+    } catch (\Exception $e) {
+        $str = '';
+        for ($i = 0; $i < $length; $i++) {
+            $str .= $key[rand(0, $limit)];
+        }
     }
 
     return $str;
