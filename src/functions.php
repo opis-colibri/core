@@ -294,19 +294,6 @@ function session(): Session
 }
 
 /**
- * Get the value of the specified variable
- *
- * @param string $name
- * @param null $default
- * @return null
- */
-function v(string $name, $default = null)
-{
-    $var = Application::getInstance()->getVariables();
-    return array_key_exists($name, $var) ? $var[$name] : $default;
-}
-
-/**
  * Replace
  *
  * @param string $text

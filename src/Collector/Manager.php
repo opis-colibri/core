@@ -241,15 +241,6 @@ class Manager
 
     /**
      * @param bool $fresh
-     * @return array
-     */
-    public function getVariables(bool $fresh = false): array
-    {
-        return $this->collect('Variables', $fresh)->getList();
-    }
-
-    /**
-     * @param bool $fresh
      * @return ViewRouteCollection
      */
     public function getViews(bool $fresh = false): ViewRouteCollection

@@ -135,9 +135,6 @@ class Application implements ISettingsContainer
     /** @var  EventTarget */
     protected $eventTarget;
 
-    /** @var  array */
-    protected $variables;
-
     /** @var  Validator */
     protected $validator;
 
@@ -557,20 +554,6 @@ class Application implements ISettingsContainer
     {
         $global = $this->getGlobalValues();
         $global['request'] = $this->httpRequestInstance = $request;
-    }
-
-    /**
-     * Get variables list
-     *
-     * @return array
-     */
-    public function getVariables(): array
-    {
-        if ($this->variables === null) {
-            $this->variables = $this->getCollector()->getVariables();
-        }
-
-        return $this->variables;
     }
 
     /**
