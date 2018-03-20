@@ -17,32 +17,35 @@
 
 namespace Opis\Colibri\SPA;
 
-use Opis\Colibri\Module;
 
-class Extension
+class SpaInfo
 {
     /** @var string */
     private $name;
     /** @var string */
-    private $module;
-    /** @var array */
-    private $conf;
-    /** @var string */
-    private $source;
+    private $dir;
+    /** @var string[] */
+    private $modules;
+    /** @var string  */
+    private $owner;
+    /** @var string  */
+    private $dist;
 
     /**
-     * Extension constructor.
+     * SpaInfo constructor.
      * @param string $name
-     * @param string $module
-     * @param string $source
-     * @param array $conf
+     * @param string $dir
+     * @param string $dist
+     * @param string $owner
+     * @param array $modules
      */
-    public function __construct(string $name, string $module, string $source, array $conf)
+    public function __construct(string $name, string $owner, string $dir, string $dist, array $modules)
     {
         $this->name = $name;
-        $this->module = $module;
-        $this->source = $source;
-        $this->conf = $conf;
+        $this->dir = $dir;
+        $this->dist = $dist;
+        $this->owner = $owner;
+        $this->modules = $modules;
     }
 
     /**
@@ -56,24 +59,32 @@ class Extension
     /**
      * @return string
      */
-    public function source(): string
+    public function dir(): string
     {
-        return $this->source;
+        return $this->dir;
     }
 
     /**
-     * @return Module
+     * @return string
      */
-    public function module(): Module
+    public function distDir(): string
     {
-        return \Opis\Colibri\Functions\module($this->module);
+        return $this->dist;
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function config(): array
+    public function owner(): string
     {
-        return $this->conf;
+        return $this->owner;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function modules(): array
+    {
+        return $this->modules;
     }
 }

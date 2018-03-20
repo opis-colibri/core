@@ -17,17 +17,28 @@
 
 namespace Opis\Colibri\SPA;
 
-interface IHandler
+abstract class SpaHandler
 {
-    /**
-     * @param Extension $extension
-     * @return mixed
-     */
-    public function addExtension(Extension $extension);
+    /** @var SpaInfo */
+    protected $spa;
 
     /**
-     * @param Extension $extension
+     * Handler constructor.
+     */
+    final public function __construct(SpaInfo $spa)
+    {
+        $this->spa = $spa;
+    }
+
+    /**
+     * @param string $package
+     * @param array|null $conf
      * @return mixed
      */
-    public function removeExtension(Extension $extension);
+    abstract public function importPackage(string $package, array $conf = null);
+
+    /**
+     * @return mixed
+     */
+    abstract public function prepare();
 }
