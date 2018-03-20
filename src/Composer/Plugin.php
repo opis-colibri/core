@@ -236,6 +236,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             passthru("yarn run build >> /dev/tty");
             chdir($cwd);
 
+            $handler->finalize();
+
             if (is_dir($dir)) {
                 $fs->remove($dir);
             }

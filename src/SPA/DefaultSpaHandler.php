@@ -43,4 +43,12 @@ class DefaultSpaHandler extends SpaHandler
         }
         file_put_contents($dir . DIRECTORY_SEPARATOR . 'index.js', $content);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function finalize()
+    {
+        // Nothing for now
+    }
 }

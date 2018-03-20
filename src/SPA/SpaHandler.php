@@ -42,4 +42,9 @@ abstract class SpaHandler
      * @return mixed
      */
     abstract public function prepare();
+
+    /**
+     * @return mixed
+     */
+    abstract public function finalize();
 }
