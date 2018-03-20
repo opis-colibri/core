@@ -26,6 +26,7 @@ use Composer\Script\Event;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\Application;
 use Opis\Colibri\Module;
+use Opis\Colibri\SPA\SpaHandler;
 use Symfony\Component\Filesystem\Filesystem;
 
 
@@ -211,23 +212,28 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                 continue;
             }
 
-            $import_modules = [];
+            /** @var SpaHandler $handler */
+            $handler = new $app['handler']($app['name'], $app['owner'], $app['dir'], $app['dist'], $app['modules']);
 
             foreach ($app['modules'] as $app_module_name) {
                 $app_module = new Module($app_module_name);
                 if ($app_module->exists() && $app_module->isEnabled()) {
+                    $conf_file = $modules[$app_module_name][$app_name] . DIRECTORY_SEPARATOR . 'spa.conf.json';
+                    $conf = null;
+                    if (file_exists($conf_file)) {
+                        $conf = json_decode(file_get_contents($conf_file), true);
+                    }
                     $app_module_name = str_replace('/', '.', $app_module_name);
-                    $import_modules[] = "import '$app_module_name';";
+                    $handler->importPackage($app_module_name, $conf);
                 }
             }
 
-            $import_modules = implode(PHP_EOL, $import_modules);
-            file_put_contents($app['dir'] . DIRECTORY_SEPARATOR . 'index.js', $import_modules);
+            $handler->prepare();
 
             $cwd = getcwd();
             chdir($app['dir']);
-            passthru('yarn update >> /dev/tty');
-            passthru("./node_modules/.bin/webpack >> /dev/tty");
+            passthru('yarn upgrade >> /dev/tty');
+            passthru("yarn run build >> /dev/tty");
             chdir($cwd);
 
             if (is_dir($dir)) {

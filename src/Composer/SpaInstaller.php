@@ -24,6 +24,8 @@ use Composer\Package\PackageInterface;
 use Composer\Repository\InstalledRepositoryInterface;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\Application;
+use Opis\Colibri\SPA\DefaultSpaHandler;
+use Opis\Colibri\SPA\SpaHandler;
 use Symfony\Component\Filesystem\Filesystem;
 
 class SpaInstaller extends LibraryInstaller
@@ -108,21 +110,26 @@ class SpaInstaller extends LibraryInstaller
 
         foreach ($spa['register'] as $local_app_name => $app) {
             $app += [
-                'webpack' => 'webpack.conf.js',
                 'source' => 'spa/' . $local_app_name,
-                'dist' => 'dist'
+                'dist' => 'dist',
+                'template' => 'spa/' . $local_app_name . 'template',
+                'handler' => DefaultSpaHandler::class,
             ];
 
+            if (!is_subclass_of($app['handler'], SpaHandler::class)) {
+                continue;
+            }
+
             // normalize
-            foreach (['source', 'webpack', 'dist'] as $item) {
+            foreach (['source', 'dist', 'template'] as $item) {
                 $app[$item] = implode(DIRECTORY_SEPARATOR, explode('/', trim($item, '/')));
             }
 
             $source_dir = $module_dir . DIRECTORY_SEPARATOR . $app['source'];
-            $webpack_file = $source_dir . DIRECTORY_SEPARATOR . $app['webpack'];
+            $template_dir = $module_dir . DIRECTORY_SEPARATOR . $app['template'];
             $package_json = $source_dir . DIRECTORY_SEPARATOR . 'package.json';
 
-            if (!file_exists($package_json) || !file_exists($webpack_file)) {
+            if (!file_exists($package_json) || !is_dir($template_dir)) {
                 continue;
             }
 
@@ -135,25 +142,21 @@ class SpaInstaller extends LibraryInstaller
             $app_name = $package_name . '.' . $local_app_name;
             $dir = implode(DIRECTORY_SEPARATOR, [$base_dir, $app_name]);
 
-
             $apps[$app_name] = [
                 'name' => $local_app_name,
-                'webpack' => $webpack_file,
                 'dir' => $dir,
                 'dist' => $dir . DIRECTORY_SEPARATOR . $app['dist'],
+                'template' => $template_dir,
                 'owner' => $module,
                 'modules' => [$module]
             ];
 
             $modules[$module][$app_name] = $source_dir;
 
-
-            $fs->mkdir($dir);
-            $fs->copy($webpack_file, $dir . DIRECTORY_SEPARATOR . 'webpack.conf.js');
-            $target_package_file = $dir . DIRECTORY_SEPARATOR . 'package.json';
-            $package_json_content = (object)[];
-            $package_json_content->devDependencies = $pkg['devDependencies'] ?? (object)[];
-            file_put_contents($target_package_file, json_encode($package_json_content));
+            if ($fs->exists($dir)) {
+                $fs->remove($dir);
+            }
+            $fs->mirror($template_dir, $dir);
 
             $cwd = getcwd();
             chdir($dir);
@@ -256,21 +259,27 @@ class SpaInstaller extends LibraryInstaller
 
         foreach ($spa['register'] as $local_app_name => $app) {
             $app += [
-                'webpack' => 'webpack.conf.js',
                 'source' => 'spa/' . $local_app_name,
-                'dist' => 'dist'
+                'dist' => 'dist',
+                'template' => 'spa/' . $local_app_name . 'template',
+                'handler' => DefaultSpaHandler::class,
+                'config' => []
             ];
 
+            if (!is_subclass_of($app['handler'], SpaHandler::class)) {
+                continue;
+            }
+
             // normalize
-            foreach (['source', 'webpack', 'dist'] as $item) {
+            foreach (['source', 'dist', 'template'] as $item) {
                 $app[$item] = implode(DIRECTORY_SEPARATOR, explode('/', trim($item, '/')));
             }
 
             $source_dir = $module_dir . DIRECTORY_SEPARATOR . $app['source'];
-            $webpack_file = $source_dir . DIRECTORY_SEPARATOR . $app['webpack'];
+            $template_dir = $module_dir . DIRECTORY_SEPARATOR . $app['template'];
             $package_json = $source_dir . DIRECTORY_SEPARATOR . 'package.json';
 
-            if (!file_exists($package_json) || !file_exists($webpack_file)) {
+            if (!file_exists($package_json) || !is_dir($template_dir)) {
                 continue;
             }
 
@@ -283,25 +292,21 @@ class SpaInstaller extends LibraryInstaller
             $app_name = $package_name . '.' . $local_app_name;
             $dir = implode(DIRECTORY_SEPARATOR, [$base_dir, $app_name]);
 
-
             $apps[$app_name] = [
                 'name' => $local_app_name,
-                'webpack' => $webpack_file,
                 'dir' => $dir,
                 'dist' => $dir . DIRECTORY_SEPARATOR . $app['dist'],
+                'template' => $template_dir,
                 'owner' => $module,
                 'modules' => [$module]
             ];
 
             $modules[$module][$app_name] = $source_dir;
 
-
-            $fs->mkdir($dir);
-            $fs->copy($webpack_file, $dir . DIRECTORY_SEPARATOR . 'webpack.conf.js');
-            $target_package_file = $dir . DIRECTORY_SEPARATOR . 'package.json';
-            $package_json_content = (object)[];
-            $package_json_content->devDependencies = $pkg['devDependencies'] ?? (object)[];
-            file_put_contents($target_package_file, json_encode($package_json_content));
+            if ($fs->exists($dir)) {
+                $fs->remove($dir);
+            }
+            $fs->mirror($template_dir, $dir);
 
             $cwd = getcwd();
             chdir($dir);
@@ -314,8 +319,10 @@ class SpaInstaller extends LibraryInstaller
             }
         }
 
-
         foreach ($spa['extend'] as $ext_module => $ext_app) {
+            if ($module === $ext_module) {
+                continue;
+            }
             foreach ($ext_app as $local_app_name => $source_dir) {
                 $app_name = str_replace('/', '.', $ext_module) . '.' . $local_app_name;
                 if (!isset($apps[$app_name])) {
