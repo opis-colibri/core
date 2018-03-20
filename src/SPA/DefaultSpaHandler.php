@@ -27,7 +27,7 @@ class DefaultSpaHandler extends SpaHandler
      */
     public function importPackage(string $package, array $conf = null)
     {
-        $this->packages[] = "import '$package'';";
+        $this->packages[] = "import '$package';";
     }
 
     /**

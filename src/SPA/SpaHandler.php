@@ -23,7 +23,8 @@ abstract class SpaHandler
     protected $spa;
 
     /**
-     * Handler constructor.
+     * SpaHandler constructor.
+     * @param SpaInfo $spa
      */
     final public function __construct(SpaInfo $spa)
     {
