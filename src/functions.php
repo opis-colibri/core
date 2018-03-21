@@ -19,12 +19,7 @@ namespace Opis\Colibri\Functions;
 
 use Opis\Cache\CacheInterface;
 use Opis\Colibri\{
-    Application,
-    AppInfo,
-    Module,
-    View,
-    Validation\Validator,
-    Serializable\ControllerCallback
+    Alerts, Application, AppInfo, Module, View, Validation\Validator, Serializable\ControllerCallback
 };
 use Opis\Colibri\HttpResponse\{
     Redirect as RedirectResponse,
@@ -291,6 +286,14 @@ function logger(string $logger = 'default'): LoggerInterface
 function session(): Session
 {
     return Application::getInstance()->getSession();
+}
+
+/**
+ * @return Alerts
+ */
+function alerts(): Alerts
+{
+    return Application::getInstance()->getAlerts();
 }
 
 /**

@@ -147,6 +147,9 @@ class Application implements ISettingsContainer
     /** @var  array|null */
     protected $collectorList;
 
+    /** @var Alerts|null */
+    protected $alerts;
+
     /** @var  Application */
     protected static $instance;
 
@@ -285,6 +288,9 @@ class Application implements ISettingsContainer
             $this->viewApp->handle('error.{error}', function ($error) {
                 return 'template://\Opis\Colibri\Rendering\Template::error' . $error;
             }, -100)->where('error', '401|403|404|405|500|503');
+            $this->viewApp->handle('alerts', function () {
+                return 'template://\Opis\Colibri\Rendering\Template::alerts';
+            }, -100);
         }
 
         return $this->viewApp;
@@ -605,6 +611,18 @@ class Application implements ISettingsContainer
         }
 
         return $this->global;
+    }
+
+    /**
+     * @return Alerts
+     */
+    public function getAlerts(): Alerts
+    {
+        if ($this->alerts === null) {
+            $this->alerts = new Alerts();
+        }
+
+        return $this->alerts;
     }
 
     /**
