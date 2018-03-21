@@ -25,8 +25,8 @@ use Composer\Plugin\PluginInterface;
 use Composer\Script\Event;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\Application;
-use Opis\Colibri\Module;
 use Opis\Colibri\SPA\SpaHandler;
+use Opis\Colibri\SPA\SpaInfo;
 use Symfony\Component\Filesystem\Filesystem;
 
 
@@ -117,7 +117,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $this->preparePacks($installMode, $enabled, $installed);
 
         if (!$installMode) {
-            $this->buildSinglePageApps();
+            $this->buildSinglePageApps($enabled);
         }
     }
 
@@ -176,7 +176,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     /**
      * Build SPAs
      */
-    public function buildSinglePageApps()
+    public function buildSinglePageApps(array $enabled)
     {
         $base_dir = $this->appInfo->writableDir() . DIRECTORY_SEPARATOR . 'spa';
         $data_file = $base_dir . DIRECTORY_SEPARATOR . 'data.json';
@@ -198,27 +198,19 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             }
 
             $app = $apps[$app_name];
-            $owner = new Module($app['owner']);
-
-            if (!$owner->exists()) {
-                continue;
-            }
-
             $dir = $this->appInfo->assetsDir() . DIRECTORY_SEPARATOR . $app_name;
 
-            if (!$owner->isEnabled()) {
+            if (!in_array($app['owner'], $enabled)) {
                 if (is_dir($dir)) {
                     $fs->remove($dir);
                 }
                 continue;
             }
-
             /** @var SpaHandler $handler */
-            $handler = new $app['handler']($app['name'], $app['owner'], $app['dir'], $app['dist'], $app['modules']);
+            $handler = new $app['handler'](new SpaInfo($app['name'], $app['owner'], $app['dir'], $app['dist'], $app['modules']));
 
             foreach ($app['modules'] as $app_module_name) {
-                $app_module = new Module($app_module_name);
-                if ($app_module->exists() && $app_module->isEnabled()) {
+                if (in_array($app_module_name, $enabled)) {
                     $conf_file = $modules[$app_module_name][$app_name] . DIRECTORY_SEPARATOR . 'spa.conf.json';
                     $conf = null;
                     if (file_exists($conf_file)) {

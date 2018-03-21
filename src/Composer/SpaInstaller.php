@@ -147,6 +147,7 @@ class SpaInstaller extends LibraryInstaller
                 'dir' => $dir,
                 'dist' => $dir . DIRECTORY_SEPARATOR . $app['dist'],
                 'template' => $template_dir,
+                'handler' => $app['handler'],
                 'owner' => $module,
                 'modules' => [$module]
             ];
