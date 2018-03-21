@@ -122,7 +122,7 @@ class SpaInstaller extends LibraryInstaller
 
             // normalize
             foreach (['source', 'dist', 'template'] as $item) {
-                $app[$item] = implode(DIRECTORY_SEPARATOR, explode('/', trim($item, '/')));
+                $app[$item] = implode(DIRECTORY_SEPARATOR, explode('/', trim($app[$item], '/')));
             }
 
             $source_dir = $module_dir . DIRECTORY_SEPARATOR . $app['source'];
@@ -442,7 +442,11 @@ class SpaInstaller extends LibraryInstaller
 
     private function setSpaData(array $data)
     {
-        $file = $file = implode(DIRECTORY_SEPARATOR, [$this->appInfo->writableDir(), 'spa', 'data.json']);
+        $dir = $this->appInfo->writableDir() . DIRECTORY_SEPARATOR . 'spa';
+        if (!is_dir($dir)) {
+            mkdir($dir,0775, true);
+        }
+        $file = $dir . DIRECTORY_SEPARATOR . 'data.json';
         file_put_contents($file, json_encode($data));
     }
 }

@@ -61,6 +61,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         if ($this->isProject) {
             $manager = $this->composer->getInstallationManager();
             $manager->addInstaller(new AssetsInstaller($this->appInfo, $io, $composer));
+            $manager->addInstaller(new SpaInstaller($this->appInfo, $io, $composer));
         }
     }
 
@@ -178,7 +179,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     public function buildSinglePageApps()
     {
         $base_dir = $this->appInfo->writableDir() . DIRECTORY_SEPARATOR . 'spa';
-        $data_file = $base_dir . DIRECTORY_SEPARATOR . 'spa';
+        $data_file = $base_dir . DIRECTORY_SEPARATOR . 'data.json';
 
         if (!file_exists($data_file)) {
             return;
