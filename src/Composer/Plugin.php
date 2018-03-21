@@ -172,9 +172,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         return $packages;
     }
 
-
     /**
-     * Build SPAs
+     * @param array $enabled
      */
     public function buildSinglePageApps(array $enabled)
     {
