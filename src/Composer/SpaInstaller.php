@@ -220,40 +220,42 @@ class SpaInstaller extends LibraryInstaller
 
         $fs = new Filesystem();
 
-        foreach (array_keys($modules[$module]) as $app_name) {
-            $app = &$apps[$app_name];
-            if ($app['owner'] === $module) {
-                if (!isset($spa['register'][$app['name']])) {
-                    //remove spa
-                    foreach ($app['modules'] as $module_name) {
-                        unset($modules[$module_name][$app_name]);
+        if (isset($modules[$module])) {
+            foreach (array_keys($modules[$module]) as $app_name) {
+                $app = &$apps[$app_name];
+                if ($app['owner'] === $module) {
+                    if (!isset($spa['register'][$app['name']])) {
+                        //remove spa
+                        foreach ($app['modules'] as $module_name) {
+                            unset($modules[$module_name][$app_name]);
+                        }
+                        $fs->remove($app['dir']);
+                        $fs->remove($this->appInfo->assetsDir() . DIRECTORY_SEPARATOR . $app_name);
+                        unset($apps[$app_name]);
+                    } else {
+                        unset($spa['register'][$app['name']]);
+                        if (!in_array($app_name, $rebuild)) {
+                            $rebuild[] = $app_name;
+                        }
                     }
-                    $fs->remove($app['dir']);
-                    $fs->remove($this->appInfo->assetsDir() . DIRECTORY_SEPARATOR . $app_name);
-                    unset($apps[$app_name]);
                 } else {
-                    unset($spa['register'][$app['name']]);
+                    if (!isset($spa['extend'][$app['owner']][$app['name']])) {
+                        $app_modules = $app['modules'];
+                        if (false !== $key = array_search($module, $app_modules)) {
+                            unset($app_modules[$key]);
+                        }
+                        $app['modules'] = array_values($app_modules);
+                        $cwd = getcwd();
+                        chdir($app['dir']);
+                        passthru("yarn remove $package_name >> /dev/tty");
+                        chdir($cwd);
+                    } else {
+                        unset($spa['extend'][$app['owner']][$app['name']]);
+                    }
+
                     if (!in_array($app_name, $rebuild)) {
                         $rebuild[] = $app_name;
                     }
-                }
-            } else {
-                if (!isset($spa['extend'][$app['owner']][$app['name']])) {
-                    $app_modules = $app['modules'];
-                    if (false !== $key = array_search($module, $app_modules)) {
-                        unset($app_modules[$key]);
-                    }
-                    $app['modules'] = array_values($app_modules);
-                    $cwd = getcwd();
-                    chdir($app['dir']);
-                    passthru("yarn remove $package_name >> /dev/tty");
-                    chdir($cwd);
-                } else {
-                    unset($spa['extend'][$app['owner']][$app['name']]);
-                }
-
-                if (!in_array($app_name, $rebuild)) {
-                    $rebuild[] = $app_name;
                 }
             }
         }
