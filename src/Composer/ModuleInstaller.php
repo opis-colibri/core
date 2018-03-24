@@ -22,15 +22,19 @@ use Composer\Installer\LibraryInstaller;
 use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
 use Composer\Repository\InstalledRepositoryInterface;
-use Opis\Colibri\AppInfo;
-use Opis\Colibri\Application;
+use Opis\Colibri\{
+    AppInfo, Application
+};
+use Opis\Colibri\Composer\Installer\{
+    AssetsInstaller, SpaInstaller
+};
 
 class ModuleInstaller extends LibraryInstaller
 {
-    /** @var AssetsHandler */
+    /** @var AssetsInstaller */
     protected $assetsHandler;
 
-    /** @var SpaHandler */
+    /** @var SpaInstaller */
     protected $spaHandler;
 
     /**
@@ -42,8 +46,8 @@ class ModuleInstaller extends LibraryInstaller
      */
     public function __construct(AppInfo $appInfo, IOInterface $io, Composer $composer)
     {
-        $this->assetsHandler = new AssetsHandler($this, $appInfo, $io, $composer);
-        $this->spaHandler = new SpaHandler($this, $appInfo, $io, $composer);
+        $this->assetsHandler = new AssetsInstaller($this, $appInfo, $io, $composer);
+        $this->spaHandler = new SpaInstaller($this, $appInfo, $io, $composer);
         parent::__construct($io, $composer);
     }
 

@@ -15,12 +15,12 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Composer;
+namespace Opis\Colibri\Composer\Installer;
 
 use Composer\Package\PackageInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
-class AssetsHandler extends BaseHandler
+class AssetsInstaller extends AbstractInstaller
 {
     /**
      * @param PackageInterface $package

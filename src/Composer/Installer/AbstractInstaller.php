@@ -15,13 +15,14 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Composer;
+namespace Opis\Colibri\Composer\Installer;
 
 use Composer\Composer;
 use Composer\IO\IOInterface;
 use Opis\Colibri\AppInfo;
+use Opis\Colibri\Composer\ModuleInstaller;
 
-abstract class BaseHandler
+abstract class AbstractInstaller
 {
     /** @var AppInfo */
     protected $appInfo;

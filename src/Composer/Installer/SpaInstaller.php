@@ -15,13 +15,14 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Composer;
+namespace Opis\Colibri\Composer\Installer;
 
 use Composer\Package\PackageInterface;
 use Opis\Colibri\SPA\DefaultSpaHandler;
+use Opis\Colibri\SPA\SpaHandler;
 use Symfony\Component\Filesystem\Filesystem;
 
-class SpaHandler extends BaseHandler
+class SpaInstaller extends AbstractInstaller
 {
     /**
      * @param PackageInterface $package
@@ -70,7 +71,6 @@ class SpaHandler extends BaseHandler
             $source_dir = $module_dir . DIRECTORY_SEPARATOR . $app['source'];
             $template_dir = $module_dir . DIRECTORY_SEPARATOR . $app['template'];
             $package_json = $source_dir . DIRECTORY_SEPARATOR . 'package.json';
-
             if (!file_exists($package_json) || !is_dir($template_dir)) {
                 continue;
             }
