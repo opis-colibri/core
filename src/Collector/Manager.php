@@ -21,6 +21,8 @@ use Opis\Cache\CacheInterface;
 use Opis\Colibri\Application;
 use Opis\Colibri\Container;
 use Opis\Colibri\Collector;
+use function Opis\Colibri\Functions\app;
+use function Opis\Colibri\Functions\make;
 use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Module;
 use Opis\Colibri\Serializable\CallbackList;
@@ -51,11 +53,11 @@ class Manager
     /** @var array */
     protected $cache = array();
 
-    /** @var   Container */
-    protected $container;
-
     /** @var Router */
     protected $router;
+
+    /** @var Container */
+    protected $container;
 
     /** @var    boolean */
     protected $collectorsIncluded = false;
@@ -72,9 +74,8 @@ class Manager
      */
     public function __construct(Application $app)
     {
-        $this->container = $container = new Container();
-        $this->router = new Router();
         $this->app = $app;
+        $this->router = new Router();
         $this->proxy = new class(null) extends ItemCollector
         {
             public function update(ItemCollector $collector, Module $module, string $name, int $priority)
@@ -89,11 +90,6 @@ class Manager
                 return $collector->data;
             }
         };
-
-        foreach ($app->getCollectorList() as $name => $collector) {
-            $container->alias($collector['class'], $name);
-            $container->singleton($collector['class']);
-        }
     }
 
     /**
@@ -300,7 +296,7 @@ class Manager
             $this->cache[$entry] = $this->app->getCache()->load($entry, function ($entryName) use (&$hit) {
                 $hit = true;
                 $this->includeCollectors();
-                $instance = $this->container->make($entryName);
+                $instance = $this->getInternalContainer()->make($entryName);
                 $entry = new Entry($entryName, $instance);
                 $result = $this->router->route(new Context($entryName, $entry));
                 return $this->proxy->getData($result);
@@ -327,9 +323,16 @@ class Manager
             return false;
         }
 
-        $this->collectorsIncluded = false;
+        if ($fresh) {
+            $this->app->clearCachedObjects();
+            $this->cache = [];
+            $this->container = null;
+        }
 
-        foreach (array_keys($this->app->getCollectorList($fresh)) as $entry) {
+        $this->collectorsIncluded = false;
+        $list = $this->app->getCollectorList($fresh);
+
+        foreach (array_keys($list) as $entry) {
             $this->collect($entry, $fresh);
         }
 
@@ -355,8 +358,8 @@ class Manager
             'description' => $description,
             'options' => $options,
         ));
-        $this->container->singleton($class);
-        $this->container->alias($class, $name);
+        $this->getInternalContainer()->singleton($class);
+        $this->getInternalContainer()->alias($class, $name);
     }
 
     /**
@@ -367,6 +370,21 @@ class Manager
     public function unregister(string $name)
     {
         $this->app->getConfig()->delete('collectors.' . strtolower($name));
+    }
+
+    /**
+     * @return Container
+     */
+    protected function getInternalContainer(): Container
+    {
+        if ($this->container === null) {
+            $this->container = $container = new Container();
+            foreach ($this->app->getCollectorList() as $name => $collector) {
+                $container->alias($collector['class'], $name);
+                $container->singleton($collector['class']);
+            }
+        }
+        return $this->container;
     }
 
     /**
@@ -388,7 +406,7 @@ class Manager
                 continue;
             }
 
-            $instance = $this->container->make($module->collector());
+            $instance = $this->getInternalContainer()->make($module->collector());
 
             $reflection = new ReflectionClass($instance);
 

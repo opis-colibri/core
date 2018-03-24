@@ -78,9 +78,6 @@ class Application implements ISettingsContainer
     /** @var    array|null */
     protected $modules;
 
-    /** @var    boolean */
-    protected $collectorsIncluded = false;
-
     /** @var  CollectorManager */
     protected $collector;
 
@@ -304,8 +301,7 @@ class Application implements ISettingsContainer
     public function getContainer(): Container
     {
         if ($this->containerInstance === null) {
-            $container = $this->getCollector()->getContracts();
-            $this->containerInstance = $container;
+            $this->containerInstance = $this->getCollector()->getContracts();
         }
 
         return $this->containerInstance;
@@ -737,6 +733,23 @@ class Application implements ISettingsContainer
         $this->implicit['logger'] = $logger;
 
         return $this;
+    }
+
+    /**
+     * Clear cached objects
+     */
+    public function clearCachedObjects()
+    {
+        $this->containerInstance = null;
+        $this->viewApp = null;
+        $this->session = null;
+        $this->httpRouter = null;
+        $this->collectorList = null;
+        $this->cache = [];
+        $this->config = [];
+        $this->connection = [];
+        $this->database = [];
+        $this->entityManager = [];
     }
 
     /**
