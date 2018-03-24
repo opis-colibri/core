@@ -55,6 +55,8 @@ use Opis\Intl\Translator\IDriver as TranslatorDriver;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use SessionHandlerInterface;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
 
 class Application implements ISettingsContainer
 {
@@ -1200,9 +1202,18 @@ class Application implements ISettingsContainer
      */
     protected function dumpAutoload()
     {
+        if (PHP_SAPI !== 'cli') {
+            if (getenv('HOME') === false) {
+                putenv('HOME=' . posix_getpwuid(fileowner($this->info->rootDir()))['dir']);
+            }
+        }
         $cwd = getcwd();
         chdir($this->info->rootDir());
-        exec('composer dump-autoload');
+        $console = new \Composer\Console\Application();
+        $console->setAutoExit(false);
+        $console->run(new ArrayInput([
+            'command' => 'dump-autoload'
+        ]));
         chdir($cwd);
     }
 }
