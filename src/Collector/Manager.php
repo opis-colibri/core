@@ -409,7 +409,7 @@ class Manager
                     $priority = 0;
                 }
 
-                $map[$key] = [$name, $priority];
+                $map[$key] = [strtolower($name), $priority];
             }
 
             foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
@@ -423,7 +423,7 @@ class Manager
                 if (isset($map[$methodName])) {
                     list($name, $priority) = $map[$methodName];
                 } else {
-                    $name = $methodName;
+                    $name = strtolower($methodName);
                     $priority = 0;
                 }
 
