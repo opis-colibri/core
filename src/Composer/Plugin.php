@@ -224,6 +224,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
             $cwd = getcwd();
             chdir($app['dir']);
+            passthru('yarn install >> /dev/tty');
             passthru('yarn upgrade >> /dev/tty');
             passthru("yarn run build >> /dev/tty");
             chdir($cwd);
