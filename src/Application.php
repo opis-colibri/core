@@ -1201,7 +1201,7 @@ class Application implements ISettingsContainer
     {
         $cwd = getcwd();
         chdir($this->info->rootDir());
-        passthru('composer dump-autoload');
+        exec('composer dump-autoload');
         chdir($cwd);
     }
 }
