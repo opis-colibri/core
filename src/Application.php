@@ -875,7 +875,7 @@ class Application implements ISettingsContainer
 
         if (false !== $installer = $module->installer()) {
             /** @var Installer $installer */
-            $installer = $this->getContainer()->make($installer);
+            $installer = new $installer();
             try {
                 $installer->install();
             } catch (\Exception $e) {
@@ -923,7 +923,7 @@ class Application implements ISettingsContainer
 
         if (false !== $installer = $module->installer()) {
             /** @var Installer $installer */
-            $installer = $this->getContainer()->make($installer);
+            $installer = new $installer();
             try {
                 $installer->uninstall();
             } catch (\Exception $e) {
@@ -988,7 +988,7 @@ class Application implements ISettingsContainer
 
         if (false !== $installer = $module->installer()) {
             /** @var Installer $installer */
-            $installer = $this->getContainer()->make($installer);
+            $installer = new $installer();
             try {
                 $installer->enable();
             } catch (\Exception $e) {
@@ -1036,7 +1036,7 @@ class Application implements ISettingsContainer
 
         if (false !== $installer = $module->installer()) {
             /** @var Installer $installer */
-            $installer = $this->getContainer()->make($installer);
+            $installer = new $installer();
             try {
                 $installer->disable();
             } catch (\Exception $e) {
