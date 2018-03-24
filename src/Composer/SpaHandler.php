@@ -395,7 +395,7 @@ class SpaHandler extends BaseHandler
     {
         $dir = $this->appInfo->writableDir() . DIRECTORY_SEPARATOR . 'spa';
         if (!is_dir($dir)) {
-            mkdir($dir,0775, true);
+            mkdir($dir, 0775, true);
         }
         $file = $dir . DIRECTORY_SEPARATOR . 'data.json';
         file_put_contents($file, json_encode($data));

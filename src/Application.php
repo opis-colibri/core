@@ -403,7 +403,7 @@ class Application implements ISettingsContainer
      */
     public function getSession(): Session
     {
-        if($this->session === null){
+        if ($this->session === null) {
             if (!isset($this->implicit['session'])) {
                 throw new \RuntimeException('The default session storage was not set');
             }
@@ -539,7 +539,7 @@ class Application implements ISettingsContainer
     {
         if ($this->httpRequestInstance === null) {
             $global = $this->getGlobalValues();
-            if(!isset($global['request'])){
+            if (!isset($global['request'])) {
                 $global['request'] = HttpRequest::fromGlobals();
             }
             $this->httpRequestInstance = $global['request'];
@@ -655,7 +655,7 @@ class Application implements ISettingsContainer
 
         if (isset($list[$module])) {
             return $list[$module]($module, $path, $full);
-        } elseif (isset($list['*'])){
+        } elseif (isset($list['*'])) {
             return $list['*']($module, $path, $full);
         }
 
@@ -840,11 +840,11 @@ class Application implements ISettingsContainer
 
         $this->setHttpRequest($request);
 
-        $context = new Context($request->path(),  $request);
+        $context = new Context($request->path(), $request);
 
         $response = $this->getHttpRouter()->route($context);
 
-        if(!$response instanceof HttpResponse) {
+        if (!$response instanceof HttpResponse) {
             $response = new HttpResponse($response);
         }
 

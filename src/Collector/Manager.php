@@ -17,28 +17,32 @@
 
 namespace Opis\Colibri\Collector;
 
-use Opis\Cache\CacheInterface;
-use Opis\Colibri\Application;
-use Opis\Colibri\Container;
-use Opis\Colibri\Collector;
-use Opis\Colibri\ItemCollector;
-use Opis\Colibri\Module;
-use Opis\Colibri\Serializable\CallbackList;
-use Opis\Colibri\Serializable\ClassList;
-use Opis\Config\ConfigInterface;
-use Opis\Database\Connection;
-use Opis\Database\Database;
-use Opis\Events\Event;
-use Opis\Events\RouteCollection as EventsRouteCollection;
-use Opis\HttpRouting\RouteCollection as HttpRouteCollection;
-use Opis\Routing\Context;
-use Opis\Routing\RouteCollection as PathAliasCollection;
-use Opis\View\RouteCollection as ViewRouteCollection;
-use Opis\View\EngineResolver;
-use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use RuntimeException;
+use Opis\Colibri\{
+    Application, Container, Collector, ItemCollector, Module
+};
+use Opis\Colibri\Serializable\{
+    CallbackList, ClassList
+};
+use Opis\Database\{
+    Connection, Database
+};
+use Opis\Events\{
+    Event, RouteCollection as EventsRouteCollection
+};
+use Opis\HttpRouting\RouteCollection as HttpRouteCollection;
+use Opis\Routing\{
+    Context, RouteCollection as PathAliasCollection
+};
+use Opis\View\{
+    EngineResolver, RouteCollection as ViewRouteCollection
+};
+use Opis\Config\ConfigInterface;
+use Opis\Cache\CacheInterface;
+use Psr\Log\LoggerInterface;
+
 
 class Manager
 {
@@ -208,9 +212,9 @@ class Manager
     {
         $list = $this->collect('SessionHandlers', $fresh)->getList();
 
-        if(isset($list['session'])){
+        if (isset($list['session'])) {
             $instance = $list['session']();
-            if($instance instanceof \SessionHandlerInterface){
+            if ($instance instanceof \SessionHandlerInterface) {
                 return $instance;
             }
         }

@@ -235,7 +235,7 @@ class RouteCollector extends ItemCollector
      */
     protected function handle($path, $action, $method, $name = null)
     {
-        if(!is_array($method)){
+        if (!is_array($method)) {
             $method = [$method];
         }
         $route = new HttpRoute($this->prefix . $path, $action, $name);

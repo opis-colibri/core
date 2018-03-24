@@ -39,7 +39,7 @@ class DefaultSpaHandler extends SpaHandler
         $dir = $this->spa->dir();
         $tpl = $dir . DIRECTORY_SEPARATOR . 'index.tpl.js';
         if (file_exists($tpl)) {
-           $content = str_replace('/*{{import}}*/', $content, file_get_contents($tpl));
+            $content = str_replace('/*{{import}}*/', $content, file_get_contents($tpl));
         }
         file_put_contents($dir . DIRECTORY_SEPARATOR . 'index.js', $content);
     }

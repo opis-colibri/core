@@ -26,9 +26,9 @@ class SpaInfo
     private $dir;
     /** @var string[] */
     private $modules;
-    /** @var string  */
+    /** @var string */
     private $owner;
-    /** @var string  */
+    /** @var string */
     private $dist;
 
     /**

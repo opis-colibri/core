@@ -25,7 +25,7 @@ use Opis\Colibri\Routing\HttpRoute;
  * @method RouteGroup filter(string ...$callbacks)
  * @method RouteGroup implicit(string $name, $value)
  * @method RouteGroup where(string $name, $value)
- * @method RouteGroup whereIn(string $name, string[] $value)
+ * @method RouteGroup whereIn(string $name, string [] $value)
  * @method RouteGroup guard(string ...$callbacks)
  * @method RouteGroup callback(string $name, callable $callback)
  * @method RouteGroup middleware(string ...$middleware)
