@@ -21,8 +21,6 @@ use Opis\Cache\CacheInterface;
 use Opis\Colibri\Application;
 use Opis\Colibri\Container;
 use Opis\Colibri\Collector;
-use function Opis\Colibri\Functions\app;
-use function Opis\Colibri\Functions\make;
 use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Module;
 use Opis\Colibri\Serializable\CallbackList;
@@ -42,12 +40,6 @@ use ReflectionClass;
 use ReflectionMethod;
 use RuntimeException;
 
-/**
- * Description of CollectorManager
- *
- * @author mari
- *
- */
 class Manager
 {
     /** @var array */
