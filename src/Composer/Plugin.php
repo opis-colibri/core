@@ -59,9 +59,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $this->appInfo = new AppInfo($rootDir, $settings);
         $this->isProject = $composer->getPackage()->getType() === 'project';
         if ($this->isProject) {
-            $manager = $this->composer->getInstallationManager();
-            $manager->addInstaller(new AssetsInstaller($this->appInfo, $io, $composer));
-            $manager->addInstaller(new SpaInstaller($this->appInfo, $io, $composer));
+            $this->composer
+                ->getInstallationManager()
+                ->addInstaller(new ModuleInstaller($this->appInfo, $io, $composer));
         }
     }
 

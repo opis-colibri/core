@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2014-2017 The Opis Project
+ * Copyright 2014-2018 The Opis Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,74 +17,16 @@
 
 namespace Opis\Colibri\Composer;
 
-use Composer\Composer;
-use Composer\Installer\LibraryInstaller;
-use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
-use Composer\Repository\InstalledRepositoryInterface;
-use Opis\Colibri\AppInfo;
-use Opis\Colibri\Application;
 use Opis\Colibri\SPA\DefaultSpaHandler;
-use Opis\Colibri\SPA\SpaHandler;
 use Symfony\Component\Filesystem\Filesystem;
 
-class SpaInstaller extends LibraryInstaller
+class SpaHandler extends BaseHandler
 {
-    /* @var AppInfo */
-    protected $appInfo;
-
-    /**
-     * Installer constructor.
-     *
-     * @param AppInfo $appInfo
-     * @param IOInterface $io
-     * @param Composer $composer
-     */
-    public function __construct(AppInfo $appInfo, IOInterface $io, Composer $composer)
-    {
-        $this->appInfo = $appInfo;
-        parent::__construct($io, $composer);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function supports($packageType)
-    {
-        return $packageType === Application::COMPOSER_TYPE;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
-    {
-        parent::install($repo, $package);
-        $this->installAssets($package);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target)
-    {
-        parent::update($repo, $initial, $target);
-        $this->updateAssets($target);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
-    {
-        $this->uninstallAssets($package);
-        parent::uninstall($repo, $package);
-    }
-
     /**
      * @param PackageInterface $package
      */
-    public function installAssets(PackageInterface $package)
+    public function install(PackageInterface $package)
     {
         $extra = $package->getExtra();
 
@@ -100,7 +42,7 @@ class SpaInstaller extends LibraryInstaller
 
         $module = $package->getName();
         $package_name = str_replace('/', '.', $module);
-        $module_dir = $this->getInstallPath($package);
+        $module_dir = $this->installer->getInstallPath($package);
         $base_dir = $this->appInfo->writableDir() . DIRECTORY_SEPARATOR . 'spa';
         $data = $this->getSpaData();
         $apps = &$data['apps'];
@@ -205,13 +147,13 @@ class SpaInstaller extends LibraryInstaller
     /**
      * @param PackageInterface $package
      */
-    public function updateAssets(PackageInterface $package)
+    public function update(PackageInterface $package)
     {
         $extra = $package->getExtra();
         $spa = $extra['module']['spa'] ?? ['register' => [], 'extend' => []];
         $module = $package->getName();
         $package_name = str_replace('/', '.', $module);
-        $module_dir = $this->getInstallPath($package);
+        $module_dir = $this->installer->getInstallPath($package);
         $base_dir = $this->appInfo->writableDir() . DIRECTORY_SEPARATOR . 'spa';
         $data = $this->getSpaData();
         $apps = &$data['apps'];
@@ -365,7 +307,7 @@ class SpaInstaller extends LibraryInstaller
     /**
      * @param PackageInterface $package
      */
-    public function uninstallAssets(PackageInterface $package)
+    public function uninstall(PackageInterface $package)
     {
         $extra = $package->getExtra();
 
@@ -430,6 +372,9 @@ class SpaInstaller extends LibraryInstaller
         $this->setSpaData($data);
     }
 
+    /**
+     * @return array
+     */
     private function getSpaData(): array
     {
         $file = implode(DIRECTORY_SEPARATOR, [$this->appInfo->writableDir(), 'spa', 'data.json']);
@@ -443,6 +388,9 @@ class SpaInstaller extends LibraryInstaller
         ];
     }
 
+    /**
+     * @param array $data
+     */
     private function setSpaData(array $data)
     {
         $dir = $this->appInfo->writableDir() . DIRECTORY_SEPARATOR . 'spa';

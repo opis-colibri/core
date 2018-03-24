@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2014-2017 The Opis Project
+ * Copyright 2014-2018 The Opis Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,73 +17,15 @@
 
 namespace Opis\Colibri\Composer;
 
-use Composer\Composer;
-use Composer\Installer\LibraryInstaller;
-use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
-use Composer\Repository\InstalledRepositoryInterface;
-use Opis\Colibri\AppInfo;
-use Opis\Colibri\Application;
 use Symfony\Component\Filesystem\Filesystem;
 
-class AssetsInstaller extends LibraryInstaller
+class AssetsHandler extends BaseHandler
 {
-    /* @var AppInfo */
-    protected $appInfo;
-
-    /**
-     * Installer constructor.
-     *
-     * @param AppInfo $appInfo
-     * @param IOInterface $io
-     * @param Composer $composer
-     */
-    public function __construct(AppInfo $appInfo, IOInterface $io, Composer $composer)
-    {
-        $this->appInfo = $appInfo;
-        parent::__construct($io, $composer);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function supports($packageType)
-    {
-        return $packageType === Application::COMPOSER_TYPE;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
-    {
-        parent::install($repo, $package);
-        $this->installAssets($package);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target)
-    {
-        $this->uninstallAssets($initial);
-        parent::update($repo, $initial, $target);
-        $this->installAssets($target);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
-    {
-        $this->uninstallAssets($package);
-        parent::uninstall($repo, $package);
-    }
-
     /**
      * @param PackageInterface $package
      */
-    public function installAssets(PackageInterface $package)
+    public function install(PackageInterface $package)
     {
         $extra = $package->getExtra();
         if (!isset($extra['module']['assets'])) {
@@ -118,7 +60,7 @@ class AssetsInstaller extends LibraryInstaller
             }
         }
 
-        $base_dir = $this->getInstallPath($package);
+        $base_dir = $this->installer->getInstallPath($package);
         $cwd = getcwd();
 
         if ($assets['build'] !== null) {
@@ -159,7 +101,7 @@ class AssetsInstaller extends LibraryInstaller
     /**
      * @param PackageInterface $package
      */
-    public function uninstallAssets(PackageInterface $package)
+    public function uninstall(PackageInterface $package)
     {
         $extra = $package->getExtra();
         if (!isset($extra['module']['assets'])) {
@@ -181,7 +123,7 @@ class AssetsInstaller extends LibraryInstaller
             ];
         }
 
-        $base_dir = $this->getInstallPath($package);
+        $base_dir = $this->installer->getInstallPath($package);
         $dir = $base_dir . DIRECTORY_SEPARATOR . $assets['source'];
 
         if (file_exists($dir . DIRECTORY_SEPARATOR . 'package.json')) {
@@ -195,35 +137,5 @@ class AssetsInstaller extends LibraryInstaller
             $name = str_replace('/', '.', $package->getName());
             $fs->remove($this->appInfo->assetsDir() . DIRECTORY_SEPARATOR . $name);
         }
-    }
-
-    /**
-     * Runs a yarn command
-     * @param array|string $args
-     * @param string $redirect
-     */
-    protected function yarn($args, string $redirect = '/dev/tty')
-    {
-        $command = 'yarn';
-        if (is_string($args)) {
-            $command .= ' ' . $args;
-        } else {
-            foreach ($args as $name => $arg) {
-                $command .= ' ' . $name;
-                if ($arg === null) {
-                    continue;
-                }
-                if (is_array($arg)) {
-                    $arg = implode(' ', array_map('escapeshellarg', $arg));
-                } elseif (is_scalar($arg)) {
-                    $arg = escapeshellarg($arg);
-                }
-                $command .= ' ' . $arg;
-            }
-        }
-        if ($redirect !== '') {
-            $command .= ' >> ' . $redirect;
-        }
-        passthru($command);
     }
 }
