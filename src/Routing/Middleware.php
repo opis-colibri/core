@@ -26,7 +26,7 @@ abstract class Middleware
     private $next;
 
     /**
-     * Middleware constructor.
+     * @param Closure $next
      */
     final function __construct(Closure $next)
     {

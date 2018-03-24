@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Commands;
 
 use Composer\IO\ConsoleIO;
-use Opis\Colibri\Composer\AssetsInstaller;
+use Opis\Colibri\Composer\ModuleInstaller;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Helper\HelperSet;
@@ -53,7 +53,9 @@ class BuildAssets extends Command
         $output->getFormatter()->setStyle('b-info', new OutputFormatterStyle('yellow', null, array('bold')));
 
         $fs = new Filesystem();
-        $installer = new AssetsInstaller(info(), new ConsoleIO($input, $output, new HelperSet()), app()->getComposer());
+        $installer = new ModuleInstaller(info(), new ConsoleIO($input, $output, new HelperSet()), app()->getComposer());
+        $installer = $installer->getAssetsInstaller();
+
         $modules = $input->getArgument('module');
         $dependencies = $input->getOption('dependencies');
 
@@ -81,13 +83,13 @@ class BuildAssets extends Command
             $name = str_replace('/', '.', $module->name());
 
             if ($dependencies) {
-                $installer->uninstallAssets($module->getPackage());
+                $installer->uninstall($module->getPackage());
             } else {
                 $fs->remove(info()->assetsDir() . DIRECTORY_SEPARATOR . $name);
             }
 
             if ($dependencies) {
-                $installer->installAssets($module->getPackage());
+                $installer->install($module->getPackage());
             } else {
                 $fs->mirror($module->assets(), info()->assetsDir() . DIRECTORY_SEPARATOR . $name);
             }

@@ -89,4 +89,20 @@ class ModuleInstaller extends LibraryInstaller
         $this->spaHandler->uninstall($package);
         parent::uninstall($repo, $package);
     }
+
+    /**
+     * @return AssetsInstaller
+     */
+    public function getAssetsInstaller(): AssetsInstaller
+    {
+        return $this->assetsHandler;
+    }
+
+    /**
+     * @return SpaInstaller
+     */
+    public function getSpaInstaller(): SpaInstaller
+    {
+        return $this->spaHandler;
+    }
 }

@@ -18,7 +18,6 @@
 namespace Opis\Colibri\Collector;
 
 use Opis\Events\RouteCollection;
-use Opis\Routing\Context;
 use Opis\Routing\IDispatcher;
 use Opis\Routing\Route;
 use Opis\Routing\Router as BaseRouter;

@@ -19,6 +19,7 @@ namespace Opis\Colibri;
 
 use Composer\Autoload\ClassLoader;
 use Composer\Composer;
+use Composer\Factory;
 use Composer\IO\NullIO;
 use Composer\Json\JsonFile;
 use Composer\Package\CompletePackage;
@@ -26,7 +27,6 @@ use Composer\Repository\InstalledFilesystemRepository;
 use Opis\Cache\CacheInterface;
 use Opis\Cache\Drivers\Memory as MemoryDriver;
 use Opis\Colibri\Collector\Manager as CollectorManager;
-use Opis\Colibri\Composer\CLI;
 use Opis\Colibri\Composer\Plugin;
 use Opis\Colibri\Rendering\TemplateStream;
 use Opis\Colibri\Rendering\ViewEngine;
@@ -65,9 +65,6 @@ class Application implements ISettingsContainer
 
     /** @var    Composer */
     protected $composer;
-
-    /** @var    CLI */
-    protected $composerCLI;
 
     /** @var ClassLoader */
     protected $classLoader;
@@ -180,25 +177,17 @@ class Application implements ISettingsContainer
     /**
      * Get a Composer instance
      *
+     * @param bool $new
      * @return  Composer
      */
-    public function getComposer(): Composer
+    public function getComposer(bool $new = false): Composer
     {
-        return $this->getComposerCLI()->getComposer();
-    }
-
-    /**
-     * Get Composer CLI
-     *
-     * @return  CLI
-     */
-    public function getComposerCLI(): CLI
-    {
-        if ($this->composerCLI === null) {
-            $this->composerCLI = new CLI();
+        if ($this->composer !== null && $new === false) {
+            return $this->composer;
         }
-
-        return $this->composerCLI;
+        $rootDir = $this->info->rootDir();
+        $composerFile = $this->info->composerFile();
+        return (new Factory())->createComposer(new NullIO(), $composerFile, false, $rootDir);
     }
 
     /**
@@ -765,7 +754,7 @@ class Application implements ISettingsContainer
             return $this;
         }
 
-        $composer = $this->getComposerCLI()->getComposer();
+        $composer = $this->getComposer(true);
         $generator = $composer->getAutoloadGenerator();
         $enabled = [];
         $canonicalPacks = [];
@@ -883,7 +872,7 @@ class Application implements ISettingsContainer
         $installed[] = $module->name();
         $config->write('modules.installed', $installed);
 
-        $this->getComposerCLI()->dumpAutoload();
+        $this->dumpAutoload();
         $this->reloadClassLoader();
 
         if (false !== $installer = $module->installer()) {
@@ -896,7 +885,7 @@ class Application implements ISettingsContainer
                 // Revert
                 array_pop($installed);
                 $config->write('modules.installed', $installed);
-                $this->getComposerCLI()->dumpAutoload();
+                $this->dumpAutoload();
                 $this->reloadClassLoader();
                 $mutex->unlock();
                 return false;
@@ -956,7 +945,7 @@ class Application implements ISettingsContainer
         array_splice($installed, $pos, 1);
         $config->write('modules.installed', $installed);
 
-        $this->getComposerCLI()->dumpAutoload();
+        $this->dumpAutoload();
         $this->reloadClassLoader();
 
         if ($recollect) {
@@ -996,7 +985,7 @@ class Application implements ISettingsContainer
         $config->write('modules.enabled', $enabled);
 
         $this->rebuildSPA($module);
-        $this->getComposerCLI()->dumpAutoload();
+        $this->dumpAutoload();
         $this->reloadClassLoader();
 
         if (false !== $installer = $module->installer()) {
@@ -1009,7 +998,7 @@ class Application implements ISettingsContainer
                 // Revert
                 array_pop($enabled);
                 $config->write('modules.enabled', $enabled);
-                $this->getComposerCLI()->dumpAutoload();
+                $this->dumpAutoload();
                 $this->reloadClassLoader();
                 $mutex->unlock();
                 return false;
@@ -1070,7 +1059,7 @@ class Application implements ISettingsContainer
         $config->write('modules.enabled', $enabled);
 
         $this->rebuildSPA($module);
-        $this->getComposerCLI()->dumpAutoload();
+        $this->dumpAutoload();
         $this->reloadClassLoader();
 
         if ($recollect) {
@@ -1111,7 +1100,7 @@ class Application implements ISettingsContainer
     protected function reloadClassLoader()
     {
         $this->classLoader->unregister();
-        $this->classLoader = $this->generateClassLoader($this->getComposer());
+        $this->classLoader = $this->generateClassLoader($this->getComposer(true));
         $this->classLoader->register();
     }
 
@@ -1203,5 +1192,16 @@ class Application implements ISettingsContainer
         }
 
         file_put_contents($data_file, json_encode($data));
+    }
+
+    /**
+     * Dump autoload
+     */
+    protected function dumpAutoload()
+    {
+        $cwd = getcwd();
+        chdir($this->info->rootDir());
+        passthru('composer dump-autoload');
+        chdir($cwd);
     }
 }
