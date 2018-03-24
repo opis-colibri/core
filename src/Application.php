@@ -1099,8 +1099,9 @@ class Application implements ISettingsContainer
      */
     protected function reloadClassLoader()
     {
+        $loader = $this->generateClassLoader($this->getComposer(true));
         $this->classLoader->unregister();
-        $this->classLoader = $this->generateClassLoader($this->getComposer(true));
+        $this->classLoader = $loader;
         $this->classLoader->register();
     }
 
