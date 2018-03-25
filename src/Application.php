@@ -1203,8 +1203,9 @@ class Application implements ISettingsContainer
     protected function dumpAutoload()
     {
         if (PHP_SAPI !== 'cli') {
-            if (getenv('HOME') === false) {
-                putenv('HOME=' . posix_getpwuid(fileowner($this->info->rootDir()))['dir']);
+            if (getenv('COMPOSER_HOME') === false) {
+                $dir = posix_getpwuid(fileowner($this->info->rootDir()))['dir'];
+                putenv('COMPOSER_HOME=' . $dir . DIRECTORY_SEPARATOR . '.composer');
             }
         }
         $cwd = getcwd();
