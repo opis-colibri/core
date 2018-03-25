@@ -64,6 +64,9 @@ class Manager
     /** @var ItemCollector */
     protected $proxy;
 
+    /** @var string[] */
+    protected $collectStack = [];
+
     /**
      * Manager constructor.
      * @param Application $app
@@ -72,7 +75,18 @@ class Manager
     {
         $this->app = $app;
         $this->router = new Router();
-        $this->container = $container = new Container();
+        $this->container = $container = new class() extends Container
+        {
+            /**
+             * Get existing instance if any
+             * @param string $name
+             * @return null|ItemCollector
+             */
+            public function existingInstance(string $name)
+            {
+                return $this->instances[$name] ?? null;
+            }
+        };
 
         foreach ($this->app->getCollectorList() as $name => $collector) {
             $container->alias($collector['class'], $name);
@@ -114,7 +128,6 @@ class Manager
     {
         return $this->collect('Contracts', $fresh);
     }
-
 
     /**
      * @param bool $fresh
@@ -210,7 +223,6 @@ class Manager
         return $this->collect('Middleware', $fresh);
     }
 
-
     /**
      * @param \SessionHandlerInterface $default
      * @param bool $fresh
@@ -284,6 +296,17 @@ class Manager
     {
         $entry = strtolower($type);
 
+        if (in_array($entry, $this->collectStack)) {
+            $existingInstance = $this->container->existingInstance($entry);
+            if ($existingInstance === null) {
+                $error = implode(' -> ', array_merge($this->collectStack, $entry));
+                throw new RuntimeException("Recursive collect for {$type}: {$error}");
+            }
+            return $this->proxy->getData($existingInstance);
+        }
+
+        $this->collectStack[] = $entry;
+
         if ($fresh) {
             unset($this->cache[$entry]);
         }
@@ -310,6 +333,8 @@ class Manager
                 $this->app->getEventTarget()->dispatch(new Event('system.collect.' . $entry));
             }
         }
+
+        array_pop($this->collectStack);
 
         return $this->cache[$entry];
     }
