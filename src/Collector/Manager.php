@@ -75,19 +75,7 @@ class Manager
     {
         $this->app = $app;
         $this->router = new Router();
-        $this->container = $container = new class() extends Container
-        {
-            /**
-             * Get existing instance if any
-             * @param string $name
-             * @return null|ItemCollector
-             */
-            public function existingInstance(string $name)
-            {
-                return $this->instances[$name] ?? null;
-            }
-        };
-
+        $this->container = $container = new Container();
         foreach ($this->app->getCollectorList() as $name => $collector) {
             $container->alias($collector['class'], $name);
             $container->singleton($collector['class']);
@@ -297,12 +285,7 @@ class Manager
         $entry = strtolower($type);
 
         if (in_array($entry, $this->collectStack)) {
-            $existingInstance = $this->container->existingInstance($entry);
-            if ($existingInstance === null) {
-                $error = implode(' -> ', array_merge($this->collectStack, $entry));
-                throw new RuntimeException("Recursive collect for {$type}: {$error}");
-            }
-            return $this->proxy->getData($existingInstance);
+            return $this->proxy->getData($this->container->make($entry));
         }
 
         $this->collectStack[] = $entry;
