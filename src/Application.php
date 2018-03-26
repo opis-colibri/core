@@ -1208,7 +1208,7 @@ class Application implements ISettingsContainer
                 putenv('COMPOSER_HOME=' . $dir . DIRECTORY_SEPARATOR . '.composer');
             }
             if (getenv('PATH') === false) {
-                putenv('PATH=' . implode(':', ['/bin', '/usr/bin', '/usr/local/bin']));
+                putenv('PATH=' . implode(':', ['/usr/local/bin', '/usr/bin', '/bin']));
             }
         }
         $cwd = getcwd();
