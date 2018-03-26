@@ -101,6 +101,9 @@ class SpaInstaller extends AbstractInstaller
             }
             $fs->mirror($template_dir, $dir);
 
+            if (getenv('PATH') === false) {
+                putenv('PATH=' . implode(':', ['/usr/local/bin', '/usr/bin', '/bin']));
+            }
             $cwd = getcwd();
             chdir($dir);
             passthru("yarn install >> /dev/tty");

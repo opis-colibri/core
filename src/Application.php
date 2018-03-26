@@ -1207,9 +1207,6 @@ class Application implements ISettingsContainer
                 $dir = posix_getpwuid(fileowner($this->info->rootDir()))['dir'];
                 putenv('COMPOSER_HOME=' . $dir . DIRECTORY_SEPARATOR . '.composer');
             }
-            if (getenv('PATH') === false) {
-                putenv('PATH=' . implode(':', ['/usr/local/bin', '/usr/bin', '/bin']));
-            }
         }
         $cwd = getcwd();
         chdir($this->info->rootDir());

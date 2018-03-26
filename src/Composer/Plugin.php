@@ -225,6 +225,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             $cwd = getcwd();
             chdir($app['dir']);
             $redirect = PHP_SAPI === 'cli' ? '/dev/tty' : '/dev/null';
+            if (getenv('PATH') === false) {
+                putenv('PATH=' . implode(':', ['/usr/local/bin', '/usr/bin', '/bin']));
+            }
             passthru('yarn install >> ' . $redirect);
             passthru('yarn upgrade >> ' . $redirect);
             passthru('yarn run build >> ' . $redirect);
