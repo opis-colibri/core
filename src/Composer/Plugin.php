@@ -106,13 +106,18 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
         if (!$this->appInfo->installMode()) {
             $installMode = false;
-            $container = new SurrogateContainer($this->appInfo);
-            /** @var \Opis\Colibri\IBootstrap $bootstrap */
-            /** @noinspection PhpIncludeInspection */
-            $bootstrap = require $this->appInfo->bootstrapFile();
-            $bootstrap->bootstrap($container);
-            $installed = $container->getInstalledModules();
-            $enabled = $container->getEnabledModules();
+            if (null !== $app = Application::getInstance()) {
+                $config = $app->getConfig();
+            } else {
+                $container = new SurrogateContainer($this->appInfo);
+                /** @var \Opis\Colibri\IBootstrap $bootstrap */
+                /** @noinspection PhpIncludeInspection */
+                $bootstrap = require $this->appInfo->bootstrapFile();
+                $bootstrap->bootstrap($container);
+                $config = $container->getConfigDriver();
+            }
+            $installed = $config->read('modules.installed', []);
+            $enabled = $config->read('modules.enabled', []);
         }
 
         $this->preparePacks($installMode, $enabled, $installed);

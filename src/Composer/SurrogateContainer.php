@@ -45,22 +45,6 @@ class SurrogateContainer implements ISettingsContainer
     }
 
     /**
-     * @return array
-     */
-    public function getInstalledModules(): array
-    {
-        return $this->config->read('modules.installed', []);
-    }
-
-    /**
-     * @return array
-     */
-    public function getEnabledModules(): array
-    {
-        return $this->config->read('modules.enabled', []);
-    }
-
-    /**
      * @return AppInfo
      */
     public function getAppInfo(): AppInfo
@@ -68,6 +52,13 @@ class SurrogateContainer implements ISettingsContainer
         return $this->appInfo;
     }
 
+    /**
+     * @return ConfigInterface
+     */
+    public function getConfigDriver(): ConfigInterface
+    {
+        return $this->config;
+    }
 
     /**
      * @param ConfigInterface $driver

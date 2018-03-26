@@ -169,9 +169,9 @@ class Application implements ISettingsContainer
     }
 
     /**
-     * @return Application
+     * @return Application|null
      */
-    public static function getInstance(): Application
+    public static function getInstance()
     {
         return static::$instance;
     }
