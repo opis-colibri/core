@@ -35,11 +35,12 @@ class Filesystem extends BaseFilesystem
         $files = glob($pattern, $flags);
 
         // Check if this is to be recursive.
-        if (strpos($pattern, '**') !== FALSE) {
+        if (strpos($pattern, '**') !== false) {
             $dirs = glob(dirname($pattern) . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR | GLOB_NOSORT);
             if ($dirs) {
                 foreach ($dirs as $dir) {
-                    $files = array_merge($files, $this->recursiveGlob($dir . DIRECTORY_SEPARATOR . basename($pattern), $flags));
+                    $files = array_merge($files,
+                        $this->recursiveGlob($dir . DIRECTORY_SEPARATOR . basename($pattern), $flags));
                 }
             }
         }

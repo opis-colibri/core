@@ -18,6 +18,7 @@
 namespace Opis\Colibri\Composer\Installer;
 
 use Composer\Package\PackageInterface;
+use Opis\Colibri\Composer\YarnPackageManager;
 use Symfony\Component\Filesystem\Filesystem;
 
 class AssetsInstaller extends AbstractInstaller
@@ -39,14 +40,14 @@ class AssetsInstaller extends AbstractInstaller
             $assets = [
                 'source' => trim($extra['module']['assets'], DIRECTORY_SEPARATOR),
                 'build' => null,
-                'build_script' => null
+                'build_script' => null,
             ];
         } else {
             $assets = $extra['module']['assets'];
             $assets += [
                 'source' => null,
                 'build' => null,
-                'build_script' => 'build'
+                'build_script' => 'build',
             ];
 
             if (!is_string($assets['source'])) {
@@ -61,15 +62,13 @@ class AssetsInstaller extends AbstractInstaller
         }
 
         $base_dir = $this->installer->getInstallPath($package);
-        $cwd = getcwd();
 
         if ($assets['build'] !== null) {
             $dir = $base_dir . DIRECTORY_SEPARATOR . $assets['build'];
             if (file_exists($dir . DIRECTORY_SEPARATOR . 'package.json')) {
-                chdir($dir);
-                $this->yarn('install');
+                $this->yarn()->install(null, $dir);
                 if ($assets['build_script'] !== null) {
-                    $this->yarn(['run' => $assets['build_script']]);
+                    $this->yarn()->run($assets['build_script'], $dir);
                 }
             }
         }
@@ -88,14 +87,14 @@ class AssetsInstaller extends AbstractInstaller
             if (isset($dir[0]) && $dir[0] !== '.' && $dir[0] !== DIRECTORY_SEPARATOR) {
                 $dir = '.' . DIRECTORY_SEPARATOR . $dir;
             }
-            chdir($root);
-            $this->yarn(['add' => $dir, '--modules-folder' => $this->appInfo->assetsDir()]);
+            $this->yarn()->command('add', [
+                $dir,
+                '--modules-folder' => $this->appInfo->assetsDir(),
+            ], $root);
         } else {
             $name = str_replace('/', '.', $package->getName());
             $fs->mirror($dir, $this->appInfo->assetsDir() . DIRECTORY_SEPARATOR . $name);
         }
-
-        chdir($cwd);
     }
 
     /**
@@ -119,7 +118,7 @@ class AssetsInstaller extends AbstractInstaller
             $assets += [
                 'source' => null,
                 'build' => null,
-                'build_script' => 'build'
+                'build_script' => 'build',
             ];
         }
 
@@ -128,10 +127,10 @@ class AssetsInstaller extends AbstractInstaller
 
         if (file_exists($dir . DIRECTORY_SEPARATOR . 'package.json')) {
             $json = json_decode(file_get_contents($dir . DIRECTORY_SEPARATOR . 'package.json'), true);
-            $cwd = getcwd();
-            chdir($this->appInfo->rootDir());
-            $this->yarn(['remove' => $json['name'], '--modules-folder' => $this->appInfo->assetsDir()]);
-            chdir($cwd);
+            $this->yarn()->command('remove', [
+                $json['name'],
+                '--modules-folder' => $this->appInfo->assetsDir(),
+            ], $this->appInfo->rootDir());
         } else {
             $fs = new Filesystem();
             $name = str_replace('/', '.', $package->getName());

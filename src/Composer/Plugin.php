@@ -93,9 +93,10 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     /**
      * @param Event $event
      */
-    public function handleDumpAutoload(/** @noinspection PhpUnusedParameterInspection */
-        Event $event)
-    {
+    public function handleDumpAutoload(
+        /** @noinspection PhpUnusedParameterInspection */
+        Event $event
+    ) {
         $installMode = true;
         $installed = $enabled = [];
 
@@ -190,6 +191,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $rebuild = &$data['rebuild'];
 
         $fs = new Filesystem();
+        $yarn = new YarnPackageManager();
 
         foreach ($rebuild as $app_name) {
             if (!isset($apps[$app_name])) {
@@ -206,7 +208,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                 continue;
             }
             /** @var SpaHandler $handler */
-            $handler = new $app['handler'](new SpaInfo($app['name'], $app['owner'], $app['dir'], $app['dist'], $app['modules']));
+            $handler = new $app['handler'](new SpaInfo($app['name'], $app['owner'], $app['dir'], $app['dist'],
+                $app['modules']));
 
             foreach ($app['modules'] as $app_module_name) {
                 if (in_array($app_module_name, $enabled)) {
@@ -222,16 +225,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
             $handler->prepare();
 
-            $cwd = getcwd();
-            chdir($app['dir']);
-            $redirect = PHP_SAPI === 'cli' ? '/dev/tty' : '/dev/null';
-            if (getenv('PATH') === false) {
-                putenv('PATH=' . implode(':', ['/usr/local/bin', '/usr/bin', '/bin']));
-            }
-            passthru('yarn install >> ' . $redirect);
-            passthru('yarn upgrade >> ' . $redirect);
-            passthru('yarn run build >> ' . $redirect);
-            chdir($cwd);
+            $yarn->install(null, $app['dir']);
+            $yarn->update(null, $app['dir']);
+            $yarn->run('build', $app['dir']);
 
             $handler->finalize();
 
@@ -242,6 +238,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         }
 
         $rebuild = [];
-        file_put_contents($data_file, json_encode($data));
+        file_put_contents($data_file, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
     }
 }

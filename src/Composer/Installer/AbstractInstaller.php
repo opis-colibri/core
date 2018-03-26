@@ -21,6 +21,7 @@ use Composer\Composer;
 use Composer\IO\IOInterface;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\Composer\ModuleInstaller;
+use Opis\Colibri\Composer\YarnPackageManager;
 
 abstract class AbstractInstaller
 {
@@ -35,6 +36,9 @@ abstract class AbstractInstaller
 
     /** @var Composer */
     protected $composer;
+
+    /** @var YarnPackageManager */
+    protected $yarn;
 
     /**
      * AssetsHandler constructor
@@ -52,32 +56,14 @@ abstract class AbstractInstaller
     }
 
     /**
-     * Runs a yarn command
-     * @param array|string $args
-     * @param string $redirect
+     * @return YarnPackageManager
      */
-    protected function yarn($args, string $redirect = '/dev/tty')
+    protected function yarn(): YarnPackageManager
     {
-        $command = 'yarn';
-        if (is_string($args)) {
-            $command .= ' ' . $args;
-        } else {
-            foreach ($args as $name => $arg) {
-                $command .= ' ' . $name;
-                if ($arg === null) {
-                    continue;
-                }
-                if (is_array($arg)) {
-                    $arg = implode(' ', array_map('escapeshellarg', $arg));
-                } elseif (is_scalar($arg)) {
-                    $arg = escapeshellarg($arg);
-                }
-                $command .= ' ' . $arg;
-            }
+        if ($this->yarn === null) {
+            $this->yarn = new YarnPackageManager();
         }
-        if ($redirect !== '') {
-            $command .= ' >> ' . $redirect;
-        }
-        passthru($command);
+
+        return $this->yarn;
     }
 }

@@ -84,9 +84,9 @@ class CLI
      */
     public function dumpAutoload(OutputInterface $output = null)
     {
-        return $this->execute(array(
+        return $this->execute([
             'command' => 'dump-autoload',
-        ), $output);
+        ], $output);
     }
 
     /**

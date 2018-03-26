@@ -38,7 +38,7 @@ class SpaInstaller extends AbstractInstaller
         $spa = $extra['module']['spa'];
         $spa += [
             'register' => [],
-            'extend' => []
+            'extend' => [],
         ];
 
         $module = $package->getName();
@@ -91,7 +91,7 @@ class SpaInstaller extends AbstractInstaller
                 'template' => $template_dir,
                 'handler' => $app['handler'],
                 'owner' => $module,
-                'modules' => [$module]
+                'modules' => [$module],
             ];
 
             $modules[$module][$app_name] = $source_dir;
@@ -101,14 +101,8 @@ class SpaInstaller extends AbstractInstaller
             }
             $fs->mirror($template_dir, $dir);
 
-            if (getenv('PATH') === false) {
-                putenv('PATH=' . implode(':', ['/usr/local/bin', '/usr/bin', '/bin']));
-            }
-            $cwd = getcwd();
-            chdir($dir);
-            passthru("yarn install >> /dev/tty");
-            passthru("yarn add $source_dir >> /dev/tty");
-            chdir($cwd);
+            $this->yarn()->install(null, $dir);
+            $this->yarn()->addPackage($source_dir, $dir);
         }
 
         foreach ($spa['extend'] as $ext_module => $ext_app) {
@@ -137,10 +131,7 @@ class SpaInstaller extends AbstractInstaller
                 $app['modules'][] = $module;
                 $modules[$module][$app_name] = $source_dir;
 
-                $cwd = getcwd();
-                chdir($app['dir']);
-                passthru("yarn add $source_dir >> /dev/tty");
-                chdir($cwd);
+                $this->yarn()->addPackage($source_dir, $app['dir']);
             }
         }
 
@@ -190,10 +181,7 @@ class SpaInstaller extends AbstractInstaller
                             unset($app_modules[$key]);
                         }
                         $app['modules'] = array_values($app_modules);
-                        $cwd = getcwd();
-                        chdir($app['dir']);
-                        passthru("yarn remove $package_name >> /dev/tty");
-                        chdir($cwd);
+                        $this->yarn()->removePackage($package_name, $app['dir']);
                     } else {
                         unset($spa['extend'][$app['owner']][$app['name']]);
                     }
@@ -211,7 +199,7 @@ class SpaInstaller extends AbstractInstaller
                 'dist' => 'dist',
                 'template' => 'spa/' . $local_app_name . 'template',
                 'handler' => DefaultSpaHandler::class,
-                'config' => []
+                'config' => [],
             ];
 
             if (!is_subclass_of($app['handler'], SpaHandler::class)) {
@@ -246,7 +234,7 @@ class SpaInstaller extends AbstractInstaller
                 'dist' => $dir . DIRECTORY_SEPARATOR . $app['dist'],
                 'template' => $template_dir,
                 'owner' => $module,
-                'modules' => [$module]
+                'modules' => [$module],
             ];
 
             $modules[$module][$app_name] = $source_dir;
@@ -256,11 +244,8 @@ class SpaInstaller extends AbstractInstaller
             }
             $fs->mirror($template_dir, $dir);
 
-            $cwd = getcwd();
-            chdir($dir);
-            passthru("yarn install >> /dev/tty");
-            passthru("yarn add $source_dir >> /dev/tty");
-            chdir($cwd);
+            $this->yarn()->install(null, $dir);
+            $this->yarn()->addPackage($source_dir, $dir);
 
             if (!in_array($app_name, $rebuild)) {
                 $rebuild[] = $app_name;
@@ -293,10 +278,7 @@ class SpaInstaller extends AbstractInstaller
                 $app['modules'][] = $module;
                 $modules[$module][$app_name] = $source_dir;
 
-                $cwd = getcwd();
-                chdir($app['dir']);
-                passthru("yarn add $source_dir >> /dev/tty");
-                chdir($cwd);
+                $this->yarn()->addPackage($source_dir, $app['dir']);
 
                 if (!in_array($app_name, $rebuild)) {
                     $rebuild[] = $app_name;
@@ -361,10 +343,7 @@ class SpaInstaller extends AbstractInstaller
                     unset($app['modules'][$key]);
                 }
 
-                $cwd = getcwd();
-                chdir($app['dir']);
-                passthru("yarn remove $package_name >> /dev/tty");
-                chdir($cwd);
+                $this->yarn()->removePackage($package_name, $app['dir']);
 
                 if (!in_array($app_name, $rebuild)) {
                     $rebuild[] = $app_name;
@@ -401,6 +380,6 @@ class SpaInstaller extends AbstractInstaller
             mkdir($dir, 0775, true);
         }
         $file = $dir . DIRECTORY_SEPARATOR . 'data.json';
-        file_put_contents($file, json_encode($data));
+        file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
     }
 }
