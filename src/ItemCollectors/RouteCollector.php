@@ -37,7 +37,10 @@ class RouteCollector extends ItemCollector
      */
     public function __construct()
     {
-        parent::__construct(new RouteCollection());
+        $factory = function (RouteCollection $collection, string $id, string $pattern, callable $action, string $name = null) {
+            return new HttpRoute($collection, $id, $pattern, $action, $name);
+        };
+        parent::__construct(new RouteCollection($factory));
     }
 
     /**
@@ -48,12 +51,14 @@ class RouteCollector extends ItemCollector
     public function group(callable $callback, string $prefix = ''): RouteGroup
     {
         $collector = new self();
+        $collector->data = $this->data;
         $collector->prefix = $this->prefix . $prefix;
+
+
+        $old_routes = $collector->data->getRoutes();
         $callback($collector);
-        $routes = $collector->data->getRoutes();
-        foreach ($routes as $route) {
-            $this->data->addRoute($route);
-        }
+
+        $routes = array_diff_key($collector->data->getRoutes(), $old_routes);
         return new RouteGroup($routes);
     }
 
@@ -238,8 +243,9 @@ class RouteCollector extends ItemCollector
         if (!is_array($method)) {
             $method = [$method];
         }
-        $route = new HttpRoute($this->prefix . $path, $action, $name);
-        $this->data->addRoute($route->method(...$method));
+        /** @var HttpRoute $route */
+        $route = $this->data->createRoute($this->prefix . $path, $action, $name);
+        $route->method(...$method);
         return $route;
     }
 }

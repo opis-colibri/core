@@ -72,13 +72,13 @@ class Dispatcher implements IDispatcher
         }
 
         $callbacks = $route->getCallbacks();
-        $compacted = $router->compact($route);
+        $invoker = $router->resolveInvoker($route);
 
 
         foreach ($route->get('guard', []) as $guard) {
             if (isset($callbacks[$guard])) {
                 $callback = $callbacks[$guard];
-                $args = $compacted->getArguments($callback);
+                $args = $invoker->getArgumentResolver()->resolve($callback);
                 if (false === $callback(...$args)) {
                     return notFound();
                 }
@@ -88,7 +88,7 @@ class Dispatcher implements IDispatcher
         $list = $route->get('middleware', []);
 
         if (empty($list)) {
-            $result = $compacted->invokeAction();
+            $result = $invoker->invokeAction();
             if (!$result instanceof Response) {
                 $result = new Response($result);
             }
@@ -97,10 +97,10 @@ class Dispatcher implements IDispatcher
 
         $queue = new \SplQueue();
         $collectedMiddleware = $this->app->getCollector()->getMiddleware()->getList();
-        $next = function () use (&$next, $queue, $compacted) {
+        $next = function () use ($queue, $invoker) {
             do {
                 if ($queue->isEmpty()) {
-                    $result = $compacted->invokeAction();
+                    $result = $invoker->invokeAction();
                     if (!$result instanceof Response) {
                         $result = new Response($result);
                     }
@@ -110,7 +110,7 @@ class Dispatcher implements IDispatcher
                 $middleware = $queue->dequeue();
             } while (!is_callable($middleware));
 
-            $args = $compacted->getArguments($middleware);
+            $args = $invoker->getArgumentResolver()->resolve($middleware);
             $result = $middleware(...$args);
             if (!$result instanceof Response) {
                 $result = new Response($result);

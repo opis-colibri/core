@@ -20,7 +20,6 @@ namespace Opis\Colibri\Collector;
 use Opis\Colibri\ItemCollector;
 use Opis\Events\RouteCollection;
 use Opis\Routing\Context;
-use Opis\Routing\Route;
 use Opis\Routing\Router as BaseRouter;
 
 /**
@@ -33,10 +32,13 @@ class Router extends BaseRouter
         parent::__construct(new RouteCollection(), new Dispatcher());
     }
 
+    /**
+     * @param string $name
+     * @param callable $callback
+     * @param int $priority
+     */
     public function handle(string $name, callable $callback, int $priority = 0)
     {
-        $route = new Route(strtolower($name), $callback);
-        $route->set('priority', $priority);
-        $this->getRouteCollection()->addRoute($route);
+        $this->getRouteCollection()->createRoute(strtolower($name), $callback)->set('priority', $priority);
     }
 }

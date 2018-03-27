@@ -18,7 +18,6 @@
 namespace Opis\Colibri\Composer\Installer;
 
 use Composer\Package\PackageInterface;
-use Opis\Colibri\Composer\YarnPackageManager;
 use Symfony\Component\Filesystem\Filesystem;
 
 class AssetsInstaller extends AbstractInstaller

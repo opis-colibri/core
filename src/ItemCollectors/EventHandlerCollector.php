@@ -47,9 +47,12 @@ class EventHandlerCollector extends ItemCollector
      */
     public function handle(string $event, callable $callback): Route
     {
-        $handler = new Route($event, $callback);
-        $handler->set('priority', $this->crtPriority);
-        $this->data->addRoute($handler)->sort();
-        return $handler;
+        $route = $this->data
+            ->createRoute($event, $callback)
+            ->set('priority', $this->crtPriority);
+
+        $this->data->sort();
+
+        return $route;
     }
 }

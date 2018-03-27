@@ -44,8 +44,6 @@ class PathAliasCollector extends ItemCollector
      */
     public function alias(string $path, callable $action): Route
     {
-        $route = new Route($path, $action);
-        $this->data->addRoute($route);
-        return $route;
+        return $this->data->createRoute($path, $action);
     }
 }

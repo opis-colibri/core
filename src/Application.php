@@ -17,46 +17,65 @@
 
 namespace Opis\Colibri;
 
-use Composer\Autoload\ClassLoader;
-use Composer\Composer;
-use Composer\Factory;
-use Composer\IO\NullIO;
-use Composer\Json\JsonFile;
-use Composer\Package\CompletePackage;
-use Composer\Repository\InstalledFilesystemRepository;
-use Opis\Cache\CacheInterface;
-use Opis\Cache\Drivers\Memory as MemoryDriver;
-use Opis\Colibri\Collector\Manager as CollectorManager;
-use Opis\Colibri\Composer\Plugin;
-use Opis\Colibri\Rendering\TemplateStream;
-use Opis\Colibri\Rendering\ViewEngine;
-use Opis\Colibri\Routing\HttpRouter;
-use Opis\Colibri\Util\CSRFToken;
-use Opis\Colibri\Util\Mutex;
-use Opis\Colibri\Validation\Validator;
-use Opis\Colibri\Validation\ValidatorCollection;
-use Opis\Config\ConfigInterface;
-use Opis\Config\Drivers\Ephemeral as EphemeralConfig;
-use Opis\Database\Connection;
-use Opis\Database\Database;
-use Opis\Database\Schema;
+use ArrayAccess, ArrayObject;
+use SessionHandlerInterface;
+use Composer\{
+    Composer,
+    Factory,
+    Autoload\ClassLoader,
+    IO\NullIO,
+    Json\JsonFile,
+    Package\CompletePackage,
+    Repository\InstalledFilesystemRepository
+};
+use Psr\Log\{
+    NullLogger,
+    LoggerInterface
+};
+use Symfony\Component\Console\Input\ArrayInput;
+use Opis\Cache\{
+    CacheInterface,
+    Drivers\Memory as MemoryDriver
+};
+use Opis\Events\{
+    Event, EventTarget
+};
+use Opis\Http\{
+    ResponseHandler,
+    Request as HttpRequest,
+    Response as HttpResponse
+};
+use Opis\Config\{
+    ConfigInterface,
+    Drivers\Ephemeral as EphemeralConfig
+};
+use Opis\Database\{
+    Connection,
+    Database,
+    Schema
+};
+
 use Opis\ORM\EntityManager;
-use Opis\Events\Event;
-use Opis\Events\EventTarget;
-use Opis\Http\Request as HttpRequest;
-use Opis\Http\Response as HttpResponse;
-use Opis\Http\ResponseHandler;
 use Opis\Routing\Context;
-use Opis\Routing\GlobalValues;
 use Opis\Session\Session;
 use Opis\Validation\Placeholder;
 use Opis\View\ViewApp;
 use Opis\Intl\Translator\IDriver as TranslatorDriver;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
-use SessionHandlerInterface;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\NullOutput;
+use Opis\Colibri\Rendering\{
+    TemplateStream,
+    ViewEngine
+};
+use Opis\Colibri\Util\{
+    Mutex,
+    CSRFToken
+};
+use Opis\Colibri\Validation\{
+    Validator,
+    ValidatorCollection
+};
+use Opis\Colibri\Routing\HttpRouter;
+use Opis\Colibri\Composer\Plugin;
+use Opis\Colibri\Collector\Manager as CollectorManager;
 
 class Application implements ISettingsContainer
 {
@@ -137,7 +156,7 @@ class Application implements ISettingsContainer
     /** @var array */
     protected $implicit = [];
 
-    /** @var  GlobalValues */
+    /** @var ArrayAccess */
     protected $global;
 
     /** @var  array|null */
@@ -586,12 +605,12 @@ class Application implements ISettingsContainer
     }
 
     /**
-     * @return GlobalValues
+     * @return ArrayAccess
      */
-    public function getGlobalValues(): GlobalValues
+    public function getGlobalValues(): ArrayAccess
     {
         if ($this->global === null) {
-            $this->global = new GlobalValues([
+            $this->global = new ArrayObject([
                 'app' => $this,
                 'lang' => $this->getTranslator()->getDefaultLanguage(),
             ]);

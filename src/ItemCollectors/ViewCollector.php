@@ -45,9 +45,12 @@ class ViewCollector extends ItemCollector
      */
     public function handle(string $pattern, callable $resolver): Route
     {
-        $route = new Route($pattern, $resolver);
-        $route->set('priority', $this->crtPriority);
-        $this->data->addRoute($route)->sort();
+        $route = $this->data
+            ->createRoute($pattern, $resolver)
+            ->set('priority', $this->crtPriority);
+
+        $this->data->sort();
+
         return $route;
     }
 }

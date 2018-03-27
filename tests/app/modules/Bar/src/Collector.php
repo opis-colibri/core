@@ -59,6 +59,24 @@ class Collector extends BaseCollector
             return false;
         })->guard('guard1', 'guard2');
 
+        $route->group(function (RouteCollector $route) {
+            $route('/foo', function ($upName) {
+                return $upName;
+            });
+
+            $route->group(function (RouteCollector $route) {
+                $route('/foo', function ($upName) {
+                    return $upName;
+                });
+            }, '/bar')
+                ->implicit('name', 'group2');
+
+        }, '/bar-group')
+            ->implicit('name', 'group1')
+            ->bind('upName', function ($name) {
+                return strtoupper($name);
+            });
+
     }
 
     public function priorityRoutes(RouteCollector $route)

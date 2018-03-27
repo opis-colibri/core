@@ -263,4 +263,20 @@ class RoutingTest extends BaseClass
         $this->assertEquals(200, $result->getStatusCode());
         $this->assertEquals('Front page', $result->getBody());
     }
+
+    public function testGroup1()
+    {
+        $result = $this->exec('/bar-group/foo');
+
+        $this->assertEquals(200, $result->getStatusCode());
+        $this->assertEquals('GROUP1', $result->getBody());
+    }
+
+    public function testGroup2()
+    {
+        $result = $this->exec('/bar-group/bar/foo');
+
+        $this->assertEquals(200, $result->getStatusCode());
+        $this->assertEquals('GROUP1', $result->getBody());
+    }
 }

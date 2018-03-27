@@ -42,25 +42,32 @@ class HttpRoute extends Route
 
         /** @var ControllerCallback $callback */
         $callback = $this->routeAction;
-        $compacted = app()->getHttpRouter()->compact($this);
-        $values = $compacted->getBindings();
-        $method = $callback->getMethod();
-        $class = $callback->getClass();
 
-        if ($class[0] === '@') {
-            $class = substr($class, 1);
-            if (!isset($values[$class])) {
-                throw new \RuntimeException("Unknown controller variable '$class'");
+        $methodName = $callback->getMethod();
+        $className = $callback->getClass();
+
+        $argResolver = app()->getHttpRouter()->resolveInvoker($this)->getArgumentResolver();
+
+        if ($className[0] === '@') {
+            $className = substr($className, 1);
+            $class = $argResolver->getArgumentValue($className);
+            if ($class === null) {
+                throw new \RuntimeException("Unknown controller variable '$className'");
             }
-            $class = $values[$class]->value();
+        }
+        else {
+            $class = $className;
         }
 
-        if ($method[0] === '@') {
-            $method = substr($method, 1);
-            if (!isset($values[$method])) {
-                throw new \RuntimeException("Unknown controller variable '$method'");
+        if ($methodName[0] === '@') {
+            $methodName = substr($methodName, 1);
+            $method = $argResolver->getArgumentValue($methodName);
+            if ($method === null) {
+                throw new \RuntimeException("Unknown controller variable '$methodName'");
             }
-            $method = $values[$method]->value();
+        }
+        else {
+            $method = $methodName;
         }
 
         if (!$callback->isStatic()) {
