@@ -36,12 +36,11 @@ class Collect extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         if (info()->installMode()) {
             die('Opis Colibri is not installed' . PHP_EOL);
         }
 
-        if (app()->getCollector()->recollect(false)) {
+        if (app()->getCollector()->recollect()) {
             $output->writeln('<info>All items have been collected.</info>');
         } else {
             $output->writeln('<error>Items were not collected.</error>');
