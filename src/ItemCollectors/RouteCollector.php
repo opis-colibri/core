@@ -20,7 +20,6 @@ namespace Opis\Colibri\ItemCollectors;
 use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Routing\HttpRoute;
 use Opis\Colibri\ItemCollectors\Helpers\RouteGroup;
-use Opis\Colibri\Serializable\ControllerCallback;
 use Opis\HttpRouting\RouteCollection;
 
 /**
@@ -77,7 +76,7 @@ class RouteCollector extends ItemCollector
      *
      * @return  self   Self reference
      */
-    public function bind($name, $callback)
+    public function bind(string $name, callable $callback): self
     {
         $this->data->bind($name, $callback);
         return $this;
@@ -91,7 +90,7 @@ class RouteCollector extends ItemCollector
      *
      * @return  self   Self reference
      */
-    public function callback($name, callable $callback)
+    public function callback(string $name, callable $callback): self
     {
         $this->data->callback($name, $callback);
         return $this;
@@ -105,7 +104,7 @@ class RouteCollector extends ItemCollector
      *
      * @return  self   Self reference
      */
-    public function implicit($name, $value)
+    public function implicit(string $name, $value): self
     {
         $this->data->implicit($name, $value);
         return $this;
@@ -119,7 +118,7 @@ class RouteCollector extends ItemCollector
      *
      * @return  self   Self reference
      */
-    public function placeholder($name, $value)
+    public function placeholder(string $name, string $value): self
     {
         $this->data->placeholder($name, $value);
         return $this;
@@ -134,7 +133,7 @@ class RouteCollector extends ItemCollector
      *
      * @return  HttpRoute
      */
-    public function __invoke($path, $action, $method = null)
+    public function __invoke(string $path, callable $action, $method = null): HttpRoute
     {
         $name = null;
 
@@ -160,7 +159,7 @@ class RouteCollector extends ItemCollector
      *
      * @return  HttpRoute
      */
-    public function all($path, $action, $name = null)
+    public function all(string $path, callable $action, string $name = null): HttpRoute
     {
         return $this->handle($path, $action, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], $name);
     }
@@ -174,7 +173,7 @@ class RouteCollector extends ItemCollector
      *
      * @return  HttpRoute
      */
-    public function get($path, $action, $name = null)
+    public function get(string $path, callable $action, string $name = null): HttpRoute
     {
         return $this->handle($path, $action, 'GET', $name);
     }
@@ -188,7 +187,7 @@ class RouteCollector extends ItemCollector
      *
      * @return  HttpRoute
      */
-    public function post($path, $action, $name = null)
+    public function post(string $path, callable $action, string $name = null): HttpRoute
     {
         return $this->handle($path, $action, 'POST', $name);
     }
@@ -202,7 +201,7 @@ class RouteCollector extends ItemCollector
      *
      * @return  HttpRoute
      */
-    public function delete($path, $action, $name = null)
+    public function delete(string $path, callable $action, string $name = null): HttpRoute
     {
         return $this->handle($path, $action, 'DELETE', $name);
     }
@@ -216,7 +215,7 @@ class RouteCollector extends ItemCollector
      *
      * @return  HttpRoute
      */
-    public function put($path, $action, $name = null)
+    public function put(string $path, callable $action, string $name = null): HttpRoute
     {
         return $this->handle($path, $action, 'PUT', $name);
     }
@@ -230,7 +229,7 @@ class RouteCollector extends ItemCollector
      *
      * @return  HttpRoute
      */
-    public function patch($path, $action, $name = null)
+    public function patch(string $path, callable $action, string $name = null): HttpRoute
     {
         return $this->handle($path, $action, 'PATCH', $name);
     }
@@ -245,48 +244,14 @@ class RouteCollector extends ItemCollector
      *
      * @return  HttpRoute
      */
-    protected function handle($path, $action, $method, $name = null)
+    protected function handle(string $path, callable $action, $method, string $name = null): HttpRoute
     {
         if (!is_array($method)) {
             $method = [$method];
         }
         /** @var HttpRoute $route */
-        $route = $this->data->createRoute($this->prefix . $path, $this->handleAction($action), $name);
+        $route = $this->data->createRoute($this->prefix . $path, $action, $name);
         $route->method(...$method);
         return $route;
-    }
-
-    /**
-     * @param $action
-     * @return ControllerCallback|mixed
-     */
-    protected function handleAction($action)
-    {
-        if (is_string($action)) {
-            $pattern = '/^(?P<class>@?(?:[a-z]|\\\\)[a-z0-9\\_]*)(?P<operator>\:\:|\-\>)(?P<method>@?(?:[a-z]|\_)[a-z0-9_]*)$/i';
-            if (preg_match($pattern, $action, $m)) {
-                return ControllerCallback::get($m['class'], $m['method'], $m['operator'] === '::');
-            }
-        }
-        elseif (is_array($action) && $action) {
-            switch (count($action)) {
-                case 1:
-                    $class = reset($action);
-                    $method = '__invoke';
-                    $static = false;
-                    break;
-                case 2:
-                    list($class, $method) = $action;
-                    $static = false;
-                    break;
-                default:
-                    list($class, $method, $static) = $action;
-                    break;
-            }
-
-            return ControllerCallback::get((string)$class, (string)$method, (bool) $static);
-        }
-
-        return $action;
     }
 }
