@@ -67,6 +67,8 @@ class Manager
     /** @var string[] */
     protected $collectStack = [];
 
+    private $t = 0;
+
     /**
      * Manager constructor.
      * @param Application $app
@@ -295,7 +297,6 @@ class Manager
         }
 
         if (!isset($this->cache[$entry])) {
-
             $collectors = $this->app->getCollectorList($fresh);
 
             if (!isset($collectors[$entry])) {
@@ -335,11 +336,19 @@ class Manager
             return false;
         }
 
-        $this->app->clearCachedObjects();
-        $this->cache = [];
-
         $this->collectorsIncluded = false;
         $list = $this->app->getCollectorList($fresh);
+
+        if ($fresh) {
+            $this->cache = [];
+            $this->app->clearCachedObjects();
+            $this->router = new Router();
+            $this->container = $container = new Container();
+            foreach ($list as $name => $collector) {
+                $container->alias($collector['class'], $name);
+                $container->singleton($collector['class']);
+            }
+        }
 
         foreach (array_keys($list) as $entry) {
             $this->collect($entry, $fresh);
