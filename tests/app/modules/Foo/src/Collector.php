@@ -30,97 +30,97 @@ class Collector extends BaseCollector
     {
         $route->implicit('g1', 'G1');
 
-        $route->callback('filter_g1', function(){
+        $route->callback('filter_g1', function () {
             return false;
         });
 
-        $route->bind('bind_g1', function($foo1){
+        $route->bind('bind_g1', function ($foo1) {
             return 'bind_g1_' . $foo1;
         });
 
-        $route->bind('bind_g2', function($bind_g2){
+        $route->bind('bind_g2', function ($bind_g2) {
             return 'bind_g2_' . $bind_g2;
         });
 
-        $route('/', function(){
+        $route('/', function () {
             return 'Front page';
         });
 
-        $route('/foo', function(){
+        $route('/foo', function () {
             return 'Foo';
         });
 
-        $route('/foo-post', function(){
+        $route('/foo-post', function () {
             return 'OK';
         }, 'POST');
 
-        $route('/foo-opt/{foo?}', function($foo = 'missing'){
+        $route('/foo-opt/{foo?}', function ($foo = 'missing') {
             return $foo;
         });
 
-        $route('/foo-opt-g1/{g1?}', function($g1){
+        $route('/foo-opt-g1/{g1?}', function ($g1) {
             return $g1;
         });
 
-        $route('/foo-filter1', function(){
+        $route('/foo-filter1', function () {
             return 'foo';
         });
 
-        $route('/foo-filter-g1', function(){
+        $route('/foo-filter-g1', function () {
             return 'foo';
         });
 
-        $route('/foo-filter-g1-pass', function(){
+        $route('/foo-filter-g1-pass', function () {
             return 'foo';
         });
 
-        $route('/foo-guard1', function(){
+        $route('/foo-guard1', function () {
             return 'foo';
-        })->callback('guard1', function(){
-           return true;
+        })->callback('guard1', function () {
+            return true;
         })->guard('guard1');
 
-        $route('/foo-guard2', function(){
+        $route('/foo-guard2', function () {
             return 'foo';
-        })->callback('guard1', function(){
+        })->callback('guard1', function () {
             return true;
-        })->callback('guard2', function(){
+        })->callback('guard2', function () {
             return true;
         })->guard('guard1', 'guard2');
 
-        $route('/foo-guard-uk', function(){
+        $route('/foo-guard-uk', function () {
             return 'foo';
         })->guard('guard_uk1', 'guard_uk2');
 
-        $route('/foo/bind/1/{foo1}', function($foo1, $foo2){
+        $route('/foo/bind/1/{foo1}', function ($foo1, $foo2) {
             return $foo1 . $foo2;
-        })->bind('foo2', function($foo1){
+        })->bind('foo2', function ($foo1) {
             return strtoupper($foo1);
         });
 
-        $route('/foo/bind/2/{foo1}', function($foo1){
+        $route('/foo/bind/2/{foo1}', function ($foo1) {
             return $foo1;
-        })->bind('foo1', function($foo1){
+        })->bind('foo1', function ($foo1) {
             return strtoupper($foo1);
         });
 
-        $route('/foo/bind/3/{foo1}', function($bind_g1){
+        $route('/foo/bind/3/{foo1}', function ($bind_g1) {
             return $bind_g1;
         });
 
-        $route('/foo/bind/4/{bind_g2}', function($bind_g2){
+        $route('/foo/bind/4/{bind_g2}', function ($bind_g2) {
             return $bind_g2;
         });
 
-        $route('/foo/protected', function(){
+        $route('/foo/protected', function () {
             return 'foo';
         })->middleware(AuthMiddleware::class);
 
-        $route('/foo/chain/1', function(){
+        $route('/foo/chain/1', function () {
             return 'foo';
         })->middleware(ToUpperMiddleware::class, PrefixMiddleware::class);
 
-        $route('/foo/chain/2', function(){
+        $route('/foo/chain/2', function () {
             return 'foo';
         })->middleware(PrefixMiddleware::class, ToUpperMiddleware::class);
 
@@ -128,7 +128,7 @@ class Collector extends BaseCollector
 
     public function pathAliases(PathAliasCollector $alias)
     {
-        $alias->alias('/foo/alias/1', function(){
+        $alias->alias('/foo/alias/1', function () {
             return '/';
         });
     }

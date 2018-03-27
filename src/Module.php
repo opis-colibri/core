@@ -26,7 +26,7 @@ use function Opis\Colibri\Functions\{
 class Module
 {
     /** @var    array */
-    protected $info = array();
+    protected $info = [];
 
     /** @var    string */
     protected $name;
@@ -204,7 +204,7 @@ class Module
             return false;
         }
 
-        $list = config()->read('modules.enabled', array());
+        $list = config()->read('modules.enabled', []);
         return in_array($this->name, $list);
     }
 
@@ -234,7 +234,7 @@ class Module
             return false;
         }
 
-        $list = config()->read('modules.installed', array());
+        $list = config()->read('modules.installed', []);
         return in_array($this->name, $list);
     }
 
@@ -477,7 +477,7 @@ class Module
      */
     protected function resolveDependencies(): array
     {
-        $dependencies = array();
+        $dependencies = [];
         $modules = app()->getModules();
 
         foreach ($this->getPackage()->getRequires() as $dependency) {
@@ -498,7 +498,7 @@ class Module
      */
     protected function resolveDependents(): array
     {
-        $dependants = array();
+        $dependants = [];
         $modules = app()->getModules();
 
         foreach ($modules as $name => $module) {

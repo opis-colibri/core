@@ -818,7 +818,8 @@ class Application implements ISettingsContainer
             }
         }
 
-        $packMap = $generator->buildPackageMap($composer->getInstallationManager(), $composer->getPackage(), $canonicalPacks);
+        $packMap = $generator->buildPackageMap($composer->getInstallationManager(), $composer->getPackage(),
+            $canonicalPacks);
         $autoload = $generator->parseAutoloads($packMap, $composer->getPackage());
         $loader = $generator->createLoader($autoload);
 
@@ -1232,7 +1233,7 @@ class Application implements ISettingsContainer
         $console = new \Composer\Console\Application();
         $console->setAutoExit(false);
         $console->run(new ArrayInput([
-            'command' => 'dump-autoload'
+            'command' => 'dump-autoload',
         ]));
         chdir($cwd);
     }

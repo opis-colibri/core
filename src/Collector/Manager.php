@@ -47,7 +47,7 @@ use Psr\Log\LoggerInterface;
 class Manager
 {
     /** @var array */
-    protected $cache = array();
+    protected $cache = [];
 
     /** @var Router */
     protected $router;
@@ -362,11 +362,11 @@ class Manager
     {
         $name = strtolower($name);
 
-        $this->app->getConfig()->write('collectors.' . $name, array(
+        $this->app->getConfig()->write('collectors.' . $name, [
             'class' => $class,
             'description' => $description,
             'options' => $options,
-        ));
+        ]);
         $this->container->singleton($class);
         $this->container->alias($class, $name);
     }
@@ -449,7 +449,13 @@ class Manager
                     }
                 }
 
-                $callback = function (ItemCollector $collector) use ($instance, $methodName, $module, $name, $priority) {
+                $callback = function (ItemCollector $collector) use (
+                    $instance,
+                    $methodName,
+                    $module,
+                    $name,
+                    $priority
+                ) {
                     $this->proxy->update($collector, $module, $name, $priority);
                     $instance->{$methodName}($collector);
                 };

@@ -25,37 +25,37 @@ class Collector extends BaseCollector
     public function __invoke(): array
     {
         return [
-            'priorityRoutes' => ['routes', 1]
+            'priorityRoutes' => ['routes', 1],
         ];
     }
 
     public function routes(RouteCollector $route)
     {
-        $route('/bar', function(){
+        $route('/bar', function () {
             return 'Bar';
         });
 
-        $route('/bar-post', function(){
+        $route('/bar-post', function () {
             return 'OK';
         }, ['POST']);
 
-        $route('/multiple-methods', function(){
+        $route('/multiple-methods', function () {
             return 'OK';
         }, ['GET', 'POST']);
 
-        $route('/bar-opt/{bar?}', function($bar){
+        $route('/bar-opt/{bar?}', function ($bar) {
             return $bar;
         })->implicit('bar', 'bar');
 
-        $route('/bar-opt-g1/{g1?}', function($g1){
+        $route('/bar-opt-g1/{g1?}', function ($g1) {
             return $g1;
         })->implicit('g1', 'OG1');
 
-        $route('/bar-guard2', function(){
+        $route('/bar-guard2', function () {
             return 'bar';
-        })->callback('guard1', function(){
+        })->callback('guard1', function () {
             return true;
-        })->callback('guard2', function(){
+        })->callback('guard2', function () {
             return false;
         })->guard('guard1', 'guard2');
 
@@ -81,28 +81,28 @@ class Collector extends BaseCollector
 
     public function priorityRoutes(RouteCollector $route)
     {
-        $route('/foo', function(){
-           return 'Bar';
+        $route('/foo', function () {
+            return 'Bar';
         });
 
-        $route('/foo-filter1', function(){
+        $route('/foo-filter1', function () {
             return 'bar';
         })
-            ->callback('filter1', function(){
+            ->callback('filter1', function () {
                 return false;
             })
             ->filter('filter1');
 
 
-        $route('/foo-filter-g1', function(){
+        $route('/foo-filter-g1', function () {
             return 'bar';
         })
             ->filter('filter_g1');
 
-        $route('/foo-filter-g1-pass', function(){
+        $route('/foo-filter-g1-pass', function () {
             return 'bar';
         })
-            ->callback('filter_g1', function(){
+            ->callback('filter_g1', function () {
                 return true;
             })
             ->filter('filter_g1');

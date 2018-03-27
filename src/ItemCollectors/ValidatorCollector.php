@@ -33,7 +33,7 @@ class ValidatorCollector extends ItemCollector
      */
     public function __construct()
     {
-        parent::__construct(array());
+        parent::__construct([]);
     }
 
     /**

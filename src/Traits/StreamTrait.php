@@ -44,9 +44,13 @@ trait StreamTrait
      * @param $opened_path
      * @return bool
      */
-    function stream_open(/** @noinspection PhpUnusedParameterInspection */
-        $path, $mode, $options, &$opened_path)
-    {
+    function stream_open(
+        /** @noinspection PhpUnusedParameterInspection */
+        $path,
+        $mode,
+        $options,
+        &$opened_path
+    ) {
         $this->content = $this->getContent(substr($path, strlen(static::getProtocol() . '://')));
         $this->length = strlen($this->content);
         return true;
@@ -86,9 +90,11 @@ trait StreamTrait
      * @param $flags
      * @return array
      */
-    public function url_stat(/** @noinspection PhpUnusedParameterInspection */
-        $path, $flags)
-    {
+    public function url_stat(
+        /** @noinspection PhpUnusedParameterInspection */
+        $path,
+        $flags
+    ) {
         $stat = stat(__FILE__);
         $stat[7] = $stat['size'] = $this->length;
         return $stat;

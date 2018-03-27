@@ -49,10 +49,10 @@ class Uninstall extends Command
             die('Opis Colibri is not installed' . PHP_EOL);
         }
 
-        $output->getFormatter()->setStyle('b-error', new OutputFormatterStyle('white', 'red', array('bold')));
+        $output->getFormatter()->setStyle('b-error', new OutputFormatterStyle('white', 'red', ['bold']));
         $output->getFormatter()->setStyle('warning', new OutputFormatterStyle('yellow'));
-        $output->getFormatter()->setStyle('b-warning', new OutputFormatterStyle('yellow', null, array('bold')));
-        $output->getFormatter()->setStyle('b-info', new OutputFormatterStyle('green', null, array('bold')));
+        $output->getFormatter()->setStyle('b-warning', new OutputFormatterStyle('yellow', null, ['bold']));
+        $output->getFormatter()->setStyle('b-info', new OutputFormatterStyle('green', null, ['bold']));
 
         $modules = $input->getArgument('module');
 

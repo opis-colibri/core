@@ -25,7 +25,7 @@ class CSRFToken
 {
 
     /** @var    array */
-    protected $values = array();
+    protected $values = [];
 
     /** @var    string */
     protected $sessionKey;
@@ -52,7 +52,7 @@ class CSRFToken
      */
     public function generate(): string
     {
-        $tokens = session()->get($this->sessionKey, array());
+        $tokens = session()->get($this->sessionKey, []);
 
         if (!empty($tokens)) {
             $tokens = array_slice($tokens, 0, $this->maxNumber - 1);
@@ -76,7 +76,7 @@ class CSRFToken
      */
     public function validate(string $value): bool
     {
-        $tokens = session()->get($this->sessionKey, array());
+        $tokens = session()->get($this->sessionKey, []);
 
         $key = array_search($value, $tokens);
 

@@ -45,10 +45,10 @@ class Modules extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->getFormatter()->setStyle('green', new OutputFormatterStyle('green', null, array('bold')));
-        $output->getFormatter()->setStyle('blue', new OutputFormatterStyle('blue', null, array('bold')));
-        $output->getFormatter()->setStyle('white', new OutputFormatterStyle('white', null, array('bold')));
-        $output->getFormatter()->setStyle('yellow', new OutputFormatterStyle('yellow', null, array('bold')));
+        $output->getFormatter()->setStyle('green', new OutputFormatterStyle('green', null, ['bold']));
+        $output->getFormatter()->setStyle('blue', new OutputFormatterStyle('blue', null, ['bold']));
+        $output->getFormatter()->setStyle('white', new OutputFormatterStyle('white', null, ['bold']));
+        $output->getFormatter()->setStyle('yellow', new OutputFormatterStyle('yellow', null, ['bold']));
 
         $all = $input->getOption('all');
 

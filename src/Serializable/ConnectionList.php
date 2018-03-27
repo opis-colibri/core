@@ -23,9 +23,9 @@ use Serializable;
 
 class ConnectionList implements Serializable
 {
-    protected $connections = array();
-    protected $databases = array();
-    protected $schemas = array();
+    protected $connections = [];
+    protected $databases = [];
+    protected $schemas = [];
     protected $defaultConnection;
 
     public function set($name, Connection $connection)

@@ -38,7 +38,8 @@ class BuildAssets extends Command
         $this
             ->setName('build-assets')
             ->setDescription('Build modules\' assets')
-            ->addArgument('module', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'A list of modules separated by space')
+            ->addArgument('module', InputArgument::IS_ARRAY | InputArgument::OPTIONAL,
+                'A list of modules separated by space')
             ->addOption('dependencies', null, InputOption::VALUE_NONE, 'Install/Uninstall dependencies');
     }
 
@@ -50,7 +51,7 @@ class BuildAssets extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->getFormatter()->setStyle('b-info', new OutputFormatterStyle('yellow', null, array('bold')));
+        $output->getFormatter()->setStyle('b-info', new OutputFormatterStyle('yellow', null, ['bold']));
 
         $fs = new Filesystem();
         $installer = new ModuleInstaller(info(), new ConsoleIO($input, $output, new HelperSet()), app()->getComposer());

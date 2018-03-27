@@ -23,7 +23,7 @@ use Serializable;
 
 class CallbackList implements Serializable
 {
-    protected $callbacks = array();
+    protected $callbacks = [];
 
     public function add($name, callable $callback)
     {

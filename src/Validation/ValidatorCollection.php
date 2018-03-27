@@ -54,7 +54,7 @@ class ValidatorCollection extends BaseCollection
     {
         $classes = app()->getCollector()->getValidators();
 
-        $classes += array(
+        $classes += [
             'between' => Between::class,
             'csrf' => Csrf::class,
             'email' => Email::class,
@@ -73,10 +73,10 @@ class ValidatorCollection extends BaseCollection
             'regex' => Regex::class,
             'required' => Required::class,
             'requiredFile' => RequiredFile::class,
-        );
+        ];
 
         $this->classes = $classes;
-        $this->validators = array();
+        $this->validators = [];
     }
 
 

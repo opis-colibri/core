@@ -105,7 +105,7 @@ class Version
         }
 
         if (static::$mapFunction === null) {
-            $map = array(
+            $map = [
                 'dev' => -6,
                 'alpha' => -5,
                 'a' => -5,
@@ -115,7 +115,7 @@ class Version
                 '#' => -2,
                 'pl' => -1,
                 'p' => -1,
-            );
+            ];
 
             static::$mapFunction = function ($value) use (&$map) {
 

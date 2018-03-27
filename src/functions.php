@@ -189,7 +189,7 @@ function request(): Request
  * @param array $query
  * @return RedirectResponse
  */
-function redirect(string $location, int $code = 302, array $query = array()): RedirectResponse
+function redirect(string $location, int $code = 302, array $query = []): RedirectResponse
 {
     if (!empty($query)) {
         foreach ($query as $key => $value) {

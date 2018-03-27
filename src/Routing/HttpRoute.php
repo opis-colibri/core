@@ -54,8 +54,7 @@ class HttpRoute extends Route
             if ($class === null) {
                 throw new \RuntimeException("Unknown controller variable '$className'");
             }
-        }
-        else {
+        } else {
             $class = $className;
         }
 
@@ -65,8 +64,7 @@ class HttpRoute extends Route
             if ($method === null) {
                 throw new \RuntimeException("Unknown controller variable '$methodName'");
             }
-        }
-        else {
+        } else {
             $method = $methodName;
         }
 

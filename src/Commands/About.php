@@ -45,12 +45,12 @@ class About extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->getFormatter()->setStyle('p', new OutputFormatterStyle('yellow', null, array('bold')));
-        $output->getFormatter()->setStyle('i', new OutputFormatterStyle('green', null, array('bold')));
-        $output->getFormatter()->setStyle('e', new OutputFormatterStyle('white', null, array('bold')));
-        $output->getFormatter()->setStyle('r', new OutputFormatterStyle('red', null, array('bold')));
-        $output->getFormatter()->setStyle('b', new OutputFormatterStyle('blue', null, array('bold')));
-        $output->getFormatter()->setStyle('err', new OutputFormatterStyle('white', 'red', array('bold')));
+        $output->getFormatter()->setStyle('p', new OutputFormatterStyle('yellow', null, ['bold']));
+        $output->getFormatter()->setStyle('i', new OutputFormatterStyle('green', null, ['bold']));
+        $output->getFormatter()->setStyle('e', new OutputFormatterStyle('white', null, ['bold']));
+        $output->getFormatter()->setStyle('r', new OutputFormatterStyle('red', null, ['bold']));
+        $output->getFormatter()->setStyle('b', new OutputFormatterStyle('blue', null, ['bold']));
+        $output->getFormatter()->setStyle('err', new OutputFormatterStyle('white', 'red', ['bold']));
 
         $moduleName = $input->getArgument('module');
         $module = module($moduleName);

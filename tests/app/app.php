@@ -24,32 +24,32 @@ ini_set('opcache.enable', 0);
 
 $loader = require __DIR__ . '/../../vendor/autoload.php';
 
-spl_autoload_register(function($class){
+spl_autoload_register(function ($class) {
     $class = ltrim($class, '\\');
-    
+
     $map = [
         __DIR__ . '/modules/Foo/src' => 'Test\\Foo\\',
         __DIR__ . '/modules/Bar/src' => 'Test\\Bar\\',
     ];
-    
+
     foreach ($map as $dir => $namespace) {
-        if(strpos($class, $namespace) === 0) {
+        if (strpos($class, $namespace) === 0) {
             $class = substr($class, strlen($namespace));
             $path = '';
-            if(($pos = strripos($class, '\\')) !== FALSE) {
+            if (($pos = strripos($class, '\\')) !== false) {
                 $path = str_replace('\\', '/', substr($class, 0, $pos)) . '/';
                 $class = substr($class, $pos + 1);
             }
             $path .= str_replace('_', '/', $class) . '.php';
             $dir .= '/' . $path;
-            if(file_exists($dir)) {
+            if (file_exists($dir)) {
                 include $dir;
                 return true;
             }
             return false;
         }
     }
-    
+
     return false;
 });
 

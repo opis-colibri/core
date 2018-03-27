@@ -48,7 +48,7 @@ class Csrf implements ValidatorInterface
      */
     public function getFormattedArgs(array $arguments): array
     {
-        return array();
+        return [];
     }
 
     /**

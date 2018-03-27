@@ -55,8 +55,12 @@ class Translations implements Serializable
      * @param string|null $translators_comment
      * @return Translations
      */
-    public function addComment(string $ns, string $key, string $comment = null, string $translators_comment = null): self
-    {
+    public function addComment(
+        string $ns,
+        string $key,
+        string $comment = null,
+        string $translators_comment = null
+    ): self {
         $this->comments[$ns][$key] = [
             'comment' => $comment,
             'translators' => $translators_comment,

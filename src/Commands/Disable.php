@@ -52,10 +52,10 @@ class Disable extends Command
             die('Opis Colibri is not installed' . PHP_EOL);
         }
 
-        $output->getFormatter()->setStyle('b-error', new OutputFormatterStyle('white', 'red', array('bold')));
+        $output->getFormatter()->setStyle('b-error', new OutputFormatterStyle('white', 'red', ['bold']));
         $output->getFormatter()->setStyle('warning', new OutputFormatterStyle('yellow'));
-        $output->getFormatter()->setStyle('b-warning', new OutputFormatterStyle('yellow', null, array('bold')));
-        $output->getFormatter()->setStyle('b-info', new OutputFormatterStyle('green', null, array('bold')));
+        $output->getFormatter()->setStyle('b-warning', new OutputFormatterStyle('yellow', null, ['bold']));
+        $output->getFormatter()->setStyle('b-info', new OutputFormatterStyle('green', null, ['bold']));
 
         $modules = $input->getArgument('module');
         $uninstall = $input->getOption('uninstall');
@@ -84,10 +84,10 @@ class Disable extends Command
 
                 if ($uninstall) {
                     $command = $this->getApplication()->find('uninstall');
-                    $args = array(
+                    $args = [
                         'command' => 'uninstall',
-                        'module' => array($moduleName),
-                    );
+                        'module' => [$moduleName],
+                    ];
                     $command->run(new ArrayInput($args), $output);
                 }
             } else {
