@@ -29,13 +29,18 @@ class ControllerCallback
     protected $isStatic;
 
     /**
+     * @var self[]
+     */
+    protected static $instances = [];
+
+    /**
      * Constructor
      *
      * @param   string $class
      * @param   string $method
      * @param   boolean $static (optional)
      */
-    public function __construct(string $class, string $method, bool $static = false)
+    protected function __construct(string $class, string $method, bool $static = false)
     {
         $this->className = $class;
         $this->method = $method;
@@ -78,5 +83,22 @@ class ControllerCallback
     public function isStatic(): bool
     {
         return $this->isStatic;
+    }
+
+    /**
+     * @param string $class
+     * @param string $method
+     * @param bool $static
+     * @return ControllerCallback
+     */
+    public static function get(string $class, string $method, bool $static = false): self
+    {
+        $key = trim($class) . ($static ? '::' : '->') . trim($method);
+
+        if (!isset(static::$instances[$key])) {
+            static::$instances[$key] = new static($class, $method, $static);
+        }
+
+        return static::$instances[$key];
     }
 }

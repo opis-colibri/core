@@ -358,7 +358,7 @@ function asset(string $module, string $path, bool $full = false): string
  */
 function controller(string $class, string $method, bool $static = false): ControllerCallback
 {
-    return new ControllerCallback($class, $method, $static);
+    return ControllerCallback::get($class, $method, $static);
 }
 
 /**

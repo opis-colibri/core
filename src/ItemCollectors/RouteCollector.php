@@ -20,6 +20,7 @@ namespace Opis\Colibri\ItemCollectors;
 use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Routing\HttpRoute;
 use Opis\Colibri\ItemCollectors\Helpers\RouteGroup;
+use Opis\Colibri\Serializable\ControllerCallback;
 use Opis\HttpRouting\RouteCollection;
 
 /**
@@ -250,8 +251,42 @@ class RouteCollector extends ItemCollector
             $method = [$method];
         }
         /** @var HttpRoute $route */
-        $route = $this->data->createRoute($this->prefix . $path, $action, $name);
+        $route = $this->data->createRoute($this->prefix . $path, $this->handleAction($action), $name);
         $route->method(...$method);
         return $route;
+    }
+
+    /**
+     * @param $action
+     * @return ControllerCallback|mixed
+     */
+    protected function handleAction($action)
+    {
+        if (is_string($action)) {
+            $pattern = '/^(?P<class>@?(?:[a-z]|\\\\)[a-z0-9\\_]*)(?P<operator>\:\:|\-\>)(?P<method>@?(?:[a-z]|\_)[a-z0-9_]*)$/i';
+            if (preg_match($pattern, $action, $m)) {
+                return ControllerCallback::get($m['class'], $m['method'], $m['operator'] === '::');
+            }
+        }
+        elseif (is_array($action) && $action) {
+            switch (count($action)) {
+                case 1:
+                    $class = reset($action);
+                    $method = '__invoke';
+                    $static = false;
+                    break;
+                case 2:
+                    list($class, $method) = $action;
+                    $static = false;
+                    break;
+                default:
+                    list($class, $method, $static) = $action;
+                    break;
+            }
+
+            return ControllerCallback::get((string)$class, (string)$method, (bool) $static);
+        }
+
+        return $action;
     }
 }
