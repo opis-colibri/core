@@ -22,9 +22,6 @@ use Opis\Colibri\Serializable\StorageCollection;
 use Psr\Log\LoggerInterface;
 
 /**
- * Class LoggerCollector
- * @package Opis\Colibri\ItemCollectors
- *
  * @property  StorageCollection $data
  */
 class LoggerCollector extends ItemCollector
@@ -38,11 +35,11 @@ class LoggerCollector extends ItemCollector
     }
 
     /**
-     * @param $storage
+     * @param string $storage
      * @param callable $constructor
-     * @return LoggerCollector
+     * @return self
      */
-    public function register($storage, callable $constructor): self
+    public function register(string $storage, callable $constructor): self
     {
         $this->data->add($storage, $constructor);
         return $this;

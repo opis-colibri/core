@@ -22,10 +22,6 @@ use Opis\View\EngineEntry;
 use Opis\View\EngineResolver;
 
 /**
- * Class ViewEngineCollector
- *
- * @package Opis\Colibri\ItemCollectors
- *
  * @property EngineResolver $data
  */
 class ViewEngineCollector extends ItemCollector

@@ -51,7 +51,7 @@ class RouteGroup
     /**
      * @param $name
      * @param $arguments
-     * @return $this|RouteGroup
+     * @return self|RouteGroup
      */
     public function __call($name, $arguments)
     {

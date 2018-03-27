@@ -21,9 +21,6 @@ use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Serializable\Translations;
 
 /**
- * Class TranslationCollector
- * @package Opis\Colibri\ItemCollectors
- *
  * @property Translations $data
  */
 class TranslationCollector extends ItemCollector

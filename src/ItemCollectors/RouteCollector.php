@@ -23,8 +23,6 @@ use Opis\Colibri\ItemCollectors\Helpers\RouteGroup;
 use Opis\HttpRouting\RouteCollection;
 
 /**
- * Class RouteCollector
- *
  * @property RouteCollection $data
  */
 class RouteCollector extends ItemCollector

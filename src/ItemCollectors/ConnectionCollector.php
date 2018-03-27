@@ -21,9 +21,6 @@ use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Serializable\ConnectionList;
 
 /**
- * Class ConnectionCollector
- * @package Opis\Colibri\ItemCollectors
- *
  * @property  ConnectionList $data
  */
 class ConnectionCollector extends ItemCollector
@@ -39,7 +36,7 @@ class ConnectionCollector extends ItemCollector
     /**
      * @param string $name
      * @param callable $callback
-     * @return ConnectionCollector
+     * @return self
      */
     public function create(string $name, callable $callback): self
     {

@@ -22,9 +22,6 @@ use Opis\Events\RouteCollection;
 use Opis\Routing\Route;
 
 /**
- * Class EventHandlerCollector
- * @package Opis\Colibri\ItemCollectors
- *
  * @property RouteCollection $data
  */
 class EventHandlerCollector extends ItemCollector

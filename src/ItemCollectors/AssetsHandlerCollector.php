@@ -36,7 +36,7 @@ class AssetsHandlerCollector extends ItemCollector
     /**
      * @param string $name
      * @param callable $callback
-     * @return AssetsHandlerCollector
+     * @return self
      */
     public function register(string $name, callable $callback): self
     {

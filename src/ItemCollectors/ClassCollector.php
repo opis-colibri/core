@@ -21,9 +21,6 @@ use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Serializable\ClassList;
 
 /**
- * Class ClassCollector
- * @package Opis\Colibri\ItemCollectors
- *
  * @property ClassList $data
  */
 abstract class ClassCollector extends ItemCollector

@@ -22,10 +22,6 @@ use Opis\Colibri\Serializable\StorageCollection;
 use Opis\Config\ConfigInterface;
 
 /**
- * Class ConfigCollector
- *
- * @package Opis\Colibri\ItemCollectors
- *
  * @property  StorageCollection $data
  */
 class ConfigCollector extends ItemCollector
@@ -41,7 +37,7 @@ class ConfigCollector extends ItemCollector
     /**
      * @param string $storage
      * @param callable $constructor
-     * @return ConfigCollector
+     * @return self
      */
     public function register(string $storage, callable $constructor): self
     {

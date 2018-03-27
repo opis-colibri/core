@@ -21,9 +21,6 @@ use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Serializable\CallbackList;
 
 /**
- * Class CommandCollector
- * @package Opis\Colibri\ItemCollectors
- *
  * @property CallbackList $data
  */
 class CommandCollector extends ItemCollector
@@ -39,7 +36,7 @@ class CommandCollector extends ItemCollector
     /**
      * @param string $name
      * @param callable $callback
-     * @return CommandCollector
+     * @return self
      */
     public function register(string $name, callable $callback): self
     {

@@ -22,10 +22,6 @@ use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Serializable\StorageCollection;
 
 /**
- * Class CacheCollector
- *
- * @package Opis\Colibri\ItemCollectors
- *
  * @property StorageCollection $data
  */
 class CacheCollector extends ItemCollector
@@ -41,7 +37,7 @@ class CacheCollector extends ItemCollector
     /**
      * @param $storage
      * @param callable $constructor
-     * @return CacheCollector
+     * @return self
      */
     public function register($storage, callable $constructor): self
     {

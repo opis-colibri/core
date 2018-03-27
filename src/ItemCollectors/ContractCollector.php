@@ -17,15 +17,12 @@
 
 namespace Opis\Colibri\ItemCollectors;
 
-use Closure;
 use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Container;
+use Opis\Container\Dependency;
+use Opis\Container\Extender;
 
 /**
- * Class ContractCollector
- *
- * @package Opis\Colibri\ItemCollectors
- *
  * @property Container $data
  */
 class ContractCollector extends ItemCollector
@@ -42,11 +39,11 @@ class ContractCollector extends ItemCollector
      * Register a binding with the container.
      *
      * @param   string $abstract Class name or interface name
-     * @param   \Closure|string $concrete (optional) Concrete class or interface implementation
+     * @param   string|callable|null $concrete
      *
-     * @return  \Opis\Container\Dependency
+     * @return  Dependency
      */
-    public function bind($abstract, $concrete = null)
+    public function bind(string $abstract, $concrete = null): Dependency
     {
         return $this->data->bind($abstract, $concrete);
     }
@@ -59,7 +56,7 @@ class ContractCollector extends ItemCollector
      *
      * @return  self    Self reference
      */
-    public function alias($concrete, $alias)
+    public function alias(string $concrete, string $alias): self
     {
         $this->data->alias($concrete, $alias);
         return $this;
@@ -69,10 +66,10 @@ class ContractCollector extends ItemCollector
      * Extends a registered type.
      *
      * @param   string $abstract
-     * @param Closure $extender
-     * @return \Opis\Container\Extender
+     * @param callable $extender
+     * @return Extender
      */
-    public function extend($abstract, Closure $extender)
+    public function extend(string $abstract, callable $extender): Extender
     {
         return $this->data->extend($abstract, $extender);
     }
@@ -81,11 +78,11 @@ class ContractCollector extends ItemCollector
      * Register a singleton binding with the container.
      *
      * @param   string $abstract Class name or interface name
-     * @param   Closure|string $concrete (optional) Concrete class or interface implementation
+     * @param   string|callable|null $concrete
      *
-     * @return  \Opis\Container\Dependency
+     * @return  Dependency
      */
-    public function singleton($abstract, $concrete = null)
+    public function singleton(string $abstract, $concrete = null): Dependency
     {
         return $this->data->singleton($abstract, $concrete);
     }

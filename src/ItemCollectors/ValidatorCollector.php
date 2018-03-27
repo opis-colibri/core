@@ -21,9 +21,6 @@ use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Serializable\CallbackList;
 
 /**
- * Class ValidatorCollector
- * @package Opis\Colibri\ItemCollectors
- *
  * @property  CallbackList $data
  */
 class ValidatorCollector extends ItemCollector
@@ -41,7 +38,7 @@ class ValidatorCollector extends ItemCollector
      * @param string $class
      * @return $this
      */
-    public function register($name, $class)
+    public function register(string $name, string $class): self
     {
         if (class_exists($class)) {
             $this->data[$name] = $class;
