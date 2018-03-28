@@ -67,8 +67,6 @@ class Manager
     /** @var string[] */
     protected $collectStack = [];
 
-    private $t = 0;
-
     /**
      * Manager constructor.
      * @param Application $app
