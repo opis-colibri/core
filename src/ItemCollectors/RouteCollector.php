@@ -37,16 +37,7 @@ class RouteCollector extends ItemCollector
      */
     public function __construct()
     {
-        $factory = function (
-            RouteCollection $collection,
-            string $id,
-            string $pattern,
-            callable $action,
-            string $name = null
-        ) {
-            return new HttpRoute($collection, $id, $pattern, $action, $name);
-        };
-        parent::__construct(new RouteCollection($factory));
+        parent::__construct(new RouteCollection(static::class . '::factory'));
     }
 
     /**
@@ -259,5 +250,22 @@ class RouteCollector extends ItemCollector
         $route = $this->data->createRoute($this->prefix . $path, $action, $name);
         $route->method(...$method);
         return $route;
+    }
+
+    /**
+     * @param RouteCollection $collection
+     * @param string $id
+     * @param string $pattern
+     * @param callable $action
+     * @param string|null $name
+     * @return HttpRoute
+     */
+    public static function factory(RouteCollection $collection,
+        string $id,
+        string $pattern,
+        callable $action,
+        string $name = null): HttpRoute
+    {
+        return new HttpRoute($collection, $id, $pattern, $action, $name);
     }
 }
