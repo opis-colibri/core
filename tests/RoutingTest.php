@@ -314,7 +314,9 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/bar-group/type4/public');
         $this->assertEquals(404, $result->getStatusCode());
 
-        $result = $this->exec('/bar-group/type/public');
-        $this->assertEquals(404, $result->getStatusCode());
+        // intruder
+        $result = $this->exec('/bar-group/type4/intruder');
+        $this->assertEquals(200, $result->getStatusCode());
+        $this->assertEquals('intruder:type4', $result->getBody());
     }
 }

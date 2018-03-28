@@ -100,6 +100,12 @@ class Collector extends BaseCollector
                     // only two types have secrets
                     ->whereIn('type', ['type1', 'type2']);
 
+                $route('/intruder', function ($type) {
+                    return 'intruder:' . $type;
+                })
+                    // intruder
+                    ->whereIn('type', ['type4']);
+
             }, '/{type}')
                 ->whereIn('type', ['type1', 'type2', 'type3']);
 
