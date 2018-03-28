@@ -18,7 +18,6 @@
 namespace Opis\Colibri\ItemCollectors;
 
 use Opis\Colibri\ItemCollector;
-use Opis\Colibri\Routing\HttpGroupRoute;
 use Opis\Colibri\Routing\HttpRoute;
 use Opis\Colibri\ItemCollectors\Helpers\RouteGroup;
 use Opis\HttpRouting\RouteCollection;
@@ -33,9 +32,6 @@ class RouteCollector extends ItemCollector
     /** @var string */
     protected $prefix = '';
 
-    /** @var bool */
-    protected $inGroup = false;
-
     /**
      * RouteCollector constructor.
      */
@@ -48,9 +44,7 @@ class RouteCollector extends ItemCollector
             callable $action,
             string $name = null
         ) {
-            // If we are in a group we use HttpGroupRoute proxy
-            $class = $this->inGroup ? HttpGroupRoute::class : HttpRoute::class;
-            return new $class($collection, $id, $pattern, $action, $name);
+            return new HttpRoute($collection, $id, $pattern, $action, $name);
         };
         parent::__construct(new RouteCollection($factory));
     }
@@ -68,11 +62,8 @@ class RouteCollector extends ItemCollector
         // Save current prefix
         $currentPrefix = $this->prefix;
 
-        // Collect groupped items
-        $this->inGroup = true;
         $this->prefix .= $prefix;
         $callback($this);
-        $this->inGroup = false;
 
         // Restore previous prefix
         $this->prefix = $currentPrefix;

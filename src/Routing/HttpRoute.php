@@ -17,15 +17,31 @@
 
 namespace Opis\Colibri\Routing;
 
+use Opis\Routing\Route;
+use Opis\HttpRouting\Route as BaseHttpRoute;
 use Opis\Colibri\Serializable\ControllerCallback;
-use Opis\HttpRouting\Route;
 use function Opis\Colibri\Functions\{
     app, make
 };
 
-class HttpRoute extends Route
+class HttpRoute extends BaseHttpRoute
 {
+    /** @var callable */
     protected $resolvedAction;
+
+    /** @var bool */
+    protected $inheriting = false;
+
+    /**
+     * If this is true, then no overwrite will occur
+     * @param bool $inheriting
+     * @return HttpRoute
+     */
+    public function setIsInheriting(bool $inheriting): self
+    {
+        $this->inheriting = $inheriting;
+        return $this;
+    }
 
     /**
      * @inheritdoc
@@ -73,6 +89,69 @@ class HttpRoute extends Route
         }
 
         return $this->resolvedAction = [$class, $method];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function set(string $name, $value): Route
+    {
+        // Handles middleware, domain, method, secure, filter, guard, *
+        if ($this->inheriting && $this->has($name)) {
+            return $this;
+        }
+        return parent::set($name, $value);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     */
+    public function callback(string $name, callable $callback): BaseHttpRoute
+    {
+        $list = $this->get('callbacks', []);
+
+        if ($this->inheriting && isset($list[$name])) {
+            return $this;
+        }
+
+        $list[$name] = $callback;
+        parent::set('callbacks', $list);
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function bind(string $name, callable $callback): Route
+    {
+        if ($this->inheriting && isset($this->bindings[$name])) {
+            return $this;
+        }
+        return parent::bind($name, $callback);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function placeholder(string $name, string $value): Route
+    {
+        if ($this->inheriting && array_key_exists($name, $this->placeholders)) {
+            return $this;
+        }
+        return parent::placeholder($name, $value);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function implicit(string $name, $value): Route
+    {
+        if ($this->inheriting && array_key_exists($name, $this->defaults)) {
+            return $this;
+        }
+        return parent::implicit($name, $value);
     }
 
     /**

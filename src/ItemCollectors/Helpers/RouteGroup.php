@@ -17,10 +17,7 @@
 
 namespace Opis\Colibri\ItemCollectors\Helpers;
 
-use Opis\Colibri\Routing\{
-    HttpRoute,
-    HttpGroupRoute
-};
+use Opis\Colibri\Routing\HttpRoute;
 
 /**
  *
@@ -39,12 +36,12 @@ use Opis\Colibri\Routing\{
  */
 class RouteGroup
 {
-    /** @var  HttpRoute[]|HttpGroupRoute[] */
+    /** @var  HttpRoute[] */
     protected $routes;
 
     /**
      * RouteGroup constructor.
-     * @param HttpRoute[]|HttpGroupRoute[] $routes
+     * @param HttpRoute[] $routes
      */
     public function __construct(array $routes)
     {
@@ -59,15 +56,10 @@ class RouteGroup
     public function __call($name, $arguments)
     {
         foreach ($this->routes as $route) {
-            if ($route instanceof HttpGroupRoute) {
-                // Signal to route that this values are inherited
-                $route->setIsInheriting(true);
-                $route->{$name}(...$arguments);
-                $route->setIsInheriting(false);
-            }
-            else {
-                $route->{$name}(...$arguments);
-            }
+            // Signal to route that this values are inherited
+            $route->setIsInheriting(true);
+            $route->{$name}(...$arguments);
+            $route->setIsInheriting(false);
         }
 
         return $this;
