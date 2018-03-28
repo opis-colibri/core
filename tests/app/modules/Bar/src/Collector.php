@@ -68,8 +68,40 @@ class Collector extends BaseCollector
                 $route('/foo', function ($upName) {
                     return $upName;
                 });
+
+                $route->group(function (RouteCollector $route) {
+                    $route('/', function ($upName) {
+                        return $upName;
+                    })
+                        // overwrite implcit again
+                        ->implicit('name', 'group3');
+                }, '/baz')
+                    // binding should handle & overwrite implicit
+                    ->bind('name', function ($name) {
+                        return implode('-', str_split($name));
+                    })
+                    // overwrite binding
+                    ->bind('upName', function ($name) {
+                        return 'UPPER:' . $name;
+                    });
+
             }, '/bar')
+                // overwrite
                 ->implicit('name', 'group2');
+
+            $route->group(function (RouteCollector $route) {
+                $route('/public', function ($type) {
+                    return $type;
+                });
+
+                $route('/secret', function ($type) {
+                    return 'secret:' . $type;
+                })
+                    // only two types have secrets
+                    ->whereIn('type', ['type1', 'type2']);
+
+            }, '/{type}')
+                ->whereIn('type', ['type1', 'type2', 'type3']);
 
         }, '/bar-group')
             ->implicit('name', 'group1')

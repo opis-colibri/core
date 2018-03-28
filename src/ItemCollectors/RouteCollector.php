@@ -18,11 +18,14 @@
 namespace Opis\Colibri\ItemCollectors;
 
 use Opis\Colibri\ItemCollector;
+use Opis\Colibri\Routing\HttpGroupRoute;
 use Opis\Colibri\Routing\HttpRoute;
 use Opis\Colibri\ItemCollectors\Helpers\RouteGroup;
 use Opis\HttpRouting\RouteCollection;
 
 /**
+ * Class RouteCollector
+ *
  * @property RouteCollection $data
  */
 class RouteCollector extends ItemCollector
@@ -30,8 +33,11 @@ class RouteCollector extends ItemCollector
     /** @var string */
     protected $prefix = '';
 
+    /** @var bool */
+    protected $inGroup = false;
+
     /**
-     * Constructor
+     * RouteCollector constructor.
      */
     public function __construct()
     {
@@ -42,7 +48,9 @@ class RouteCollector extends ItemCollector
             callable $action,
             string $name = null
         ) {
-            return new HttpRoute($collection, $id, $pattern, $action, $name);
+            // If we are in a group we use HttpGroupRoute proxy
+            $class = $this->inGroup ? HttpGroupRoute::class : HttpRoute::class;
+            return new $class($collection, $id, $pattern, $action, $name);
         };
         parent::__construct(new RouteCollection($factory));
     }
@@ -54,15 +62,24 @@ class RouteCollector extends ItemCollector
      */
     public function group(callable $callback, string $prefix = ''): RouteGroup
     {
-        $collector = new self();
-        $collector->data = $this->data;
-        $collector->prefix = $this->prefix . $prefix;
+        // Get current routes
+        $old_routes = $this->data->getRoutes();
 
+        // Save current prefix
+        $currentPrefix = $this->prefix;
 
-        $old_routes = $collector->data->getRoutes();
-        $callback($collector);
+        // Collect groupped items
+        $this->inGroup = true;
+        $this->prefix .= $prefix;
+        $callback($this);
+        $this->inGroup = false;
 
-        $routes = array_diff_key($collector->data->getRoutes(), $old_routes);
+        // Restore previous prefix
+        $this->prefix = $currentPrefix;
+
+        // Get only the group routes
+        $routes = array_diff_key($this->data->getRoutes(), $old_routes);
+
         return new RouteGroup($routes);
     }
 

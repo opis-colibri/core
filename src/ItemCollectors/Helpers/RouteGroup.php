@@ -17,7 +17,10 @@
 
 namespace Opis\Colibri\ItemCollectors\Helpers;
 
-use Opis\Colibri\Routing\HttpRoute;
+use Opis\Colibri\Routing\{
+    HttpRoute,
+    HttpGroupRoute
+};
 
 /**
  *
@@ -25,7 +28,7 @@ use Opis\Colibri\Routing\HttpRoute;
  * @method RouteGroup filter(string ...$callbacks)
  * @method RouteGroup implicit(string $name, $value)
  * @method RouteGroup where(string $name, $value)
- * @method RouteGroup whereIn(string $name, string [] $value)
+ * @method RouteGroup whereIn(string $name, string[] $value)
  * @method RouteGroup guard(string ...$callbacks)
  * @method RouteGroup callback(string $name, callable $callback)
  * @method RouteGroup middleware(string ...$middleware)
@@ -36,12 +39,12 @@ use Opis\Colibri\Routing\HttpRoute;
  */
 class RouteGroup
 {
-    /** @var  HttpRoute[] */
+    /** @var  HttpRoute[]|HttpGroupRoute[] */
     protected $routes;
 
     /**
      * RouteGroup constructor.
-     * @param HttpRoute[] $routes
+     * @param HttpRoute[]|HttpGroupRoute[] $routes
      */
     public function __construct(array $routes)
     {
@@ -51,13 +54,22 @@ class RouteGroup
     /**
      * @param $name
      * @param $arguments
-     * @return self|RouteGroup
+     * @return $this|RouteGroup
      */
     public function __call($name, $arguments)
     {
         foreach ($this->routes as $route) {
-            $route->{$name}(...$arguments);
+            if ($route instanceof HttpGroupRoute) {
+                // Signal to route that this values are inherited
+                $route->setIsInheriting(true);
+                $route->{$name}(...$arguments);
+                $route->setIsInheriting(false);
+            }
+            else {
+                $route->{$name}(...$arguments);
+            }
         }
+
         return $this;
     }
 }

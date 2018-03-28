@@ -277,6 +277,44 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/bar-group/bar/foo');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('GROUP1', $result->getBody());
+        $this->assertEquals('GROUP2', $result->getBody());
+    }
+
+    public function testGroup3()
+    {
+        $result = $this->exec('/bar-group/bar/baz/');
+
+        $this->assertEquals(200, $result->getStatusCode());
+        $this->assertEquals('UPPER:g-r-o-u-p-3', $result->getBody());
+    }
+
+    public function testGroup4()
+    {
+        // public
+        for ($i = 1; $i <= 3; $i++) {
+            $result = $this->exec('/bar-group/type' . $i . '/public');
+
+            $this->assertEquals(200, $result->getStatusCode());
+            $this->assertEquals('type' . $i, $result->getBody());
+        }
+
+        // secret
+        for ($i = 1; $i <= 2; $i++) {
+            $result = $this->exec('/bar-group/type' . $i . '/secret');
+
+            $this->assertEquals(200, $result->getStatusCode());
+            $this->assertEquals('secret:type' . $i, $result->getBody());
+        }
+
+        // should not have secret available
+        $result = $this->exec('/bar-group/type3/secret');
+        $this->assertEquals(404, $result->getStatusCode());
+
+        // should not match
+        $result = $this->exec('/bar-group/type4/public');
+        $this->assertEquals(404, $result->getStatusCode());
+
+        $result = $this->exec('/bar-group/type/public');
+        $this->assertEquals(404, $result->getStatusCode());
     }
 }
