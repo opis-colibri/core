@@ -59,21 +59,8 @@ class Dispatcher implements IDispatcher
             return notFound();
         }
 
-        /** @var Request $request */
-        $request = $router->getContext()->data();
-
-        if (!in_array($request->method(), $route->get('method', ['GET']))) {
-            return new MethodNotAllowed(view('error.405', [
-                'status' => 405,
-                'message' => 'Method not allowed',
-                'path' => $request->path(),
-                'logo' => logo(),
-            ]));
-        }
-
         $callbacks = $route->getCallbacks();
         $invoker = $router->resolveInvoker($route);
-
 
         foreach ($route->get('guard', []) as $guard) {
             if (isset($callbacks[$guard])) {
