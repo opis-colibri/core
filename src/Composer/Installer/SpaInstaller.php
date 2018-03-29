@@ -144,7 +144,8 @@ class SpaInstaller extends AbstractInstaller
     public function update(PackageInterface $package)
     {
         $extra = $package->getExtra();
-        $spa = $extra['module']['spa'] ?? ['register' => [], 'extend' => []];
+        $spa = $extra['module']['spa'] ?? [];
+        $spa += ['register' => [], 'extend' => []];
         $module = $package->getName();
         $package_name = str_replace('/', '.', $module);
         $module_dir = $this->installer->getInstallPath($package);
