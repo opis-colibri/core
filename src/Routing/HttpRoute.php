@@ -24,6 +24,9 @@ use function Opis\Colibri\Functions\{
     app, make
 };
 
+/**
+ * @property HttpRouteCollection $collection
+ */
 class HttpRoute extends BaseHttpRoute
 {
     /** @var callable */
@@ -155,12 +158,27 @@ class HttpRoute extends BaseHttpRoute
     }
 
     /**
-     * @param string[] ...$middleware
-     * @return HttpRoute
+     * @param string ...$middleware
+     * @return HttpRoute|self
      */
     public function middleware(string ...$middleware): self
     {
         $this->set('middleware', $middleware);
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @param array|null $config
+     * @return HttpRoute|self
+     */
+    public function mixin(string $name, array $config = null): self
+    {
+        $mixins = $this->collection->getMixins();
+        if (!isset($mixins[$name])) {
+            throw new \RuntimeException("Unknown mixin name " . $name);
+        }
+        $mixins[$name]($this, $config);
         return $this;
     }
 }
