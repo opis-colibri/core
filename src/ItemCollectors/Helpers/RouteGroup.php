@@ -21,6 +21,7 @@ use Opis\Colibri\Routing\HttpRoute;
 
 /**
  *
+ * @method RouteGroup mixin(string $name, array $config = null)
  * @method RouteGroup bind(string $name, callable $callback)
  * @method RouteGroup filter(string ...$callbacks)
  * @method RouteGroup implicit(string $name, $value)
@@ -51,7 +52,7 @@ class RouteGroup
     /**
      * @param $name
      * @param $arguments
-     * @return $this|RouteGroup
+     * @return self|RouteGroup
      */
     public function __call($name, $arguments)
     {
