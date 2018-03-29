@@ -159,7 +159,7 @@ class HttpRoute extends BaseHttpRoute
 
     /**
      * @param string[] ...$middleware
-     * @return self|HttpRoute
+     * @return static|HttpRoute
      */
     public function middleware(string ...$middleware): self
     {
@@ -170,7 +170,7 @@ class HttpRoute extends BaseHttpRoute
     /**
      * @param string $name
      * @param array|null $config
-     * @return self|HttpRoute
+     * @return static|HttpRoute
      */
     public function mixin(string $name, array $config = null): self
     {

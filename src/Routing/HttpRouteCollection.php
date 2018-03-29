@@ -35,7 +35,7 @@ class HttpRouteCollection extends RouteCollection
     /**
      * @param string $name
      * @param callable $callback
-     * @return HttpRouteCollection|self
+     * @return static|HttpRouteCollection
      */
     public function mixin(string $name, callable $callback): self
     {
