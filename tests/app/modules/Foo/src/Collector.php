@@ -18,6 +18,10 @@
 namespace Test\Foo;
 
 use Opis\Colibri\Collector as BaseCollector;
+use function Opis\Colibri\Functions\{
+    request
+};
+use Opis\Colibri\HttpResponse\MethodNotAllowed;
 use Opis\Colibri\ItemCollectors\PathAliasCollector;
 use Opis\Colibri\ItemCollectors\RouteCollector;
 use Test\Foo\Middleware\AuthMiddleware;
@@ -51,8 +55,11 @@ class Collector extends BaseCollector
         });
 
         $route('/foo-post', function () {
+            if (request()->method() === 'GET'){
+                return new MethodNotAllowed();
+            }
             return 'OK';
-        }, 'POST');
+        }, ['POST', 'GET']);
 
         $route('/foo-opt/{foo?}', function ($foo = 'missing') {
             return $foo;
