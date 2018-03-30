@@ -38,7 +38,7 @@ class HttpRoute extends BaseHttpRoute
     /**
      * If this is true, then no overwrite will occur
      * @param bool $inheriting
-     * @return HttpRoute
+     * @return static|HttpRoute
      */
     public function setIsInheriting(bool $inheriting): self
     {
@@ -96,6 +96,7 @@ class HttpRoute extends BaseHttpRoute
 
     /**
      * @inheritDoc
+     * @return static|HttpRoute
      */
     public function set(string $name, $value): Route
     {
@@ -108,7 +109,7 @@ class HttpRoute extends BaseHttpRoute
 
     /**
      * @inheritDoc
-     *
+     * @return static|HttpRoute
      */
     public function callback(string $name, callable $callback): BaseHttpRoute
     {
@@ -126,6 +127,7 @@ class HttpRoute extends BaseHttpRoute
 
     /**
      * @inheritDoc
+     * @return static|HttpRoute
      */
     public function bind(string $name, callable $callback): Route
     {
@@ -137,6 +139,7 @@ class HttpRoute extends BaseHttpRoute
 
     /**
      * @inheritDoc
+     * @return static|HttpRoute
      */
     public function placeholder(string $name, string $value): Route
     {
@@ -148,6 +151,7 @@ class HttpRoute extends BaseHttpRoute
 
     /**
      * @inheritDoc
+     * @return static|HttpRoute
      */
     public function implicit(string $name, $value): Route
     {
@@ -158,7 +162,7 @@ class HttpRoute extends BaseHttpRoute
     }
 
     /**
-     * @param string[] ...$middleware
+     * @param string ...$middleware
      * @return static|HttpRoute
      */
     public function middleware(string ...$middleware): self
