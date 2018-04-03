@@ -392,17 +392,26 @@ function render($view): string
 /**
  * @param string $sep
  * @return string
- * @throws \Exception
  */
 function uuid4(string $sep = '-'): string
 {
-    return sprintf("%08x$sep%04x$sep%04x$sep%04x$sep%012x",
-        random_int(0, 0xffffffff),
-        random_int(0, 0xffff),
-        random_int(0, 0x0fff) | 0x4000,
-        random_int(0, 0x3fff) | 0x8000,
-        random_int(0, 0xffffffffffff)
-    );
+    try {
+        return sprintf("%08x$sep%04x$sep%04x$sep%04x$sep%012x",
+            random_int(0, 0xffffffff),
+            random_int(0, 0xffff),
+            random_int(0, 0x0fff) | 0x4000,
+            random_int(0, 0x3fff) | 0x8000,
+            random_int(0, 0xffffffffffff)
+        );
+    } catch (\Exception $e) {
+        return sprintf("%08x$sep%04x$sep%04x$sep%04x$sep%012x",
+            rand(0, 0xffffffff),
+            rand(0, 0xffff),
+            rand(0, 0x0fff) | 0x4000,
+            rand(0, 0x3fff) | 0x8000,
+            rand(0, 0xffffffffffff)
+        );
+    }
 }
 
 /**
