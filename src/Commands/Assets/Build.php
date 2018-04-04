@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Commands;
+namespace Opis\Colibri\Commands\Assets;
 
 use Composer\IO\ConsoleIO;
 use Opis\Colibri\Composer\ModuleInstaller;
@@ -31,16 +31,16 @@ use function Opis\Colibri\Functions\{
 };
 use Symfony\Component\Filesystem\Filesystem;
 
-class BuildAssets extends Command
+class Build extends Command
 {
     protected function configure()
     {
         $this
-            ->setName('build-assets')
+            ->setName('assets:build')
             ->setDescription('Build modules\' assets')
             ->addArgument('module', InputArgument::IS_ARRAY | InputArgument::OPTIONAL,
                 'A list of modules separated by space')
-            ->addOption('dependencies', null, InputOption::VALUE_NONE, 'Install/Uninstall dependencies');
+            ->addOption('dependencies', null, InputOption::VALUE_NONE, 'Install/Uninstall asset dependencies');
     }
 
     /**

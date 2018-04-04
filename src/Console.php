@@ -18,8 +18,9 @@
 namespace Opis\Colibri;
 
 use Opis\Colibri\Commands\{
-    BuildAssets as BuildAssetsCommand, Collect as CollectCommand, Disable as DisableCommand, Enable as EnableCommand,
-    About as AboutCommand, Install as InstallCommand, Modules as ModulesCommand, Uninstall as UninstallCommand
+    Collect as CollectCommand, Disable as DisableCommand, Enable as EnableCommand,
+    About as AboutCommand, Install as InstallCommand, Modules as ModulesCommand, Uninstall as UninstallCommand,
+    Assets\Build as BuildAssetsCommand
 };
 use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\Console\Command\Command;
@@ -52,7 +53,7 @@ class Console
     {
         $commands = [
             'about' => new AboutCommand(),
-            'build-assets' => new BuildAssetsCommand(),
+            'assets:build' => new BuildAssetsCommand(),
             'collect' => new CollectCommand(),
             'disable' => new DisableCommand(),
             'enable' => new EnableCommand(),
