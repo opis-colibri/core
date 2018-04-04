@@ -18,12 +18,16 @@
 namespace Opis\Colibri\Composer\Installer;
 
 use Composer\Package\PackageInterface;
+use Opis\Colibri\SPA\DataHandler;
 use Opis\Colibri\SPA\DefaultSpaHandler;
 use Opis\Colibri\SPA\SpaHandler;
 use Symfony\Component\Filesystem\Filesystem;
 
 class SpaInstaller extends AbstractInstaller
 {
+    /** @var DataHandler|null */
+    private $dataHandler;
+
     /**
      * @param PackageInterface $package
      */
@@ -360,15 +364,10 @@ class SpaInstaller extends AbstractInstaller
      */
     private function getSpaData(): array
     {
-        $file = implode(DIRECTORY_SEPARATOR, [$this->appInfo->writableDir(), 'spa', 'data.json']);
-        if (file_exists($file)) {
-            return json_decode(file_get_contents($file), true);
+        if ($this->dataHandler == null) {
+            $this->dataHandler = new DataHandler($this->appInfo);
         }
-        return [
-            'apps' => [],
-            'modules' => [],
-            'rebuild' => [],
-        ];
+        return $this->dataHandler->getData();
     }
 
     /**
@@ -376,11 +375,9 @@ class SpaInstaller extends AbstractInstaller
      */
     private function setSpaData(array $data)
     {
-        $dir = $this->appInfo->writableDir() . DIRECTORY_SEPARATOR . 'spa';
-        if (!is_dir($dir)) {
-            mkdir($dir, 0775, true);
+        if ($this->dataHandler == null) {
+            $this->dataHandler = new DataHandler($this->appInfo);
         }
-        $file = $dir . DIRECTORY_SEPARATOR . 'data.json';
-        file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        $this->dataHandler->setData($data);
     }
 }

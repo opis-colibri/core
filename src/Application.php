@@ -18,6 +18,7 @@
 namespace Opis\Colibri;
 
 use ArrayAccess, ArrayObject;
+use Opis\Colibri\SPA\DataHandler;
 use SessionHandlerInterface;
 use Composer\{
     Composer,
@@ -1185,12 +1186,8 @@ class Application implements ISettingsContainer
 
         $spa = $extra['module']['spa'];
         $spa += ['register' => [], 'extend' => []];
-        $data_file = implode(DIRECTORY_SEPARATOR, [$this->info->writableDir(), 'spa', 'data.json']);
-        if (!file_exists($data_file)) {
-            return;
-        }
-
-        $data = json_decode(file_get_contents($data_file), true);
+        $data_handler = new DataHandler($this->info);
+        $data = $data_handler->getData();
         $rebuild = &$data['rebuild'];
         $module_name = $module->name();
         $package_name = str_replace('/', '.', $module_name);
@@ -1214,7 +1211,7 @@ class Application implements ISettingsContainer
             }
         }
 
-        file_put_contents($data_file, json_encode($data));
+        $data_handler->setData($data);
     }
 
     /**
