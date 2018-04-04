@@ -18,7 +18,6 @@
 namespace Opis\Colibri\SPA;
 
 use Opis\Colibri\AppInfo;
-use function Opis\Colibri\Functions\config;
 
 class DataHandler
 {
@@ -39,34 +38,6 @@ class DataHandler
      */
     public function getData(): array
     {
-        if (!$this->info->installMode()) {
-            if (null === $data = config()->read('spa')) {
-                $data = $this->readDataFromFile();
-                config()->write('spa', $data);
-            }
-            return $data;
-        }
-
-        return $this->readDataFromFile();
-    }
-
-    /**
-     * @param array $data
-     */
-    public function setData(array $data)
-    {
-        if (!$this->info->installMode()) {
-            config()->write('spa', $data);
-            return;
-        }
-        $this->writeDataToFile($data);
-    }
-
-    /**
-     * @return array
-     */
-    private function readDataFromFile(): array
-    {
         $file = implode(DIRECTORY_SEPARATOR, [$this->info->writableDir(), 'spa', 'data.json']);
         if (file_exists($file)) {
             return json_decode(file_get_contents($file), true);
@@ -81,7 +52,7 @@ class DataHandler
     /**
      * @param array $data
      */
-    private function writeDataToFile(array $data)
+    public function setData(array $data)
     {
         $dir = $this->info->writableDir() . DIRECTORY_SEPARATOR . 'spa';
         if (!is_dir($dir)) {
