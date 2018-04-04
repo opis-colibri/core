@@ -1229,9 +1229,13 @@ class Application implements ISettingsContainer
         chdir($this->info->rootDir());
         $console = new \Composer\Console\Application();
         $console->setAutoExit(false);
-        $console->run(new ArrayInput([
-            'command' => 'dump-autoload',
-        ]));
+        try {
+            $console->run(new ArrayInput([
+                'command' => 'dump-autoload',
+            ]));
+        } catch (\Exception $e) {
+            $this->getLog()->error($e->getMessage());
+        }
         chdir($cwd);
     }
 }
