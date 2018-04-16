@@ -643,8 +643,7 @@ class Application implements ISettingsContainer
         }
 
         if ($this->collectorList === null) {
-            $default = require __DIR__ . '/../collectors.php';
-            $this->collectorList = $this->getConfig()->read('collectors', []) + $default;
+            $this->collectorList = $this->getConfig()->read('collectors', []) + $this->getDefaultCollectors();
         }
 
         return $this->collectorList;
@@ -1237,5 +1236,94 @@ class Application implements ISettingsContainer
             $this->getLog()->error($e->getMessage());
         }
         chdir($cwd);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getDefaultCollectors(): array
+    {
+        return [
+            'routes' => [
+                'class' => 'Opis\\Colibri\\ItemCollectors\\RouteCollector',
+                'description' => 'Collects web routes',
+                'options' => [
+                    'invertedPriority' => false,
+                ],
+            ],
+            'pathaliases' => [
+                'class' => 'Opis\\Colibri\\ItemCollectors\\PathAliasCollector',
+                'description' => 'Collects aliases for route paths',
+                'options' => [
+                    'invertedPriority' => false,
+                ],
+            ],
+            'middleware' => [
+                'class' => 'Opis\\Colibri\\ItemCollectors\\MiddlewareCollector',
+                'description' => 'Collects middleware items',
+            ],
+            'views' => [
+                'class' => 'Opis\\Colibri\\ItemCollectors\\ViewCollector',
+                'description' => 'Collects views',
+                'options' => [
+                    'invertedPriority' => false,
+                ],
+            ],
+            'contracts' => [
+                'class' => 'Opis\\Colibri\\ItemCollectors\\ContractCollector',
+                'description' => 'Collects contracts',
+            ],
+            'connections' => [
+                'class' => 'Opis\\Colibri\\ItemCollectors\\ConnectionCollector',
+                'description' => 'Collects database connections',
+            ],
+            'eventhandlers' => [
+                'class' => 'Opis\\Colibri\\ItemCollectors\\EventHandlerCollector',
+                'description' => 'Collects event handlers',
+                'options' => [
+                    'invertedPriority' => false,
+                ],
+            ],
+            'viewengines' => [
+                'class' => 'Opis\\Colibri\\ItemCollectors\\ViewEngineCollector',
+                'description' => 'Collects view engines',
+            ],
+            'cachedrivers' => [
+                'class' => 'Opis\\Colibri\\ItemCollectors\\CacheCollector',
+                'description' => 'Collects cache drivers',
+            ],
+            'sessionhandlers' => [
+                'class' => 'Opis\\Colibri\\ItemCollectors\\SessionCollector',
+                'description' => 'Collects session handlers',
+            ],
+            'configdrivers' => [
+                'class' => 'Opis\\Colibri\\ItemCollectors\\ConfigCollector',
+                'description' => 'Collects config drivers',
+            ],
+            'validators' => [
+                'class' => 'Opis\\Colibri\\ItemCollectors\\ValidatorCollector',
+                'description' => 'Collects validators',
+            ],
+            'translations' => [
+                'class' => 'Opis\\Colibri\\ItemCollectors\\TranslationCollector',
+                'description' => 'Collects translations',
+            ],
+            'translationfilters' => [
+                'class' => 'Opis\\Colibri\\ItemCollectors\\TranslationFilterCollector',
+                'description' => 'Collect translation filters',
+            ],
+            'commands' => [
+                'class' => 'Opis\\Colibri\\ItemCollectors\\CommandCollector',
+                'description' => 'Collects commands',
+            ],
+            'loggers' => [
+                'class' => 'Opis\\Colibri\\ItemCollectors\\LoggerCollector',
+                'description' => 'Collects log storages',
+            ],
+            'assethandlers' => [
+                'class' => 'Opis\\Colibri\\ItemCollectors\\AssetsHandlerCollector',
+                'description' => 'Collects asset handlers',
+            ],
+        ];
     }
 }
