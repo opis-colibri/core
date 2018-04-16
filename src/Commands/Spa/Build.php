@@ -44,7 +44,7 @@ class Build extends Command
             return;
         }
 
-        (function($module) {
+        (function ($module) {
             /** @noinspection PhpUndefinedMethodInspection */
             $this->rebuildSPA($module);
             /** @noinspection PhpUndefinedMethodInspection */

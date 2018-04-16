@@ -59,12 +59,13 @@ class HttpRouteCollection extends RouteCollection
      * @param string|null $name
      * @return HttpRoute
      */
-    protected static function factory(HttpRouteCollection $collection,
+    protected static function factory(
+        HttpRouteCollection $collection,
         string $id,
         string $pattern,
         callable $action,
-        string $name = null): HttpRoute
-    {
+        string $name = null
+    ): HttpRoute {
         return new HttpRoute($collection, $id, $pattern, $action, $name);
     }
 }
