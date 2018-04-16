@@ -44,7 +44,6 @@ class Dispatcher implements IDispatcher
     /**
      * @param Router|BaseRouter $router
      * @return mixed
-     * @throws \Exception
      */
     public function dispatch(BaseRouter $router)
     {
