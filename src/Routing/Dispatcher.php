@@ -18,16 +18,12 @@
 namespace Opis\Colibri\Routing;
 
 use Opis\Colibri\Application;
-use Opis\Colibri\HttpResponse\MethodNotAllowed;
-use Opis\Http\Request;
 use Opis\Http\Response;
 use Opis\Routing\DispatcherTrait;
 use Opis\Routing\IDispatcher;
 use Opis\Routing\Router as BaseRouter;
 use Opis\HttpRouting\Router;
-use function Opis\Colibri\Functions\{
-    logo, notFound, view
-};
+use function Opis\Colibri\Functions\notFound;
 
 class Dispatcher implements IDispatcher
 {
