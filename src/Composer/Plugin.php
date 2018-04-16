@@ -25,6 +25,7 @@ use Composer\Plugin\PluginInterface;
 use Composer\Script\Event;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\Application;
+use Opis\Colibri\SPA\DataHandler;
 use Opis\Colibri\SPA\SpaHandler;
 use Opis\Colibri\SPA\SpaInfo;
 use Symfony\Component\Filesystem\Filesystem;
@@ -183,14 +184,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     public function buildSinglePageApps(array $enabled)
     {
-        $base_dir = $this->appInfo->writableDir() . DIRECTORY_SEPARATOR . 'spa';
-        $data_file = $base_dir . DIRECTORY_SEPARATOR . 'data.json';
+        $data_handler = new DataHandler($this->appInfo);
 
-        if (!file_exists($data_file)) {
-            return;
-        }
-
-        $data = json_decode(file_get_contents($data_file), true);
+        $data = $data_handler->getData();
         $apps = &$data['apps'];
         $modules = &$data['modules'];
         $rebuild = &$data['rebuild'];
@@ -243,6 +239,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         }
 
         $rebuild = [];
-        file_put_contents($data_file, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+        $data_handler->setData($data);
     }
 }
