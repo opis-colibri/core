@@ -292,7 +292,8 @@ class Application implements ISettingsContainer
             $collector = $this->getCollector();
             $routes = $collector->getViews();
             $resolver = $collector->getViewEngineResolver();
-            $this->viewRenderer = new ViewRenderer($routes, $resolver, new ViewEngine());
+            $this->viewRenderer = new ViewRenderer($routes, new ViewEngine());
+            $resolver->copyEngines($this->viewRenderer->getEngineResolver());
             $this->viewRenderer->handle('error.{error}', function ($error) {
                 return 'template://\Opis\Colibri\Rendering\Template::error' . $error;
             }, -100)->where('error', '401|403|404|405|500|503');

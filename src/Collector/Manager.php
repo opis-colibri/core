@@ -24,7 +24,7 @@ use Opis\Colibri\{
     Application, Container, Collector, ItemCollector, Module
 };
 use Opis\Colibri\Serializable\{
-    CallbackList, ClassList
+    CallbackList, ClassList, ViewEngineResolver
 };
 use Opis\Database\{
     Connection, Database
@@ -37,7 +37,7 @@ use Opis\Routing\{
     Context, RouteCollection as PathAliasCollection
 };
 use Opis\View\{
-    EngineResolver, RouteCollection as ViewRouteCollection
+    RouteCollection as ViewRouteCollection
 };
 use Opis\Config\ConfigInterface;
 use Opis\Cache\CacheInterface;
@@ -250,9 +250,9 @@ class Manager
 
     /**
      * @param bool $fresh
-     * @return EngineResolver
+     * @return ViewEngineResolver
      */
-    public function getViewEngineResolver(bool $fresh = false): EngineResolver
+    public function getViewEngineResolver(bool $fresh = false): ViewEngineResolver
     {
         return $this->collect('ViewEngines', $fresh);
     }
