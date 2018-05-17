@@ -372,12 +372,12 @@ function module(string $module): Module
 
 /**
  * @param string $name
- * @param array $arguments
+ * @param array $vars
  * @return View
  */
-function view(string $name, array $arguments = []): View
+function view(string $name, array $vars = []): View
 {
-    return new View($name, $arguments);
+    return new View($name, $vars);
 }
 
 /**
