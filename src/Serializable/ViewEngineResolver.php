@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2014-2017 The Opis Project
+ * Copyright 2018 The Opis Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,34 +15,26 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\ItemCollectors;
+namespace Opis\Colibri\Serializable;
 
-use Opis\Colibri\ItemCollector;
-use Opis\Colibri\Serializable\ViewEngineResolver;
+use Opis\View\EngineResolver;
 
-/**
- * @property ViewEngineResolver $data
- */
-class ViewEngineCollector extends ItemCollector
+class ViewEngineResolver extends EngineResolver
 {
     /**
      * Constructor
+     * @noinspection PhpMissingParentConstructorInspection
      */
     public function __construct()
     {
-        parent::__construct(new ViewEngineResolver());
+        // No super
     }
 
     /**
-     * Defines a new view engine
-     *
-     * @param callable $factory
-     *
-     * @return ViewEngineCollector
+     * @param EngineResolver $resolver
      */
-    public function register(callable $factory): self
+    public function copyEngines(EngineResolver $resolver)
     {
-        $this->data->register($factory, $this->crtPriority);
-        return $this;
+        $resolver->engines = $this->engines;
     }
 }
