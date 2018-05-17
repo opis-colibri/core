@@ -386,7 +386,7 @@ function view(string $name, array $arguments = []): View
  */
 function render($view): string
 {
-    return Application::getInstance()->getViewApp()->render($view);
+    return Application::getInstance()->getViewRenderer()->render($view);
 }
 
 /**

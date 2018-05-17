@@ -60,7 +60,7 @@ use Opis\ORM\EntityManager;
 use Opis\Routing\Context;
 use Opis\Session\Session;
 use Opis\Validation\Placeholder;
-use Opis\View\ViewApp;
+use Opis\View\ViewRenderer;
 use Opis\Intl\Translator\IDriver as TranslatorDriver;
 use Opis\Colibri\Rendering\{
     TemplateStream,
@@ -142,8 +142,8 @@ class Application implements ISettingsContainer
     /** @var  HttpRouter */
     protected $httpRouter;
 
-    /** @var  ViewApp */
-    protected $viewApp;
+    /** @var  ViewRenderer */
+    protected $viewRenderer;
 
     /** @var \Psr\Log\LoggerInterface[] */
     protected $loggers = [];
@@ -282,26 +282,26 @@ class Application implements ISettingsContainer
     }
 
     /**
-     * Get the View router
+     * Get the view renderer
      *
-     * @return  ViewApp
+     * @return  ViewRenderer
      */
-    public function getViewApp(): ViewApp
+    public function getViewRenderer(): ViewRenderer
     {
-        if ($this->viewApp === null) {
+        if ($this->viewRenderer === null) {
             $collector = $this->getCollector();
             $routes = $collector->getViews();
             $resolver = $collector->getViewEngineResolver();
-            $this->viewApp = new ViewApp($routes, $resolver, new ViewEngine());
-            $this->viewApp->handle('error.{error}', function ($error) {
+            $this->viewRenderer = new ViewRenderer($routes, $resolver, new ViewEngine());
+            $this->viewRenderer->handle('error.{error}', function ($error) {
                 return 'template://\Opis\Colibri\Rendering\Template::error' . $error;
             }, -100)->where('error', '401|403|404|405|500|503');
-            $this->viewApp->handle('alerts', function () {
+            $this->viewRenderer->handle('alerts', function () {
                 return 'template://\Opis\Colibri\Rendering\Template::alerts';
             }, -100);
         }
 
-        return $this->viewApp;
+        return $this->viewRenderer;
     }
 
     /**
@@ -751,7 +751,7 @@ class Application implements ISettingsContainer
     public function clearCachedObjects()
     {
         $this->containerInstance = null;
-        $this->viewApp = null;
+        $this->viewRenderer = null;
         $this->session = null;
         $this->httpRouter = null;
         $this->collectorList = null;
