@@ -33,7 +33,7 @@ class View extends OpisView
      */
     public function set(string $name, $value): self
     {
-        $this->arguments[$name] = $value;
+        $this->vars[$name] = $value;
         return $this;
     }
 
@@ -46,7 +46,7 @@ class View extends OpisView
      */
     public function has(string $name): bool
     {
-        return isset($this->arguments[$name]);
+        return isset($this->vars[$name]);
     }
 
     /**
@@ -59,6 +59,6 @@ class View extends OpisView
      */
     public function get(string $name, $default = null)
     {
-        return $this->arguments[$name] ?? $default;
+        return $this->vars[$name] ?? $default;
     }
 }
