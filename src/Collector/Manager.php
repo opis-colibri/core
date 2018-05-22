@@ -24,7 +24,7 @@ use Opis\Colibri\{
     Application, Container, Collector, ItemCollector, Module
 };
 use Opis\Colibri\Serializable\{
-    CallbackList, ClassList, ViewEngineResolver
+    CallbackList, ClassList, Translations, ViewEngineResolver
 };
 use Opis\Database\{
     Connection, Database
@@ -259,7 +259,7 @@ class Manager
 
     /**
      * @param bool $fresh
-     * @return mixed
+     * @return Translations
      */
     public function getTranslations(bool $fresh = true)
     {
