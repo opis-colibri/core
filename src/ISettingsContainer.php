@@ -18,8 +18,8 @@
 namespace Opis\Colibri;
 
 use Opis\Cache\CacheInterface;
-use Opis\Config\ConfigInterface;
 use Opis\Database\Connection;
+use Opis\DataStore\IDataStore;
 use Opis\Intl\Translator\IDriver as TranslatorDriver;
 use SessionHandlerInterface;
 use Psr\Log\LoggerInterface;
@@ -27,10 +27,10 @@ use Psr\Log\LoggerInterface;
 interface ISettingsContainer
 {
     /**
-     * @param ConfigInterface $driver
+     * @param IDataStore $driver
      * @return ISettingsContainer
      */
-    public function setConfigDriver(ConfigInterface $driver): self;
+    public function setConfigDriver(IDataStore $driver): self;
 
     /**
      * @param CacheInterface $driver

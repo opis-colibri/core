@@ -17,6 +17,7 @@
 
 namespace Opis\Colibri\Collector;
 
+use Opis\DataStore\IDataStore;
 use ReflectionClass;
 use ReflectionMethod;
 use RuntimeException;
@@ -39,7 +40,6 @@ use Opis\Routing\{
 use Opis\View\{
     RouteCollection as ViewRouteCollection
 };
-use Opis\Config\ConfigInterface;
 use Opis\Cache\CacheInterface;
 use Psr\Log\LoggerInterface;
 
@@ -129,9 +129,9 @@ class Manager
     /**
      * @param string $name
      * @param bool $fresh
-     * @return ConfigInterface
+     * @return IDataStore
      */
-    public function getConfigDriver(string $name, bool $fresh = false): ConfigInterface
+    public function getConfigDriver(string $name, bool $fresh = false): IDataStore
     {
         return $this->collect('ConfigDrivers', $fresh)->get($name);
     }

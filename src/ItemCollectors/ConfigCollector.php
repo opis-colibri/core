@@ -19,7 +19,7 @@ namespace Opis\Colibri\ItemCollectors;
 
 use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Serializable\StorageCollection;
-use Opis\Config\ConfigInterface;
+use Opis\DataStore\IDataStore;
 
 /**
  * @property  StorageCollection $data
@@ -48,9 +48,9 @@ class ConfigCollector extends ItemCollector
     /**
      * @param string $storage
      * @param callable $factory
-     * @return ConfigInterface
+     * @return IDataStore
      */
-    public static function factory(string $storage, callable $factory): ConfigInterface
+    public static function factory(string $storage, callable $factory): IDataStore
     {
         return $factory($storage);
     }

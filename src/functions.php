@@ -27,12 +27,12 @@ use Opis\Colibri\HttpResponse\{
     Forbidden as ForbiddenResponse,
     Unauthorized as UnauthorizedResponse
 };
-use Opis\Config\ConfigInterface;
 use Opis\Database\{
     Connection as DBConnection,
     Database,
     Schema
 };
+use Opis\DataStore\IDataStore;
 use Opis\Intl\Translator\{
     LanguageInfo,
     SubTranslator
@@ -66,9 +66,9 @@ function cache(string $storage = 'default'): CacheInterface
 
 /**
  * @param string $storage
- * @return ConfigInterface
+ * @return IDataStore
  */
-function config(string $storage = 'default'): ConfigInterface
+function config(string $storage = 'default'): IDataStore
 {
     return Application::getInstance()->getConfig($storage);
 }

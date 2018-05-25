@@ -19,6 +19,7 @@ namespace Opis\Colibri;
 
 use ArrayAccess, ArrayObject;
 use Opis\Colibri\SPA\DataHandler;
+use Opis\DataStore\IDataStore;
 use SessionHandlerInterface;
 use Composer\{
     Composer,
@@ -46,10 +47,7 @@ use Opis\Http\{
     Request as HttpRequest,
     Response as HttpResponse
 };
-use Opis\Config\{
-    ConfigInterface,
-    Drivers\Ephemeral as EphemeralConfig
-};
+use Opis\DataStore\Drivers\Memory as MemoryConfig;
 use Opis\Database\{
     Connection,
     Database,
@@ -124,7 +122,7 @@ class Application implements ISettingsContainer
     /** @var  CacheInterface[] */
     protected $cache = [];
 
-    /** @var  ConfigInterface[] */
+    /** @var  IDataStore[] */
     protected $config = [];
 
     /** @var  Connection[] */
@@ -430,9 +428,9 @@ class Application implements ISettingsContainer
      *
      * @param   string $driver (optional) Driver's name
      *
-     * @return  ConfigInterface
+     * @return  IDataStore
      */
-    public function getConfig(string $driver = 'default'): ConfigInterface
+    public function getConfig(string $driver = 'default'): IDataStore
     {
         if (!isset($this->config[$driver])) {
             if ($driver === 'default') {
@@ -682,10 +680,10 @@ class Application implements ISettingsContainer
     }
 
     /**
-     * @param ConfigInterface $driver
+     * @param IDataStore $driver
      * @return ISettingsContainer
      */
-    public function setConfigDriver(ConfigInterface $driver): ISettingsContainer
+    public function setConfigDriver(IDataStore $driver): ISettingsContainer
     {
         $this->implicit['config'] = $driver;
 
@@ -1110,7 +1108,7 @@ class Application implements ISettingsContainer
             public function bootstrap(ISettingsContainer $app)
             {
                 $app->setCacheDriver(new MemoryDriver())
-                    ->setConfigDriver(new EphemeralConfig())
+                    ->setConfigDriver(new MemoryConfig())
                     ->setDefaultLogger(new NullLogger())
                     ->setSessionHandler(new \SessionHandler());
             }

@@ -16,13 +16,12 @@
  * ============================================================================ */
 
 use Opis\Colibri\{
-    Application,
     IBootstrap,
     ISettingsContainer
 };
 use Psr\Log\NullLogger as Logger;
 use Opis\Cache\Drivers\Memory as CacheDriver;
-use Opis\Config\Drivers\Ephemeral as ConfigDriver;
+use Opis\DataStore\Drivers\Memory as ConfigDriver;
 use Opis\Intl\Translator\Drivers\Memory as TranslatorDriver;
 
 return new class implements IBootstrap

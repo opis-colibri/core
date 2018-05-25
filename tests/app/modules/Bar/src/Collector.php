@@ -73,7 +73,7 @@ class Collector extends BaseCollector
                     $route('/', function ($upName) {
                         return $upName;
                     })
-                        // overwrite implcit again
+                        // overwrite implicit again
                         ->implicit('name', 'group3');
                 }, '/baz')
                     // binding should handle & overwrite implicit

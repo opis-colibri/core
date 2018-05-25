@@ -240,7 +240,7 @@ class RoutingTest extends BaseClass
         $this->assertEquals('Unauthorized', $result->getBody());
     }
 
-    public function testMiddlewareChanin1()
+    public function testMiddlewareChain1()
     {
         $result = $this->exec('/foo/chain/1');
 
@@ -248,7 +248,7 @@ class RoutingTest extends BaseClass
         $this->assertEquals('PREFIX-FOO', $result->getBody());
     }
 
-    public function testMiddlewareChanin2()
+    public function testMiddlewareChain2()
     {
         $result = $this->exec('/foo/chain/2');
 

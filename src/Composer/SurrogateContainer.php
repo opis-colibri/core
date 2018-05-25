@@ -20,15 +20,15 @@ namespace Opis\Colibri\Composer;
 use Opis\Cache\CacheInterface;
 use Opis\Colibri\AppInfo;
 use Opis\Colibri\ISettingsContainer;
-use Opis\Config\ConfigInterface;
 use Opis\Database\Connection;
+use Opis\DataStore\IDataStore;
 use Opis\Intl\Translator\IDriver as TranslatorDriver;
 use Psr\Log\LoggerInterface;
 use SessionHandlerInterface;
 
 class SurrogateContainer implements ISettingsContainer
 {
-    /** @var  ConfigInterface */
+    /** @var  IDataStore */
     protected $config;
 
     /** @var  AppInfo */
@@ -53,18 +53,18 @@ class SurrogateContainer implements ISettingsContainer
     }
 
     /**
-     * @return ConfigInterface
+     * @return IDataStore
      */
-    public function getConfigDriver(): ConfigInterface
+    public function getConfigDriver(): IDataStore
     {
         return $this->config;
     }
 
     /**
-     * @param ConfigInterface $driver
+     * @param IDataStore $driver
      * @return ISettingsContainer
      */
-    public function setConfigDriver(ConfigInterface $driver): ISettingsContainer
+    public function setConfigDriver(IDataStore $driver): ISettingsContainer
     {
         $this->config = $driver;
         return $this;

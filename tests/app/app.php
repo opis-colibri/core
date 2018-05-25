@@ -43,6 +43,7 @@ spl_autoload_register(function ($class) {
             $path .= str_replace('_', '/', $class) . '.php';
             $dir .= '/' . $path;
             if (file_exists($dir)) {
+                /** @noinspection PhpIncludeInspection */
                 include $dir;
                 return true;
             }
