@@ -35,7 +35,7 @@ class Alerts extends View
     {
         parent::__construct('alerts');
 
-        $this->arguments = null;
+        $this->vars = null;
     }
 
     /**
@@ -58,20 +58,20 @@ class Alerts extends View
      */
     public function viewArguments(): array
     {
-        if ($this->arguments === null) {
-            $this->arguments = [
+        if ($this->vars === null) {
+            $this->vars = [
                 'dismissible' => $this->dismissible,
                 'has_alerts' => $this->hasAlerts(),
             ];
             $flash = session()->flash();
             foreach (['error', 'warning', 'success', 'info'] as $key) {
                 $type = $this->prefix . $key;
-                $this->arguments[$key] = $flash->get($type, []);
+                $this->vars[$key] = $flash->get($type, []);
                 $flash->delete($type);
             }
         }
 
-        return $this->arguments;
+        return $this->vars;
     }
 
     /**
