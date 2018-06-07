@@ -312,7 +312,7 @@ class Manager
             });
 
             if ($hit) {
-                $this->app->getEventTarget()->dispatch(new Event('system.collect.' . $entry));
+                $this->app->getEventDispatcher()->dispatch(new Event('system.collect.' . $entry));
             }
         }
 
@@ -352,7 +352,7 @@ class Manager
             $this->collect($entry, $fresh);
         }
 
-        $this->app->getEventTarget()->dispatch(new Event('system.collect'));
+        $this->app->getEventDispatcher()->dispatch(new Event('system.collect'));
 
         return true;
     }

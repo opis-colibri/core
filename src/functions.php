@@ -163,7 +163,7 @@ function entityManager(string $connection = 'default'): EntityManager
  */
 function emit(string $event, bool $cancelable = false): Event
 {
-    return Application::getInstance()->getEventTarget()->dispatch(new Event($event, $cancelable));
+    return Application::getInstance()->getEventDispatcher()->dispatch(new Event($event, $cancelable));
 }
 
 /**
@@ -172,7 +172,7 @@ function emit(string $event, bool $cancelable = false): Event
  */
 function dispatch(Event $event): Event
 {
-    return Application::getInstance()->getEventTarget()->dispatch($event);
+    return Application::getInstance()->getEventDispatcher()->dispatch($event);
 }
 
 /**

@@ -40,7 +40,7 @@ use Opis\Cache\{
     Drivers\Memory as MemoryDriver
 };
 use Opis\Events\{
-    Event, EventTarget
+    Event, EventDispatcher
 };
 use Opis\Http\{
     ResponseHandler,
@@ -146,8 +146,8 @@ class Application implements ISettingsContainer
     /** @var \Psr\Log\LoggerInterface[] */
     protected $loggers = [];
 
-    /** @var  EventTarget */
-    protected $eventTarget;
+    /** @var  EventDispatcher */
+    protected $eventDispatcher;
 
     /** @var  Validator */
     protected $validator;
@@ -569,15 +569,15 @@ class Application implements ISettingsContainer
     }
 
     /**
-     * @return EventTarget
+     * @return EventDispatcher
      */
-    public function getEventTarget(): EventTarget
+    public function getEventDispatcher(): EventDispatcher
     {
-        if ($this->eventTarget === null) {
-            $this->eventTarget = new EventTarget($this->getCollector()->getEventHandlers());
+        if ($this->eventDispatcher === null) {
+            $this->eventDispatcher = new EventDispatcher($this->getCollector()->getEventHandlers());
         }
 
-        return $this->eventTarget;
+        return $this->eventDispatcher;
     }
 
     /**
@@ -1155,7 +1155,7 @@ class Application implements ISettingsContainer
      */
     protected function emit(string $name, bool $cancelable = false): Event
     {
-        return $this->getEventTarget()->dispatch(new Event($name, $cancelable));
+        return $this->getEventDispatcher()->dispatch(new Event($name, $cancelable));
     }
 
     /**
