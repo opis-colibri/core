@@ -17,13 +17,13 @@
 
 namespace Test\Foo\Middleware;
 
-use function Opis\Colibri\Functions\unauthorized;
 use Opis\Colibri\Routing\Middleware;
+use function Opis\Colibri\Functions\response;
 
 class AuthMiddleware extends Middleware
 {
     public function __invoke()
     {
-        return unauthorized('Unauthorized');
+        return response('Unauthorized', 401);
     }
 }

@@ -19,7 +19,7 @@ namespace Test\Foo;
 
 use Opis\Colibri\Collector as BaseCollector;
 use function Opis\Colibri\Functions\{
-    request
+    request, response
 };
 use Opis\Colibri\HttpResponse\MethodNotAllowed;
 use Opis\Colibri\ItemCollectors\PathAliasCollector;
@@ -55,8 +55,8 @@ class Collector extends BaseCollector
         });
 
         $route('/foo-post', function () {
-            if (request()->method() === 'GET'){
-                return new MethodNotAllowed();
+            if (request()->getMethod() === 'GET'){
+                return response('Method not allowed', 405);
             }
             return 'OK';
         }, ['POST', 'GET']);

@@ -18,8 +18,10 @@
 namespace Opis\Colibri;
 
 use ArrayAccess, ArrayObject;
+use Opis\Colibri\Routing\Dispatcher;
 use Opis\Colibri\SPA\DataHandler;
 use Opis\DataStore\IDataStore;
+use Opis\HttpRouting\Router;
 use SessionHandlerInterface;
 use Composer\{
     Composer,
@@ -43,9 +45,7 @@ use Opis\Events\{
     Event, EventDispatcher
 };
 use Opis\Http\{
-    ResponseHandler,
-    Request as HttpRequest,
-    Response as HttpResponse
+    Request as HttpRequest, Response as HttpResponse, Uri
 };
 use Opis\DataStore\Drivers\Memory as MemoryConfig;
 use Opis\Database\{
@@ -547,25 +547,7 @@ class Application implements ISettingsContainer
      */
     public function getHttpRequest(): HttpRequest
     {
-        if ($this->httpRequestInstance === null) {
-            $global = $this->getGlobalValues();
-            if (!isset($global['request'])) {
-                $global['request'] = HttpRequest::fromGlobals();
-            }
-            $this->httpRequestInstance = $global['request'];
-        }
-
         return $this->httpRequestInstance;
-    }
-
-    /**
-     * Set the underlying HTTP request object
-     * @param HttpRequest $request
-     */
-    public function setHttpRequest(HttpRequest $request)
-    {
-        $global = $this->getGlobalValues();
-        $global['request'] = $this->httpRequestInstance = $request;
     }
 
     /**
@@ -602,21 +584,6 @@ class Application implements ISettingsContainer
         }
 
         return $this->collector;
-    }
-
-    /**
-     * @return ArrayAccess
-     */
-    public function getGlobalValues(): ArrayAccess
-    {
-        if ($this->global === null) {
-            $this->global = new ArrayObject([
-                'app' => $this,
-                'lang' => $this->getTranslator()->getDefaultLanguage(),
-            ]);
-        }
-
-        return $this->global;
     }
 
     /**
@@ -673,10 +640,12 @@ class Application implements ISettingsContainer
         $fullPath = $assetsPath . '/' . $module . '/' . ltrim($path, '/');
 
         if ($full) {
-            return $this->httpRequestInstance->uriForPath($fullPath);
+            $components = $this->httpRequestInstance->getUri();
+            $components['path'] = $fullPath;
+            return (string)new Uri($components);
         }
 
-        return rtrim($this->httpRequestInstance->basePath(), '/') . $fullPath;
+        return rtrim($this->httpRequestInstance->getUri()->getPath(), '/') . $fullPath;
     }
 
     /**
@@ -845,12 +814,12 @@ class Application implements ISettingsContainer
     public function run(HttpRequest $request = null)
     {
         if ($request === null) {
-            $request = HttpRequest::fromGlobals();
+            $request = new HttpRequest();
         }
 
-        $this->setHttpRequest($request);
+        $this->httpRequestInstance = $request;
 
-        $context = new Context($request->path(), $request);
+        $context = new Context($request->getUri()->getPath(), $request);
 
         $response = $this->getHttpRouter()->route($context);
 
@@ -859,8 +828,28 @@ class Application implements ISettingsContainer
         }
 
         if (PHP_SAPI !== 'cli') {
-            $handler = new ResponseHandler($request);
-            $handler->sendResponse($response);
+            if (!headers_sent()) {
+                header(implode(' ', [
+                    $request->getProtocolVersion(),
+                    $response->getStatusCode(),
+                    $response->getReasonPhrase(),
+                ]));
+
+                foreach ($response->getHeaders() as $name => $value) {
+                    header(sprintf('%s: %s'), $name, $value);
+                }
+
+                foreach ($response->getCookies() as $cookie) {
+                    setcookie($cookie['name'], $cookie['value'], $cookie['expire'], $cookie['path'], $cookie['domain'],
+                        $cookie['secore'], $cookie['http_only']);
+                }
+            }
+
+            if (null !== $body = $response->getBody()) {
+                while (!$body->eof()) {
+                    echo $body->read();
+                }
+            }
         }
 
         return $response;

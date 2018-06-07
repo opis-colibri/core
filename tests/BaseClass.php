@@ -44,11 +44,9 @@ class BaseClass extends TestCase
         string $path,
         string $method = 'GET',
         bool $secure = false,
-        array $input = [],
-        array $server = []
+        array $headers = []
     ) {
-        $server['HTTPS'] = $secure ? 'on' : 'off';
-        $request = Request::create($path, $method, $input, [], [], $server);
+        $request = new Request($method, $path, 'HTTP/1.1', $secure, $headers);
         return $this->app->run($request);
     }
 }

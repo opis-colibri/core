@@ -20,7 +20,6 @@ namespace Opis\Colibri\ItemCollectors;
 use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Container;
 use Opis\Container\Dependency;
-use Opis\Container\Extender;
 
 /**
  * @property Container $data
@@ -51,14 +50,14 @@ class ContractCollector extends ItemCollector
     /**
      * Alias a type.
      *
-     * @param   string $concrete Concrete class or interface name
      * @param   string $alias An alias for the specified class or interface
+     * @param   string $concrete Concrete class or interface name
      *
      * @return  self    Self reference
      */
-    public function alias(string $concrete, string $alias): self
+    public function alias(string $alias, string $concrete): self
     {
-        $this->data->alias($concrete, $alias);
+        $this->data->alias($alias, $concrete);
         return $this;
     }
 
@@ -67,11 +66,12 @@ class ContractCollector extends ItemCollector
      *
      * @param   string $abstract
      * @param callable $extender
-     * @return Extender
+     * @return self
      */
-    public function extend(string $abstract, callable $extender): Extender
+    public function extend(string $abstract, callable $extender): self
     {
-        return $this->data->extend($abstract, $extender);
+        $this->data->extend($abstract, $extender);
+        return $this;
     }
 
     /**

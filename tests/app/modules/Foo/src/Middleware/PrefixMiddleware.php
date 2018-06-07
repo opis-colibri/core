@@ -18,13 +18,18 @@
 namespace Test\Foo\Middleware;
 
 use Opis\Colibri\Routing\Middleware;
+use Opis\Http\Response;
+use Opis\Http\Stream;
 
 class PrefixMiddleware extends Middleware
 {
     public function __invoke()
     {
-        $response = $this->next();
-        $response->setBody('prefix-' . $response->getBody());
-        return $response;
+        return $this->next()->modify(function(Response $response){
+            $body = new Stream('php://temp', 'rw+');
+            $body->write('prefix-');
+            $body->write($response->getBody());
+            $response->setBody($body);
+        });
     }
 }

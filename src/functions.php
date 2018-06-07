@@ -21,12 +21,6 @@ use Opis\Cache\CacheInterface;
 use Opis\Colibri\{
     Alerts, Application, AppInfo, Module, View, Validation\Validator, Serializable\ControllerCallback
 };
-use Opis\Colibri\HttpResponse\{
-    Redirect as RedirectResponse,
-    NotFound as NotFoundResponse,
-    Forbidden as ForbiddenResponse,
-    Unauthorized as UnauthorizedResponse
-};
 use Opis\Database\{
     Connection as DBConnection,
     Database,
@@ -42,7 +36,15 @@ use Opis\ORM\{
     Core\EntityQuery
 };
 use Opis\Events\Event;
-use Opis\Http\Request;
+use Opis\Http\{
+    IStream,
+    Response as HttpResponse,
+    Request,
+    Response\HtmlResponse,
+    Response\JsonResponse,
+    Response\RedirectResponse,
+    Uri
+};
 use Opis\Session\Session;
 use Opis\View\IView;
 use Psr\Log\LoggerInterface;
@@ -75,12 +77,11 @@ function config(string $storage = 'default'): IDataStore
 
 /**
  * @param string $abstract
- * @param array $arguments
  * @return mixed
  */
-function make(string $abstract, array $arguments = [])
+function make(string $abstract)
 {
-    return Application::getInstance()->getContainer()->make($abstract, $arguments);
+    return Application::getInstance()->getContainer()->make($abstract);
 }
 
 /**
@@ -184,75 +185,28 @@ function request(): Request
 }
 
 /**
+ * @param string|IStream|array|\stdClass $body
+ * @param int $status
+ * @param array $headers
+ * @return HtmlResponse
+ */
+function response($body, int $status = 200, array $headers = []): HttpResponse
+{
+    if (is_array($body) || $body instanceof \stdClass) {
+        return new JsonResponse($body, $status, $headers);
+    }
+
+    return new HtmlResponse($body, $status, $headers);
+}
+
+/**
  * @param string $location
  * @param int $code
- * @param array $query
- * @return RedirectResponse
+ * @return
  */
-function redirect(string $location, int $code = 302, array $query = []): RedirectResponse
+function redirect(string $location, int $code = 301): RedirectResponse
 {
-    if (!empty($query)) {
-        foreach ($query as $key => $value) {
-            $query[$key] = $key . '=' . urlencode($value);
-        }
-        $location = rtrim($location) . '?' . implode('&', $query);
-    }
-
     return new RedirectResponse($location, $code);
-}
-
-/**
- * @param null|mixed|string $body
- * @return NotFoundResponse
- */
-function notFound($body = null): NotFoundResponse
-{
-    if ($body === null) {
-        $body = view('error.404', [
-            'status' => 404,
-            'message' => 'Not found',
-            'path' => request()->path(),
-            'logo' => logo(),
-        ]);
-    }
-
-    return new NotFoundResponse($body);
-}
-
-/**
- * @param null|string|mixed $body
- * @return ForbiddenResponse
- */
-function forbidden($body = null): ForbiddenResponse
-{
-    if ($body === null) {
-        $body = view('error.403', [
-            'status' => 403,
-            'message' => 'Forbidden',
-            'path' => request()->path(),
-            'logo' => logo(),
-        ]);
-    }
-
-    return new ForbiddenResponse($body);
-}
-
-/**
- * @param null|string|mixed $body
- * @return UnauthorizedResponse
- */
-function unauthorized($body = null): UnauthorizedResponse
-{
-    if ($body === null) {
-        $body = view('error.401', [
-            'status' => 401,
-            'message' => 'Unauthorized',
-            'path' => request()->path(),
-            'logo' => logo(),
-        ]);
-    }
-
-    return new UnauthorizedResponse($body);
 }
 
 /**
@@ -336,7 +290,13 @@ function tns(string $ns): SubTranslator
  */
 function getURL(string $path, bool $full = false): string
 {
-    return $full ? request()->uriForPath($path) : request()->baseUrl() . '/' . ltrim($path, '/');
+    if ($full) {
+        $components = request()->getUri()->getComponents();
+        $components['path'] = $path;
+        return (string) (new Uri($components));
+    }
+
+    return request()->getUri()->getPath() . '/' . ltrim($path, '/');
 }
 
 /**

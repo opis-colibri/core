@@ -18,12 +18,14 @@
 namespace Opis\Colibri\Routing;
 
 use Opis\Colibri\Application;
-use Opis\Http\Response;
-use Opis\Routing\DispatcherTrait;
-use Opis\Routing\IDispatcher;
-use Opis\Routing\Router as BaseRouter;
+use function Opis\Colibri\Functions\view;
+use Opis\Http\{
+    Response\HtmlResponse, Response
+};
+use Opis\Routing\{
+    DispatcherTrait, IDispatcher, Router as BaseRouter
+};
 use Opis\HttpRouting\Router;
-use function Opis\Colibri\Functions\notFound;
 
 class Dispatcher implements IDispatcher
 {
@@ -51,7 +53,10 @@ class Dispatcher implements IDispatcher
         $route = $this->findRoute($router);
 
         if ($route === null) {
-            return notFound();
+            return new HtmlResponse(view('error.404', [
+                'status' => 404,
+                'message' => 'Not found'
+            ]), 404);
         }
 
         $callbacks = $route->getCallbacks();
@@ -62,7 +67,10 @@ class Dispatcher implements IDispatcher
                 $callback = $callbacks[$guard];
                 $args = $invoker->getArgumentResolver()->resolve($callback);
                 if (false === $callback(...$args)) {
-                    return notFound();
+                    return new HtmlResponse(view('error.404', [
+                        'status' => 404,
+                        'message' => 'Not found'
+                    ]), 404);
                 }
             }
         }
@@ -72,7 +80,7 @@ class Dispatcher implements IDispatcher
         if (empty($list)) {
             $result = $invoker->invokeAction();
             if (!$result instanceof Response) {
-                $result = new Response($result);
+                $result = new HtmlResponse($result);
             }
             return $result;
         }
@@ -84,7 +92,7 @@ class Dispatcher implements IDispatcher
                 if ($queue->isEmpty()) {
                     $result = $invoker->invokeAction();
                     if (!$result instanceof Response) {
-                        $result = new Response($result);
+                        $result = new HtmlResponse($result);
                     }
                     return $result;
                 }
@@ -95,7 +103,7 @@ class Dispatcher implements IDispatcher
             $args = $invoker->getArgumentResolver()->resolve($middleware);
             $result = $middleware(...$args);
             if (!$result instanceof Response) {
-                $result = new Response($result);
+                $result = new HtmlResponse($result);
             }
             return $result;
         };

@@ -77,7 +77,7 @@ class Manager
         $this->router = new Router();
         $this->container = $container = new Container();
         foreach ($this->app->getCollectorList() as $name => $collector) {
-            $container->alias($collector['class'], $name);
+            $container->alias($name, $collector['class']);
             $container->singleton($collector['class']);
         }
 
@@ -343,7 +343,7 @@ class Manager
             $this->router = new Router();
             $this->container = $container = new Container();
             foreach ($list as $name => $collector) {
-                $container->alias($collector['class'], $name);
+                $container->alias($name, $collector['class']);
                 $container->singleton($collector['class']);
             }
         }
@@ -375,7 +375,7 @@ class Manager
             'options' => $options,
         ]);
         $this->container->singleton($class);
-        $this->container->alias($class, $name);
+        $this->container->alias($name, $class);
     }
 
     /**

@@ -30,7 +30,11 @@ class HttpRouter extends Router
     public function __construct(Application $app)
     {
         $this->app = $app;
-        parent::__construct($app->getCollector()->getRoutes(), new Dispatcher($app), null, $app->getGlobalValues());
+
+        parent::__construct($app->getCollector()->getRoutes(), new Dispatcher($app), null, new \ArrayObject([
+            'app' => $app,
+            'lang' => $app->getTranslator()->getDefaultLanguage(),
+        ]));
     }
 
     /**
@@ -38,13 +42,7 @@ class HttpRouter extends Router
      */
     public function route(Context $context)
     {
-        $router = new AliasRouter($this->app->getCollector()->getPathAliases());
-        $alias = $router->route(new Context($context->path()));
-
-        if ($alias !== null && is_string($alias)) {
-            $context = new Context($alias, $context->data());
-        }
-
+        $this->global['request'] = $context->data();
         return parent::route($context);
     }
 
