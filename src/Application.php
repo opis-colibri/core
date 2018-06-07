@@ -1239,13 +1239,6 @@ class Application implements ISettingsContainer
                     'invertedPriority' => false,
                 ],
             ],
-            'pathaliases' => [
-                'class' => 'Opis\\Colibri\\ItemCollectors\\PathAliasCollector',
-                'description' => 'Collects aliases for route paths',
-                'options' => [
-                    'invertedPriority' => false,
-                ],
-            ],
             'middleware' => [
                 'class' => 'Opis\\Colibri\\ItemCollectors\\MiddlewareCollector',
                 'description' => 'Collects middleware items',

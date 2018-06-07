@@ -35,7 +35,7 @@ use Opis\Events\{
 };
 use Opis\HttpRouting\RouteCollection as HttpRouteCollection;
 use Opis\Routing\{
-    Context, RouteCollection as PathAliasCollection
+    Context
 };
 use Opis\View\{
     RouteCollection as ViewRouteCollection
@@ -173,15 +173,6 @@ class Manager
     public function getLogger(string $name, bool $fresh = false): LoggerInterface
     {
         return $this->collect('Loggers', $fresh)->get($name);
-    }
-
-    /**
-     * @param bool $fresh
-     * @return PathAliasCollection
-     */
-    public function getPathAliases(bool $fresh = false): PathAliasCollection
-    {
-        return $this->collect('PathAliases', $fresh);
     }
 
     /**

@@ -21,8 +21,6 @@ use Opis\Colibri\Collector as BaseCollector;
 use function Opis\Colibri\Functions\{
     request, response
 };
-use Opis\Colibri\HttpResponse\MethodNotAllowed;
-use Opis\Colibri\ItemCollectors\PathAliasCollector;
 use Opis\Colibri\ItemCollectors\RouteCollector;
 use Test\Foo\Middleware\AuthMiddleware;
 use Test\Foo\Middleware\ToUpperMiddleware;
@@ -131,12 +129,5 @@ class Collector extends BaseCollector
             return 'foo';
         })->middleware(PrefixMiddleware::class, ToUpperMiddleware::class);
 
-    }
-
-    public function pathAliases(PathAliasCollector $alias)
-    {
-        $alias->alias('/foo/alias/1', function () {
-            return '/';
-        });
     }
 }

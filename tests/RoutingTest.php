@@ -256,14 +256,6 @@ class RoutingTest extends BaseClass
         $this->assertEquals('prefix-FOO', $result->getBody());
     }
 
-    public function testPathAlias1()
-    {
-        $result = $this->exec('/foo/alias/1');
-
-        $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('Front page', $result->getBody());
-    }
-
     public function testGroup1()
     {
         $result = $this->exec('/bar-group/foo');
