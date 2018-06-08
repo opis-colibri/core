@@ -25,7 +25,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use function Opis\Colibri\Functions\{
-    module, info
+    app, module, info
 };
 
 class Install extends Command
@@ -80,7 +80,7 @@ class Install extends Command
             }
 
 
-            if ($module->install()) {
+            if (app()->install($module)) {
                 $output->writeln('<info>Module <b-info>' . $moduleName . '</b-info> was installed.</info>');
 
                 if ($enable) {

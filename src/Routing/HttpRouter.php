@@ -20,7 +20,6 @@ namespace Opis\Colibri\Routing;
 use Opis\Colibri\Application;
 use Opis\HttpRouting\Router;
 use Opis\Routing\Context;
-use Opis\Routing\Router as AliasRouter;
 
 class HttpRouter extends Router
 {

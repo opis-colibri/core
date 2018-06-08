@@ -23,7 +23,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use function Opis\Colibri\Functions\{
-    module, info
+    app, module, info
 };
 
 class Uninstall extends Command
@@ -75,7 +75,7 @@ class Uninstall extends Command
                 continue;
             }
 
-            if ($module->uninstall()) {
+            if (app()->uninstall($module)) {
                 $output->writeln('<info>Module <b-info>' . $moduleName . '</b-info> was uninstalled.</info>');
             } else {
                 $output->writeln('<error>Module <b-error>' . $moduleName . '</b-error> could not be uninstalled.</error>');

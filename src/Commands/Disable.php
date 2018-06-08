@@ -25,7 +25,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use function Opis\Colibri\Functions\{
-    info, module
+    app, info, module
 };
 
 class Disable extends Command
@@ -79,7 +79,7 @@ class Disable extends Command
                 continue;
             }
 
-            if ($module->disable()) {
+            if (app()->disable($module)) {
                 $output->writeln('<info>Module <b-info>' . $moduleName . '</b-info> was disabled.</info>');
 
                 if ($uninstall) {

@@ -18,7 +18,8 @@
 namespace Opis\Colibri\Commands\Assets;
 
 use Composer\IO\ConsoleIO;
-use Opis\Colibri\Composer\ModuleInstaller;
+use Opis\Colibri\Core\Handlers\AssetHandler;
+use Opis\Colibri\Core\PackageInstaller;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Helper\HelperSet;
@@ -57,8 +58,19 @@ class Build extends Command
             ->setStyle('b-info', new OutputFormatterStyle('yellow', null, ['bold']));
 
         $fs = new Filesystem();
-        $installer = new ModuleInstaller(info(), new ConsoleIO($input, $output, new HelperSet()), app()->getComposer());
-        $installer = $installer->getAssetsInstaller();
+        $installer = new PackageInstaller(info(), new ConsoleIO($input, $output, new HelperSet()), app()->getComposer());
+
+        $handler = null;
+
+        foreach ($installer->getHandlers() as $handler) {
+            if ($handler instanceof AssetHandler) {
+                break;
+            }
+        }
+
+        if (isset($handler)) {
+            return;
+        }
 
         $modules = $input->getArgument('module');
         $dependencies = $input->getOption('dependencies');
@@ -87,13 +99,13 @@ class Build extends Command
             $name = str_replace('/', '.', $module->name());
 
             if ($dependencies) {
-                $installer->uninstall($module->getPackage());
+                $handler->uninstall($module->getPackage());
             } else {
                 $fs->remove(info()->assetsDir() . DIRECTORY_SEPARATOR . $name);
             }
 
             if ($dependencies) {
-                $installer->install($module->getPackage());
+                $handler->install($module->getPackage());
             } else {
                 $fs->mirror($module->assets(), info()->assetsDir() . DIRECTORY_SEPARATOR . $name);
             }

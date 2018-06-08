@@ -19,7 +19,7 @@ namespace Opis\Colibri\Functions;
 
 use Opis\Cache\CacheInterface;
 use Opis\Colibri\{
-    Alerts, Application, AppInfo, Module, View, Validation\Validator, Serializable\ControllerCallback
+    Alerts, Application, Core\AppInfo, Module, View, Validation\Validator, Serializable\ControllerCallback
 };
 use Opis\Database\{
     Connection as DBConnection,
@@ -39,11 +39,9 @@ use Opis\Events\Event;
 use Opis\Http\{
     IStream,
     Response as HttpResponse,
-    Request,
     Response\HtmlResponse,
     Response\JsonResponse,
-    Response\RedirectResponse,
-    Uri
+    Response\RedirectResponse
 };
 use Opis\Session\Session;
 use Opis\View\IView;
@@ -194,7 +192,7 @@ function response($body, int $status = 200, array $headers = []): HttpResponse
 /**
  * @param string $location
  * @param int $code
- * @return
+ * @return RedirectResponse
  */
 function redirect(string $location, int $code = 301): RedirectResponse
 {
@@ -311,7 +309,7 @@ function controller(string $class, string $method, bool $static = false): callab
  */
 function module(string $module): Module
 {
-    return new Module($module);
+    return new Module(Application::getInstance(), $module);
 }
 
 /**
