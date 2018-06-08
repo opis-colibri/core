@@ -819,7 +819,7 @@ class Application implements ISettingsContainer
 
                 foreach ($response->getCookies() as $cookie) {
                     setcookie($cookie['name'], $cookie['value'], $cookie['expire'], $cookie['path'], $cookie['domain'],
-                        $cookie['secore'], $cookie['http_only']);
+                        $cookie['secure'], $cookie['http_only']);
                 }
             }
 
