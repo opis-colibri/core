@@ -23,7 +23,7 @@ use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
 use Composer\Repository\InstalledRepositoryInterface;
 use Opis\Colibri\{
-    AppInfo, Application
+    AppInfo
 };
 use Opis\Colibri\Composer\Installer\{
     AssetsInstaller, SpaInstaller

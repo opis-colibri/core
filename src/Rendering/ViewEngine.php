@@ -21,7 +21,7 @@ use Opis\Colibri\View;
 use Opis\Intl\Translator\LanguageInfo;
 use Opis\View\PHPEngine;
 use function Opis\Colibri\Functions\{
-    view, render, asset, getURL, generateCSRFToken, r, t
+    view, render, asset, getURI, generateCSRFToken, r, t
 };
 
 class ViewEngine extends PHPEngine
@@ -48,22 +48,20 @@ class ViewEngine extends PHPEngine
     /**
      * @param string $module
      * @param string $path
-     * @param bool $full
      * @return string
      */
-    public function asset(string $module, string $path, bool $full = false): string
+    public function asset(string $module, string $path): string
     {
-        return asset($module, $path, $full);
+        return asset($module, $path);
     }
 
     /**
      * @param string $path
-     * @param bool $full
      * @return string
      */
-    public function getURL(string $path, bool $full = false): string
+    public function getURI(string $path): string
     {
-        return getURL($path, $full);
+        return getURI($path);
     }
 
     /**

@@ -22,8 +22,7 @@ use Opis\Intl\{
     Locale,
     Translator\AbstractTranslator,
     Translator\Drivers\Memory,
-    Translator\IDriver,
-    Translator\LanguageInfo
+    Translator\IDriver
 };
 use Opis\Colibri\Serializable\ClassList;
 use function Opis\Colibri\Functions\app;

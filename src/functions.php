@@ -39,11 +39,9 @@ use Opis\Events\Event;
 use Opis\Http\{
     IStream,
     Response as HttpResponse,
-    Request,
     Response\HtmlResponse,
     Response\JsonResponse,
-    Response\RedirectResponse,
-    Uri
+    Response\RedirectResponse
 };
 use Opis\Session\Session;
 use Opis\View\IView;
@@ -194,7 +192,7 @@ function response($body, int $status = 200, array $headers = []): HttpResponse
 /**
  * @param string $location
  * @param int $code
- * @return
+ * @return RedirectResponse
  */
 function redirect(string $location, int $code = 301): RedirectResponse
 {
