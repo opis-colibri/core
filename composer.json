@@ -23,7 +23,7 @@
         }
     },
     "require": {
-        "php": ">=7.0.0",
+        "php": "^7.1",
         "composer-plugin-api": "^1.0",
         "composer/composer": "^1.6.3",
         "opis/orm": "1.0.*@dev",
