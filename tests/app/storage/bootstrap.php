@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-use Opis\Colibri\{
+use Opis\Colibri\Core\{
     IBootstrap,
     ISettingsContainer
 };
