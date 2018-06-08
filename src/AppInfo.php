@@ -29,6 +29,7 @@ class AppInfo
     const COMPOSER_FILE = 'composer-file';
     const ASSETS_PATH = 'assets-path';
     const BOOTSTRAP_FILE = 'bootstrap-file';
+    const WEB_PATH = 'web-path';
 
     /** @var    array */
     protected $cache = [];
@@ -56,6 +57,7 @@ class AppInfo
             static::WRITABLE_DIR => 'storage',
             static::BOOTSTRAP_FILE => 'bootstrap.php',
             static::ASSETS_PATH => '/assets',
+            static::WEB_PATH => '/',
         ];
     }
 
@@ -150,6 +152,18 @@ class AppInfo
         }
 
         return $this->cache[static::ASSETS_PATH];
+    }
+
+    /**
+     * @return string
+     */
+    public function webPath(): string
+    {
+        if (!isset($this->cache[static::WEB_PATH])) {
+            $this->cache[static::WEB_PATH] = '/' . trim($this->settings[static::WEB_PATH], '/');
+        }
+
+        return $this->cache[static::WEB_PATH];
     }
 
     /**
