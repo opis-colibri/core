@@ -82,7 +82,7 @@ class AppInfo
             if ($this->settings[static::ASSETS_DIR][0] === '/') {
                 $this->cache[static::ASSETS_DIR] = $this->settings[static::ASSETS_DIR];
             } else {
-                $this->cache[static::ASSETS_DIR] = $this->rootDir() . '/' . $this->settings[static::ASSETS_DIR];
+                $this->cache[static::ASSETS_DIR] = $this->rootDir() . DIRECTORY_SEPARATOR . $this->settings[static::ASSETS_DIR];
             }
         }
 
@@ -118,7 +118,7 @@ class AppInfo
             if ($this->settings[static::WRITABLE_DIR][0] === '/') {
                 $this->cache[static::WRITABLE_DIR] = $this->settings[static::WRITABLE_DIR];
             } else {
-                $this->cache[static::WRITABLE_DIR] = $this->rootDir() . '/' . $this->settings[static::WRITABLE_DIR];
+                $this->cache[static::WRITABLE_DIR] = $this->rootDir() . DIRECTORY_SEPARATOR . $this->settings[static::WRITABLE_DIR];
             }
         }
 
@@ -136,7 +136,7 @@ class AppInfo
             if ($this->settings[static::VENDOR_DIR][0] === '/') {
                 $this->cache[static::WRITABLE_DIR] = $this->settings[static::VENDOR_DIR];
             } else {
-                $this->cache[static::VENDOR_DIR] = $this->rootDir() . '/' . $this->settings[static::VENDOR_DIR];
+                $this->cache[static::VENDOR_DIR] = $this->rootDir() . DIRECTORY_SEPARATOR . $this->settings[static::VENDOR_DIR];
             }
         }
 
@@ -175,7 +175,7 @@ class AppInfo
     public function composerFile(): string
     {
         if (!isset($this->cache[static::COMPOSER_FILE])) {
-            $this->cache[static::COMPOSER_FILE] = $this->rootDir() . '/composer.json';
+            $this->cache[static::COMPOSER_FILE] = $this->rootDir() . DIRECTORY_SEPARATOR . 'composer.json';
         }
 
         return $this->cache[static::COMPOSER_FILE];
@@ -192,7 +192,7 @@ class AppInfo
             if ($this->settings[static::BOOTSTRAP_FILE][0] === '/') {
                 $this->cache[static::BOOTSTRAP_FILE] = $this->settings[static::BOOTSTRAP_FILE];
             } else {
-                $this->cache[static::BOOTSTRAP_FILE] = $this->writableDir() . '/' . $this->settings[static::BOOTSTRAP_FILE];
+                $this->cache[static::BOOTSTRAP_FILE] = $this->writableDir() . DIRECTORY_SEPARATOR . $this->settings[static::BOOTSTRAP_FILE];
             }
         }
 

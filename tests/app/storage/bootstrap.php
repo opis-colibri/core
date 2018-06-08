@@ -30,13 +30,13 @@ return new class implements IBootstrap
     {
         date_default_timezone_set('Europe/Bucharest');
 
-        $modules = ['test/foo', 'test/bar'];
+        $modules = [
+            'test/foo' => \Opis\Colibri\Module::ENABLED,
+            'test/bar' => \Opis\Colibri\Module::ENABLED,
+        ];
 
         $config = new ConfigDriver([
-            'modules' => [
-                'installed' => $modules,
-                'enabled' => $modules,
-            ],
+            'modules' => $modules,
         ]);
 
         $translation = new TranslatorDriver([], []);

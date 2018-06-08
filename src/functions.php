@@ -311,7 +311,7 @@ function controller(string $class, string $method, bool $static = false): callab
  */
 function module(string $module): Module
 {
-    return new Module($module);
+    return new Module(Application::getInstance(), $module);
 }
 
 /**

@@ -22,10 +22,9 @@ use SessionHandlerInterface;
 use Composer\{
     Composer,
     Factory,
-    Autoload\ClassLoader,
     IO\NullIO,
     Json\JsonFile,
-    Package\CompletePackage,
+    Package\CompletePackageInterface,
     Repository\InstalledFilesystemRepository
 };
 use Psr\Log\{
@@ -41,7 +40,7 @@ use Opis\Events\{
     Event, EventDispatcher
 };
 use Opis\Http\{
-    Request as HttpRequest, Response as HttpResponse, Uri
+    Request as HttpRequest, Response as HttpResponse
 };
 use Opis\DataStore\Drivers\Memory as MemoryConfig;
 use Opis\Database\{
@@ -64,7 +63,6 @@ use Opis\Colibri\{
     Validation\Validator,
     Validation\ValidatorCollection,
     Routing\HttpRouter,
-    Composer\Plugin,
     Collector\Manager as CollectorManager
 };
 
@@ -75,9 +73,6 @@ class Application implements ISettingsContainer
 
     /** @var    Composer */
     protected $composer;
-
-    /** @var ClassLoader */
-    protected $classLoader;
 
     /** @var    array|null */
     protected $packages;
@@ -154,15 +149,13 @@ class Application implements ISettingsContainer
     /**
      * Application constructor
      * @param string $rootDir
-     * @param ClassLoader $loader
      * @param Composer|null $composer
      */
-    public function __construct(string $rootDir, ClassLoader $loader, Composer $composer = null)
+    public function __construct(string $rootDir, Composer $composer = null)
     {
         $json = json_decode(file_get_contents($rootDir . '/composer.json'), true);
 
         $this->composer = $composer;
-        $this->classLoader = $loader;
         $this->info = new AppInfo($rootDir, $json['extra']['application'] ?? []);
 
         TemplateStream::register();
@@ -197,19 +190,11 @@ class Application implements ISettingsContainer
     }
 
     /**
-     * @return  ClassLoader
-     */
-    public function getClassLoader(): ClassLoader
-    {
-        return $this->classLoader;
-    }
-
-    /**
      * Get module packs
      *
      * @param   bool $clear (optional)
      *
-     * @return  CompletePackage[]
+     * @return  CompletePackageInterface[]
      */
     public function getPackages(bool $clear = false): array
     {
@@ -220,7 +205,7 @@ class Application implements ISettingsContainer
         $packages = [];
         $repository = new InstalledFilesystemRepository(new JsonFile($this->info->vendorDir() . '/composer/installed.json'));
         foreach ($repository->getCanonicalPackages() as $package) {
-            if (!$package instanceof CompletePackage || $package->getType() !== AppInfo::MODULE_TYPE) {
+            if (!$package instanceof CompletePackageInterface || $package->getType() !== AppInfo::MODULE_TYPE) {
                 continue;
             }
             $packages[$package->getName()] = $package;
@@ -245,7 +230,7 @@ class Application implements ISettingsContainer
         $modules = [];
 
         foreach ($this->getPackages($clear) as $module => $package) {
-            $modules[$module] = new Module($module, $package);
+            $modules[$module] = new Module($this, $module, $package);
         }
 
         return $this->modules = $modules;
@@ -712,23 +697,13 @@ class Application implements ISettingsContainer
             return $this;
         }
 
-        $composer = $this->getComposer(true);
-        $generator = $composer->getAutoloadGenerator();
-        $enabled = [];
-        $canonicalPacks = [];
-        /** @var CompletePackage[] $modules */
-        $modules = [];
-        /** @var CompletePackage|null $installer */
+        // TODO: Recursive dependencies
+
+        /** @var CompletePackageInterface|null $installer */
         $installer = null;
+        $packages = $this->getPackages();
 
-        foreach ($composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages() as $package) {
-
-            if ($package->getType() !== AppInfo::MODULE_TYPE) {
-                $canonicalPacks[] = $package;
-                continue;
-            }
-
-            $modules[$package->getName()] = $package;
+        foreach ($packages as $package) {
             $extra = $package->getExtra();
             if (isset($extra['module']['is-app-installer']) && $extra['module']['is-app-installer']) {
                 if ($installer !== null) {
@@ -744,29 +719,19 @@ class Application implements ISettingsContainer
             throw new \RuntimeException("No application installer was found");
         }
 
-        $canonicalPacks[] = $installer;
-        $enabled[] = $installer->getName();
+        $enabled = [
+            $installer->getName() => Module::ENABLED
+        ];
 
         foreach ($installer->getRequires() as $require) {
             $target = $require->getTarget();
-            if (isset($modules[$target])) {
-                $canonicalPacks[] = $modules[$target];
-                $enabled[] = $modules[$target]->getName();
+            if (isset($packages[$target])) {
+                $enabled[$packages[$target]->getName()] = Module::ENABLED;
             }
         }
 
-        $packMap = $generator->buildPackageMap($composer->getInstallationManager(), $composer->getPackage(),
-            $canonicalPacks);
-        $autoload = $generator->parseAutoloads($packMap, $composer->getPackage());
-        $loader = $generator->createLoader($autoload);
-
-        $this->classLoader->unregister();
-        $this->classLoader = $loader;
-        $this->classLoader->register();
-
         $this->getBootstrapInstance()->bootstrap($this);
-        $this->getConfig()->write('modules.installed', $enabled);
-        $this->getConfig()->write('modules.enabled', $enabled);
+        $this->getConfig()->write('modules', $enabled);
 
         $this->emit('system.init');
 
@@ -829,7 +794,6 @@ class Application implements ISettingsContainer
      * @param   boolean $recollect (optional)
      *
      * @return  boolean
-     * @throws \Exception
      */
     public function install(Module $module, bool $recollect = true): bool
     {
@@ -843,31 +807,19 @@ class Application implements ISettingsContainer
             return false;
         }
 
-        $config = $this->getConfig();
-
-        $installed = $config->read('modules.installed', []);
-        $installed[] = $module->name();
-        $config->write('modules.installed', $installed);
-
-        $this->dumpAutoload();
-        $this->reloadClassLoader();
-
-        if (false !== $installer = $module->installer()) {
+        if (null !== $installer = $module->installer()) {
             /** @var Installer $installer */
             $installer = new $installer();
             try {
                 $installer->install();
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $installer->installError($e);
-                // Revert
-                array_pop($installed);
-                $config->write('modules.installed', $installed);
-                $this->dumpAutoload();
-                $this->reloadClassLoader();
                 $mutex->unlock();
                 return false;
             }
         }
+
+        $this->getConfig()->write(['modules', $module->name()], Module::INSTALLED);
 
         if ($recollect) {
             $this->getCollector()->recollect();
@@ -886,7 +838,6 @@ class Application implements ISettingsContainer
      * @param   boolean $recollect (optional)
      *
      * @return  boolean
-     * @throws \Exception
      */
     public function uninstall(Module $module, bool $recollect = true): bool
     {
@@ -900,30 +851,19 @@ class Application implements ISettingsContainer
             return false;
         }
 
-        if (false !== $installer = $module->installer()) {
+        if (null !== $installer = $module->installer()) {
             /** @var Installer $installer */
             $installer = new $installer();
             try {
                 $installer->uninstall();
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $installer->uninstallError($e);
                 $mutex->unlock();
                 return false;
             }
         }
 
-        $config = $this->getConfig();
-        $installed = $config->read('modules.installed', []);
-        $pos = array_search($module->name(), $installed);
-        if ($pos === false) {
-            $mutex->unlock();
-            return false;
-        }
-        array_splice($installed, $pos, 1);
-        $config->write('modules.installed', $installed);
-
-        $this->dumpAutoload();
-        $this->reloadClassLoader();
+        $this->getConfig()->write(['modules', $module->name()], Module::UNINSTALLED);
 
         if ($recollect) {
             $this->getCollector()->recollect();
@@ -942,7 +882,6 @@ class Application implements ISettingsContainer
      * @param   boolean $recollect (optional)
      *
      * @return  boolean
-     * @throws \Exception
      */
     public function enable(Module $module, bool $recollect = true): bool
     {
@@ -956,31 +895,22 @@ class Application implements ISettingsContainer
             return false;
         }
 
-        $config = $this->getConfig();
-        $enabled = $config->read('modules.enabled', []);
-        $enabled[] = $module->name();
-        $config->write('modules.enabled', $enabled);
 
-        $this->rebuildSPA($module);
-        $this->dumpAutoload();
-        $this->reloadClassLoader();
-
-        if (false !== $installer = $module->installer()) {
+        if (null !== $installer = $module->installer()) {
             /** @var Installer $installer */
             $installer = new $installer();
             try {
                 $installer->enable();
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $installer->enableError($e);
-                // Revert
-                array_pop($enabled);
-                $config->write('modules.enabled', $enabled);
-                $this->dumpAutoload();
-                $this->reloadClassLoader();
                 $mutex->unlock();
                 return false;
             }
         }
+
+        $this->getConfig()->write(['modules', $module->name()], Module::ENABLED);
+
+        // TODO: Rebuild SPA?
 
         if ($recollect) {
             $this->getCollector()->recollect();
@@ -999,7 +929,6 @@ class Application implements ISettingsContainer
      * @param   boolean $recollect (optional)
      *
      * @return  boolean
-     * @throws \Exception
      */
     public function disable(Module $module, bool $recollect = true): bool
     {
@@ -1013,31 +942,21 @@ class Application implements ISettingsContainer
             return false;
         }
 
-        if (false !== $installer = $module->installer()) {
+        if (null !== $installer = $module->installer()) {
             /** @var Installer $installer */
             $installer = new $installer();
             try {
                 $installer->disable();
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $installer->disableError($e);
                 $mutex->unlock();
                 return false;
             }
         }
 
-        $config = $this->getConfig();
-        $enabled = $config->read('modules.enabled', []);
-        $pos = array_search($module->name(), $enabled);
-        if ($pos === false) {
-            $mutex->unlock();
-            return false;
-        }
-        array_splice($enabled, $pos, 1);
-        $config->write('modules.enabled', $enabled);
+        $this->getConfig()->write(['modules', $module->name()], Module::INSTALLED);
 
-        $this->rebuildSPA($module);
-        $this->dumpAutoload();
-        $this->reloadClassLoader();
+        //TODO: Rebuild SPA?
 
         if ($recollect) {
             $this->getCollector()->recollect();
@@ -1072,46 +991,13 @@ class Application implements ISettingsContainer
     }
 
     /**
-     * Reload class loader
-     */
-    protected function reloadClassLoader()
-    {
-        $loader = $this->generateClassLoader($this->getComposer(true));
-        $this->classLoader->unregister();
-        $this->classLoader = $loader;
-        $this->classLoader->register();
-    }
-
-    /**
-     * @param Composer $composer
-     * @return ClassLoader
-     */
-    protected function generateClassLoader(Composer $composer): ClassLoader
-    {
-        $installMode = $this->info->installMode();
-        $config = $this->getConfig();
-        $installed = $config->read('modules.installed', []);
-        $enabled = $config->read('modules.enabled', []);
-
-        $plugin = new Plugin();
-        $plugin->activate($composer, new NullIO());
-        $packages = $plugin->preparePacks($installMode, $enabled, $installed);
-
-        $generator = $composer->getAutoloadGenerator();
-        $packMap = $generator->buildPackageMap($composer->getInstallationManager(), $composer->getPackage(), $packages);
-        $autoload = $generator->parseAutoloads($packMap, $composer->getPackage());
-
-        return $generator->createLoader($autoload);
-    }
-
-    /**
      * @param string $name
      * @param bool $cancelable
      * @return Event
      */
     protected function emit(string $name, bool $cancelable = false): Event
     {
-        return $this->getEventDispatcher()->dispatch(new Event($name, $cancelable));
+        return $this->getEventDispatcher()->emit($name, $cancelable);
     }
 
     /**
@@ -1124,7 +1010,6 @@ class Application implements ISettingsContainer
 
     /**
      * @param Module $module
-     * @throws \Exception
      */
     protected function rebuildSPA(Module $module)
     {

@@ -22,7 +22,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 ini_set('opcache.enable', 0);
 
-$loader = require __DIR__ . '/../../vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 
 spl_autoload_register(function ($class) {
     $class = ltrim($class, '\\');
@@ -54,6 +54,6 @@ spl_autoload_register(function ($class) {
     return false;
 });
 
-$app = new Application(__DIR__, $loader);
+$app = new Application(__DIR__);
 
 return $app->bootstrap();
