@@ -24,7 +24,7 @@ use Composer\Package\CompletePackage;
 use Composer\Plugin\PluginInterface;
 use Composer\Script\Event;
 use Opis\Colibri\AppInfo;
-use Opis\Colibri\Application;
+use Opis\Colibri\Module;
 use Opis\Colibri\SPA\DataHandler;
 use Opis\Colibri\SPA\SpaHandler;
 use Opis\Colibri\SPA\SpaInfo;
@@ -107,18 +107,19 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
         if (!$this->appInfo->installMode()) {
             $installMode = false;
-            if (null !== $app = Application::getInstance()) {
-                $config = $app->getConfig();
-            } else {
-                $container = new SurrogateContainer($this->appInfo);
-                /** @var \Opis\Colibri\IBootstrap $bootstrap */
-                /** @noinspection PhpIncludeInspection */
-                $bootstrap = require $this->appInfo->bootstrapFile();
-                $bootstrap->bootstrap($container);
-                $config = $container->getConfigDriver();
+            $container = new SurrogateContainer($this->appInfo);
+            $bootstrap = require $this->appInfo->bootstrapFile();
+            $bootstrap->bootstrap($container);
+            $config = $container->getConfigDriver();
+
+            foreach ($config->read('modules', []) as $name => $status) {
+                if ($status >= Module::INSTALLED) {
+                    $installed[] = $name;
+                    if ($status === Module::ENABLED) {
+                        $enabled[] = $name;
+                    }
+                }
             }
-            $installed = $config->read('modules.installed', []);
-            $enabled = $config->read('modules.enabled', []);
         }
 
         $this->preparePacks($installMode, $enabled, $installed);
