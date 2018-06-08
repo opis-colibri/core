@@ -17,11 +17,7 @@
 
 namespace Opis\Colibri;
 
-use ArrayAccess, ArrayObject;
-use Opis\Colibri\Routing\Dispatcher;
-use Opis\Colibri\SPA\DataHandler;
 use Opis\DataStore\IDataStore;
-use Opis\HttpRouting\Router;
 use SessionHandlerInterface;
 use Composer\{
     Composer,
@@ -53,28 +49,24 @@ use Opis\Database\{
     Database,
     Schema
 };
-
 use Opis\ORM\EntityManager;
 use Opis\Routing\Context;
 use Opis\Session\Session;
 use Opis\Validation\Placeholder;
 use Opis\View\ViewRenderer;
 use Opis\Intl\Translator\IDriver as TranslatorDriver;
-use Opis\Colibri\Rendering\{
-    TemplateStream,
-    ViewEngine
+use Opis\Colibri\{
+    SPA\DataHandler,
+    Rendering\TemplateStream,
+    Rendering\ViewEngine,
+    Util\Mutex,
+    Util\CSRFToken,
+    Validation\Validator,
+    Validation\ValidatorCollection,
+    Routing\HttpRouter,
+    Composer\Plugin,
+    Collector\Manager as CollectorManager
 };
-use Opis\Colibri\Util\{
-    Mutex,
-    CSRFToken
-};
-use Opis\Colibri\Validation\{
-    Validator,
-    ValidatorCollection
-};
-use Opis\Colibri\Routing\HttpRouter;
-use Opis\Colibri\Composer\Plugin;
-use Opis\Colibri\Collector\Manager as CollectorManager;
 
 class Application implements ISettingsContainer
 {
@@ -151,9 +143,6 @@ class Application implements ISettingsContainer
 
     /** @var array */
     protected $implicit = [];
-
-    /** @var ArrayAccess */
-    protected $global;
 
     /** @var  array|null */
     protected $collectorList;
@@ -808,7 +797,7 @@ class Application implements ISettingsContainer
         if (PHP_SAPI !== 'cli') {
             if (!headers_sent()) {
                 header(implode(' ', [
-                    $request->getProtocolVersion(),
+                    isset($_SERVER['FCGI_SERVER_VERSION']) ? 'Status:' : $request->getProtocolVersion(),
                     $response->getStatusCode(),
                     $response->getReasonPhrase(),
                 ]));
