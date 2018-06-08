@@ -19,7 +19,7 @@ namespace Opis\Colibri\Functions;
 
 use Opis\Cache\CacheInterface;
 use Opis\Colibri\{
-    Alerts, Application, AppInfo, Module, View, Validation\Validator, Serializable\ControllerCallback
+    Alerts, Application, Core\AppInfo, Module, View, Validation\Validator, Serializable\ControllerCallback
 };
 use Opis\Database\{
     Connection as DBConnection,

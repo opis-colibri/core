@@ -55,7 +55,10 @@ use Opis\Validation\Placeholder;
 use Opis\View\ViewRenderer;
 use Opis\Intl\Translator\IDriver as TranslatorDriver;
 use Opis\Colibri\{
-    SPA\DataHandler,
+    Core\AppInfo,
+    Core\IBootstrap,
+    Core\ISettingsContainer,
+    Core\SPA\DataHandler,
     Rendering\TemplateStream,
     Rendering\ViewEngine,
     Util\Mutex,
