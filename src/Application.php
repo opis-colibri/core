@@ -169,7 +169,9 @@ class Application implements ISettingsContainer
 
         TemplateStream::register();
 
-        static::$instance = $this;
+        if (static::$instance === null) {
+            static::$instance = $this;
+        }
     }
 
     /**
