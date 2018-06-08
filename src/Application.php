@@ -910,7 +910,8 @@ class Application implements ISettingsContainer
 
         $this->getConfig()->write(['modules', $module->name()], Module::ENABLED);
 
-        // TODO: Rebuild SPA?
+        $this->rebuildSPA($module);
+        $this->dumpAutoload();
 
         if ($recollect) {
             $this->getCollector()->recollect();
@@ -956,7 +957,8 @@ class Application implements ISettingsContainer
 
         $this->getConfig()->write(['modules', $module->name()], Module::INSTALLED);
 
-        //TODO: Rebuild SPA?
+        $this->rebuildSPA($module);
+        $this->dumpAutoload();
 
         if ($recollect) {
             $this->getCollector()->recollect();
@@ -1013,11 +1015,7 @@ class Application implements ISettingsContainer
      */
     protected function rebuildSPA(Module $module)
     {
-        try {
-            $extra = $module->getPackage()->getExtra();
-        } catch (\Exception $exception) {
-            return;
-        }
+        $extra = $module->getPackage()->getExtra();
 
         if (!isset($extra['module']['spa'])) {
             return;
