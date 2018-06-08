@@ -30,9 +30,7 @@ use Opis\Colibri\Serializable\{
 use Opis\Database\{
     Connection, Database
 };
-use Opis\Events\{
-    Event, RouteCollection as EventsRouteCollection
-};
+use Opis\Events\RouteCollection as EventsRouteCollection;
 use Opis\HttpRouting\RouteCollection as HttpRouteCollection;
 use Opis\Routing\{
     Context
@@ -303,7 +301,7 @@ class Manager
             });
 
             if ($hit) {
-                $this->app->getEventDispatcher()->dispatch(new Event('system.collect.' . $entry));
+                $this->app->getEventDispatcher()->emit("system.collect." . $entry);
             }
         }
 
@@ -343,7 +341,7 @@ class Manager
             $this->collect($entry, $fresh);
         }
 
-        $this->app->getEventDispatcher()->dispatch(new Event('system.collect'));
+        $this->app->getEventDispatcher()->emit("system.collect");
 
         return true;
     }
