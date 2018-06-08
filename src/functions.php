@@ -180,7 +180,7 @@ function dispatch(Event $event): Event
  * @param string|IStream|array|\stdClass $body
  * @param int $status
  * @param array $headers
- * @return HtmlResponse
+ * @return HttpResponse
  */
 function response($body, int $status = 200, array $headers = []): HttpResponse
 {
