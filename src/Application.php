@@ -797,7 +797,7 @@ class Application implements ISettingsContainer
         if (PHP_SAPI !== 'cli') {
             if (!headers_sent()) {
                 header(implode(' ', [
-                    isset($_SERVER['FCGI_SERVER_VERSION']) ? 'Status:' : $request->getProtocolVersion(),
+                    false === stripos(PHP_SAPI, 'fcgi') ? $request->getProtocolVersion() : 'Status:',
                     $response->getStatusCode(),
                     $response->getReasonPhrase(),
                 ]));
