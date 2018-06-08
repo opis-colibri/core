@@ -70,8 +70,6 @@ use Opis\Colibri\{
 
 class Application implements ISettingsContainer
 {
-    const COMPOSER_TYPE = 'opis-colibri-module';
-
     /** @var AppInfo */
     protected $info;
 
@@ -222,7 +220,7 @@ class Application implements ISettingsContainer
         $packages = [];
         $repository = new InstalledFilesystemRepository(new JsonFile($this->info->vendorDir() . '/composer/installed.json'));
         foreach ($repository->getCanonicalPackages() as $package) {
-            if (!$package instanceof CompletePackage || $package->getType() !== static::COMPOSER_TYPE) {
+            if (!$package instanceof CompletePackage || $package->getType() !== AppInfo::MODULE_TYPE) {
                 continue;
             }
             $packages[$package->getName()] = $package;
@@ -725,7 +723,7 @@ class Application implements ISettingsContainer
 
         foreach ($composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages() as $package) {
 
-            if ($package->getType() !== static::COMPOSER_TYPE) {
+            if ($package->getType() !== AppInfo::MODULE_TYPE) {
                 $canonicalPacks[] = $package;
                 continue;
             }

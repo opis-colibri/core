@@ -140,7 +140,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $packages = $this->composer->getRepositoryManager()->getLocalRepository()->getCanonicalPackages();
 
         foreach ($packages as $package) {
-            if ($package->getType() !== Application::COMPOSER_TYPE) {
+            if ($package->getType() !== AppInfo::MODULE_TYPE) {
                 continue;
             }
 

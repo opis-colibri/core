@@ -30,6 +30,7 @@ class AppInfo
     const ASSETS_PATH = 'assets-path';
     const BOOTSTRAP_FILE = 'bootstrap-file';
     const WEB_PATH = 'web-path';
+    const MODULE_TYPE = 'opis-colibri-module';
 
     /** @var    array */
     protected $cache = [];

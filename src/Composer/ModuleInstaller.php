@@ -56,7 +56,7 @@ class ModuleInstaller extends LibraryInstaller
      */
     public function supports($packageType)
     {
-        return $packageType === Application::COMPOSER_TYPE;
+        return $packageType === AppInfo::MODULE_TYPE;
     }
 
     /**
