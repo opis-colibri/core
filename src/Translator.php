@@ -63,17 +63,4 @@ class Translator extends AbstractTranslator
         $filters = app()->getCollector()->collect('TranslationFilters');
         return $filters->get($name);
     }
-
-    /**
-     * @param string $key
-     * @param array $params
-     * @param int $count
-     * @param string|LanguageInfo|null $language
-     * @return string
-     */
-    public function __invoke(string $key, array $params = [], int $count = 1, $language = null)
-    {
-        return $this->translateKey($key, $params, $count, $language);
-    }
-
 }
