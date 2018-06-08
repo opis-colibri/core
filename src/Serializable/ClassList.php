@@ -80,16 +80,15 @@ class ClassList implements Serializable
 
     /**
      * @param string $type
-     * @param array $args
      * @return null|mixed
      */
-    public function get(string $type, array $args = [])
+    public function get(string $type)
     {
         if (!isset($this->list[$type])) {
             return null;
         }
         if (!$this->singleton) {
-            return make($this->list[$type], $args);
+            return make($this->list[$type]);
         }
         if (!isset($this->cache[$type])) {
             $this->cache[$type] = make($this->list[$type]);
