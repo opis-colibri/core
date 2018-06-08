@@ -19,9 +19,10 @@ namespace Test\Foo;
 
 use Opis\Colibri\Collector as BaseCollector;
 use function Opis\Colibri\Functions\{
-    request, response
+    response
 };
 use Opis\Colibri\ItemCollectors\RouteCollector;
+use Opis\Http\Request;
 use Test\Foo\Middleware\AuthMiddleware;
 use Test\Foo\Middleware\ToUpperMiddleware;
 use Test\Foo\Middleware\PrefixMiddleware;
@@ -52,8 +53,8 @@ class Collector extends BaseCollector
             return 'Foo';
         });
 
-        $route('/foo-post', function () {
-            if (request()->getMethod() === 'GET'){
+        $route('/foo-post', function (Request $request) {
+            if ($request->getMethod() === 'GET'){
                 return response('Method not allowed', 405);
             }
             return 'OK';

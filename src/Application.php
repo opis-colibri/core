@@ -80,7 +80,7 @@ class Application implements ISettingsContainer
 {
     const COMPOSER_TYPE = 'opis-colibri-module';
 
-    /** @var    AppInfo */
+    /** @var AppInfo */
     protected $info;
 
     /** @var    Composer */
@@ -115,9 +115,6 @@ class Application implements ISettingsContainer
 
     /** @var  Placeholder */
     protected $placeholderInstance;
-
-    /** @var  HttpRequest */
-    protected $httpRequestInstance;
 
     /** @var  CacheInterface[] */
     protected $cache = [];
@@ -541,16 +538,6 @@ class Application implements ISettingsContainer
     }
 
     /**
-     * Return the underlying HTTP request object
-     *
-     * @return  HttpRequest
-     */
-    public function getHttpRequest(): HttpRequest
-    {
-        return $this->httpRequestInstance;
-    }
-
-    /**
      * @return EventDispatcher
      */
     public function getEventDispatcher(): EventDispatcher
@@ -618,10 +605,9 @@ class Application implements ISettingsContainer
     /**
      * @param string $module
      * @param string $path
-     * @param bool $full
      * @return string
      */
-    public function resolveAsset(string $module, string $path, bool $full = false)
+    public function resolveAsset(string $module, string $path)
     {
         static $list = null;
 
@@ -630,22 +616,16 @@ class Application implements ISettingsContainer
         }
 
         if (isset($list[$module])) {
-            return $list[$module]($module, $path, $full);
+            return $list[$module]($module, $path);
         } elseif (isset($list['*'])) {
-            return $list['*']($module, $path, $full);
+            return $list['*']($module, $path);
         }
 
-        $assetsPath = $this->info->assetsPath();
-        $module = str_replace('/', '.', $module);
-        $fullPath = $assetsPath . '/' . $module . '/' . ltrim($path, '/');
-
-        if ($full) {
-            $components = $this->httpRequestInstance->getUri();
-            $components['path'] = $fullPath;
-            return (string)new Uri($components);
-        }
-
-        return rtrim($this->httpRequestInstance->getUri()->getPath(), '/') . $fullPath;
+        return implode('/', [
+            $this->info->assetsPath(),
+            trim(str_replace('/', '.', $module), '/'),
+            ltrim($path, '/')
+        ]);
     }
 
     /**
@@ -816,8 +796,6 @@ class Application implements ISettingsContainer
         if ($request === null) {
             $request = new HttpRequest();
         }
-
-        $this->httpRequestInstance = $request;
 
         $context = new Context($request->getUri()->getPath(), $request);
 

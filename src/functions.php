@@ -177,14 +177,6 @@ function dispatch(Event $event): Event
 }
 
 /**
- * @return Request
- */
-function request(): Request
-{
-    return Application::getInstance()->getHttpRequest();
-}
-
-/**
  * @param string|IStream|array|\stdClass $body
  * @param int $status
  * @param array $headers
@@ -285,29 +277,21 @@ function tns(string $ns): SubTranslator
 
 /**
  * @param string $path
- * @param bool $full
  * @return string
  */
-function getURL(string $path, bool $full = false): string
+function getURI(string $path): string
 {
-    if ($full) {
-        $components = request()->getUri()->getComponents();
-        $components['path'] = $path;
-        return (string) (new Uri($components));
-    }
-
-    return request()->getUri()->getPath() . '/' . ltrim($path, '/');
+    return info()->webPath() . '/' . ltrim($path, '/');
 }
 
 /**
  * @param string $module
  * @param string $path
- * @param bool $full
  * @return string
  */
-function asset(string $module, string $path, bool $full = false): string
+function asset(string $module, string $path): string
 {
-    return Application::getInstance()->resolveAsset($module, $path, $full);
+    return Application::getInstance()->resolveAsset($module, $path);
 }
 
 /**
