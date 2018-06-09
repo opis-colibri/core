@@ -771,7 +771,7 @@ class Application implements ISettingsContainer
                 ]));
 
                 foreach ($response->getHeaders() as $name => $value) {
-                    header(sprintf('%s: %s'), $name, $value);
+                    header(sprintf('%s: %s', $name, $value));
                 }
 
                 foreach ($response->getCookies() as $cookie) {
