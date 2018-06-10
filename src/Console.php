@@ -18,8 +18,14 @@
 namespace Opis\Colibri;
 
 use Opis\Colibri\Commands\{
-    Collect as CollectCommand, Disable as DisableCommand, Enable as EnableCommand,
-    About as AboutCommand, Install as InstallCommand, Modules as ModulesCommand, Uninstall as UninstallCommand,
+    BootstrapInit as BootstrapInitCommand,
+    Collect as CollectCommand,
+    Disable as DisableCommand,
+    Enable as EnableCommand,
+    About as AboutCommand,
+    Install as InstallCommand,
+    Modules as ModulesCommand,
+    Uninstall as UninstallCommand,
     Assets\Build as BuildAssetsCommand,
     Spa\Build as BuildSpaCommand
 };
@@ -55,6 +61,7 @@ class Console
         $commands = [
             'about' => new AboutCommand(),
             'assets:build' => new BuildAssetsCommand(),
+            'bootstrap-init' => new BootstrapInitCommand(),
             'spa:build' => new BuildSpaCommand(),
             'collect' => new CollectCommand(),
             'disable' => new DisableCommand(),
