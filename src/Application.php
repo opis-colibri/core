@@ -913,8 +913,7 @@ class Application implements ISettingsContainer
 
         $this->getConfig()->write(['modules', $module->name()], Module::ENABLED);
 
-        $this->rebuildSPA($module);
-        $this->dumpAutoload();
+        $this->notify($module, 'enabled', true);
 
         if ($recollect) {
             $this->getCollector()->recollect();
@@ -960,8 +959,7 @@ class Application implements ISettingsContainer
 
         $this->getConfig()->write(['modules', $module->name()], Module::INSTALLED);
 
-        $this->rebuildSPA($module);
-        $this->dumpAutoload();
+        $this->notify($module, 'enabled', false);
 
         if ($recollect) {
             $this->getCollector()->recollect();
@@ -1015,43 +1013,18 @@ class Application implements ISettingsContainer
 
     /**
      * @param Module $module
+     * @param string $status
+     * @param bool $value
      */
-    protected function rebuildSPA(Module $module)
+    protected function notify(Module $module, string $status, bool $value)
     {
-        $extra = $module->getPackage()->getExtra();
-
-        if (!isset($extra['module']['spa'])) {
-            return;
-        }
-
-        $spa = $extra['module']['spa'];
-        $spa += ['register' => [], 'extend' => []];
-        $data_handler = new DataHandler($this->info);
-        $data = $data_handler->getData();
-        $rebuild = &$data['rebuild'];
-        $module_name = $module->name();
-        $package_name = str_replace('/', '.', $module_name);
-
-        foreach ($spa['register'] as $local_app_name => $app_data) {
-            $app_name = $package_name . '.' . $local_app_name;
-            if (!in_array($app_name, $rebuild)) {
-                $rebuild[] = $app_name;
-            }
-        }
-
-        foreach ($spa['extend'] as $ext_module => $ext_app) {
-            if ($module_name === $ext_module) {
-                continue;
-            }
-            foreach ($ext_app as $local_app_name => $source) {
-                $app_name = str_replace('/', '.', $ext_module) . '.' . $local_app_name;
-                if (!in_array($app_name, $rebuild)) {
-                    $rebuild[] = $app_name;
-                }
-            }
-        }
-
-        $data_handler->setData($data);
+        $file = $this->info->writableDir() . DIRECTORY_SEPARATOR . '.notify';
+        file_put_contents($file, json_encode([
+            'module' => $module->name(),
+            'status' => $status,
+            'value' => $value,
+        ]));
+        $this->dumpAutoload();
     }
 
     /**
