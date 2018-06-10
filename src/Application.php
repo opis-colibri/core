@@ -751,7 +751,7 @@ class Application implements ISettingsContainer
     public function run(HttpRequest $request = null)
     {
         if ($request === null) {
-            $request = new HttpRequest();
+            $request = HttpRequest::fromGlobals();
         }
 
         $context = new Context($request->getUri()->getPath(), $request);
