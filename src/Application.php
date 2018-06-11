@@ -40,7 +40,7 @@ use Opis\Events\{
     Event, EventDispatcher
 };
 use Opis\Http\{
-    Request as HttpRequest, Response as HttpResponse
+    Request as HttpRequest, Request, Response as HttpResponse
 };
 use Opis\DataStore\Drivers\Memory as MemoryConfig;
 use Opis\Database\{
@@ -58,7 +58,6 @@ use Opis\Colibri\{
     Core\AppInfo,
     Core\IBootstrap,
     Core\ISettingsContainer,
-    Core\SPA\DataHandler,
     Rendering\TemplateStream,
     Rendering\ViewEngine,
     Util\Mutex,
@@ -145,6 +144,9 @@ class Application implements ISettingsContainer
 
     /** @var Alerts|null */
     protected $alerts;
+
+    /** @var Request|null */
+    protected $httpRequest;
 
     /** @var  Application */
     protected static $instance;
@@ -251,6 +253,14 @@ class Application implements ISettingsContainer
         }
 
         return $this->httpRouter;
+    }
+
+    /**
+     * @return Request
+     */
+    public function getHttpRequest(): Request
+    {
+        return $this->httpRequest;
     }
 
     /**
@@ -754,6 +764,7 @@ class Application implements ISettingsContainer
             $request = HttpRequest::fromGlobals();
         }
 
+        $this->httpRequest = $request;
         $context = new Context($request->getUri()->getPath(), $request);
 
         $response = $this->getHttpRouter()->route($context);

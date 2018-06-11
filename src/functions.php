@@ -37,11 +37,7 @@ use Opis\ORM\{
 };
 use Opis\Events\Event;
 use Opis\Http\{
-    IStream,
-    Response as HttpResponse,
-    Response\HtmlResponse,
-    Response\JsonResponse,
-    Response\RedirectResponse
+    IStream, Request, Response as HttpResponse, Response\HtmlResponse, Response\JsonResponse, Response\RedirectResponse
 };
 use Opis\Session\Session;
 use Opis\View\IView;
@@ -172,6 +168,14 @@ function emit(string $event, bool $cancelable = false): Event
 function dispatch(Event $event): Event
 {
     return Application::getInstance()->getEventDispatcher()->dispatch($event);
+}
+
+/**
+ * @return Request
+ */
+function request(): Request
+{
+    return Application::getInstance()->getHttpRequest();
 }
 
 /**
