@@ -283,7 +283,7 @@ function tns(string $ns): SubTranslator
  */
 function getURI(string $path): string
 {
-    return info()->webPath() . '/' . ltrim($path, '/');
+    return rtrim(info()->webPath(), '/') . '/' . ltrim($path, '/');
 }
 
 /**
