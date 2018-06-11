@@ -56,7 +56,7 @@ class Alerts extends View
     /**
      * @return array
      */
-    public function viewArguments(): array
+    public function viewVariables(): array
     {
         if ($this->vars === null) {
             $this->vars = [
