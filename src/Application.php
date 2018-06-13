@@ -151,7 +151,7 @@ class Application implements ISettingsContainer
      */
     public function __construct(string $rootDir)
     {
-        $json = json_decode(file_get_contents($rootDir . '/composer.json'), true);
+        $json = json_decode(file_get_contents($rootDir . DIRECTORY_SEPARATOR . 'composer.json'), true);
 
         $this->info = new AppInfo($rootDir, $json['extra']['application'] ?? []);
 
