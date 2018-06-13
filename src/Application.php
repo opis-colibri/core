@@ -20,9 +20,6 @@ namespace Opis\Colibri;
 use Opis\DataStore\IDataStore;
 use SessionHandlerInterface;
 use Composer\{
-    Composer,
-    Factory,
-    IO\NullIO,
     Json\JsonFile,
     Package\CompletePackageInterface,
     Repository\InstalledFilesystemRepository
@@ -72,9 +69,6 @@ class Application implements ISettingsContainer
 {
     /** @var AppInfo */
     protected $info;
-
-    /** @var    Composer */
-    protected $composer;
 
     /** @var    array|null */
     protected $packages;
@@ -154,13 +148,11 @@ class Application implements ISettingsContainer
     /**
      * Application constructor
      * @param string $rootDir
-     * @param Composer|null $composer
      */
-    public function __construct(string $rootDir, Composer $composer = null)
+    public function __construct(string $rootDir)
     {
         $json = json_decode(file_get_contents($rootDir . '/composer.json'), true);
 
-        $this->composer = $composer;
         $this->info = new AppInfo($rootDir, $json['extra']['application'] ?? []);
 
         TemplateStream::register();
@@ -176,22 +168,6 @@ class Application implements ISettingsContainer
     public static function getInstance()
     {
         return static::$instance;
-    }
-
-    /**
-     * Get a Composer instance
-     *
-     * @param bool $new
-     * @return  Composer
-     */
-    public function getComposer(bool $new = false): Composer
-    {
-        if ($this->composer !== null && $new === false) {
-            return $this->composer;
-        }
-        $rootDir = $this->info->rootDir();
-        $composerFile = $this->info->composerFile();
-        return (new Factory())->createComposer(new NullIO(), $composerFile, false, $rootDir);
     }
 
     /**

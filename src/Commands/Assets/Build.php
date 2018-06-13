@@ -17,6 +17,7 @@
 
 namespace Opis\Colibri\Commands\Assets;
 
+use Composer\Factory;
 use Composer\IO\ConsoleIO;
 use Opis\Colibri\Core\Handlers\AssetHandler;
 use Opis\Colibri\Core\PackageInstaller;
@@ -58,7 +59,12 @@ class Build extends Command
             ->setStyle('b-info', new OutputFormatterStyle('yellow', null, ['bold']));
 
         $fs = new Filesystem();
-        $installer = new PackageInstaller(info(), new ConsoleIO($input, $output, new HelperSet()), app()->getComposer());
+        $console = new ConsoleIO($input, $output, new HelperSet());
+        $appInfo = info();
+        $rootDir = $appInfo->rootDir();
+        $composerFile = $appInfo->composerFile();
+        $composer = (new Factory())->createComposer($console, $composerFile, false, $rootDir);
+        $installer = new PackageInstaller($appInfo, $console, $composer);
 
         $handler = null;
 
