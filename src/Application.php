@@ -184,7 +184,8 @@ class Application implements ISettingsContainer
         }
 
         $packages = [];
-        $repository = new InstalledFilesystemRepository(new JsonFile($this->info->vendorDir() . '/composer/installed.json'));
+        $jsonFile = implode(DIRECTORY_SEPARATOR, [$this->info->vendorDir(), 'composer', 'installed.json']);
+        $repository = new InstalledFilesystemRepository(new JsonFile($jsonFile));
         foreach ($repository->getCanonicalPackages() as $package) {
             if (!$package instanceof CompletePackageInterface || $package->getType() !== AppInfo::MODULE_TYPE) {
                 continue;
