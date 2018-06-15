@@ -17,12 +17,17 @@
 
 namespace Opis\Colibri\Commands\Spa;
 
-use function Opis\Colibri\Functions\app;
-use function Opis\Colibri\Functions\module;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Composer\Factory;
+use Composer\IO\ConsoleIO;
+use Opis\Colibri\Core\{
+    Handlers\SpaHandler, PackageInstaller
+};
+use function Opis\Colibri\Functions\{
+    info, module
+};
+use Symfony\Component\Console\{
+    Command\Command, Helper\HelperSet, Input\InputArgument, Input\InputInterface, Output\OutputInterface
+};
 
 class Build extends Command
 {
@@ -44,11 +49,25 @@ class Build extends Command
             return;
         }
 
-        (function ($module) {
-            /** @noinspection PhpUndefinedMethodInspection */
-            $this->rebuildSPA($module);
-            /** @noinspection PhpUndefinedMethodInspection */
-            $this->dumpAutoload();
-        })->call(app(), $module);
+        $console = new ConsoleIO($input, $output, new HelperSet());
+        $appInfo = info();
+        $rootDir = $appInfo->rootDir();
+        $composerFile = $appInfo->composerFile();
+        $composer = (new Factory())->createComposer($console, $composerFile, false, $rootDir);
+        $installer = new PackageInstaller($appInfo, $console, $composer);
+
+        $handler = null;
+
+        foreach ($installer->getHandlers() as $handler) {
+            if ($handler instanceof SpaHandler) {
+                break;
+            }
+        }
+
+        if (isset($handler)) {
+            return;
+        }
+
+        $handler->moduleStatusChanged($module->getPackage(), 'enabled', true);
     }
 }
