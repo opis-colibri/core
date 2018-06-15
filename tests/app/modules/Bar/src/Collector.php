@@ -18,6 +18,7 @@
 namespace Test\Bar;
 
 use Opis\Colibri\Collector as BaseCollector;
+use Opis\Colibri\ItemCollectors\GlobalsCollector;
 use Opis\Colibri\ItemCollectors\RouteCollector;
 
 class Collector extends BaseCollector
@@ -26,6 +27,7 @@ class Collector extends BaseCollector
     {
         return [
             'priorityRoutes' => ['routes', 1],
+            'priorityGlobals' => ['globals', 1],
         ];
     }
 
@@ -119,8 +121,6 @@ class Collector extends BaseCollector
 
     public function priorityRoutes(RouteCollector $route)
     {
-        $route->implicit('gow', 'bar');
-
         $route('/foo', function () {
             return 'Bar';
         });
@@ -146,5 +146,10 @@ class Collector extends BaseCollector
                 return true;
             })
             ->filter('filter_g1');
+    }
+
+    public function priorityGlobals(GlobalsCollector $global)
+    {
+        $global->implicit('gow', 'bar');
     }
 }

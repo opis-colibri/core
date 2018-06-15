@@ -21,6 +21,7 @@ use Opis\Colibri\Collector as BaseCollector;
 use function Opis\Colibri\Functions\{
     response
 };
+use Opis\Colibri\ItemCollectors\GlobalsCollector;
 use Opis\Colibri\ItemCollectors\RouteCollector;
 use Opis\Http\Request;
 use Test\Foo\Middleware\AuthMiddleware;
@@ -29,23 +30,26 @@ use Test\Foo\Middleware\PrefixMiddleware;
 
 class Collector extends BaseCollector
 {
-    public function routes(RouteCollector $route)
+    public function globals(GlobalsCollector $global)
     {
-        $route->implicit('g1', 'G1');
-        $route->implicit('gow', 'foo');
+        $global->implicit('g1', 'G1');
+        $global->implicit('gow', 'foo');
 
-        $route->callback('filter_g1', function () {
+        $global->callback('filter_g1', function () {
             return false;
         });
 
-        $route->bind('bind_g1', function ($foo1) {
+        $global->bind('bind_g1', function ($foo1) {
             return 'bind_g1_' . $foo1;
         });
 
-        $route->bind('bind_g2', function ($bind_g2) {
+        $global->bind('bind_g2', function ($bind_g2) {
             return 'bind_g2_' . $bind_g2;
         });
+    }
 
+    public function routes(RouteCollector $route)
+    {
         $route('/', function () {
             return 'Front page';
         });
