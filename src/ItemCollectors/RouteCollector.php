@@ -41,19 +41,6 @@ class RouteCollector extends ItemCollector
     }
 
     /**
-     * Set a global mixin
-     *
-     * @param string $name
-     * @param callable $callback
-     * @return RouteCollector
-     */
-    public function mixin(string $name, callable $callback): self
-    {
-        $this->data->mixin($name, $callback);
-        return $this;
-    }
-
-    /**
      * @param callable $callback
      * @param string $prefix
      * @return RouteGroup
@@ -76,62 +63,6 @@ class RouteCollector extends ItemCollector
         $routes = array_diff_key($this->data->getRoutes(), $old_routes);
 
         return new RouteGroup($routes);
-    }
-
-    /**
-     * Defines a global binding
-     *
-     * @param   string $name The name of the binding
-     * @param   callable $callback A callback that will return the binding's value
-     *
-     * @return  self   Self reference
-     */
-    public function bind(string $name, callable $callback): self
-    {
-        $this->data->bind($name, $callback);
-        return $this;
-    }
-
-    /**
-     * Defines a global callback
-     *
-     * @param   string $name The name of the callback
-     * @param   callable $callback A callback
-     *
-     * @return  self   Self reference
-     */
-    public function callback(string $name, callable $callback): self
-    {
-        $this->data->callback($name, $callback);
-        return $this;
-    }
-
-    /**
-     * Set a global implicit value for a wildcard
-     *
-     * @param   string $name The name of the wildcard
-     * @param   mixed $value The implicit value
-     *
-     * @return  self   Self reference
-     */
-    public function implicit(string $name, $value): self
-    {
-        $this->data->implicit($name, $value);
-        return $this;
-    }
-
-    /**
-     * Set a global placeholder
-     *
-     * @param   string $name The name of the wildcard
-     * @param   string $value A regex expression
-     *
-     * @return  self   Self reference
-     */
-    public function placeholder(string $name, string $value): self
-    {
-        $this->data->placeholder($name, $value);
-        return $this;
     }
 
     /**
