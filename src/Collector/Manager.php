@@ -299,20 +299,14 @@ class Manager
             }
 
             $hit = false;
-            $callback = function ($entryName) use (&$hit) {
+            $this->cache[$entry] = $this->app->getCache()->load($entry, function ($entryName) use (&$hit) {
                 $hit = true;
                 $this->includeCollectors();
                 $instance = $this->container->make($entryName);
                 $entry = new Entry($entryName, $instance);
                 $result = $this->router->route(new Context($entryName, $entry));
                 return $this->proxy->getData($result);
-            };
-
-            if (true === ($collectors[$entry]['options']['cacheable'] ?? true)) {
-                $this->cache[$entry] = $this->app->getCache()->load($entry, $callback);
-            } else {
-                $this->cache[$entry] = $callback($entry);
-            }
+            });
 
             if ($hit) {
                 $this->app->getEventDispatcher()->emit("system.collect." . $entry);
@@ -453,7 +447,6 @@ class Manager
                     $options = $collectorList[$name]['options'] ?? [];
                     $options += [
                         'invertedPriority' => true,
-                        'cacheable' => true,
                     ];
                     if ($options['invertedPriority']) {
                         $priority *= -1;
