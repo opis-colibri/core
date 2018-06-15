@@ -1056,9 +1056,6 @@ class Application implements ISettingsContainer
             'globals' => [
                 'class' => 'Opis\\Colibri\\ItemCollectors\\GlobalsCollector',
                 'description' => 'Collects routing related global items',
-                'options' => [
-                    'cacheable' => false,
-                ],
             ],
             'middleware' => [
                 'class' => 'Opis\\Colibri\\ItemCollectors\\MiddlewareCollector',

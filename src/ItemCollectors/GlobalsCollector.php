@@ -18,9 +18,12 @@
 namespace Opis\Colibri\ItemCollectors;
 
 use Opis\Colibri\{
-    ItemCollector, Routing\HttpRouteCollection
+    ItemCollector, Serializable\RoutingGlobals
 };
 
+/**
+ * @property RoutingGlobals $data
+ */
 class GlobalsCollector extends ItemCollector
 {
     /**
@@ -28,13 +31,7 @@ class GlobalsCollector extends ItemCollector
      */
     public function __construct()
     {
-        parent::__construct([
-            'mixin' => [],
-            'implicit' => [],
-            'bind' => [],
-            'callback' => [],
-            'placeholder' => []
-        ]);
+        parent::__construct(new RoutingGlobals());
     }
 
     /**
@@ -46,7 +43,7 @@ class GlobalsCollector extends ItemCollector
      */
     public function mixin(string $name, callable $callback): self
     {
-        $this->data[__FUNCTION__][$name] = $callback;
+        $this->data->mixin($name, $callback);
         return $this;
     }
 
@@ -60,7 +57,7 @@ class GlobalsCollector extends ItemCollector
      */
     public function bind(string $name, callable $callback): self
     {
-        $this->data[__FUNCTION__][$name] = $callback;
+        $this->data->bind($name, $callback);
         return $this;
     }
 
@@ -74,7 +71,7 @@ class GlobalsCollector extends ItemCollector
      */
     public function callback(string $name, callable $callback): self
     {
-        $this->data[__FUNCTION__][$name] = $callback;
+        $this->data->callback($name, $callback);
         return $this;
     }
 
@@ -88,7 +85,7 @@ class GlobalsCollector extends ItemCollector
      */
     public function implicit(string $name, $value): self
     {
-        $this->data[__FUNCTION__][$name] = $value;
+        $this->data->implicit($name, $value);
         return $this;
     }
 
@@ -102,7 +99,7 @@ class GlobalsCollector extends ItemCollector
      */
     public function placeholder(string $name, string $value): self
     {
-        $this->data[__FUNCTION__][$name] = $value;
+        $this->data->placeholder($name, $value);
         return $this;
     }
 }

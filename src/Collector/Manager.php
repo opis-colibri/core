@@ -25,7 +25,7 @@ use Opis\Colibri\{
     Application, Container, Collector, ItemCollector, Module, Routing\HttpRouteCollection
 };
 use Opis\Colibri\Serializable\{
-    CallbackList, ClassList, Translations, ViewEngineResolver
+    CallbackList, ClassList, RoutingGlobals, Translations, ViewEngineResolver
 };
 use Opis\Database\{
     Connection, Database
@@ -256,9 +256,9 @@ class Manager
 
     /**
      * @param bool $fresh
-     * @return array
+     * @return RoutingGlobals
      */
-    public function getRoutingGlobals(bool $fresh = true): array
+    public function getRoutingGlobals(bool $fresh = true): RoutingGlobals
     {
         return $this->collect('Globals', $fresh);
     }
