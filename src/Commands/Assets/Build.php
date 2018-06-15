@@ -19,15 +19,18 @@ namespace Opis\Colibri\Commands\Assets;
 
 use Composer\Factory;
 use Composer\IO\ConsoleIO;
-use Opis\Colibri\Core\Handlers\AssetHandler;
-use Opis\Colibri\Core\PackageInstaller;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
-use Symfony\Component\Console\Helper\HelperSet;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
+use Opis\Colibri\Core\{
+    Handlers\AssetHandler, PackageInstaller
+};
+use Symfony\Component\Console\{
+    Command\Command,
+    Formatter\OutputFormatterStyle,
+    Helper\HelperSet,
+    Input\InputArgument,
+    Input\InputInterface,
+    Input\InputOption,
+    Output\OutputInterface
+};
 use function Opis\Colibri\Functions\{
     info, app, module
 };
@@ -113,7 +116,7 @@ class Build extends Command
             if ($dependencies) {
                 $handler->install($module->getPackage());
             } else {
-                $fs->mirror($module->assets(), info()->assetsDir() . DIRECTORY_SEPARATOR . $name);
+                $fs->mirror($module->assets(), $appInfo->assetsDir() . DIRECTORY_SEPARATOR . $name);
             }
         }
     }
