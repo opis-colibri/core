@@ -256,6 +256,15 @@ class Manager
 
     /**
      * @param bool $fresh
+     * @return array
+     */
+    public function getRoutingGlobals(bool $fresh = true): array
+    {
+        return $this->collect('Globals', $fresh);
+    }
+
+    /**
+     * @param bool $fresh
      * @return CallbackList
      */
     public function getAssetHandlers(bool $fresh = true)
