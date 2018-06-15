@@ -32,6 +32,7 @@ class Collector extends BaseCollector
     public function routes(RouteCollector $route)
     {
         $route->implicit('g1', 'G1');
+        $route->implicit('gow', 'foo');
 
         $route->callback('filter_g1', function () {
             return false;
@@ -130,5 +131,8 @@ class Collector extends BaseCollector
             return 'foo';
         })->middleware(PrefixMiddleware::class, ToUpperMiddleware::class);
 
+        $route('/foo-global-overwrite', function(string $gow){
+            return $gow;
+        });
     }
 }

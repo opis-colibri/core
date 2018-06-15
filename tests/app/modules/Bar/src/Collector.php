@@ -119,6 +119,8 @@ class Collector extends BaseCollector
 
     public function priorityRoutes(RouteCollector $route)
     {
+        $route->implicit('gow', 'bar');
+
         $route('/foo', function () {
             return 'Bar';
         });

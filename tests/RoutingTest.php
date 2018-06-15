@@ -130,6 +130,14 @@ class RoutingTest extends BaseClass
         $this->assertEquals('G1', $result->getBody());
     }
 
+    public function testGlobalOverwrite()
+    {
+        $result = $this->exec('/foo-global-overwrite');
+
+        $this->assertEquals(200, $result->getStatusCode());
+        $this->assertEquals('bar', (string) $result->getBody());
+    }
+
     public function testImplicitGlobal1Override()
     {
         $result = $this->exec('/bar-opt-g1');
