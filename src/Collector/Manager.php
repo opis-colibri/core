@@ -22,7 +22,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use RuntimeException;
 use Opis\Colibri\{
-    Application, Container, Collector, ItemCollector, Module
+    Application, Container, Collector, ItemCollector, Module, Routing\HttpRouteCollection
 };
 use Opis\Colibri\Serializable\{
     CallbackList, ClassList, Translations, ViewEngineResolver
@@ -31,7 +31,6 @@ use Opis\Database\{
     Connection, Database
 };
 use Opis\Events\RouteCollection as EventsRouteCollection;
-use Opis\HttpRouting\RouteCollection as HttpRouteCollection;
 use Opis\Routing\{
     Context
 };
