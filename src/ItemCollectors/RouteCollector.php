@@ -17,10 +17,11 @@
 
 namespace Opis\Colibri\ItemCollectors;
 
-use Opis\Colibri\ItemCollector;
-use Opis\Colibri\Routing\HttpRoute;
-use Opis\Colibri\ItemCollectors\Helpers\RouteGroup;
-use Opis\Colibri\Routing\HttpRouteCollection;
+
+use Opis\Colibri\{
+    ItemCollector, Routing\HttpRoute, ItemCollectors\Helpers\RouteGroup, Routing\HttpRouteCollection
+};
+use function Opis\Colibri\Functions\app;
 
 /**
  * Class RouteCollector
@@ -37,7 +38,16 @@ class RouteCollector extends ItemCollector
      */
     public function __construct()
     {
-        parent::__construct(new HttpRouteCollection());
+        $routes = new HttpRouteCollection();
+        $globals = app()->getCollector()->getRoutingGlobals();
+
+        foreach ($globals as $method => $entries) {
+            foreach ($entries as $name => $value) {
+                $routes->{$method}($name, $value);
+            }
+        }
+
+        parent::__construct($routes);
     }
 
     /**
