@@ -299,7 +299,7 @@ class Manager
                 return $this->proxy->getData($result);
             };
 
-            if (true === $collectors[$entry]['options']['cacheable'] ?? true) {
+            if (true === ($collectors[$entry]['options']['cacheable'] ?? true)) {
                 $this->cache[$entry] = $this->app->getCache()->load($entry, $callback);
             } else {
                 $this->cache[$entry] = $callback($entry);
