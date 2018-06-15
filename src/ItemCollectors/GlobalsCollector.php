@@ -18,21 +18,23 @@
 namespace Opis\Colibri\ItemCollectors;
 
 use Opis\Colibri\{
-    Application, ItemCollector, Routing\HttpRouteCollection
+    ItemCollector, Routing\HttpRouteCollection
 };
 
 class GlobalsCollector extends ItemCollector
 {
-    /** @var Application  */
-    private $app;
-
-    /** @var HttpRouteCollection */
-    private $routes;
-
-    public function __construct(Application $app)
+    /**
+     * GlobalsCollector constructor.
+     */
+    public function __construct()
     {
-        $this->app = $app;
-        parent::__construct(null);
+        parent::__construct([
+            'mixin' => [],
+            'implicit' => [],
+            'bind' => [],
+            'callback' => [],
+            'placeholder' => []
+        ]);
     }
 
     /**
@@ -44,7 +46,7 @@ class GlobalsCollector extends ItemCollector
      */
     public function mixin(string $name, callable $callback): self
     {
-        $this->getRouteCollection()->mixin($name, $callback);
+        $this->data[__FUNCTION__][$name] = $callback;
         return $this;
     }
 
@@ -58,7 +60,7 @@ class GlobalsCollector extends ItemCollector
      */
     public function bind(string $name, callable $callback): self
     {
-        $this->getRouteCollection()->bind($name, $callback);
+        $this->data[__FUNCTION__][$name] = $callback;
         return $this;
     }
 
@@ -72,7 +74,7 @@ class GlobalsCollector extends ItemCollector
      */
     public function callback(string $name, callable $callback): self
     {
-        $this->getRouteCollection()->callback($name, $callback);
+        $this->data[__FUNCTION__][$name] = $callback;
         return $this;
     }
 
@@ -86,7 +88,7 @@ class GlobalsCollector extends ItemCollector
      */
     public function implicit(string $name, $value): self
     {
-        $this->getRouteCollection()->implicit($name, $value);
+        $this->data[__FUNCTION__][$name] = $value;
         return $this;
     }
 
@@ -100,18 +102,7 @@ class GlobalsCollector extends ItemCollector
      */
     public function placeholder(string $name, string $value): self
     {
-        $this->getRouteCollection()->placeholder($name, $value);
+        $this->data[__FUNCTION__][$name] = $value;
         return $this;
-    }
-
-    /**
-     * @return HttpRouteCollection
-     */
-    private function getRouteCollection(): HttpRouteCollection
-    {
-        if ($this->routes === null) {
-            $this->routes = $this->app->getCollector()->getRoutes();
-        }
-        return $this->routes;
     }
 }
