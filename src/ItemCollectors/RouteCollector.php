@@ -39,7 +39,7 @@ class RouteCollector extends ItemCollector
     public function __construct()
     {
         $routes = new HttpRouteCollection();
-        $globals = app()->getCollector()->getRoutingGlobals();
+        $globals = app()->getCollector()->getRouterGlobals();
 
         foreach ($globals->getGlobals() as $method => $entries) {
             foreach ($entries as $name => $value) {

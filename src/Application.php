@@ -1053,8 +1053,8 @@ class Application implements ISettingsContainer
                     'invertedPriority' => false,
                 ],
             ],
-            'routeglobals' => [
-                'class' => 'Opis\\Colibri\\ItemCollectors\\RouteGlobalsCollector',
+            'routerglobals' => [
+                'class' => 'Opis\\Colibri\\ItemCollectors\\RouterGlobalsCollector',
                 'description' => 'Collects routing related global items',
             ],
             'middleware' => [

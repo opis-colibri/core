@@ -18,20 +18,20 @@
 namespace Opis\Colibri\ItemCollectors;
 
 use Opis\Colibri\{
-    ItemCollector, Serializable\RouteGlobals
+    ItemCollector, Serializable\RouterGlobals
 };
 
 /**
- * @property RouteGlobals $data
+ * @property RouterGlobals $data
  */
-class RouteGlobalsCollector extends ItemCollector
+class RouterGlobalsCollector extends ItemCollector
 {
     /**
-     * GlobalsCollector constructor.
+     * Constructor
      */
     public function __construct()
     {
-        parent::__construct(new RouteGlobals());
+        parent::__construct(new RouterGlobals());
     }
 
     /**
