@@ -77,7 +77,7 @@ class Build extends Command
             }
         }
 
-        if (isset($handler)) {
+        if (!isset($handler)) {
             return;
         }
 
