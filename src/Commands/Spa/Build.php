@@ -23,7 +23,7 @@ use Opis\Colibri\Core\{
     Handlers\SpaHandler, PackageInstaller
 };
 use function Opis\Colibri\Functions\{
-    info, module
+    app, info, module
 };
 use Symfony\Component\Console\{
     Command\Command, Helper\HelperSet, Input\InputArgument, Input\InputInterface, Output\OutputInterface
@@ -69,5 +69,18 @@ class Build extends Command
         }
 
         $handler->moduleStatusChanged($module->getPackage(), 'enabled', true);
+
+        $installed = $enabled = [];
+
+        foreach(app()->getModules() as $module) {
+            if ($module->isInstalled()) {
+                $installed[] = $module->name();
+                if ($module->isEnabled()) {
+                    $enabled[] = $module->name();
+                }
+            }
+        }
+
+        $handler->rebuild($installed, $enabled);
     }
 }
