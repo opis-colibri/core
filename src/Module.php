@@ -158,6 +158,41 @@ class Module
     }
 
     /**
+     * Get the module's dependencies
+     *
+     * @return  Module[]
+     */
+    public function dependencies(): array
+    {
+        return $this->get(__FUNCTION__);
+    }
+
+    /**
+     * Get the module's dependents
+     *
+     * @return  Module[]
+     */
+    public function dependents(): array
+    {
+        return $this->get(__FUNCTION__);
+    }
+
+    /**
+     * Check if the module exists
+     *
+     * @return  boolean
+     */
+    public function exists(): bool
+    {
+        if ($this->exists === null) {
+            $packages = $this->app->getPackages();
+            $this->exists = isset($packages[$this->name]);
+        }
+
+        return $this->exists;
+    }
+
+    /**
      * Checks if the module is hidden
      *
      * @return  boolean
@@ -165,6 +200,34 @@ class Module
     public function isApplicationInstaller(): bool
     {
         return $this->get('is-app-installer');
+    }
+
+    /**
+     * Checks if the module is enabled
+     *
+     * @return  boolean
+     */
+    public function isEnabled(): bool
+    {
+        if (!$this->exists()) {
+            return false;
+        }
+
+        return $this->app->getConfig()->read(['modules', $this->name], self::UNINSTALLED) === self::ENABLED;
+    }
+
+    /**
+     * Checks if the module is installed
+     *
+     * @return  boolean
+     */
+    public function isInstalled(): bool
+    {
+        if (!$this->exists()) {
+            return false;
+        }
+
+        return $this->app->getConfig()->read(['modules', $this->name], self::UNINSTALLED) >= self::INSTALLED;
     }
 
     /**
@@ -188,59 +251,6 @@ class Module
     }
 
     /**
-     * Checks if the module is enabled
-     *
-     * @return  boolean
-     */
-    public function isEnabled(): bool
-    {
-        if (!$this->exists()) {
-            return false;
-        }
-
-        return $this->app->getConfig()->read(['modules', $this->name], self::UNINSTALLED) === self::ENABLED;
-    }
-
-    /**
-     * Check if the module exists
-     *
-     * @return  boolean
-     */
-    public function exists(): bool
-    {
-        if ($this->exists === null) {
-            $packages = $this->app->getPackages();
-            $this->exists = isset($packages[$this->name]);
-        }
-
-        return $this->exists;
-    }
-
-    /**
-     * Checks if the module is installed
-     *
-     * @return  boolean
-     */
-    public function isInstalled(): bool
-    {
-        if (!$this->exists()) {
-            return false;
-        }
-
-        return $this->app->getConfig()->read(['modules', $this->name], self::UNINSTALLED) >= self::INSTALLED;
-    }
-
-    /**
-     * Get the module's dependencies
-     *
-     * @return  Module[]
-     */
-    public function dependencies(): array
-    {
-        return $this->get(__FUNCTION__);
-    }
-
-    /**
      * Checks if the module can be disabled
      *
      * @return  boolean
@@ -252,22 +262,12 @@ class Module
         }
 
         foreach ($this->dependents() as $module) {
-            if ($module->isInstalled()) {
+            if ($module->isEnabled()) {
                 return false;
             }
         }
 
         return true;
-    }
-
-    /**
-     * Get the module's dependents
-     *
-     * @return  Module[]
-     */
-    public function dependents(): array
-    {
-        return $this->get(__FUNCTION__);
     }
 
     /**
@@ -282,7 +282,7 @@ class Module
         }
 
         foreach ($this->dependencies() as $module) {
-            if (!$module->isEnabled()) {
+            if (!$module->isInstalled()) {
                 return false;
             }
         }
@@ -309,7 +309,6 @@ class Module
 
         return true;
     }
-
 
     /**
      * @param string $property
