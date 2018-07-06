@@ -297,7 +297,7 @@ class Module
      */
     public function canBeUninstalled(): bool
     {
-        if (!$this->isInstalled()) {
+        if ($this->isEnabled() || !$this->isInstalled()) {
             return false;
         }
 
