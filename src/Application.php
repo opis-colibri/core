@@ -663,6 +663,7 @@ class Application implements ISettingsContainer
     public function clearCachedObjects()
     {
         $this->containerInstance = null;
+        $this->eventDispatcher = null;
         $this->viewRenderer = null;
         $this->session = null;
         $this->httpRouter = null;
