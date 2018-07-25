@@ -48,6 +48,17 @@ abstract class ClassCollector extends ItemCollector
     }
 
     /**
+     * @param string $name
+     * @param callable $func
+     * @return bool
+     */
+    public function registerCallable(string $name, callable $func): bool
+    {
+        $this->data->addCallable($name, $func);
+        return true;
+    }
+
+    /**
      * @return bool
      */
     protected function singletonClasses(): bool

@@ -19,6 +19,9 @@ namespace Opis\Colibri\Serializable;
 
 use Serializable;
 use function Opis\Colibri\Functions\make;
+use function Opis\Closure\{
+    serialize, unserialize
+};
 
 class ClassList implements Serializable
 {
@@ -49,6 +52,15 @@ class ClassList implements Serializable
      * @param string $value
      */
     public function add(string $key, string $value)
+    {
+        $this->list[$key] = $value;
+    }
+
+    /**
+     * @param string $key
+     * @param callable $value
+     */
+    public function addCallable(string $key, callable $value)
     {
         $this->list[$key] = $value;
     }
@@ -88,10 +100,10 @@ class ClassList implements Serializable
             return null;
         }
         if (!$this->singleton) {
-            return make($this->list[$type]);
+            return is_callable($this->list[$type]) ? ($this->list[$type])($type) : make($this->list[$type]);
         }
         if (!isset($this->cache[$type])) {
-            $this->cache[$type] = make($this->list[$type]);
+            $this->cache[$type] = is_callable($this->list[$type]) ? ($this->list[$type])($type) : make($this->list[$type]);
         }
         return $this->cache[$type];
     }
