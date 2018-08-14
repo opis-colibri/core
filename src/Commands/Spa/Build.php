@@ -72,7 +72,7 @@ class Build extends Command
 
         $installed = $enabled = [];
 
-        foreach(app()->getModules() as $module) {
+        foreach (app()->getModules() as $module) {
             if ($module->isInstalled()) {
                 $installed[] = $module->name();
                 if ($module->isEnabled()) {

@@ -37,7 +37,10 @@ use Opis\ORM\{
 };
 use Opis\Events\Event;
 use Opis\Http\{
-    IStream, Request, Response as HttpResponse, Response\HtmlResponse, Response\JsonResponse, Response\RedirectResponse
+    IStream, Request, Response as HttpResponse
+};
+use Opis\Http\Responses\{
+    HtmlResponse, JsonResponse, RedirectResponse
 };
 use Opis\Session\Session;
 use Opis\View\IView;

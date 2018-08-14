@@ -19,7 +19,7 @@ namespace Opis\Colibri\Routing;
 
 use Opis\Colibri\Application;
 use Opis\Http\{
-    Request, Response\HtmlResponse, Response
+    Request, Responses\HtmlResponse, Response
 };
 use Opis\Routing\{
     DispatcherTrait, IDispatcher, Router as BaseRouter

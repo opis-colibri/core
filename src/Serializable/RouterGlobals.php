@@ -29,7 +29,7 @@ class RouterGlobals implements Serializable
         'implicit' => [],
         'bind' => [],
         'callback' => [],
-        'placeholder' => []
+        'placeholder' => [],
     ];
 
     /**

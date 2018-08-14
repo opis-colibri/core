@@ -588,7 +588,7 @@ class Application implements ISettingsContainer
         return implode('/', [
             $this->info->assetsPath(),
             trim(str_replace('/', '.', $module), '/'),
-            ltrim($path, '/')
+            ltrim($path, '/'),
         ]);
     }
 
@@ -711,7 +711,7 @@ class Application implements ISettingsContainer
         }
 
         $enabled = [
-            $installer->getName() => Module::ENABLED
+            $installer->getName() => Module::ENABLED,
         ];
 
         foreach ($installer->getRequires() as $require) {
