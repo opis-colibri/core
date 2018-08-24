@@ -465,11 +465,9 @@ class Module
      */
     protected function resolveCollector(): ?string
     {
-        $collector = $this->getModuleInfo()['collector'] ?? false;
-        if (!is_array($collector) || !isset($collector['class']) || !isset($collector['file'])) {
-            return null;
-        }
-        return $collector['class'];
+        $value = $this->getModuleInfo()['collector'] ?? null;
+
+        return is_string($value) ? $value : null;
     }
 
     /**
@@ -479,11 +477,9 @@ class Module
      */
     protected function resolveInstaller(): ?string
     {
-        $installer = $this->getModuleInfo()['installer'] ?? false;
-        if (!is_array($installer) || !isset($installer['class']) || !isset($installer['file'])) {
-            return null;
-        }
-        return $installer['class'];
+        $value = $this->getModuleInfo()['installer'] ?? null;
+
+        return is_string($value) ? $value : null;
     }
 
     /**
