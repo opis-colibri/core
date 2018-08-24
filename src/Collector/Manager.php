@@ -400,7 +400,7 @@ class Manager
 
         foreach ($this->app->getModules() as $module) {
 
-            if (!$module->isEnabled() || $module->collector() === false) {
+            if (!$module->isEnabled() || $module->collector() === null) {
                 continue;
             }
 
