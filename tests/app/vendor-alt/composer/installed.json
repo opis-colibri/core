@@ -11,10 +11,7 @@
     "extra": {
       "module": {
         "title": "Foo",
-        "collector": {
-          "file": "src\/Collector.php",
-          "class": "Test\\Foo\\Collector"
-        }
+        "collector": "Test\\Foo\\Collector"
       },
       "branch-alias": {
         "dev-master": "1.0.x-dev"
@@ -58,10 +55,7 @@
     "extra": {
       "module": {
         "title": "Bar",
-        "collector": {
-          "file": "src\/Collector.php",
-          "class": "Test\\Bar\\Collector"
-        }
+        "collector": "Test\\Bar\\Collector"
       },
       "branch-alias": {
         "dev-master": "1.0.x-dev"
