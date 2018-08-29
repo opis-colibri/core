@@ -183,7 +183,7 @@ function request(): Request
  * @param string|IStream|array|\stdClass $body
  * @param int $status
  * @param array $headers
- * @return HttpResponse
+ * @return HttpResponse|JsonResponse|HtmlResponse
  */
 function response($body, int $status = 200, array $headers = []): HttpResponse
 {
@@ -198,7 +198,7 @@ function response($body, int $status = 200, array $headers = []): HttpResponse
  * @param int $status
  * @param string|IStream|array|null $body
  * @param array $headers
- * @return HttpResponse
+ * @return HttpResponse|JsonResponse|HtmlResponse
  */
 function httpError(int $status, $body = null, array $headers = []): HttpResponse
 {
