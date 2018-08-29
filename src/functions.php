@@ -36,9 +36,7 @@ use Opis\ORM\{
     Core\EntityQuery
 };
 use Opis\Events\Event;
-use Opis\Http\{
-    IStream, Request, Response as HttpResponse
-};
+use Opis\Http\{IStream, Request, Response as HttpResponse, Response};
 use Opis\Http\Responses\{
     HtmlResponse, JsonResponse, RedirectResponse
 };
@@ -194,6 +192,24 @@ function response($body, int $status = 200, array $headers = []): HttpResponse
     }
 
     return new HtmlResponse($body, $status, $headers);
+}
+
+/**
+ * @param int $status
+ * @param string|IStream|array|null $body
+ * @param array $headers
+ * @return HttpResponse
+ */
+function httpError(int $status, $body = null, array $headers = []): HttpResponse
+{
+    if ($body === null) {
+        $body = view('error.' . $status, [
+            'status' => $status,
+            'message' => Response::HTTP_STATUS[$status] ?? 'HTTP Error',
+        ]);
+    }
+
+    return response($body, $status, $headers);
 }
 
 /**
@@ -386,20 +402,5 @@ function random_str(int $length): string
     }
 
     return $str;
-}
-
-/**
- * @return string
- */
-function logo(): string
-{
-    static $logo = null;
-
-    if ($logo === null) {
-        $logo = 'data:image/svg+xml;base64, ' . base64_encode(file_get_contents(__DIR__ . '/../logo.svg'));
-
-    }
-
-    return $logo;
 }
 

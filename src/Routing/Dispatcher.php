@@ -19,14 +19,14 @@ namespace Opis\Colibri\Routing;
 
 use Opis\Colibri\Application;
 use Opis\Http\{
-    Request, Responses\HtmlResponse, Response
+    Responses\HtmlResponse, Response
 };
 use Opis\Routing\{
     DispatcherTrait, IDispatcher, Router as BaseRouter
 };
 use Opis\HttpRouting\Router;
 use function Opis\Colibri\Functions\{
-    logo, view
+    httpError
 };
 
 class Dispatcher implements IDispatcher
@@ -53,16 +53,9 @@ class Dispatcher implements IDispatcher
     {
         /** @var HttpRoute $route */
         $route = $this->findRoute($router);
-        /** @var Request $request */
-        $request = $router->getContext()->data();
 
         if ($route === null) {
-            return new HtmlResponse(view('error.404', [
-                'status' => 404,
-                'message' => 'Not found',
-                'logo' => logo(),
-                'path' => $request->getRequestTarget(),
-            ]), 404);
+            return httpError(404);
         }
 
         $callbacks = $route->getCallbacks();
@@ -73,12 +66,7 @@ class Dispatcher implements IDispatcher
                 $callback = $callbacks[$guard];
                 $args = $invoker->getArgumentResolver()->resolve($callback);
                 if (false === $callback(...$args)) {
-                    return new HtmlResponse(view('error.404', [
-                        'status' => 404,
-                        'message' => 'Not found',
-                        'logo' => logo(),
-                        'path' => $request->getRequestTarget(),
-                    ]), 404);
+                    return httpError(404);
                 }
             }
         }
