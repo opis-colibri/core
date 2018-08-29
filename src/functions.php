@@ -202,7 +202,7 @@ function response($body, int $status = 200, array $headers = []): HttpResponse
  */
 function httpError(int $status, $body = null, array $headers = []): HttpResponse
 {
-    if ($body === null) {
+    if ($body === null && $status >= 400) {
         $body = view('error.' . $status, [
             'status' => $status,
             'message' => Response::HTTP_STATUS[$status] ?? 'HTTP Error',
