@@ -39,12 +39,15 @@ class ContractCollector extends ItemCollector
      *
      * @param   string $abstract Class name or interface name
      * @param   string|callable|null $concrete
+     * @param   array $arguments
      *
-     * @return  Dependency
+     * @return  self
      */
-    public function bind(string $abstract, $concrete = null): Dependency
+    public function bind(string $abstract, $concrete = null, array $arguments = []): self
     {
-        return $this->data->bind($abstract, $concrete);
+        $this->data->bind($abstract, $concrete, $arguments);
+
+        return $this;
     }
 
     /**
@@ -79,11 +82,13 @@ class ContractCollector extends ItemCollector
      *
      * @param   string $abstract Class name or interface name
      * @param   string|callable|null $concrete
+     * @param   array   $arguments
      *
-     * @return  Dependency
+     * @return  self
      */
-    public function singleton(string $abstract, $concrete = null): Dependency
+    public function singleton(string $abstract, $concrete = null, array $arguments = []): self
     {
-        return $this->data->singleton($abstract, $concrete);
+        $this->data->singleton($abstract, $concrete, $arguments);
+        return $this;
     }
 }
