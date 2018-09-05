@@ -1,0 +1,24 @@
+kramdown:
+  input: GFM
+  hard_wrap: false
+  syntax_highlighter_opts:
+    disable: true
+php: php?start_inline=1
+compress_html:
+  clippings: []
+  comments: []
+  endings: []
+  ignore:
+    envs: []
+  blanklines: true
+  profile: false
+  startings: []
+favicon: /assets/img/favicon.png
+layouts_dir: shared/_layouts
+includes_dir: shared/_includes
+exclude: ["Gemfile", "Gemfile.lock", "composer.lock", "node_modules", "vendor", "tests", "shared"]
+plugins:
+  - jekyll-coffeescript
+  - jekyll-paginate
+  - jekyll-redirect-from
+
