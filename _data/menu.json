@@ -4,9 +4,9 @@
             "title": "Opis Colibri",
             "pages": [
                 {
-                    "title": "Overview",
+                    "title": "Installation",
                     "url": "/1.x/",
-                    "description": "About the framework"
+                    "description": "Learn how to install the framework"
                 }
             ]
         }
