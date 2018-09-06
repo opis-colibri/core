@@ -20,7 +20,7 @@
     },
     "styles": [
         "/assets/css/theme.css",
-        "/assets/css/prism.css",
+        "/assets/css/prism/prism-darcula.css",
         "https://use.fontawesome.com/releases/v5.0.4/css/all.css",
         "/assets/css/style.css"
     ],

@@ -7,34 +7,11 @@ description: Learn how to install the Opis Colibri framework
 # Installation
 
 
-```php
-Route::get('foo', function () {
-    return 'Hello World';
-});
-$a = new Hello(123, array(1,3), []);
+## Prerequisites
 
-$a->exec();
-if ($a === true) {
-    
-} elseif($a === CONST_X) {
-} else {
-    $b = Usa::class;
-    $c = Abc::CONST;
-}
+Make sure that you have [NodeJS] and [Yarn] globally installed before proceeding to install
+Opis Colibri. They are used by the framework for automatic asset management.
 
-call_method(123);
-echo 123, "a", PHP_EOL;
-
-//u
-/*
-aha
-*/
-#da
-```
-
-```html
-<h1 id="foo" class="bar baz">Hello</h1>
-```
 
 [apache_license]: http://www.apache.org/licenses/LICENSE-2.0 "Project license" 
 {:rel="nofollow" target="_blank"}
