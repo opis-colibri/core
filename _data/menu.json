@@ -7,6 +7,20 @@
                     "title": "Installation",
                     "url": "/1.x/",
                     "description": "Learn how to install the framework"
+                },
+                {
+                    "title": "Configuration",
+                    "url": "/1.x/configuration.html"
+                }
+            ]
+        },
+        {
+            "title": "Let's roll",
+            "pages": [
+                {
+                    "title": "Modules",
+                    "url": "/1.x/modules.html",
+                    "description": "Learn about modules"
                 }
             ]
         }
