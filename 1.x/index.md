@@ -7,23 +7,25 @@ description: Learn how to install the Opis Colibri framework
 # Installation
 
 * [Prerequisites](#prerequisites)
-* [Installing the framework](#app-shell)
+* [Installing the framework](#installing-the-framework)
 
 ## Prerequisites
 
-Before proceeding with framework installation, make sure that you have [NodeJS], [Composer] and [Yarn] installed and
+Before proceeding with the framework installation, make sure that you have [NodeJS], [Composer] and [Yarn] installed and
 globally available. 
 Opis Colibri use Composer to manage its dependencies, while NodeJS and Yarn are used for automatic asset management. 
 
 ## Installing the framework
 
-Installing the Opis Colibri framework is done with the help of Composer, by issuing a `create-project` command.
+Installing the Opis Colibri framework is straightforward and is done with the help of 
+Composer, by issuing a `create-project` command.
 
 ```bash
 composer create-project opis-colibri/app website.test
 ```
 
-Once the project have been installed, you can go into its folder and start a server.
+Once the project have been installed, you can go into its folder and start a server
+instance by using PHP's built-in development server.
 
 ```bash
 cd website.test
