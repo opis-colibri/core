@@ -89,11 +89,21 @@ function generateCSRFToken(): string
 
 /**
  * @param string $token
+ * @param bool $remove
  * @return bool
  */
-function validateCSRFToken(string $token): bool
+function validateCSRFToken(string $token, bool $remove = true): bool
 {
-    return Application::getInstance()->getCSRFToken()->validate($token);
+    return Application::getInstance()->getCSRFToken()->validate($token, $remove);
+}
+
+/**
+ * @param string $token
+ * @return bool
+ */
+function removeCSRFToken(string $token): bool
+{
+    return Application::getInstance()->getCSRFToken()->remove($token);
 }
 
 /**

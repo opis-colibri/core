@@ -23,21 +23,15 @@ use function Opis\Colibri\Functions\{
 
 class CSRFToken
 {
-
-    /** @var    array */
-    protected $values = [];
-
-    /** @var    string */
+    /** @var string */
     protected $sessionKey;
 
-    /** @var    int */
+    /** @var int */
     protected $maxNumber;
 
     /**
-     * Constructor
-     *
-     * @param   string $key (optional)
-     * @param   int $max (optional)
+     * @param string $key
+     * @param int $max
      */
     public function __construct(string $key = 'opis_colibri_csrf', int $max = 10)
     {
@@ -46,9 +40,7 @@ class CSRFToken
     }
 
     /**
-     * Generates a new CSRF token
-     *
-     * @return  string
+     * @return string
      */
     public function generate(): string
     {
@@ -68,13 +60,33 @@ class CSRFToken
     }
 
     /**
-     * Validate a CSRF token
-     *
-     * @param   string $value Token
-     *
-     * @return  boolean
+     * @param string $value
+     * @param bool $remove
+     * @return bool
      */
-    public function validate(string $value): bool
+    public function validate(string $value, bool $remove = true): bool
+    {
+        $tokens = session()->get($this->sessionKey, []);
+
+        $key = array_search($value, $tokens);
+
+        if ($key !== false) {
+            if (!$remove) {
+                return true;
+            }
+            unset($tokens[$key]);
+            session()->set($this->sessionKey, array_values($tokens));
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $value
+     * @return bool
+     */
+    public function remove(string $value): bool
     {
         $tokens = session()->get($this->sessionKey, []);
 
@@ -82,7 +94,7 @@ class CSRFToken
 
         if ($key !== false) {
             unset($tokens[$key]);
-            session()->set($this->sessionKey, $tokens);
+            session()->set($this->sessionKey, array_values($tokens));
             return true;
         }
 
