@@ -1,5 +1,5 @@
 <?php
-/* ===========================================================================
+/* ============================================================================
  * Copyright 2014-2017 The Opis Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,58 +17,47 @@
 
 namespace Opis\Colibri\Serializable;
 
-use Closure, Serializable;
+use Closure;
 use Opis\Closure\SerializableClosure;
 
-class CallbackList implements Serializable
+class CallbackClassList extends ClassList
 {
-    /** @var callable[] */
-    protected $list = [];
-
     /**
-     * @param string $name
-     * @param callable $callback
-     * @return CallbackList
+     * @param string $type
+     * @param callable $builder
+     * @return CallbackClassList
      */
-    public function add(string $name, callable $callback): self
+    public function addCallable(string $type, callable $builder): self
     {
-        $this->list[$name] = $callback;
+        $this->list[$type] = $builder;
         return $this;
     }
 
     /**
-     * @param string $name
-     * @return CallbackList
+     * @param string $type
+     * @return null|mixed
      */
-    public function remove(string $name): self
+    public function get(string $type)
     {
-        unset($this->list[$name]);
-        return $this;
-    }
+        if (!isset($this->list[$type])) {
+            return null;
+        }
 
-    /**
-     * @param string $name
-     * @return bool
-     */
-    public function has(string $name): bool
-    {
-        return isset($this->list[$name]);
-    }
+        $callable = $this->list[$type];
 
-    /**
-     * @return callable[]
-     */
-    public function getList(): array
-    {
-        return $this->list;
-    }
+        if (!is_callable($type)) {
+            return parent::get($type);
+        }
 
-    /**
-     * @return string[]
-     */
-    public function getTypes(): array
-    {
-        return array_keys($this->list);
+        if (!$this->singleton) {
+            return $callable($type);
+        }
+
+        if (!array_key_exists($type, $this->cache)) {
+            $this->cache[$type] = $callable($type);
+        }
+
+        return $this->cache[$type];
     }
 
     /**

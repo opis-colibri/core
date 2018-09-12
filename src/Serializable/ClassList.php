@@ -19,13 +19,9 @@ namespace Opis\Colibri\Serializable;
 
 use Serializable;
 use function Opis\Colibri\Functions\make;
-use function Opis\Closure\{
-    serialize, unserialize
-};
 
 class ClassList implements Serializable
 {
-
     /** @var array */
     protected $list = [];
 
@@ -48,44 +44,47 @@ class ClassList implements Serializable
     }
 
     /**
-     * @param string $key
-     * @param string $value
+     * @param string $type
+     * @param string $class
+     * @return ClassList
      */
-    public function add(string $key, string $value)
+    public function add(string $type, string $class): self
     {
-        $this->list[$key] = $value;
+        $this->list[$type] = $class;
+        return $this;
     }
 
     /**
-     * @param string $key
-     * @param callable $value
+     * @param string $type
+     * @return ClassList
      */
-    public function addCallable(string $key, callable $value)
+    public function remove(string $type): self
     {
-        $this->list[$key] = $value;
+        unset($this->list[$type]);
+        return $this;
     }
 
     /**
-     * @param string $key
+     * @param string $type
+     * @return bool
      */
-    public function remove(string $key)
+    public function has(string $type): bool
     {
-        unset($this->list[$key]);
+        return isset($this->list[$type]);
     }
 
     /**
-     * @return array
+     * @return string[]
      */
-    public function getList()
+    public function getList(): array
     {
         return $this->list;
     }
 
     /**
-     * List types
      * @return string[]
      */
-    public function getTypes()
+    public function getTypes(): array
     {
         return array_keys($this->list);
     }
@@ -99,12 +98,15 @@ class ClassList implements Serializable
         if (!isset($this->list[$type])) {
             return null;
         }
+
         if (!$this->singleton) {
-            return is_callable($this->list[$type]) ? ($this->list[$type])($type) : make($this->list[$type]);
+            return make($this->list[$type]);
         }
-        if (!isset($this->cache[$type])) {
-            $this->cache[$type] = is_callable($this->list[$type]) ? ($this->list[$type])($type) : make($this->list[$type]);
+
+        if (!array_key_exists($type, $this->cache)) {
+            $this->cache[$type] = make($this->list[$type]);
         }
+
         return $this->cache[$type];
     }
 
