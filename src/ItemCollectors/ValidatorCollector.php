@@ -17,11 +17,11 @@
 
 namespace Opis\Colibri\ItemCollectors;
 
+use ArrayObject;
 use Opis\Colibri\ItemCollector;
-use Opis\Colibri\Serializable\CallbackList;
 
 /**
- * @property  CallbackList $data
+ * @property ArrayObject $data
  */
 class ValidatorCollector extends ItemCollector
 {
@@ -30,7 +30,7 @@ class ValidatorCollector extends ItemCollector
      */
     public function __construct()
     {
-        parent::__construct([]);
+        parent::__construct(new ArrayObject());
     }
 
     /**
