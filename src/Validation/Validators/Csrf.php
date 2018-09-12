@@ -48,7 +48,9 @@ class Csrf implements ValidatorInterface
      */
     public function getFormattedArgs(array $arguments): array
     {
-        return [];
+        return [
+            'remove' => $arguments[0],
+        ];
     }
 
     /**
@@ -60,7 +62,7 @@ class Csrf implements ValidatorInterface
      */
     public function validate($value, array $arguments): bool
     {
-        return validateCSRFToken($value);
+        return validateCSRFToken($value, $arguments['remove']);
     }
 
 }

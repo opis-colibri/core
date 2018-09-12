@@ -25,13 +25,14 @@ class Validator extends BaseValidator
     use DefaultValidatorTrait;
 
     /**
+     * @param bool $remove
      * @return Validator
      */
-    public function csrf(): self
+    public function csrf(bool $remove = true): self
     {
         return $this->push([
             'name' => __FUNCTION__,
-            'arguments' => [],
+            'arguments' => [$remove],
         ]);
     }
 
