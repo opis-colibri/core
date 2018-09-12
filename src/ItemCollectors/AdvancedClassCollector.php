@@ -52,7 +52,7 @@ abstract class AdvancedClassCollector extends ItemCollector
      * @param callable $func
      * @return bool
      */
-    public function registerCallable(string $name, callable $func): bool
+    public function registerFactory(string $name, callable $func): bool
     {
         $this->data->addCallable($name, $func);
         return true;
