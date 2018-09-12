@@ -414,3 +414,21 @@ function random_str(int $length): string
     return $str;
 }
 
+/**
+ * @param string $type
+ * @param bool $fresh
+ * @return mixed
+ */
+function collect(string $type, bool $fresh = false)
+{
+    return Application::getInstance()->getCollector()->collect($type, $fresh);
+}
+
+/**
+ * @param bool $fresh
+ * @return bool
+ */
+function recollect(bool $fresh = true): bool
+{
+    return Application::getInstance()->getCollector()->recollect($fresh);
+}
