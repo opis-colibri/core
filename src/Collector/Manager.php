@@ -185,15 +185,6 @@ class Manager
      * @param bool $fresh
      * @return ClassList
      */
-    public function getResponseInterceptors(bool $fresh = false): ClassList
-    {
-        return $this->collect('response-interceptors', $fresh);
-    }
-
-    /**
-     * @param bool $fresh
-     * @return ClassList
-     */
     public function getMiddleware(bool $fresh = false): ClassList
     {
         return $this->collect('middleware', $fresh);
