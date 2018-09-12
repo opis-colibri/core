@@ -72,7 +72,7 @@ class ValidatorCollection extends BaseCollection
             'requiredFile' => RequiredFile::class,
         ];
 
-        $types = $list->getTypes();
+        $types = $list->getNames();
 
         $classes = array_diff_key($classes, array_flip($types));
 

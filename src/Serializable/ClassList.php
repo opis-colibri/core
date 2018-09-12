@@ -84,7 +84,7 @@ class ClassList implements Serializable
     /**
      * @return string[]
      */
-    public function getTypes(): array
+    public function getNames(): array
     {
         return array_keys($this->list);
     }
