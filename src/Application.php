@@ -1054,7 +1054,7 @@ class Application implements ISettingsContainer
                     'invertedPriority' => false,
                 ],
             ],
-            'routerglobals' => [
+            'router-globals' => [
                 'class' => 'Opis\\Colibri\\ItemCollectors\\RouterGlobalsCollector',
                 'description' => 'Collects routing related global items',
             ],
@@ -1077,26 +1077,26 @@ class Application implements ISettingsContainer
                 'class' => 'Opis\\Colibri\\ItemCollectors\\ConnectionCollector',
                 'description' => 'Collects database connections',
             ],
-            'eventhandlers' => [
+            'event-handlers' => [
                 'class' => 'Opis\\Colibri\\ItemCollectors\\EventHandlerCollector',
                 'description' => 'Collects event handlers',
                 'options' => [
                     'invertedPriority' => false,
                 ],
             ],
-            'viewengines' => [
+            'view-engines' => [
                 'class' => 'Opis\\Colibri\\ItemCollectors\\ViewEngineCollector',
                 'description' => 'Collects view engines',
             ],
-            'cachedrivers' => [
+            'cache-drivers' => [
                 'class' => 'Opis\\Colibri\\ItemCollectors\\CacheCollector',
                 'description' => 'Collects cache drivers',
             ],
-            'sessionhandlers' => [
+            'session-handlers' => [
                 'class' => 'Opis\\Colibri\\ItemCollectors\\SessionCollector',
                 'description' => 'Collects session handlers',
             ],
-            'configdrivers' => [
+            'config-drivers' => [
                 'class' => 'Opis\\Colibri\\ItemCollectors\\ConfigCollector',
                 'description' => 'Collects config drivers',
             ],
@@ -1108,7 +1108,7 @@ class Application implements ISettingsContainer
                 'class' => 'Opis\\Colibri\\ItemCollectors\\TranslationCollector',
                 'description' => 'Collects translations',
             ],
-            'translationfilters' => [
+            'translation-filters' => [
                 'class' => 'Opis\\Colibri\\ItemCollectors\\TranslationFilterCollector',
                 'description' => 'Collect translation filters',
             ],
@@ -1118,9 +1118,9 @@ class Application implements ISettingsContainer
             ],
             'loggers' => [
                 'class' => 'Opis\\Colibri\\ItemCollectors\\LoggerCollector',
-                'description' => 'Collects log storages',
+                'description' => 'Collects logging handlers',
             ],
-            'assethandlers' => [
+            'asset-handlers' => [
                 'class' => 'Opis\\Colibri\\ItemCollectors\\AssetsHandlerCollector',
                 'description' => 'Collects asset handlers',
             ],

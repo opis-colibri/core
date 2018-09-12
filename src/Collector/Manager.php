@@ -102,7 +102,7 @@ class Manager
      */
     public function getCacheDriver(string $name, bool $fresh = false): CacheInterface
     {
-        return $this->collect('CacheDrivers', $fresh)->get($name);
+        return $this->collect('cache-drivers', $fresh)->get($name);
     }
 
     /**
@@ -111,7 +111,7 @@ class Manager
      */
     public function getContracts(bool $fresh = false): Container
     {
-        return $this->collect('Contracts', $fresh);
+        return $this->collect('contracts', $fresh);
     }
 
     /**
@@ -120,7 +120,7 @@ class Manager
      */
     public function getCommands(bool $fresh = false): array
     {
-        return $this->collect('Commands', $fresh)->getList();
+        return $this->collect('commands', $fresh)->getList();
     }
 
     /**
@@ -130,7 +130,7 @@ class Manager
      */
     public function getConfigDriver(string $name, bool $fresh = false): IDataStore
     {
-        return $this->collect('ConfigDrivers', $fresh)->get($name);
+        return $this->collect('config-drivers', $fresh)->get($name);
     }
 
     /**
@@ -140,7 +140,7 @@ class Manager
      */
     public function getConnection(string $name, bool $fresh = false): Connection
     {
-        return $this->collect('Connections', $fresh)->get($name);
+        return $this->collect('connections', $fresh)->get($name);
     }
 
     /**
@@ -150,7 +150,7 @@ class Manager
      */
     public function getDatabase(string $name, bool $fresh = false): Database
     {
-        return $this->collect('Connections', $fresh)->database($name);
+        return $this->collect('connections', $fresh)->database($name);
     }
 
     /**
@@ -159,7 +159,7 @@ class Manager
      */
     public function getEventHandlers(bool $fresh = false): EventsRouteCollection
     {
-        return $this->collect('EventHandlers', $fresh);
+        return $this->collect('event-handlers', $fresh);
     }
 
     /**
@@ -169,7 +169,7 @@ class Manager
      */
     public function getLogger(string $name, bool $fresh = false): LoggerInterface
     {
-        return $this->collect('Loggers', $fresh)->get($name);
+        return $this->collect('loggers', $fresh)->get($name);
     }
 
     /**
@@ -178,7 +178,7 @@ class Manager
      */
     public function getRoutes(bool $fresh = false): HttpRouteCollection
     {
-        return $this->collect('Routes', $fresh);
+        return $this->collect('routes', $fresh);
     }
 
     /**
@@ -187,7 +187,7 @@ class Manager
      */
     public function getResponseInterceptors(bool $fresh = false): ClassList
     {
-        return $this->collect('ResponseInterceptors', $fresh);
+        return $this->collect('response-interceptors', $fresh);
     }
 
     /**
@@ -196,7 +196,7 @@ class Manager
      */
     public function getMiddleware(bool $fresh = false): ClassList
     {
-        return $this->collect('Middleware', $fresh);
+        return $this->collect('middleware', $fresh);
     }
 
     /**
@@ -206,7 +206,7 @@ class Manager
      */
     public function getSessionHandler(\SessionHandlerInterface $default, bool $fresh = false): \SessionHandlerInterface
     {
-        $list = $this->collect('SessionHandlers', $fresh)->getList();
+        $list = $this->collect('session-handlers', $fresh)->getList();
 
         if (isset($list['session'])) {
             $instance = $list['session']();
@@ -224,7 +224,7 @@ class Manager
      */
     public function getValidators(bool $fresh = false): array
     {
-        return $this->collect('Validators', $fresh);
+        return $this->collect('validators', $fresh);
     }
 
     /**
@@ -233,7 +233,7 @@ class Manager
      */
     public function getViews(bool $fresh = false): ViewRouteCollection
     {
-        return $this->collect('Views', $fresh);
+        return $this->collect('views', $fresh);
     }
 
     /**
@@ -242,7 +242,7 @@ class Manager
      */
     public function getViewEngineResolver(bool $fresh = false): ViewEngineResolver
     {
-        return $this->collect('ViewEngines', $fresh);
+        return $this->collect('view-engines', $fresh);
     }
 
     /**
@@ -251,7 +251,7 @@ class Manager
      */
     public function getTranslations(bool $fresh = true)
     {
-        return $this->collect('Translations', $fresh);
+        return $this->collect('translations', $fresh);
     }
 
     /**
@@ -260,7 +260,7 @@ class Manager
      */
     public function getRouterGlobals(bool $fresh = true): RouterGlobals
     {
-        return $this->collect('RouterGlobals', $fresh);
+        return $this->collect('router-globals', $fresh);
     }
 
     /**
@@ -269,7 +269,7 @@ class Manager
      */
     public function getAssetHandlers(bool $fresh = true)
     {
-        return $this->collect('AssetHandlers', $fresh);
+        return $this->collect('asset-handlers', $fresh);
     }
 
     /**
@@ -417,15 +417,16 @@ class Manager
             foreach ($instance() as $key => $value) {
                 if (is_array($value)) {
                     list($name, $priority) = $value;
+                    $name = strtolower($name);
                 } elseif (is_int($value)) {
-                    $name = $key;
+                    $name = $this->fromCamelCase($key);
                     $priority = (int)$value;
                 } else {
-                    $name = (string)$value;
+                    $name = $this->fromCamelCase($value);
                     $priority = 0;
                 }
 
-                $map[$key] = [strtolower($name), $priority];
+                $map[$key] = [$name, $priority];
             }
 
             foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
@@ -439,7 +440,7 @@ class Manager
                 if (isset($map[$methodName])) {
                     list($name, $priority) = $map[$methodName];
                 } else {
-                    $name = strtolower($methodName);
+                    $name = $this->fromCamelCase($methodName);
                     $priority = 0;
                 }
 
@@ -467,6 +468,20 @@ class Manager
                 $this->router->handle($name, $callback, $priority);
             }
         }
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    private function fromCamelCase(string $value): string
+    {
+        preg_match_all('~([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)~', $value, $matches);
+        $ret = [];
+        foreach ($matches[0] as $match) {
+            $ret[] = strtolower($match);
+        }
+        return implode('-', $ret);
     }
 
 }
