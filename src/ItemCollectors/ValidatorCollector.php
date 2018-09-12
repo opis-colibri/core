@@ -18,32 +18,18 @@
 namespace Opis\Colibri\ItemCollectors;
 
 use ArrayObject;
-use Opis\Colibri\ItemCollector;
+use Opis\Validation\ValidatorInterface;
 
 /**
  * @property ArrayObject $data
  */
-class ValidatorCollector extends ItemCollector
+class ValidatorCollector extends ClassCollector
 {
     /**
-     * Constructor
+     * @inheritDoc
      */
-    public function __construct()
+    protected function getClass(): string
     {
-        parent::__construct(new ArrayObject());
-    }
-
-    /**
-     * @param string $name
-     * @param string $class
-     * @return $this
-     */
-    public function register(string $name, string $class): self
-    {
-        if (class_exists($class)) {
-            $this->data[$name] = $class;
-        }
-
-        return $this;
+        return ValidatorInterface::class;
     }
 }

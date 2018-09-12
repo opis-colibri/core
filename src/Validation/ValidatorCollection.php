@@ -38,23 +38,20 @@ use Opis\Validation\Validators\Regex;
 use Opis\Validation\Validators\Required;
 use Opis\Validation\Validators\RequiredFile;
 use function Opis\Colibri\Functions\{
-    app, make
+    app
 };
 
 class ValidatorCollection extends BaseCollection
 {
-    /** @var  array */
-    protected $classes;
+    protected $classList;
 
-    /** @noinspection PhpMissingParentConstructorInspection */
-    /**
-     * ValidatorCollection constructor
-     */
     public function __construct()
     {
-        $classes = app()->getCollector()->getValidators();
+        parent::__construct();
 
-        $classes += [
+        $this->classList = $list = app()->getCollector()->getValidators();
+
+        $classes = [
             'between' => Between::class,
             'csrf' => Csrf::class,
             'email' => Email::class,
@@ -75,28 +72,26 @@ class ValidatorCollection extends BaseCollection
             'requiredFile' => RequiredFile::class,
         ];
 
-        $this->classes = $classes;
-        $this->validators = [];
+        $types = $list->getTypes();
+
+        $classes = array_diff_key($classes, array_flip($types));
+
+        foreach ($classes as $name => $class) {
+            $list->add($name, $class);
+        }
     }
 
 
     /**
      * @param string $name
-     * @return bool|ValidatorInterface
+     * @return null|ValidatorInterface
      */
     public function get(string $name)
     {
-        if (!isset($this->validators[$name])) {
-            if (isset($this->classes[$name])) {
-                $validator = make($this->classes[$name]);
-                if (!($validator instanceof ValidatorInterface)) {
-                    return false;
-                }
-                return $this->validators[$name] = $validator;
-            }
+        if (!array_key_exists($name, $this->validators)) {
+            $this->validators[$name] = $this->classList->get($name);
         }
 
-        return isset($this->validators[$name]) ? $this->validators[$name] : false;
+        return $this->validators[$name];
     }
-
 }

@@ -40,7 +40,6 @@ use Opis\View\{
 use Opis\Cache\CacheInterface;
 use Psr\Log\LoggerInterface;
 
-
 class Manager
 {
     /** @var array */
@@ -211,9 +210,9 @@ class Manager
 
     /**
      * @param bool $fresh
-     * @return string[]
+     * @return ClassList
      */
-    public function getValidators(bool $fresh = false): array
+    public function getValidators(bool $fresh = false): ClassList
     {
         return $this->collect('validators', $fresh);
     }
