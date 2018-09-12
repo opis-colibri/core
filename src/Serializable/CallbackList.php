@@ -56,6 +56,15 @@ class CallbackList implements Serializable
     }
 
     /**
+     * @param string $name
+     * @return callable|null
+     */
+    public function get(string $name): ?callable
+    {
+        return $this->list[$name] ?? null;
+    }
+
+    /**
      * @return callable[]
      */
     public function getList(): array

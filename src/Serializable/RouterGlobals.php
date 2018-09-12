@@ -17,8 +17,8 @@
 
 namespace Opis\Colibri\Serializable;
 
-use Opis\Routing\ClosureWrapperTrait;
 use Serializable;
+use Opis\Routing\ClosureWrapperTrait;
 
 class RouterGlobals implements Serializable
 {

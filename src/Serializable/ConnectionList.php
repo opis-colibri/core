@@ -17,29 +17,55 @@
 
 namespace Opis\Colibri\Serializable;
 
+use Serializable, RuntimeException;
 use Opis\Database\Connection;
-use RuntimeException;
-use Serializable;
 
 class ConnectionList implements Serializable
 {
-    protected $connections = [];
-    protected $databases = [];
-    protected $schemas = [];
-    protected $defaultConnection;
+    /** @var Connection[] */
+    protected $list = [];
 
-    public function set($name, Connection $connection)
+    /**
+     * @param string $name
+     * @param Connection $connection
+     * @return ConnectionList
+     */
+    public function set(string $name, Connection $connection): self
     {
-        $this->connections[$name] = $connection;
+        $this->list[$name] = $connection;
+        return $this;
     }
 
-    public function get($name)
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function has(string $name): bool
     {
-        if (!isset($this->connections[$name])) {
+        return isset($this->list[$name]);
+    }
+
+    /**
+     * @param string $name
+     * @return ConnectionList
+     */
+    public function remove(string $name): self
+    {
+        unset($this->list[$name]);
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @return Connection
+     */
+    public function get(string $name): Connection
+    {
+        if (!isset($this->list[$name])) {
             throw new RuntimeException("Invalid connection name $name");
         }
 
-        return $this->connections[$name];
+        return $this->list[$name];
     }
 
     /**
@@ -47,7 +73,7 @@ class ConnectionList implements Serializable
      */
     public function serialize()
     {
-        return serialize($this->connections);
+        return serialize($this->list);
     }
 
     /**
@@ -55,6 +81,6 @@ class ConnectionList implements Serializable
      */
     public function unserialize($data)
     {
-        $this->connections = unserialize($data);
+        $this->list = unserialize($data);
     }
 }

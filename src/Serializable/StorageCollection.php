@@ -17,19 +17,32 @@
 
 namespace Opis\Colibri\Serializable;
 
+use Serializable, Closure, RuntimeException;
 use Opis\Closure\SerializableClosure;
-use RuntimeException;
-use Serializable;
 
 class StorageCollection implements Serializable
 {
+    /** @var callable[] */
     protected $storage = [];
+
+    /** @var array */
     protected $instances = [];
+
+    /** @var callable|null */
     protected $builder;
 
-    public function __construct(callable $builder)
+    /** @var bool */
+    protected $throw;
+
+    /**
+     * StorageCollection constructor.
+     * @param callable|null $builder
+     * @param bool $throw
+     */
+    public function __construct(?callable $builder, bool $throw = true)
     {
         $this->builder = $builder;
+        $this->throw = $throw;
     }
 
     /**
@@ -45,21 +58,47 @@ class StorageCollection implements Serializable
         return $this;
     }
 
+    /**
+     * @param string $storage
+     * @return bool
+     */
+    public function has(string $storage): bool
+    {
+        return isset($this->storage[$storage]);
+    }
 
     /**
      * @param string $storage
-     * @return mixed
+     * @return StorageCollection
+     */
+    public function remove(string $storage): self
+    {
+        unset($this->storage[$storage], $this->instances[$storage]);
+
+        return $this;
+    }
+
+
+    /**
+     * @param string $storage
+     * @return mixed|null
      */
     public function get(string $storage)
     {
         if (!isset($this->storage[$storage])) {
-            throw new RuntimeException("Unknown storage '$storage'");
+            if ($this->throw) {
+                throw new RuntimeException("Unknown storage '$storage'");
+            }
+            return null;
         }
 
-        if (!isset($this->instances[$storage])) {
+        if (!array_key_exists($storage, $this->instances)) {
             $constructor = $this->storage[$storage];
-            $builder = $this->builder;
-            $this->instances[$storage] = $builder($storage, $constructor);
+            if ($builder = $this->builder) {
+                $this->instances[$storage] = $builder($storage, $constructor);
+            } else {
+                $this->instances[$storage] = $constructor($storage);
+            }
         }
 
         return $this->instances[$storage];
@@ -73,7 +112,7 @@ class StorageCollection implements Serializable
         SerializableClosure::enterContext();
 
         $map = function ($value) {
-            if ($value instanceof \Closure) {
+            if ($value instanceof Closure) {
                 return SerializableClosure::from($value);
             }
             return $value;
@@ -82,6 +121,7 @@ class StorageCollection implements Serializable
         $object = serialize([
             'builder' => $map($this->builder),
             'storage' => array_map($map, $this->storage),
+            'throw' => $this->throw,
         ]);
 
         SerializableClosure::exitContext();
@@ -94,7 +134,7 @@ class StorageCollection implements Serializable
      */
     public function unserialize($data)
     {
-        $object = unserialize($data);
+        $data = unserialize($data);
 
         $map = function ($value) {
             if ($value instanceof SerializableClosure) {
@@ -103,7 +143,8 @@ class StorageCollection implements Serializable
             return $value;
         };
 
-        $this->builder = $map($object['builder']);
-        $this->storage = array_map($map, $object['storage']);
+        $this->builder = $map($data['builder']);
+        $this->storage = array_map($map, $data['storage']);
+        $this->throw = $data['throw'] ?? true;
     }
 }

@@ -1,5 +1,5 @@
 <?php
-/* ===========================================================================
+/* ============================================================================
  * Copyright 2014-2017 The Opis Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,45 +18,29 @@
 namespace Opis\Colibri\ItemCollectors;
 
 use Opis\Colibri\ItemCollector;
-use Opis\Colibri\Serializable\ClassList;
+use Opis\Colibri\Serializable\CallbackList;
 
 /**
- * @property ClassList $data
+ * @property CallbackList $data
  */
-abstract class ClassCollector extends ItemCollector
+class CallbackCollector extends ItemCollector
 {
     /**
-     * ClassContainer constructor.
+     * CallbackCollector constructor.
      */
     public function __construct()
     {
-        parent::__construct(new ClassList($this->singletonClasses()));
+        parent::__construct(new CallbackList());
     }
 
     /**
-     * @param string $name Type name
-     * @param string $class Class name
+     * @param string $name
+     * @param callable $value
      * @return bool
      */
-    public function register(string $name, string $class): bool
+    public function register(string $name, callable $value): bool
     {
-        if (!class_exists($class) || !is_subclass_of($class, $this->getClass(), true)) {
-            return false;
-        }
-        $this->data->add($name, $class);
+        $this->data->add($name, $value);
         return true;
     }
-
-    /**
-     * @return bool
-     */
-    protected function singletonClasses(): bool
-    {
-        return false;
-    }
-
-    /**
-     * @return string
-     */
-    abstract protected function getClass(): string;
 }

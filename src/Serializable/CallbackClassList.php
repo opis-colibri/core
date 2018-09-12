@@ -22,7 +22,7 @@ use Opis\Closure\SerializableClosure;
 
 class CallbackClassList extends ClassList
 {
-    /**
+        /**
      * @param string $type
      * @param callable $builder
      * @return CallbackClassList
