@@ -20,12 +20,12 @@ namespace Opis\Colibri\Serializable;
 use Closure;
 use Opis\Closure\SerializableClosure;
 
-class CallbackClassList extends ClassList
+class AdvancedClassList extends ClassList
 {
-        /**
+    /**
      * @param string $type
      * @param callable $builder
-     * @return CallbackClassList
+     * @return AdvancedClassList
      */
     public function addCallable(string $type, callable $builder): self
     {
@@ -45,7 +45,7 @@ class CallbackClassList extends ClassList
 
         $callable = $this->list[$type];
 
-        if (!is_callable($type)) {
+        if (!is_callable($callable)) {
             return parent::get($type);
         }
 

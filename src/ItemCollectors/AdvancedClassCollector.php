@@ -18,19 +18,19 @@
 namespace Opis\Colibri\ItemCollectors;
 
 use Opis\Colibri\ItemCollector;
-use Opis\Colibri\Serializable\CallbackClassList;
+use Opis\Colibri\Serializable\AdvancedClassList;
 
 /**
- * @property CallbackClassList $data
+ * @property AdvancedClassList $data
  */
-abstract class CallbackClassCollector extends ItemCollector
+abstract class AdvancedClassCollector extends ItemCollector
 {
     /**
      * CallbackClassCollector constructor.
      */
     public function __construct()
     {
-        parent::__construct(new CallbackClassList($this->singletonClasses()));
+        parent::__construct(new AdvancedClassList($this->singletonClasses()));
     }
 
     /**
