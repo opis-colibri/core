@@ -27,7 +27,7 @@ class Collector extends BaseCollector
     {
         return [
             'priorityRoutes' => ['routes', 1],
-            'priorityGlobals' => ['routerglobals', 1],
+            'priorityGlobals' => ['router-globals', 1],
         ];
     }
 
