@@ -17,21 +17,9 @@
 
 namespace Opis\Colibri;
 
-use Opis\Colibri\Commands\{
-    Collect as CollectCommand,
-    Disable as DisableCommand,
-    Enable as EnableCommand,
-    About as AboutCommand,
-    Install as InstallCommand,
-    Modules as ModulesCommand,
-    Uninstall as UninstallCommand,
-    Assets\Build as BuildAssetsCommand,
-    Spa\Build as BuildSpaCommand
-};
+use Opis\Colibri\Commands\CommandLoader;
 use Symfony\Component\Console\Application as ConsoleApplication;
-use Symfony\Component\Console\Command\Command;
 use function Opis\Colibri\Functions\app;
-
 
 class Console
 {
@@ -41,38 +29,10 @@ class Console
      */
     public function run()
     {
-        $application = new ConsoleApplication();
+        $application = new ConsoleApplication('Opis Colibri');
 
-        foreach ($this->commands() as $command) {
-            $application->add($command);
-        }
+        $application->setCommandLoader(new CommandLoader(app()->getCollector()->getCommands()));
 
         $application->run();
-    }
-
-    /**
-     *  Get a list of commands
-     *
-     * @return  Command[]
-     */
-    public function commands(): array
-    {
-        $commands = [
-            'about' => new AboutCommand(),
-            'assets:build' => new BuildAssetsCommand(),
-            'spa:build' => new BuildSpaCommand(),
-            'collect' => new CollectCommand(),
-            'disable' => new DisableCommand(),
-            'enable' => new EnableCommand(),
-            'install' => new InstallCommand(),
-            'modules' => new ModulesCommand(),
-            'uninstall' => new UninstallCommand(),
-        ];
-
-        foreach (app()->getCollector()->getCommands() as $name => $builder) {
-            $commands[$name] = $builder();
-        }
-
-        return $commands;
     }
 }
