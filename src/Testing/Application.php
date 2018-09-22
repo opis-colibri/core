@@ -159,4 +159,12 @@ class Application extends BaseApplication
     {
         return true;
     }
+
+    /**
+     * @param bool $quiet
+     */
+    protected function dumpAutoload(bool $quiet = false)
+    {
+        parent::dumpAutoload(true);
+    }
 }

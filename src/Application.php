@@ -28,7 +28,7 @@ use Psr\Log\{
     NullLogger,
     LoggerInterface
 };
-use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\{Input\ArrayInput, Output\NullOutput};
 use Opis\Cache\{
     CacheInterface,
     Drivers\Memory as MemoryDriver
@@ -1004,9 +1004,9 @@ class Application implements ISettingsContainer
     }
 
     /**
-     * Dump autoload
+     * @param bool $quiet
      */
-    protected function dumpAutoload()
+    protected function dumpAutoload(bool $quiet = false)
     {
         if (PHP_SAPI !== 'cli') {
             if (getenv('COMPOSER_HOME') === false && function_exists('posix_getpwuid')) {
@@ -1021,9 +1021,11 @@ class Application implements ISettingsContainer
         $console = new \Composer\Console\Application();
         $console->setAutoExit(false);
         try {
-            $console->run(new ArrayInput([
-                'command' => 'dump-autoload',
-            ]));
+            $command = ['command' => 'dump-autoload'];
+            if ($quiet) {
+                $command[] = '--quiet';
+            }
+            $console->run(new ArrayInput($command), $quiet ? new NullOutput() : null);
         } catch (\Throwable $e) {
             $this->getLog()->error($e->getMessage());
         } finally {
