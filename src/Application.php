@@ -36,9 +36,7 @@ use Opis\Cache\{
 use Opis\Events\{
     Event, EventDispatcher
 };
-use Opis\Http\{
-    Request as HttpRequest, Request, Response as HttpResponse
-};
+use Opis\Http\{Request as HttpRequest, Request, Response as HttpResponse, Response};
 use Opis\DataStore\Drivers\Memory as MemoryConfig;
 use Opis\Database\{
     Connection,
@@ -139,6 +137,9 @@ class Application implements ISettingsContainer
     /** @var Alerts|null */
     protected $alerts;
 
+    /** @var null|callable[] */
+    protected $assets = null;
+
     /** @var Request|null */
     protected $httpRequest;
 
@@ -146,14 +147,22 @@ class Application implements ISettingsContainer
     protected static $instance;
 
     /**
-     * Application constructor
+     * Application constructor.
      * @param string $rootDir
+     * @param array|null $info
      */
-    public function __construct(string $rootDir)
+    public function __construct(string $rootDir, array $info = null)
     {
-        $json = json_decode(file_get_contents($rootDir . DIRECTORY_SEPARATOR . 'composer.json'), true);
+        if ($info === null) {
+            $json = $rootDir . DIRECTORY_SEPARATOR . 'composer.json';
+            if (is_file($json)) {
+                $json = json_decode(file_get_contents($json), true);
+                $info = $json['extra']['application'] ?? null;
+            }
+            unset($json);
+        }
 
-        $this->info = new AppInfo($rootDir, $json['extra']['application'] ?? []);
+        $this->info = new AppInfo($rootDir, $info ?? []);
 
         TemplateStream::register();
 
@@ -184,8 +193,9 @@ class Application implements ISettingsContainer
         }
 
         $packages = [];
-        $jsonFile = implode(DIRECTORY_SEPARATOR, [$this->info->vendorDir(), 'composer', 'installed.json']);
-        $repository = new InstalledFilesystemRepository(new JsonFile($jsonFile));
+
+        $repository = new InstalledFilesystemRepository(new JsonFile($this->installedJsonFile()));
+
         foreach ($repository->getCanonicalPackages() as $package) {
             if (!$package instanceof CompletePackageInterface || $package->getType() !== AppInfo::MODULE_TYPE) {
                 continue;
@@ -289,7 +299,6 @@ class Application implements ISettingsContainer
         }
         return $this;
     }
-
 
     /**
      * @return  Translator
@@ -413,7 +422,7 @@ class Application implements ISettingsContainer
      */
     public function getConsole(): Console
     {
-        return new Console();
+        return new Console($this);
     }
 
     /**
@@ -573,16 +582,14 @@ class Application implements ISettingsContainer
      */
     public function resolveAsset(string $module, string $path)
     {
-        static $list = null;
-
-        if ($list === null) {
-            $list = $this->collector->getAssetHandlers()->getList();
+        if ($this->assets === null) {
+            $this->assets = $this->collector->getAssetHandlers()->getList();
         }
 
-        if (isset($list[$module])) {
-            return $list[$module]($module, $path);
-        } elseif (isset($list['*'])) {
-            return $list['*']($module, $path);
+        if (isset($this->assets[$module])) {
+            return ($this->assets[$module])($module, $path);
+        } elseif (isset($this->assets['*'])) {
+            return ($this->assets['*'])($module, $path);
         }
 
         return implode('/', [
@@ -743,6 +750,7 @@ class Application implements ISettingsContainer
         }
 
         $this->httpRequest = $request;
+
         $context = new Context($request->getUri()->getPath(), $request);
 
         $response = $this->getHttpRouter()->route($context);
@@ -751,30 +759,9 @@ class Application implements ISettingsContainer
             $response = new HttpResponse($response);
         }
 
-        if (PHP_SAPI !== 'cli') {
-            if (!headers_sent()) {
-                header(implode(' ', [
-                    false === stripos(PHP_SAPI, 'fcgi') ? $request->getProtocolVersion() : 'Status:',
-                    $response->getStatusCode(),
-                    $response->getReasonPhrase(),
-                ]));
+        $this->flushResponse($request, $response);
 
-                foreach ($response->getHeaders() as $name => $value) {
-                    header(sprintf('%s: %s', $name, $value));
-                }
-
-                foreach ($response->getCookies() as $cookie) {
-                    setcookie($cookie['name'], $cookie['value'], $cookie['expire'], $cookie['path'], $cookie['domain'],
-                        $cookie['secure'], $cookie['http_only']);
-                }
-            }
-
-            if (null !== $body = $response->getBody()) {
-                while (!$body->eof()) {
-                    echo $body->read();
-                }
-            }
-        }
+        $this->httpRequest = null;
 
         return $response;
     }
@@ -1022,11 +1009,13 @@ class Application implements ISettingsContainer
     protected function dumpAutoload()
     {
         if (PHP_SAPI !== 'cli') {
-            if (getenv('COMPOSER_HOME') === false) {
+            if (getenv('COMPOSER_HOME') === false && function_exists('posix_getpwuid')) {
+                /** @noinspection PhpComposerExtensionStubsInspection */
                 $dir = posix_getpwuid(fileowner($this->info->rootDir()))['dir'];
                 putenv('COMPOSER_HOME=' . $dir . DIRECTORY_SEPARATOR . '.composer');
             }
         }
+
         $cwd = getcwd();
         chdir($this->info->rootDir());
         $console = new \Composer\Console\Application();
@@ -1035,10 +1024,58 @@ class Application implements ISettingsContainer
             $console->run(new ArrayInput([
                 'command' => 'dump-autoload',
             ]));
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->getLog()->error($e->getMessage());
+        } finally {
+            chdir($cwd);
         }
-        chdir($cwd);
+    }
+
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param int $chunkSize
+     */
+    protected function flushResponse(Request $request, Response $response, int $chunkSize = 8192)
+    {
+        if (PHP_SAPI === 'cli') {
+            return;
+        }
+
+        if (!headers_sent()) {
+            header(implode(' ', [
+                false === stripos(PHP_SAPI, 'fcgi') ? $request->getProtocolVersion() : 'Status:',
+                $response->getStatusCode(),
+                $response->getReasonPhrase(),
+            ]));
+
+            foreach ($response->getHeaders() as $name => $value) {
+                header(sprintf('%s: %s', $name, $value));
+            }
+
+            foreach ($response->getCookies() as $cookie) {
+                setcookie($cookie['name'], $cookie['value'], $cookie['expire'], $cookie['path'], $cookie['domain'],
+                    $cookie['secure'], $cookie['http_only']);
+            }
+        }
+
+        $body = $response->getBody();
+
+        if ($body === null || $body->isClosed()) {
+            return;
+        }
+
+        while (!$body->eof()) {
+            echo $body->read($chunkSize);
+        }
+    }
+
+    /**
+     * @return string
+     */
+    protected function installedJsonFile(): string
+    {
+        return implode(DIRECTORY_SEPARATOR, [$this->info->vendorDir(), 'composer', 'installed.json']);
     }
 
     /**

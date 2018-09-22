@@ -19,20 +19,17 @@ namespace Opis\Colibri;
 
 use Opis\Colibri\Commands\CommandLoader;
 use Symfony\Component\Console\Application as ConsoleApplication;
-use function Opis\Colibri\Functions\app;
 
-class Console
+class Console extends ConsoleApplication
 {
     /**
-     * Run a command
-     * @throws \Exception
+     * Console constructor.
+     * @param Application $app
      */
-    public function run()
+    public function __construct(Application $app)
     {
-        $application = new ConsoleApplication('Opis Colibri');
-
-        $application->setCommandLoader(new CommandLoader(app()->getCollector()->getCommands()));
-
-        $application->run();
+        parent::__construct("Opis Colibri");
+        $this->setAutoExit(false);
+        $this->setCommandLoader(new CommandLoader($app->getCollector()->getCommands()));
     }
 }
