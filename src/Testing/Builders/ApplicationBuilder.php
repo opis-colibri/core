@@ -51,6 +51,9 @@ class ApplicationBuilder
     /** @var string[] */
     protected $dependencies = [];
 
+    /** @var array */
+    protected $mainComposerContent = ['type' => 'library'];
+
     /**
      * AppBuilder constructor.
      * @param string $vendorDir
@@ -151,6 +154,24 @@ class ApplicationBuilder
     {
         $this->builder = $builder;
         return $this;
+    }
+
+    /**
+     * @param array $content
+     * @return ApplicationBuilder
+     */
+    public function setMainComposerContent(array $content): self
+    {
+        $this->mainComposerContent = $content;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMainComposerContent(): array
+    {
+        return $this->mainComposerContent;
     }
 
     /**
@@ -481,7 +502,7 @@ class ApplicationBuilder
         $vendorDir = rtrim($vendorDir, DIRECTORY_SEPARATOR);
 
         file_put_contents($rootDir . DIRECTORY_SEPARATOR . 'composer.json',
-            json_encode($this->defaultComposerJson(), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+            json_encode((object) $this->getMainComposerContent(), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 
         file_put_contents($rootDir . DIRECTORY_SEPARATOR . 'package.json', '{}');
 
@@ -528,16 +549,6 @@ class ApplicationBuilder
                 $app->enable($module);
             }
         }
-    }
-
-    /**
-     * @return array
-     */
-    protected function defaultComposerJson(): array
-    {
-        return [
-            'type' => 'library', // We can set this to project if we want assets installed
-        ];
     }
 
     /**
