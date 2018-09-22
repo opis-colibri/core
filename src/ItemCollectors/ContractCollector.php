@@ -19,7 +19,6 @@ namespace Opis\Colibri\ItemCollectors;
 
 use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Container;
-use Opis\Container\Dependency;
 
 /**
  * @property Container $data

@@ -22,8 +22,6 @@ use Opis\Colibri\Application as BaseApplication;
 use Opis\Colibri\Core\AppInfo;
 use Opis\Colibri\Rendering\TemplateStream;
 use Opis\Session\Session;
-use Composer\Package\CompletePackageInterface;
-use Composer\Repository\InstalledFilesystemRepository;
 
 class Application extends BaseApplication
 {
@@ -97,7 +95,6 @@ class Application extends BaseApplication
             }
         }
 
-        $this->console = null;
         $this->info = null;
         $this->packages = null;
         $this->modules = null;
