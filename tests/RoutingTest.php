@@ -17,15 +17,25 @@
 
 namespace Opis\Colibri\Test;
 
+use Opis\Colibri\Testing\Builders\ApplicationBuilder;
 
-class RoutingTest extends BaseClass
+class RoutingTest extends BaseAppTestCase
 {
+    /**
+     * @inheritdoc
+     */
+    protected static function applicationSetup(ApplicationBuilder $builder)
+    {
+        $builder->addEnabledModuleFromPath(__DIR__ . '/modules/Foo');
+        $builder->addEnabledModuleFromPath(__DIR__ . '/modules/Bar');
+    }
+
     public function testFrontPage()
     {
         $result = $this->exec('/');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('Front page', (string) $result->getBody());
+        $this->assertEquals('Front page', (string)$result->getBody());
     }
 
     public function testNotFoundPage()
@@ -35,12 +45,13 @@ class RoutingTest extends BaseClass
         $this->assertEquals(404, $result->getStatusCode());
     }
 
+
     public function testBarPage()
     {
         $result = $this->exec('/bar');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('Bar', (string) $result->getBody());
+        $this->assertEquals('Bar', (string)$result->getBody());
     }
 
     public function testPriorityRoutes()
@@ -48,7 +59,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/foo');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('Bar', (string) $result->getBody());
+        $this->assertEquals('Bar', (string)$result->getBody());
     }
 
     public function testHttpMethod()
@@ -56,7 +67,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/foo-post', 'POST');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('OK', (string) $result->getBody());
+        $this->assertEquals('OK', (string)$result->getBody());
     }
 
     public function testHttpMethodFail()
@@ -71,7 +82,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/bar-post', 'POST');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('OK', (string) $result->getBody());
+        $this->assertEquals('OK', (string)$result->getBody());
     }
 
     public function testMultipleMethods1()
@@ -79,7 +90,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/multiple-methods');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('OK', (string) $result->getBody());
+        $this->assertEquals('OK', (string)$result->getBody());
     }
 
     public function testMultipleMethods2()
@@ -87,7 +98,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/multiple-methods', 'POST');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('OK', (string) $result->getBody());
+        $this->assertEquals('OK', (string)$result->getBody());
     }
 
     public function testOptionalPathSegment1()
@@ -95,7 +106,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/foo-opt');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('missing', (string) $result->getBody());
+        $this->assertEquals('missing', (string)$result->getBody());
     }
 
     public function testOptionalPathSegment2()
@@ -103,7 +114,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/foo-opt/ok');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('ok', (string) $result->getBody());
+        $this->assertEquals('ok', (string)$result->getBody());
     }
 
     public function testOptionalPathSegmentImplicit1()
@@ -111,7 +122,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/bar-opt');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('bar', (string) $result->getBody());
+        $this->assertEquals('bar', (string)$result->getBody());
     }
 
     public function testOptionalPathSegmentImplicit2()
@@ -119,7 +130,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/bar-opt/ok');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('ok', (string) $result->getBody());
+        $this->assertEquals('ok', (string)$result->getBody());
     }
 
     public function testImplicitGlobal1()
@@ -127,7 +138,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/foo-opt-g1');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('G1', (string) $result->getBody());
+        $this->assertEquals('G1', (string)$result->getBody());
     }
 
     public function testGlobalOverwrite()
@@ -135,7 +146,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/foo-global-overwrite');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('bar', (string) $result->getBody());
+        $this->assertEquals('bar', (string)$result->getBody());
     }
 
     public function testImplicitGlobal1Override()
@@ -143,7 +154,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/bar-opt-g1');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('OG1', (string) $result->getBody());
+        $this->assertEquals('OG1', (string)$result->getBody());
     }
 
     public function testFilter1()
@@ -151,7 +162,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/foo-filter1');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('foo', (string) $result->getBody());
+        $this->assertEquals('foo', (string)$result->getBody());
     }
 
     public function testFilterGlobal1()
@@ -159,7 +170,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/foo-filter-g1');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('foo', (string) $result->getBody());
+        $this->assertEquals('foo', (string)$result->getBody());
     }
 
     public function testFilterGlobal1OverridePass()
@@ -167,7 +178,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/foo-filter-g1-pass');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('bar', (string) $result->getBody());
+        $this->assertEquals('bar', (string)$result->getBody());
     }
 
     public function testSingleGuardPass()
@@ -175,7 +186,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/foo-guard1');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('foo', (string) $result->getBody());
+        $this->assertEquals('foo', (string)$result->getBody());
     }
 
     public function testSingleGuardFail()
@@ -190,7 +201,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/foo-guard2');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('foo', (string) $result->getBody());
+        $this->assertEquals('foo', (string)$result->getBody());
     }
 
     public function testMultiGuardFail()
@@ -205,7 +216,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/foo-guard-uk');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('foo', (string) $result->getBody());
+        $this->assertEquals('foo', (string)$result->getBody());
     }
 
     public function testBind1()
@@ -213,7 +224,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/foo/bind/1/foo');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('fooFOO', (string) $result->getBody());
+        $this->assertEquals('fooFOO', (string)$result->getBody());
     }
 
     public function testBind2()
@@ -221,7 +232,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/foo/bind/2/foo');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('FOO', (string) $result->getBody());
+        $this->assertEquals('FOO', (string)$result->getBody());
     }
 
     public function testBindGlobal1()
@@ -229,7 +240,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/foo/bind/3/foo');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('bind_g1_foo', (string) $result->getBody());
+        $this->assertEquals('bind_g1_foo', (string)$result->getBody());
     }
 
     public function testBindGlobal2()
@@ -237,7 +248,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/foo/bind/4/foo');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('bind_g2_foo', (string) $result->getBody());
+        $this->assertEquals('bind_g2_foo', (string)$result->getBody());
     }
 
     public function testMiddlewareAuth()
@@ -245,7 +256,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/foo/protected');
 
         $this->assertEquals(401, $result->getStatusCode());
-        $this->assertEquals('Unauthorized', (string) $result->getBody());
+        $this->assertEquals('Unauthorized', (string)$result->getBody());
     }
 
     public function testMiddlewareChain1()
@@ -253,7 +264,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/foo/chain/1');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('PREFIX-FOO', (string) $result->getBody());
+        $this->assertEquals('PREFIX-FOO', (string)$result->getBody());
     }
 
     public function testMiddlewareChain2()
@@ -261,7 +272,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/foo/chain/2');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('prefix-FOO', (string) $result->getBody());
+        $this->assertEquals('prefix-FOO', (string)$result->getBody());
     }
 
     public function testGroup1()
@@ -269,7 +280,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/bar-group/foo');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('GROUP1', (string) $result->getBody());
+        $this->assertEquals('GROUP1', (string)$result->getBody());
     }
 
     public function testGroup2()
@@ -277,7 +288,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/bar-group/bar/foo');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('GROUP2', (string) $result->getBody());
+        $this->assertEquals('GROUP2', (string)$result->getBody());
     }
 
     public function testGroup3()
@@ -285,7 +296,7 @@ class RoutingTest extends BaseClass
         $result = $this->exec('/bar-group/bar/baz/');
 
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('UPPER:g-r-o-u-p-3', (string) $result->getBody());
+        $this->assertEquals('UPPER:g-r-o-u-p-3', (string)$result->getBody());
     }
 
     public function testGroup4()
@@ -295,7 +306,7 @@ class RoutingTest extends BaseClass
             $result = $this->exec('/bar-group/type' . $i . '/public');
 
             $this->assertEquals(200, $result->getStatusCode());
-            $this->assertEquals('type' . $i, (string) $result->getBody());
+            $this->assertEquals('type' . $i, (string)$result->getBody());
         }
 
         // secret
@@ -303,7 +314,7 @@ class RoutingTest extends BaseClass
             $result = $this->exec('/bar-group/type' . $i . '/secret');
 
             $this->assertEquals(200, $result->getStatusCode());
-            $this->assertEquals('secret:type' . $i, (string) $result->getBody());
+            $this->assertEquals('secret:type' . $i, (string)$result->getBody());
         }
 
         // should not have secret available
@@ -317,6 +328,7 @@ class RoutingTest extends BaseClass
         // intruder
         $result = $this->exec('/bar-group/type4/intruder');
         $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('intruder:type4', (string) $result->getBody());
+        $this->assertEquals('intruder:type4', (string)$result->getBody());
     }
+
 }

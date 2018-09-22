@@ -3,5 +3,8 @@
         <testsuite name="Routing">
             <directory suffix="RoutingTest.php">./tests</directory>
         </testsuite>
+        <testsuite name="Views">
+            <directory suffix="ViewsTest.php">./tests</directory>
+        </testsuite>
     </testsuites>
 </phpunit>

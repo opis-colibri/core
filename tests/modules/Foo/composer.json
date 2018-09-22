@@ -18,7 +18,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Test\\Bar\\": "src/"
+      "Test\\Foo\\": "src/"
     }
   },
   "license": [

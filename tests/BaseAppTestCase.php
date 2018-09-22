@@ -17,36 +17,15 @@
 
 namespace Opis\Colibri\Test;
 
-use Opis\Colibri\Application;
-use Opis\Http\Request;
-use Opis\Http\Response;
-use PHPUnit\Framework\TestCase;
+use Opis\Colibri\Testing\ApplicationTestCase;
 
-class BaseClass extends TestCase
+abstract class BaseAppTestCase extends ApplicationTestCase
 {
-    /** @var Application */
-    protected $app;
-
-    public function setUp()
-    {
-        $this->app = include __DIR__ . '/app/app.php';
-    }
-
     /**
-     * @param string $path
-     * @param string $method
-     * @param bool $secure
-     * @param array $input
-     * @param array $server
-     * @return Response
+     * @return string
      */
-    protected function exec(
-        string $path,
-        string $method = 'GET',
-        bool $secure = false,
-        array $headers = []
-    ) {
-        $request = new Request($method, $path, 'HTTP/1.1', $secure, $headers);
-        return $this->app->run($request);
+    protected static function vendorDir(): string
+    {
+        return __DIR__ . '/../vendor';
     }
 }

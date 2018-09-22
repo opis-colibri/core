@@ -1,0 +1,1 @@
+Rendering <?= $name ?> => <?= $this->view($name, $args ?: []); ?>
