@@ -17,16 +17,21 @@
 
 namespace Opis\Colibri;
 
-use Exception;
+use Opis\Colibri\Core\Module;
+use Throwable;
 
 abstract class Installer
 {
+    /** @var Module */
+    protected $module;
+
     /**
      * Installer constructor.
+     * @param Module $module
      */
-    final public function __construct()
+    final public function __construct(Module $module)
     {
-        // Nothing here
+        $this->module = $module;
     }
 
     /**
@@ -62,33 +67,33 @@ abstract class Installer
     }
 
     /**
-     * @param Exception $e
+     * @param Throwable $e
      */
-    public function installError(Exception $e)
+    public function installError(Throwable $e)
     {
 
     }
 
     /**
-     * @param Exception $e
+     * @param Throwable $e
      */
-    public function enableError(Exception $e)
+    public function enableError(Throwable $e)
     {
 
     }
 
     /**
-     * @param Exception $e
+     * @param Throwable $e
      */
-    public function uninstallError(Exception $e)
+    public function uninstallError(Throwable $e)
     {
 
     }
 
     /**
-     * @param Exception $e
+     * @param Throwable $e
      */
-    public function disableError(Exception $e)
+    public function disableError(Throwable $e)
     {
 
     }

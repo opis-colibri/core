@@ -17,13 +17,12 @@
 
 namespace Opis\Colibri\Collector;
 
-use Opis\DataStore\IDataStore;
-use ReflectionClass;
-use ReflectionMethod;
-use RuntimeException;
+use ReflectionClass, ReflectionMethod, RuntimeException;
 use Opis\Colibri\{
-    Application, Container, Collector, ItemCollector, Module, Routing\HttpRouteCollection
+    Application, Container, Collector, ItemCollector, Routing\HttpRouteCollection
 };
+use Opis\Colibri\Core\Module;
+use Opis\DataStore\IDataStore;
 use Opis\Colibri\Serializable\{
     CallbackList, ClassList, RouterGlobals, Translations, ViewEngineResolver
 };

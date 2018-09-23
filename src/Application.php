@@ -17,13 +17,10 @@
 
 namespace Opis\Colibri;
 
+use Throwable;
 use Opis\DataStore\IDataStore;
 use SessionHandlerInterface;
-use Composer\{
-    Json\JsonFile,
-    Package\CompletePackageInterface,
-    Repository\InstalledFilesystemRepository
-};
+use Composer\Package\CompletePackageInterface;
 use Psr\Log\{
     NullLogger,
     LoggerInterface
@@ -49,13 +46,10 @@ use Opis\Session\Session;
 use Opis\Validation\Placeholder;
 use Opis\View\ViewRenderer;
 use Opis\Intl\Translator\IDriver as TranslatorDriver;
+use Opis\Colibri\Core\{Module, AppInfo, IBootstrap, ISettingsContainer, ModuleManager, ModuleNotifier};
 use Opis\Colibri\{
-    Core\AppInfo,
-    Core\IBootstrap,
-    Core\ISettingsContainer,
     Rendering\TemplateStream,
     Rendering\ViewEngine,
-    Util\Mutex,
     Util\CSRFToken,
     Validation\Validator,
     Validation\ValidatorCollection,
@@ -68,11 +62,11 @@ class Application implements ISettingsContainer
     /** @var AppInfo */
     protected $info;
 
-    /** @var    array|null */
-    protected $packages;
+    /** @var null|ModuleManager */
+    protected $moduleManager = null;
 
-    /** @var    array|null */
-    protected $modules;
+    /** @var null|ModuleNotifier */
+    protected $moduleNotifier = null;
 
     /** @var  CollectorManager */
     protected $collector;
@@ -188,22 +182,7 @@ class Application implements ISettingsContainer
      */
     public function getPackages(bool $clear = false): array
     {
-        if (!$clear && $this->packages !== null) {
-            return $this->packages;
-        }
-
-        $packages = [];
-
-        $repository = new InstalledFilesystemRepository(new JsonFile($this->installedJsonFile()));
-
-        foreach ($repository->getCanonicalPackages() as $package) {
-            if (!$package instanceof CompletePackageInterface || $package->getType() !== AppInfo::MODULE_TYPE) {
-                continue;
-            }
-            $packages[$package->getName()] = $package;
-        }
-
-        return $this->packages = $packages;
+        return $this->moduleManager()->packages($clear);
     }
 
     /**
@@ -215,17 +194,36 @@ class Application implements ISettingsContainer
      */
     public function getModules(bool $clear = false): array
     {
-        if (!$clear && $this->modules !== null) {
-            return $this->modules;
-        }
+        return $this->moduleManager()->modules($clear);
+    }
 
-        $modules = [];
+    /**
+     * @param string $name
+     * @return Module
+     */
+    public function getModule(string $name): Module
+    {
+        return $this->moduleManager()->module($name);
+    }
 
-        foreach ($this->getPackages($clear) as $module => $package) {
-            $modules[$module] = new Module($this, $module, $package);
-        }
+    /**
+     * @param Module $module
+     * @param callable|null $filter
+     * @return array
+     */
+    public function getAllModuleDependencies(Module $module, ?callable $filter = null): array
+    {
+        return $this->moduleManager()->recursiveDependencies($module, $filter);
+    }
 
-        return $this->modules = $modules;
+    /**
+     * @param Module $module
+     * @param callable|null $filter
+     * @return array
+     */
+    public function getAllModuleDependants(Module $module, ?callable $filter = null): array
+    {
+        return $this->moduleManager()->recursiveDependants($module, $filter);
     }
 
     /**
@@ -699,6 +697,7 @@ class Application implements ISettingsContainer
 
         /** @var CompletePackageInterface|null $installer */
         $installer = null;
+
         $packages = $this->getPackages();
 
         foreach ($packages as $package) {
@@ -729,7 +728,7 @@ class Application implements ISettingsContainer
         }
 
         $this->getBootstrapInstance()->bootstrap($this);
-        $this->getConfig()->write('modules', $enabled);
+        $this->moduleManager()->setStatusList($enabled);
 
         $this->emit('system.init');
 
@@ -771,43 +770,56 @@ class Application implements ISettingsContainer
      *
      * @param   Module $module
      * @param   boolean $recollect (optional)
+     * @param   boolean $recursive (optional)
      *
      * @return  boolean
      */
-    public function install(Module $module, bool $recollect = true): bool
+    public function install(Module $module, bool $recollect = true, bool $recursive = false): bool
     {
-        $mutex = $this->getMutex();
-        if (!$mutex->lock(false)) {
-            return false;
-        }
+        $action = function (Module $module) {
+            $installer = $module->installer();
+            if ($installer === null) {
+                return true;
+            }
 
-        if (!$module->canBeInstalled()) {
-            $mutex->unlock();
-            return false;
-        }
+            if (!class_exists($installer) || is_subclass_of($installer, Installer::class)) {
+                return false;
+            }
 
-        if (null !== $installer = $module->installer()) {
             /** @var Installer $installer */
-            $installer = new $installer();
+            $installer = new $installer($module);
             try {
                 $installer->install();
-            } catch (\Throwable $e) {
+                return true;
+            } catch (Throwable $e) {
                 $installer->installError($e);
-                $mutex->unlock();
                 return false;
+            }
+        };
+
+        $callback = function (Module $module) use ($recollect) {
+            if ($recollect) {
+                $this->getCollector()->recollect();
+            }
+            $this->emit('module.installed.' . $module->name());
+        };
+
+        if ($recursive) {
+            foreach ($this->moduleManager()->recursiveDependencies($module) as $dependency) {
+                if (!$dependency->isInstalled()) {
+                    if (!$this->moduleManager()->install($dependency, $action, $callback)) {
+                        return false;
+                    }
+                }
+                if (!$dependency->isEnabled()) {
+                    if (!$this->enable($dependency, $recollect, false)) {
+                        return false;
+                    }
+                }
             }
         }
 
-        $this->getConfig()->write(['modules', $module->name()], Module::INSTALLED);
-
-        if ($recollect) {
-            $this->getCollector()->recollect();
-        }
-
-        $this->emit('module.installed.' . $module->name());
-
-        $mutex->unlock();
-        return true;
+        return $this->moduleManager()->install($module, $action, $callback);
     }
 
     /**
@@ -815,43 +827,60 @@ class Application implements ISettingsContainer
      *
      * @param   Module $module
      * @param   boolean $recollect (optional)
+     * @param   boolean $recursive (optional)
      *
      * @return  boolean
      */
-    public function uninstall(Module $module, bool $recollect = true): bool
+    public function uninstall(Module $module, bool $recollect = true, bool $recursive = false): bool
     {
-        $mutex = $this->getMutex();
-        if (!$mutex->lock(false)) {
-            return false;
-        }
+        $action = function (Module $module) {
+            $installer = $module->installer();
+            if ($installer === null) {
+                return true;
+            }
 
-        if (!$module->canBeUninstalled()) {
-            $mutex->unlock();
-            return false;
-        }
+            if (!class_exists($installer) || is_subclass_of($installer, Installer::class)) {
+                return false;
+            }
 
-        if (null !== $installer = $module->installer()) {
             /** @var Installer $installer */
-            $installer = new $installer();
+            $installer = new $installer($module);
             try {
                 $installer->uninstall();
-            } catch (\Throwable $e) {
+                return true;
+            } catch (Throwable $e) {
                 $installer->uninstallError($e);
-                $mutex->unlock();
+                return false;
+            }
+        };
+
+        $callback = function (Module $module) use ($recollect) {
+            if ($recollect) {
+                $this->getCollector()->recollect();
+            }
+            $this->emit('module.uninstalled.' . $module->name());
+        };
+
+        if ($recursive) {
+            foreach ($this->moduleManager()->recursiveDependants($module) as $dependant) {
+                if ($dependant->isEnabled()) {
+                    if (!$this->disable($dependant, $recollect, false)) {
+                        return false;
+                    }
+                }
+                if ($dependant->isInstalled()) {
+                    if (!$this->moduleManager()->uninstall($dependant, $action, $callback)) {
+                        return false;
+                    }
+                }
+            }
+
+            if ($module->isEnabled() && !$this->disable($module, $recollect)) {
                 return false;
             }
         }
 
-        $this->getConfig()->write(['modules', $module->name()], Module::UNINSTALLED);
-
-        if ($recollect) {
-            $this->getCollector()->recollect();
-        }
-
-        $this->emit('module.uninstalled.' . $module->name());
-
-        $mutex->unlock();
-        return true;
+        return $this->moduleManager()->uninstall($module, $action, $callback);
     }
 
     /**
@@ -859,46 +888,63 @@ class Application implements ISettingsContainer
      *
      * @param   Module $module
      * @param   boolean $recollect (optional)
+     * @param   boolean $recursive (optional)
      *
      * @return  boolean
      */
-    public function enable(Module $module, bool $recollect = true): bool
+    public function enable(Module $module, bool $recollect = true, bool $recursive = false): bool
     {
-        $mutex = $this->getMutex();
-        if (!$mutex->lock(false)) {
-            return false;
-        }
+        $action = function (Module $module): bool {
+            $installer = $module->installer();
+            if ($installer === null) {
+                return true;
+            }
 
-        if (!$module->canBeEnabled()) {
-            $mutex->unlock();
-            return false;
-        }
+            if (!class_exists($installer) || is_subclass_of($installer, Installer::class)) {
+                return false;
+            }
 
-
-        if (null !== $installer = $module->installer()) {
             /** @var Installer $installer */
-            $installer = new $installer();
+            $installer = new $installer($module);
             try {
                 $installer->enable();
-            } catch (\Throwable $e) {
+                return true;
+            } catch (Throwable $e) {
                 $installer->enableError($e);
-                $mutex->unlock();
+                return false;
+            }
+        };
+
+        $callback = function (Module $module) use ($recollect) {
+            $this->notify($module, 'enabled', true);
+
+            if ($recollect) {
+                $this->getCollector()->recollect();
+            }
+
+            $this->emit('module.installed.' . $module->name());
+        };
+
+        if ($recursive) {
+            foreach ($this->moduleManager()->recursiveDependencies($module) as $dependency) {
+                if (!$dependency->isInstalled()) {
+                    if (!$this->install($dependency, $recollect, false)) {
+                        return false;
+                    }
+                }
+                if (!$dependency->isEnabled()) {
+                    if (!$this->moduleManager()->enable($dependency, $action, $callback)) {
+                        return false;
+                    }
+                }
+            }
+
+            if (!$module->isInstalled() && !$this->install($module, $recollect, false)) {
                 return false;
             }
         }
 
-        $this->getConfig()->write(['modules', $module->name()], Module::ENABLED);
-
-        $this->notify($module, 'enabled', true);
-
-        if ($recollect) {
-            $this->getCollector()->recollect();
-        }
-
-        $this->emit('module.enabled.' . $module->name());
-
-        $mutex->unlock();
-        return true;
+        return $this->moduleManager()->enable($module, $action, $callback);
     }
 
     /**
@@ -906,45 +952,59 @@ class Application implements ISettingsContainer
      *
      * @param   Module $module
      * @param   boolean $recollect (optional)
+     * @param   boolean $recursive (optional)
      *
      * @return  boolean
      */
-    public function disable(Module $module, bool $recollect = true): bool
+    public function disable(Module $module, bool $recollect = true, bool $recursive = false): bool
     {
-        $mutex = $this->getMutex();
-        if (!$mutex->lock(false)) {
-            return false;
-        }
+        $action = function (Module $module) {
+            $installer = $module->installer();
+            if ($installer === null) {
+                return true;
+            }
 
-        if (!$module->canBeDisabled()) {
-            $mutex->unlock();
-            return false;
-        }
+            if (!class_exists($installer) || is_subclass_of($installer, Installer::class)) {
+                return false;
+            }
 
-        if (null !== $installer = $module->installer()) {
             /** @var Installer $installer */
-            $installer = new $installer();
+            $installer = new $installer($module);
             try {
                 $installer->disable();
-            } catch (\Throwable $e) {
+                return true;
+            } catch (Throwable $e) {
                 $installer->disableError($e);
-                $mutex->unlock();
                 return false;
+            }
+        };
+
+        $callback = function (Module $module) use ($recollect) {
+            $this->notify($module, 'enabled', false);
+
+            if ($recollect) {
+                $this->getCollector()->recollect();
+            }
+
+            $this->emit('module.disabled.' . $module->name());
+        };
+
+        if ($recursive) {
+            foreach ($this->moduleManager()->recursiveDependants($module) as $dependant) {
+                if ($dependant->isEnabled()) {
+                    if (!$this->moduleManager()->disable($dependant, $action, $callback)) {
+                        return false;
+                    }
+                }
+                if ($dependant->isInstalled()) {
+                    if (!$this->uninstall($dependant, $recollect, false)) {
+                        return false;
+                    }
+                }
             }
         }
 
-        $this->getConfig()->write(['modules', $module->name()], Module::INSTALLED);
-
-        $this->notify($module, 'enabled', false);
-
-        if ($recollect) {
-            $this->getCollector()->recollect();
-        }
-
-        $this->emit('module.disabled.' . $module->name());
-
-        $mutex->unlock();
-        return true;
+        return $this->moduleManager()->disable($module, $action, $callback);
     }
 
     /**
@@ -980,33 +1040,30 @@ class Application implements ISettingsContainer
     }
 
     /**
-     * @return Mutex
-     */
-    protected function getMutex(): Mutex
-    {
-        return new Mutex(__FILE__);
-    }
-
-    /**
      * @param Module $module
      * @param string $status
      * @param bool $value
+     * @param bool $overwrite
+     * @return bool
      */
-    protected function notify(Module $module, string $status, bool $value)
+    protected function notify(Module $module, string $status, bool $value, bool $overwrite = false): bool
     {
-        $file = $this->info->writableDir() . DIRECTORY_SEPARATOR . '.notify';
-        file_put_contents($file, json_encode([
-            'module' => $module->name(),
-            'status' => $status,
-            'value' => $value,
-        ]));
-        $this->dumpAutoload();
+        if ($this->moduleNotifier === null) {
+            $this->moduleNotifier = new ModuleNotifier($this->info->writableDir());
+        }
+
+        if ($this->moduleNotifier->write($module->name(), $status, $value, $overwrite)) {
+            return $this->dumpAutoload() === 0;
+        }
+
+        return false;
     }
 
     /**
      * @param bool $quiet
+     * @return int
      */
-    protected function dumpAutoload(bool $quiet = false)
+    protected function dumpAutoload(bool $quiet = false): int
     {
         if (PHP_SAPI !== 'cli') {
             if (getenv('COMPOSER_HOME') === false && function_exists('posix_getpwuid')) {
@@ -1020,17 +1077,21 @@ class Application implements ISettingsContainer
         chdir($this->info->rootDir());
         $console = new \Composer\Console\Application();
         $console->setAutoExit(false);
+
         try {
             $command = ['command' => 'dump-autoload'];
             if ($quiet) {
                 $command[] = '--quiet';
             }
-            $console->run(new ArrayInput($command), $quiet ? new NullOutput() : null);
-        } catch (\Throwable $e) {
+
+            return $console->run(new ArrayInput($command), $quiet ? new NullOutput() : null);
+        } catch (Throwable $e) {
             $this->getLog()->error($e->getMessage());
         } finally {
             chdir($cwd);
         }
+
+        return -1;
     }
 
     /**
@@ -1070,14 +1131,8 @@ class Application implements ISettingsContainer
         while (!$body->eof()) {
             echo $body->read($chunkSize);
         }
-    }
 
-    /**
-     * @return string
-     */
-    protected function installedJsonFile(): string
-    {
-        return implode(DIRECTORY_SEPARATOR, [$this->info->vendorDir(), 'composer', 'installed.json']);
+        flush();
     }
 
     /**
@@ -1164,5 +1219,18 @@ class Application implements ISettingsContainer
                 'description' => 'Collects asset handlers',
             ],
         ];
+    }
+
+    /**
+     * @return ModuleManager
+     */
+    protected function moduleManager(): ModuleManager
+    {
+        if ($this->moduleManager === null) {
+            $this->moduleManager = new ModuleManager($this->info->vendorDir(), function (): IDataStore {
+                return $this->getConfig();
+            });
+        }
+        return $this->moduleManager;
     }
 }

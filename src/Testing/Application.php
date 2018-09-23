@@ -17,9 +17,8 @@
 
 namespace Opis\Colibri\Testing;
 
-use Opis\Colibri\Core\IBootstrap;
 use Opis\Colibri\Application as BaseApplication;
-use Opis\Colibri\Core\AppInfo;
+use Opis\Colibri\Core\{IBootstrap, AppInfo, ModuleManager};
 use Opis\Colibri\Rendering\TemplateStream;
 use Opis\Session\Session;
 
@@ -96,8 +95,6 @@ class Application extends BaseApplication
         }
 
         $this->info = null;
-        $this->packages = null;
-        $this->modules = null;
         $this->collector = null;
         $this->containerInstance = null;
         $this->translatorDriver = null;
@@ -137,11 +134,16 @@ class Application extends BaseApplication
     }
 
     /**
-     * @return string
+     * @return ModuleManager
      */
-    protected function installedJsonFile(): string
+    protected function moduleManager(): ModuleManager
     {
-        return $this->installedJson;
+        if ($this->moduleManager === null) {
+            $this->moduleManager = new ExtendedModuleManager($this->installedJson, $this->info->vendorDir(), function () {
+                return $this->getConfig();
+            });
+        }
+        return $this->moduleManager;
     }
 
     /**
@@ -161,10 +163,10 @@ class Application extends BaseApplication
     }
 
     /**
-     * @param bool $quiet
+     * @inheritdoc
      */
-    protected function dumpAutoload(bool $quiet = false)
+    protected function dumpAutoload(bool $quiet = false): int
     {
-        parent::dumpAutoload(true);
+        return parent::dumpAutoload(true);
     }
 }

@@ -18,8 +18,7 @@
 namespace Opis\Colibri\Testing\Builders;
 
 use stdClass;
-use Opis\Colibri\Module;
-use Opis\Colibri\Core\AppInfo;
+use Opis\Colibri\Core\{Module, AppInfo, ModuleManager};
 use Opis\Colibri\Testing\{Application, InstalledAppInfo};
 
 class ApplicationBuilder
@@ -80,7 +79,7 @@ class ApplicationBuilder
             $this->handleCreatedModules($rootDir, $this->createdModules);
         }
 
-        $this->builder->getConfigDriver()->write('modules', $this->modules);
+        $this->builder->getConfigDriver()->write(ModuleManager::CONFIG_NAME, $this->modules);
 
         $bootstrap = $this->builder->build();
 
@@ -572,7 +571,7 @@ class ApplicationBuilder
 
             $data = [
                 'name' => $module['name'],
-                'type' => AppInfo::MODULE_TYPE,
+                'type' => Module::TYPE,
                 'autoload' => [
                     'psr-4' => [
                         $ns => $path

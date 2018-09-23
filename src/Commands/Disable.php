@@ -37,7 +37,8 @@ class Disable extends Command
             ->setName('disable')
             ->setDescription('Disable a module')
             ->addArgument('module', InputArgument::IS_ARRAY, 'A list of modules separated by space')
-            ->addOption('uninstall', null, InputOption::VALUE_NONE, 'Uninstall modules');
+            ->addOption('uninstall', null, InputOption::VALUE_NONE, 'Uninstall modules')
+            ->addOption('recursive', null, InputOption::VALUE_NONE, 'Uninstall & disable dependants');
     }
 
     /**
@@ -59,6 +60,7 @@ class Disable extends Command
 
         $modules = $input->getArgument('module');
         $uninstall = $input->getOption('uninstall');
+        $recursive = (bool)$input->getArgument('recursive');
 
         foreach ($modules as $moduleName) {
 
@@ -79,7 +81,7 @@ class Disable extends Command
                 continue;
             }
 
-            if (app()->disable($module)) {
+            if (app()->disable($module, true, $recursive)) {
                 $output->writeln('<info>Module <b-info>' . $moduleName . '</b-info> was disabled.</info>');
 
                 if ($uninstall) {

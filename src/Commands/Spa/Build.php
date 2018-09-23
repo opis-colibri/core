@@ -68,7 +68,7 @@ class Build extends Command
             return;
         }
 
-        $handler->moduleStatusChanged($module->getPackage(), 'enabled', true);
+        $handler->moduleStatusChanged($module->package(), 'enabled', true);
 
         $installed = $enabled = [];
 

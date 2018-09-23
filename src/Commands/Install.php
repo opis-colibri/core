@@ -37,7 +37,8 @@ class Install extends Command
             ->setName('install')
             ->setDescription('Install a module')
             ->addArgument('module', InputArgument::IS_ARRAY, 'A list of modules separated by space')
-            ->addOption('enable', null, InputOption::VALUE_NONE, 'Enable modules');
+            ->addOption('enable', null, InputOption::VALUE_NONE, 'Enable modules')
+            ->addOption('recursive', null, InputOption::VALUE_NONE, 'Install & enable dependencies');
     }
 
     /**
@@ -59,6 +60,7 @@ class Install extends Command
 
         $modules = $input->getArgument('module');
         $enable = $input->getOption('enable');
+        $recursive = (bool)$input->getOption('recursive');
 
         foreach ($modules as $moduleName) {
 
@@ -80,7 +82,7 @@ class Install extends Command
             }
 
 
-            if (app()->install($module)) {
+            if (app()->install($module, true, $recursive)) {
                 $output->writeln('<info>Module <b-info>' . $moduleName . '</b-info> was installed.</info>');
 
                 if ($enable) {

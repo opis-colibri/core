@@ -19,7 +19,7 @@ namespace Opis\Colibri\Functions;
 
 use Opis\Cache\CacheInterface;
 use Opis\Colibri\{
-    Alerts, Application, Core\AppInfo, Module, View, Validation\Validator, Serializable\ControllerCallback
+    Alerts, Application, Core\AppInfo, View, Validation\Validator, Serializable\ControllerCallback
 };
 use Opis\Database\{
     Connection as DBConnection,
@@ -43,6 +43,7 @@ use Opis\Http\Responses\{
 use Opis\Session\Session;
 use Opis\View\IView;
 use Psr\Log\LoggerInterface;
+use Opis\Colibri\Core\Module;
 
 /**
  * @return Application
@@ -342,7 +343,7 @@ function controller(string $class, string $method, bool $static = false): callab
  */
 function module(string $module): Module
 {
-    return new Module(Application::getInstance(), $module);
+    return Application::getInstance()->getModule($module);
 }
 
 /**

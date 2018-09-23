@@ -92,7 +92,7 @@ class Build extends Command
             }, $modules);
         }
 
-        /** @var \Opis\Colibri\Module $module */
+        /** @var \Opis\Colibri\Core\Module $module */
         foreach ($modules as $module) {
 
             if (!$module->exists()) {
@@ -108,13 +108,13 @@ class Build extends Command
             $name = str_replace('/', '.', $module->name());
 
             if ($dependencies) {
-                $handler->uninstall($module->getPackage());
+                $handler->uninstall($module->package());
             } else {
                 $fs->remove(info()->assetsDir() . DIRECTORY_SEPARATOR . $name);
             }
 
             if ($dependencies) {
-                $handler->install($module->getPackage());
+                $handler->install($module->package());
             } else {
                 $fs->mirror($module->assets(), $appInfo->assetsDir() . DIRECTORY_SEPARATOR . $name);
             }

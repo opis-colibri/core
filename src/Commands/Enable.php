@@ -21,6 +21,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use function Opis\Colibri\Functions\{
     app, module, info
@@ -34,7 +35,8 @@ class Enable extends Command
         $this
             ->setName('enable')
             ->setDescription('Enable a module')
-            ->addArgument('module', InputArgument::IS_ARRAY, 'A list of modules separated by space');
+            ->addArgument('module', InputArgument::IS_ARRAY, 'A list of modules separated by space')
+            ->addOption('recursive', null, InputOption::VALUE_NONE, 'Install & enable dependencies');
     }
 
     /**
@@ -55,6 +57,7 @@ class Enable extends Command
         $output->getFormatter()->setStyle('b-info', new OutputFormatterStyle('green', null, ['bold']));
 
         $modules = $input->getArgument('module');
+        $recursive = (bool)$input->getArgument('recursive');
 
         foreach ($modules as $moduleName) {
             $module = module($moduleName);
@@ -74,7 +77,7 @@ class Enable extends Command
                 continue;
             }
 
-            if (app()->enable($module)) {
+            if (app()->enable($module, true, $recursive)) {
                 $output->writeln('<info>Module <b-info>' . $moduleName . '</b-info> was enabled.</info>');
             } else {
                 $output->writeln('<error>Module <b-error>' . $moduleName . '</b-error> could not be enabled.</error>');
