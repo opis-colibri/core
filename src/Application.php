@@ -804,10 +804,12 @@ class Application implements ISettingsContainer
             $this->emit('module.installed.' . $module->name());
         };
 
+        $manager = $this->moduleManager();
+
         if ($recursive) {
-            foreach ($this->moduleManager()->recursiveDependencies($module) as $dependency) {
+            foreach ($manager->recursiveDependencies($module) as $dependency) {
                 if (!$dependency->isInstalled()) {
-                    if (!$this->moduleManager()->install($dependency, $action, $callback)) {
+                    if (!$manager->install($dependency, $action, $callback)) {
                         return false;
                     }
                 }
@@ -819,7 +821,7 @@ class Application implements ISettingsContainer
             }
         }
 
-        return $this->moduleManager()->install($module, $action, $callback);
+        return $manager->install($module, $action, $callback);
     }
 
     /**
@@ -861,15 +863,17 @@ class Application implements ISettingsContainer
             $this->emit('module.uninstalled.' . $module->name());
         };
 
+        $manager = $this->moduleManager();
+
         if ($recursive) {
-            foreach ($this->moduleManager()->recursiveDependants($module) as $dependant) {
+            foreach ($manager->recursiveDependants($module) as $dependant) {
                 if ($dependant->isEnabled()) {
                     if (!$this->disable($dependant, $recollect, false)) {
                         return false;
                     }
                 }
                 if ($dependant->isInstalled()) {
-                    if (!$this->moduleManager()->uninstall($dependant, $action, $callback)) {
+                    if (!$manager->uninstall($dependant, $action, $callback)) {
                         return false;
                     }
                 }
@@ -880,7 +884,7 @@ class Application implements ISettingsContainer
             }
         }
 
-        return $this->moduleManager()->uninstall($module, $action, $callback);
+        return $manager->uninstall($module, $action, $callback);
     }
 
     /**
@@ -925,15 +929,17 @@ class Application implements ISettingsContainer
             $this->emit('module.installed.' . $module->name());
         };
 
+        $manager = $this->moduleManager();
+
         if ($recursive) {
-            foreach ($this->moduleManager()->recursiveDependencies($module) as $dependency) {
+            foreach ($manager->recursiveDependencies($module) as $dependency) {
                 if (!$dependency->isInstalled()) {
                     if (!$this->install($dependency, $recollect, false)) {
                         return false;
                     }
                 }
                 if (!$dependency->isEnabled()) {
-                    if (!$this->moduleManager()->enable($dependency, $action, $callback)) {
+                    if (!$manager->enable($dependency, $action, $callback)) {
                         return false;
                     }
                 }
@@ -944,7 +950,7 @@ class Application implements ISettingsContainer
             }
         }
 
-        return $this->moduleManager()->enable($module, $action, $callback);
+        return $manager->enable($module, $action, $callback);
     }
 
     /**
@@ -989,10 +995,12 @@ class Application implements ISettingsContainer
             $this->emit('module.disabled.' . $module->name());
         };
 
+        $manager = $this->moduleManager();
+
         if ($recursive) {
-            foreach ($this->moduleManager()->recursiveDependants($module) as $dependant) {
+            foreach ($manager->recursiveDependants($module) as $dependant) {
                 if ($dependant->isEnabled()) {
-                    if (!$this->moduleManager()->disable($dependant, $action, $callback)) {
+                    if (!$manager->disable($dependant, $action, $callback)) {
                         return false;
                     }
                 }
@@ -1004,7 +1012,7 @@ class Application implements ISettingsContainer
             }
         }
 
-        return $this->moduleManager()->disable($module, $action, $callback);
+        return $manager->disable($module, $action, $callback);
     }
 
     /**
