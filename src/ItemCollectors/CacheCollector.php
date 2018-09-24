@@ -17,7 +17,6 @@
 
 namespace Opis\Colibri\ItemCollectors;
 
-use Opis\Cache\CacheInterface;
 use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Serializable\StorageCollection;
 

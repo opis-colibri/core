@@ -19,7 +19,6 @@ namespace Opis\Colibri\ItemCollectors;
 
 use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Serializable\StorageCollection;
-use Opis\DataStore\IDataStore;
 
 /**
  * @property  StorageCollection $data

@@ -19,7 +19,6 @@ namespace Opis\Colibri\ItemCollectors;
 
 use Opis\Colibri\ItemCollector;
 use Opis\Colibri\Serializable\StorageCollection;
-use Psr\Log\LoggerInterface;
 
 /**
  * @property  StorageCollection $data

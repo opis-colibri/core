@@ -17,6 +17,8 @@
 
 namespace Opis\Colibri;
 
+use Opis\Colibri\Core\Module;
+
 abstract class ItemCollector
 {
     /** @var  mixed */
