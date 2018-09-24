@@ -39,7 +39,7 @@ class StorageCollection implements Serializable
      * @param callable|null $builder
      * @param bool $throw
      */
-    public function __construct(?callable $builder, bool $throw = true)
+    public function __construct(?callable $builder = null, bool $throw = true)
     {
         $this->builder = $builder;
         $this->throw = $throw;

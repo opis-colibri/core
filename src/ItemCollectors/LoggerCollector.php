@@ -31,7 +31,7 @@ class LoggerCollector extends ItemCollector
      */
     public function __construct()
     {
-        parent::__construct(new StorageCollection(self::class . '::factory'));
+        parent::__construct(new StorageCollection());
     }
 
     /**
@@ -43,15 +43,5 @@ class LoggerCollector extends ItemCollector
     {
         $this->data->add($storage, $constructor);
         return $this;
-    }
-
-    /**
-     * @param string $storage
-     * @param callable $factory
-     * @return LoggerInterface
-     */
-    public static function factory(string $storage, callable $factory): LoggerInterface
-    {
-        return $factory($storage);
     }
 }

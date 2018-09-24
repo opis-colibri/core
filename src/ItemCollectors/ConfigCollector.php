@@ -31,7 +31,7 @@ class ConfigCollector extends ItemCollector
      */
     public function __construct()
     {
-        parent::__construct(new StorageCollection(self::class . '::factory'));
+        parent::__construct(new StorageCollection());
     }
 
     /**
@@ -43,15 +43,5 @@ class ConfigCollector extends ItemCollector
     {
         $this->data->add($storage, $constructor);
         return $this;
-    }
-
-    /**
-     * @param string $storage
-     * @param callable $factory
-     * @return IDataStore
-     */
-    public static function factory(string $storage, callable $factory): IDataStore
-    {
-        return $factory($storage);
     }
 }
