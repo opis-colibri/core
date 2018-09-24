@@ -685,6 +685,7 @@ class Application implements ISettingsContainer
         $this->connection = [];
         $this->database = [];
         $this->entityManager = [];
+        TemplateStream::clearCache();
     }
 
     /**

@@ -118,6 +118,7 @@ class Application extends BaseApplication
         $this->alerts = null;
         $this->config = null;
 
+        TemplateStream::clearCache();
         TemplateStream::unregister();
         static::$instance = null;
     }
