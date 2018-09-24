@@ -531,21 +531,17 @@ class ApplicationBuilder
      */
     protected function resolveDependencies(Application $app, array $dependencies)
     {
-        foreach ($dependencies as $dependency) {
-            $modules = $app->getModules();
+        $modules = $app->getModules();
 
+        foreach ($dependencies as $dependency) {
             if (!isset($modules[$dependency])) {
                 continue;
             }
 
             $module = $modules[$dependency];
 
-            if (!$module->isInstalled()) {
-                $app->install($module);
-            }
-
             if (!$module->isEnabled()) {
-                $app->enable($module);
+                $app->enable($module, true, true);
             }
         }
     }
