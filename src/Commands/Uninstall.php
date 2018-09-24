@@ -57,7 +57,7 @@ class Uninstall extends Command
         $output->getFormatter()->setStyle('b-info', new OutputFormatterStyle('green', null, ['bold']));
 
         $modules = $input->getArgument('module');
-        $recursive = (bool)$input->getArgument('recursive');
+        $recursive = $input->hasOption('recursive');
 
         foreach ($modules as $moduleName) {
 
