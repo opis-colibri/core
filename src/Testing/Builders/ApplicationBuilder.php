@@ -73,7 +73,7 @@ class ApplicationBuilder
     public function build(): Application
     {
         $rootDir = $this->rootDir ?? $this->createRootDir();
-        $info = $this->createAppInfo($this->vendorDir, $rootDir);
+        $info = $this->createAppInfo($this->vendorDir, $rootDir, $this->dependencies);
 
         if ($this->createdModules) {
             $this->handleCreatedModules($rootDir, $this->createdModules);
@@ -492,16 +492,32 @@ class ApplicationBuilder
     /**
      * @param string $vendorDir
      * @param string $rootDir
+     * @param array $dependencies
      * @return AppInfo
      */
-    protected function createAppInfo(string $vendorDir, string $rootDir): AppInfo
+    protected function createAppInfo(string $vendorDir, string $rootDir, array $dependencies): AppInfo
     {
         $rootDir = rtrim($rootDir, DIRECTORY_SEPARATOR);
 
         $vendorDir = rtrim($vendorDir, DIRECTORY_SEPARATOR);
 
+        $composer = $this->getMainComposerContent();
+
+        if ($dependencies) {
+            if (!isset($composer['require'])) {
+                $composer['require'] = [];
+            }
+            foreach ($dependencies as $name) {
+                if (!isset($composer['require'][$name])) {
+                    $composer['require'][$name] = 'dev-master';
+                }
+            }
+        }
+
         file_put_contents($rootDir . DIRECTORY_SEPARATOR . 'composer.json',
-            json_encode((object) $this->getMainComposerContent(), JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+            json_encode((object) $composer, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+
+        unset($composer);
 
         file_put_contents($rootDir . DIRECTORY_SEPARATOR . 'package.json', '{}');
 
