@@ -242,11 +242,12 @@ class ApplicationBuilder
      * @param string $ns
      * @param string $path
      * @param string[] $info
+     * @param string[] $require
      * @return ApplicationBuilder
      */
-    public function createUninstalledTestModule(string $name, string $ns, string $path, array $info = []): self
+    public function createUninstalledTestModule(string $name, string $ns, string $path, array $info = [], array $require = []): self
     {
-        return $this->createTestModule($name, $ns, $path, $info, Module::UNINSTALLED);
+        return $this->createTestModule($name, $ns, $path, $info, Module::UNINSTALLED, $require);
     }
 
     /**
@@ -254,11 +255,12 @@ class ApplicationBuilder
      * @param string $ns
      * @param string $path
      * @param string[] $info
+     * @param string[] $require
      * @return ApplicationBuilder
      */
-    public function createInstalledTestModule(string $name, string $ns, string $path, array $info = []): self
+    public function createInstalledTestModule(string $name, string $ns, string $path, array $info = [], array $require = []): self
     {
-        return $this->createTestModule($name, $ns, $path, $info, Module::INSTALLED);
+        return $this->createTestModule($name, $ns, $path, $info, Module::INSTALLED, $require);
     }
 
     /**
@@ -266,11 +268,12 @@ class ApplicationBuilder
      * @param string $ns
      * @param string $path
      * @param string[] $info
+     * @param string[] $require
      * @return ApplicationBuilder
      */
-    public function createEnabledTestModule(string $name, string $ns, string $path, array $info = []): self
+    public function createEnabledTestModule(string $name, string $ns, string $path, array $info = [], array $require = []): self
     {
-        return $this->createTestModule($name, $ns, $path, $info, Module::ENABLED);
+        return $this->createTestModule($name, $ns, $path, $info, Module::ENABLED, $require);
     }
 
     /**
@@ -279,9 +282,10 @@ class ApplicationBuilder
      * @param string $path
      * @param string[] $info
      * @param int $status
+     * @param null|string[] $require
      * @return ApplicationBuilder
      */
-    protected function createTestModule(string $name, string $ns, string $path, array $info, int $status): self
+    protected function createTestModule(string $name, string $ns, string $path, array $info, int $status, ?array $require = null): self
     {
         $this->createdModules[$name] = [
             'name' => $name,
@@ -289,6 +293,7 @@ class ApplicationBuilder
             'path' => $path,
             'info' => $info,
             'status' => $status,
+            'require' => $require ?: null,
         ];
         return $this;
     }
@@ -595,6 +600,17 @@ class ApplicationBuilder
                     ]
                 ]
             ];
+
+            if ($module['require']) {
+                $data['require'] = [];
+                foreach ($module['require'] as $name => $version) {
+                    if (is_int($name)) {
+                        $data['require'][$version] = 'dev-master';
+                    } else {
+                        $data['require'][$name] = $version ?: 'dev-master';
+                    }
+                }
+            }
 
             $dir = $rootDir . DIRECTORY_SEPARATOR . str_replace(DIRECTORY_SEPARATOR, '-', $module['name']);
             mkdir($dir);
