@@ -21,6 +21,7 @@ namespace PHPSTORM_META {
         'loggers' => \Opis\Colibri\Serializable\StorageCollection::class,
         'asset-handlers' => \Opis\Colibri\Serializable\CallbackList::class,
         'validators' => \Opis\Colibri\Serializable\ClassList::class,
+        'template-stream-handlers' => \Opis\Colibri\Serializable\AdvancedClassList::class,
     ]));
 
     override(\Opis\Colibri\Functions\collect(0), map([
@@ -42,5 +43,6 @@ namespace PHPSTORM_META {
         'loggers' => \Opis\Colibri\Serializable\StorageCollection::class,
         'asset-handlers' => \Opis\Colibri\Serializable\CallbackList::class,
         'validators' => \Opis\Colibri\Serializable\ClassList::class,
+        'template-stream-handlers' => \Opis\Colibri\Serializable\AdvancedClassList::class,
     ]));
 }

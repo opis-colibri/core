@@ -24,7 +24,12 @@ use Opis\Colibri\{
 use Opis\Colibri\Core\Module;
 use Opis\DataStore\IDataStore;
 use Opis\Colibri\Serializable\{
-    CallbackList, ClassList, RouterGlobals, Translations, ViewEngineResolver
+    AdvancedClassList,
+    CallbackList,
+    ClassList,
+    RouterGlobals,
+    Translations,
+    ViewEngineResolver
 };
 use Opis\Database\{
     Connection, Database
@@ -259,6 +264,15 @@ class Manager
     public function getAssetHandlers(bool $fresh = true)
     {
         return $this->collect('asset-handlers', $fresh);
+    }
+
+    /**
+     * @param bool $fresh
+     * @return AdvancedClassList
+     */
+    public function getTemplateStreamHandlers(bool $fresh = true)
+    {
+        return $this->collect('template-stream-handlers', $fresh);
     }
 
     /**

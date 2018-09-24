@@ -47,9 +47,12 @@ use Opis\Validation\Placeholder;
 use Opis\View\ViewRenderer;
 use Opis\Intl\Translator\IDriver as TranslatorDriver;
 use Opis\Colibri\Core\{Module, AppInfo, IBootstrap, ISettingsContainer, ModuleManager, ModuleNotifier};
+use Opis\Colibri\Rendering\{
+    CallbackTemplateHandler,
+    TemplateStream,
+    ViewEngine
+};
 use Opis\Colibri\{
-    Rendering\TemplateStream,
-    Rendering\ViewEngine,
     Util\CSRFToken,
     Validation\Validator,
     Validation\ValidatorCollection,
@@ -259,13 +262,17 @@ class Application implements ISettingsContainer
             $collector = $this->getCollector();
             $routes = $collector->getViews();
             $resolver = $collector->getViewEngineResolver();
+            $templateHandlers = $collector->getTemplateStreamHandlers();
+            if (!$templateHandlers->has('callback')) {
+                $templateHandlers->add('callback', CallbackTemplateHandler::class);
+            }
             $this->viewRenderer = new ViewRenderer($routes, new ViewEngine());
             $resolver->copyEngines($this->viewRenderer->getEngineResolver());
             $this->viewRenderer->handle('error.{error}', function ($error) {
-                return 'template://\Opis\Colibri\Rendering\Template::error' . $error;
+                return TemplateStream::url('callback', '\Opis\Colibri\Rendering\Template::error' . $error, 'php');
             }, -100)->where('error', '401|403|404|405|500|503');
             $this->viewRenderer->handle('alerts', function () {
-                return 'template://\Opis\Colibri\Rendering\Template::alerts';
+                return TemplateStream::url('callback', '\Opis\Colibri\Rendering\Template::alerts', 'php');
             }, -100);
         }
 
@@ -741,7 +748,7 @@ class Application implements ISettingsContainer
             $request = HttpRequest::fromGlobals();
         }
 
-        $this->httpRequest = $request;
+        $this->httpRequest[] = $request;
 
         $context = new Context($request->getUri()->getPath(), $request);
 
@@ -1218,6 +1225,10 @@ class Application implements ISettingsContainer
             'asset-handlers' => [
                 'class' => 'Opis\\Colibri\\ItemCollectors\\AssetsHandlerCollector',
                 'description' => 'Collects asset handlers',
+            ],
+            'template-stream-handlers' => [
+                'class' => 'Opis\\Colibri\\ItemCollectors\\TemplateStreamHandlerCollector',
+                'description' => 'Collects template stream handlers',
             ],
         ];
     }
