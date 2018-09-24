@@ -22,6 +22,9 @@ trait StreamTrait
     /** @var bool */
     protected static $isRegistered = false;
 
+    /** @var null|array */
+    protected static $defaultStat = null;
+
     /** @var  string */
     protected $content;
 
@@ -80,7 +83,10 @@ trait StreamTrait
      */
     public function stream_stat()
     {
-        $stat = stat(__FILE__);
+        if (static::$defaultStat === null) {
+            static::$defaultStat = stat(__FILE__);
+        }
+        $stat = static::$defaultStat;
         $stat[7] = $stat['size'] = $this->length;
         return $stat;
     }
@@ -95,7 +101,10 @@ trait StreamTrait
         $path,
         $flags
     ) {
-        $stat = stat(__FILE__);
+        if (static::$defaultStat === null) {
+            static::$defaultStat = stat(__FILE__);
+        }
+        $stat = static::$defaultStat;
         $stat[7] = $stat['size'] = $this->length;
         return $stat;
     }
