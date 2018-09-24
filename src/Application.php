@@ -782,7 +782,7 @@ class Application implements ISettingsContainer
                 return true;
             }
 
-            if (!class_exists($installer) || is_subclass_of($installer, Installer::class)) {
+            if (!class_exists($installer) || !is_subclass_of($installer, Installer::class, true)) {
                 return false;
             }
 
@@ -841,7 +841,7 @@ class Application implements ISettingsContainer
                 return true;
             }
 
-            if (!class_exists($installer) || is_subclass_of($installer, Installer::class)) {
+            if (!class_exists($installer) || !is_subclass_of($installer, Installer::class, true)) {
                 return false;
             }
 
@@ -904,7 +904,7 @@ class Application implements ISettingsContainer
                 return true;
             }
 
-            if (!class_exists($installer) || is_subclass_of($installer, Installer::class)) {
+            if (!class_exists($installer) || !is_subclass_of($installer, Installer::class, true)) {
                 return false;
             }
 
@@ -970,7 +970,7 @@ class Application implements ISettingsContainer
                 return true;
             }
 
-            if (!class_exists($installer) || is_subclass_of($installer, Installer::class)) {
+            if (!class_exists($installer) || !is_subclass_of($installer, Installer::class, true)) {
                 return false;
             }
 
