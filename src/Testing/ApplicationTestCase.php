@@ -127,10 +127,42 @@ abstract class ApplicationTestCase extends TestCase
     protected function exec(string $path, string $method = 'GET', array $headers = [], bool $secure = false): Response
     {
         $request = new Request($method, $path, 'HTTP/1.1', $secure, $headers);
+        return $this->app()->run($request);
+    }
 
-        $response = $this->app()->run($request);
+    /**
+     * @param string $path
+     * @param array $query
+     * @param array $headers
+     * @param bool $secure
+     * @return Response
+     */
+    protected function execGET(string $path, array $query = [], array $headers = [], bool $secure = false): Response
+    {
+        $request = new Request('GET', $path, 'HTTP/1.1', $secure, $headers, [], null, [], $query);
+        return $this->app()->run($request);
+    }
 
-        return $response;
+    /**
+     * @param string $path
+     * @param array $data
+     * @param array $headers
+     * @param bool $secure
+     * @return Response
+     */
+    protected function execPOST(string $path, array $data = [], array $headers = [], bool $secure = false): Response
+    {
+        $request = new Request('POST', $path, 'HTTP/1.1', $secure, $headers, [], null, [], null, $data);
+        return $this->app()->run($request);
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    protected function execRequest(Request $request): Response
+    {
+        return $this->app()->run($request);
     }
 
     /**

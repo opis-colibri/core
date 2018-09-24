@@ -740,15 +740,15 @@ class Application implements ISettingsContainer
      *
      * @param   HttpRequest|null $request
      *
-     * @return  mixed
+     * @return  Response
      */
-    public function run(HttpRequest $request = null)
+    public function run(HttpRequest $request = null): Response
     {
         if ($request === null) {
             $request = HttpRequest::fromGlobals();
         }
 
-        $this->httpRequest[] = $request;
+        $this->httpRequest = $request;
 
         $context = new Context($request->getUri()->getPath(), $request);
 
