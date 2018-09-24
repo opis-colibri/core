@@ -693,22 +693,20 @@ class Application implements ISettingsContainer
             return $this;
         }
 
-        // TODO: Recursive dependencies
+        $manager = $this->moduleManager();
 
-        /** @var CompletePackageInterface|null $installer */
+        /** @var Module|null $installer */
         $installer = null;
 
-        $packages = $this->getPackages();
-
-        foreach ($packages as $package) {
-            $extra = $package->getExtra();
-            if (isset($extra['module']['is-app-installer']) && $extra['module']['is-app-installer']) {
+        foreach ($manager->modules() as $module) {
+            if ($module->isApplicationInstaller()) {
                 if ($installer !== null) {
                     $formatText = '%s was defined as an application installer before %s';
-                    $formatArgs = [$installer->getName(), $package->getName()];
+                    $formatArgs = [$installer->name(), $module->name()];
                     throw new \RuntimeException(vsprintf($formatText, $formatArgs));
                 }
-                $installer = $package;
+
+                $installer = $module;
             }
         }
 
@@ -716,19 +714,14 @@ class Application implements ISettingsContainer
             throw new \RuntimeException("No application installer was found");
         }
 
-        $enabled = [
-            $installer->getName() => Module::ENABLED,
-        ];
+        $enabled = [$installer->name() => Module::ENABLED];
 
-        foreach ($installer->getRequires() as $require) {
-            $target = $require->getTarget();
-            if (isset($packages[$target])) {
-                $enabled[$packages[$target]->getName()] = Module::ENABLED;
-            }
+        foreach ($manager->recursiveDependencies($installer) as $module) {
+            $enabled[$module->name()] = Module::ENABLED;
         }
 
         $this->getBootstrapInstance()->bootstrap($this);
-        $this->moduleManager()->setStatusList($enabled);
+        $manager->setStatusList($enabled);
 
         $this->emit('system.init');
 
