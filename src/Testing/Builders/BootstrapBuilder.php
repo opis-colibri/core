@@ -292,7 +292,7 @@ class BootstrapBuilder
      */
     protected function defaultDatabaseConnection(): Connection
     {
-        return (new Connection('sqlite:file:opisdb?mode=memory&cache=shared'))
+        return (new Connection('sqlite::memory:'))
             ->persistent(false)
             ->initCommand('PRAGMA foreign_keys = ON');
     }
