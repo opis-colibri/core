@@ -113,7 +113,6 @@ class Application extends BaseApplication
         $this->loggers = null;
         $this->eventDispatcher = null;
         $this->validator = null;
-        $this->implicit = [];
         $this->collectorList = null;
         $this->alerts = null;
         $this->config = null;
@@ -153,6 +152,15 @@ class Application extends BaseApplication
     protected function getBootstrapInstance(): IBootstrap
     {
         return $this->bootstrap;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function clearCachedObjects()
+    {
+        $this->collector = null;
+        parent::clearCachedObjects();
     }
 
     /**
