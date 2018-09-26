@@ -78,6 +78,14 @@ abstract class ApplicationTestCase extends TestCase
     }
 
     /**
+     * @param Application $app
+     */
+    protected static function applicationStarted(Application $app)
+    {
+        // Nothing to do
+    }
+
+    /**
      * @inheritdoc
      */
     public static function setUpBeforeClass()
@@ -89,6 +97,8 @@ abstract class ApplicationTestCase extends TestCase
         static::applicationSetup($builder);
 
         $app = $builder->build();
+
+        static::applicationStarted($app);
 
         static::$onAppDestroy = function () use ($builder, $app) {
             $builder->destroy($app);
