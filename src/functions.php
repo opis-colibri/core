@@ -40,7 +40,7 @@ use Opis\Http\{IStream, Request, Response as HttpResponse, Response};
 use Opis\Http\Responses\{
     HtmlResponse, JsonResponse, RedirectResponse
 };
-use Opis\Session\Session;
+use Opis\Session\ISession;
 use Opis\View\IView;
 use Psr\Log\LoggerInterface;
 use Opis\Colibri\Core\Module;
@@ -259,9 +259,9 @@ function logger(string $logger = 'default'): LoggerInterface
 }
 
 /**
- * @return Session
+ * @return ISession
  */
-function session(): Session
+function session(): ISession
 {
     return Application::getInstance()->getSession();
 }

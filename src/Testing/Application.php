@@ -17,10 +17,10 @@
 
 namespace Opis\Colibri\Testing;
 
+use Opis\Session\ISession;
 use Opis\Colibri\Application as BaseApplication;
 use Opis\Colibri\Core\{IBootstrap, AppInfo, ModuleManager};
 use Opis\Colibri\Rendering\TemplateStream;
-use Opis\Session\Session;
 
 class Application extends BaseApplication
 {
@@ -126,7 +126,7 @@ class Application extends BaseApplication
     /**
      * @inheritDoc
      */
-    public function getSession(): Session
+    public function getSession(): ISession
     {
         if ($this->session === null) {
             $this->session = $this->useMemorySession() ? new MemorySession() : parent::getSession();

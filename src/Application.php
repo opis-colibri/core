@@ -42,7 +42,7 @@ use Opis\Database\{
 };
 use Opis\ORM\EntityManager;
 use Opis\Routing\Context;
-use Opis\Session\Session;
+use Opis\Session\{ISession, Session};
 use Opis\Validation\Placeholder;
 use Opis\View\ViewRenderer;
 use Opis\Intl\Translator\IDriver as TranslatorDriver;
@@ -107,7 +107,7 @@ class Application implements ISettingsContainer
     /** @var  EntityManager[] */
     protected $entityManager = [];
 
-    /** @var  Session */
+    /** @var  ISession */
     protected $session;
 
     /** @var  HttpRouter */
@@ -384,9 +384,9 @@ class Application implements ISettingsContainer
     /**
      * Returns a session storage
      *
-     * @return  Session
+     * @return  ISession
      */
-    public function getSession(): Session
+    public function getSession(): ISession
     {
         if ($this->session === null) {
             if (!isset($this->implicit['session'])) {
