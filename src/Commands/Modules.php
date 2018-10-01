@@ -19,12 +19,11 @@ namespace Opis\Colibri\Commands;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use function Opis\Colibri\Functions\{
-    app
-};
+use function Opis\Colibri\Functions\app;
 
 class Modules extends Command
 {
@@ -32,7 +31,6 @@ class Modules extends Command
     protected function configure()
     {
         $this
-            ->setName('modules')
             ->setDescription('List all available modules')
             ->addOption('all', null, InputOption::VALUE_NONE, 'List hidden modules');
     }
@@ -52,7 +50,9 @@ class Modules extends Command
 
         $all = $input->getOption('all');
 
-        $ws = str_repeat(' ', 24);
+        $table = new Table($output);
+        $table->setHeaders(array('<white>Name</white>', '<white>Title</white>', '<white>Status</white>'));
+
 
         foreach (app()->getModules() as $name => $module) {
 
@@ -60,15 +60,17 @@ class Modules extends Command
                 continue;
             }
 
-            $text = $name . substr($ws, strlen($name)) . "<white>" . $module->title() . '</white>';
-
             if ($module->isEnabled()) {
-                $output->writeln('<green>' . $text . '</green>');
+                $status = '<green>enabled</green>';
             } elseif ($module->isInstalled()) {
-                $output->writeln('<blue>' . $text . '</blue>');
+                $status = '<blue>installed</blue>';
             } else {
-                $output->writeln('<yellow>' . $text . '</yellow>');
+                $status = '<yellow>uninstalled</yellow>';
             }
+
+            $table->addRow([$name, $module->title(), $status]);
         }
+
+        $table->render();
     }
 }
