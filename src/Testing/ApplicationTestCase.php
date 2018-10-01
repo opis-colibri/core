@@ -137,7 +137,7 @@ abstract class ApplicationTestCase extends TestCase
     protected function exec(string $path, string $method = 'GET', array $headers = [], bool $secure = false): Response
     {
         $request = new Request($method, $path, 'HTTP/1.1', $secure, $headers);
-        return $this->app()->run($request);
+        return $this->execRequest($request);
     }
 
     /**
@@ -150,7 +150,7 @@ abstract class ApplicationTestCase extends TestCase
     protected function execGET(string $path, array $query = [], array $headers = [], bool $secure = false): Response
     {
         $request = new Request('GET', $path, 'HTTP/1.1', $secure, $headers, [], null, [], $query);
-        return $this->app()->run($request);
+        return $this->execRequest($request);
     }
 
     /**
@@ -163,16 +163,21 @@ abstract class ApplicationTestCase extends TestCase
     protected function execPOST(string $path, array $data = [], array $headers = [], bool $secure = false): Response
     {
         $request = new Request('POST', $path, 'HTTP/1.1', $secure, $headers, [], null, [], null, $data);
-        return $this->app()->run($request);
+        return $this->execRequest($request);
     }
 
     /**
      * @param Request $request
+     * @param bool $clearCache
      * @return Response
      */
-    protected function execRequest(Request $request): Response
+    protected function execRequest(Request $request, bool $clearCache = true): Response
     {
-        return $this->app()->run($request);
+        $response = $this->app()->run($request);
+        if ($clearCache) {
+            $this->app()->getCache()->clear();
+        }
+        return $response;
     }
 
     /**
