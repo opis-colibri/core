@@ -18,6 +18,7 @@
 namespace Opis\Colibri\Routing;
 
 use Opis\HttpRouting\RouteCollection;
+use Opis\Pattern\RegexBuilder;
 
 class HttpRouteCollection extends RouteCollection
 {
@@ -29,7 +30,10 @@ class HttpRouteCollection extends RouteCollection
      */
     public function __construct()
     {
-        parent::__construct(static::class . '::factory');
+        $builder = new RegexBuilder([
+            RegexBuilder::CAPTURE_MODE => RegexBuilder::CAPTURE_LEFT,
+        ]);
+        parent::__construct(static::class . '::factory', $builder);
     }
 
     /**
