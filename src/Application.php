@@ -597,9 +597,14 @@ class Application implements ISettingsContainer
             return ($this->assets['*'])($module, $path);
         }
 
+        //npm @vendor/package
+        if ($module[0] !== '@') {
+            $module = str_replace('/', '.', $module);
+        }
+
         return implode('/', [
             $this->info->assetsPath(),
-            trim(str_replace('/', '.', $module), '/'),
+            trim($module, '/'),
             ltrim($path, '/'),
         ]);
     }
