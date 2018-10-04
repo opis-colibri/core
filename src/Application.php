@@ -212,7 +212,7 @@ class Application implements ISettingsContainer
     /**
      * @param Module $module
      * @param callable|null $filter
-     * @return array
+     * @return Module[]
      */
     public function getAllModuleDependencies(Module $module, ?callable $filter = null): array
     {
@@ -222,7 +222,7 @@ class Application implements ISettingsContainer
     /**
      * @param Module $module
      * @param callable|null $filter
-     * @return array
+     * @return Module[]
      */
     public function getAllModuleDependants(Module $module, ?callable $filter = null): array
     {
