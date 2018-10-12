@@ -17,12 +17,14 @@
 
 namespace Opis\Colibri\Rendering;
 
+use Opis\Stream\IContent;
+
 interface ITemplateStreamHandler
 {
     /**
      * @param string $id
      * @param string $extension
-     * @return null|ITemplateData
+     * @return null|IContent
      */
-    public function handle(string $id, string $extension): ?ITemplateData;
+    public function handle(string $id, string $extension): ?IContent;
 }

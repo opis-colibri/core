@@ -19,16 +19,14 @@ namespace Test\Foo\Middleware;
 
 use Opis\Colibri\Routing\Middleware;
 use Opis\Http\Response;
-use Opis\Http\Stream;
+use Opis\Stream\PHPMemoryStream;
 
 class PrefixMiddleware extends Middleware
 {
     public function __invoke()
     {
         return $this->next()->modify(function(Response $response){
-            $body = new Stream('php://temp', 'rw+');
-            $body->write('prefix-');
-            $body->write($response->getBody());
+            $body = new PHPMemoryStream('prefix-' . $response->getBody());
             $response->setBody($body);
         });
     }

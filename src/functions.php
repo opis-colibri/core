@@ -36,7 +36,8 @@ use Opis\ORM\{
     Core\EntityQuery
 };
 use Opis\Events\Event;
-use Opis\Http\{IStream, Request, Response as HttpResponse, Response};
+use Opis\Stream\IStream;
+use Opis\Http\{Request, Response as HttpResponse, Response};
 use Opis\Http\Responses\{
     HtmlResponse, JsonResponse, RedirectResponse
 };

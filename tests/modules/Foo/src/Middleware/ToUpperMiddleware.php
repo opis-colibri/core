@@ -19,15 +19,14 @@ namespace Test\Foo\Middleware;
 
 use Opis\Colibri\Routing\Middleware;
 use Opis\Http\Response;
-use Opis\Http\Stream;
+use Opis\Stream\PHPMemoryStream;
 
 class ToUpperMiddleware extends Middleware
 {
     public function __invoke()
     {
         return $this->next()->modify(function(Response $response){
-            $body = new Stream('php://temp', 'rw+');
-            $body->write(strtoupper($response->getBody()));
+            $body = new PHPMemoryStream(strtoupper($response->getBody()));
             $response->setBody($body);
         });
     }

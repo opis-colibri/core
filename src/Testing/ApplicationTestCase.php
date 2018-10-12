@@ -53,7 +53,7 @@ abstract class ApplicationTestCase extends TestCase
      * @param ApplicationBuilder $builder
      * @return string[]
      */
-    protected static function applicationDependencies(ApplicationBuilder $builder): array
+    protected static function applicationDependencies(/** @noinspection PhpUnusedParameterInspection */ApplicationBuilder $builder): array
     {
         return [];
     }

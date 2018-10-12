@@ -17,16 +17,27 @@
 
 namespace Opis\Colibri\Rendering;
 
+use Opis\Stream\{Content, IContent};
+
 class CallbackTemplateHandler implements ITemplateStreamHandler
 {
     /**
      * @inheritDoc
      */
-    public function handle(string $id, string $extension): ?ITemplateData
+    public function handle(string $id, string $extension): ?IContent
     {
         if (!is_callable($id)) {
             return null;
         }
-        return new TemplateData((string) $id());
+
+        return new Content(function (?array $options = null) use ($id, $extension) : ?string {
+            $data = $options ? $id($extension, $options) : $id($extension, $options);
+
+            if (is_scalar($data) || (is_object($data) && method_exists($data, '__toString'))) {
+                return (string)$data;
+            }
+
+            return null;
+        });
     }
 }

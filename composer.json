@@ -32,6 +32,7 @@
         "opis/orm": "1.0.*@dev",
         "opis/container": "3.0.x-dev",
         "opis/routing": "5.0.x-dev",
+        "opis/http": "dev-refactor-streams as 3.0",
         "opis/http-routing": "5.0.x-dev",
         "opis/view": "5.0.x-dev",
         "opis/events": "5.0.x-dev",

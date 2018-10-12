@@ -15,28 +15,25 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Traits;
+namespace Opis\Colibri\Rendering;
 
+use Throwable;
 use function Opis\Colibri\Functions\render;
 
 trait RenderableViewTrait
 {
+    /** @var string|null */
     protected $renderedContent;
 
     /**
-     * The __toString method allows a class to decide how it will react when it is converted to a string.
-     *
-     * @return string
-     * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.tostring
+     * @inheritdoc
      */
     public function __toString()
     {
         if ($this->renderedContent === null) {
             try {
                 $this->renderedContent = render($this);
-            } catch (\Exception $e) {
-                $this->renderedContent = $e->getMessage();
-            } catch (\Error $e) {
+            } catch (Throwable $e) {
                 $this->renderedContent = $e->getMessage();
             }
         }

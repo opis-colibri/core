@@ -17,151 +17,53 @@
 
 namespace Opis\Colibri\Rendering;
 
-use Opis\Colibri\Traits\StreamTrait;
-use function Opis\Colibri\Functions\collect;
+use Opis\Stream\IContent;
+use Opis\Stream\Wrapper\AbstractContentStreamWrapper;
+use function Opis\Colibri\Functions\{collect, uuid4};
 
-final class TemplateStream
+final class TemplateStream extends AbstractContentStreamWrapper
 {
-    use StreamTrait {
-        url_stat as private u_stat;
-        stream_stat as private s_stat;
-        stream_open as private s_open;
-    }
-
     const PROTOCOL = 'template';
 
-    const REGEX = '`^' . self::PROTOCOL . '://(?<type>[^/]+)/(?<id>.*)\.(?<extension>.*)$`';
-
-    /** @var ITemplateData|null */
-    private $data = false;
-
-    /** @var null|string */
-    private $type = null;
-
-    /** @var null|string */
-    private $id = null;
-
-    /** @var null|string */
-    private $extension = null;
-
-    /** @var bool */
-    private $initialized = false;
-
-    /** @var ITemplateData[] */
-    private static $cache = [];
+    private const REGEX = '`^' . self::PROTOCOL . '://(?<type>[^/]+)/(?<id>.*)\.(?<ext>.*)\?[a-fA-F0-9]{32}$`';
 
     /**
      * @inheritDoc
      */
-    function stream_open($path, $mode, $options, &$opened_path)
+    protected function content(string $path): ?IContent
     {
-        $this->initPath($path);
-        return $this->s_open($path, $mode, $options, $opened_path);
-    }
+        if (!preg_match(self::REGEX, $path, $m)) {
+            return null;
+        }
 
-    /**
-     * @inheritDoc
-     */
-    public function stream_stat()
-    {
-        return $this->setStatTimestamps($this->s_stat(), $this->viewData());
+        $type = $m['type'];
+        $id = $m['id'];
+        $ext = $m['ext'];
+
+        unset($m);
+
+        /** @var ITemplateStreamHandler $provider */
+        $provider = collect('template-stream-handlers')->get($type);
+
+        if ($provider === null) {
+            return null;
+        }
+
+        return $provider->handle($id, $ext);
     }
 
     /**
      * @inheritDoc
      */
-    public function url_stat($path, $flags)
+    protected function cacheKey(string $path): string
     {
-        $this->initPath($path);
-        return $this->setStatTimestamps($this->u_stat($path, $flags), $this->viewData());
+        return md5(self::formatPath($path));
     }
 
     /**
      * @inheritDoc
      */
-    public function getContent(string $path): string
-    {
-        if (!$this->initialized) {
-            $this->initPath($path);
-        }
-
-        if ($this->type === null || $this->id === null || $this->extension === null) {
-            return '';
-        }
-
-        $data = $this->viewData();
-
-        if ($data === null) {
-            return '';
-        }
-
-        return $data->content() ?? '';
-    }
-
-    /**
-     * @return ITemplateData|null
-     */
-    private function viewData(): ?ITemplateData
-    {
-        if ($this->data === false) {
-            if ($this->type !== null && $this->id !== null && $this->extension !== null) {
-                $key = $this->type . '/' . $this->id . '.' . $this->extension;
-                if (array_key_exists($key, self::$cache)) {
-                    $this->data = self::$cache[$key];
-                } else {
-                    /** @var ITemplateStreamHandler|null $provider */
-                    $provider = collect('template-stream-handlers')->get($this->type);
-                    if ($provider !== null) {
-                        $this->data = self::$cache[$key] = $provider->handle($this->id, $this->extension);
-                    } else {
-                        $this->data = self::$cache[$key] = null;
-                    }
-                }
-            } else {
-                $this->data = null;
-            }
-        }
-
-        return $this->data;
-    }
-
-    /**
-     * @param array $stat
-     * @param ITemplateData|null $data
-     * @return array
-     */
-    private function setStatTimestamps(array $stat, ?ITemplateData $data): array
-    {
-        if ($data) {
-            $stat[8] = $stat['atime'] =
-            $stat[9] = $stat['mtime'] = $data->updatedAt();
-            $stat[10] = $stat['ctime'] = $data->createdAt();
-        }
-        return $stat;
-    }
-
-    /**
-     * @param string $path
-     */
-    private function initPath(string $path)
-    {
-        if ($this->initialized) {
-            return;
-        }
-        if ($this->type === null && $this->id === null) {
-            if (preg_match(self::REGEX, $path, $m)) {
-                $this->type = $m['type'];
-                $this->id = $m['id'];
-                $this->extension = $m['extension'];
-                $this->initialized = true;
-            }
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public static function getProtocol(): string
+    public static function protocol(): string
     {
         return self::PROTOCOL;
     }
@@ -174,7 +76,7 @@ final class TemplateStream
      */
     public static function url(string $type, string $id, string $extension): string
     {
-        return self::PROTOCOL . "://{$type}/{$id}.{$extension}";
+        return self::PROTOCOL . "://{$type}/{$id}.{$extension}?" . uuid4('');
     }
 
     /**
@@ -182,6 +84,15 @@ final class TemplateStream
      */
     public static function clearCache(): void
     {
-        self::$cache = [];
+        self::$cached = [];
+    }
+
+    /**
+     * @param string $path
+     * @return string
+     */
+    private static function formatPath(string $path): string
+    {
+        return strpos($path, '?') === false ? $path : strstr($path, '?', true);
     }
 }

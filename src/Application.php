@@ -1142,7 +1142,7 @@ class Application implements ISettingsContainer
             return;
         }
 
-        while (!$body->eof()) {
+        while (!$body->isEOF()) {
             echo $body->read($chunkSize);
         }
 
