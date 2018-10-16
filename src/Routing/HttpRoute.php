@@ -55,12 +55,13 @@ class HttpRoute extends BaseHttpRoute
             return $this->resolvedAction;
         }
 
-        if (!$this->routeAction instanceof ControllerCallback) {
-            return $this->resolvedAction = $this->routeAction;
+        $callback = parent::getAction();
+
+        if (!$callback instanceof ControllerCallback) {
+            return $this->resolvedAction = $callback;
         }
 
         /** @var ControllerCallback $callback */
-        $callback = $this->routeAction;
 
         $methodName = $callback->getMethod();
         $className = $callback->getClass();
@@ -131,7 +132,7 @@ class HttpRoute extends BaseHttpRoute
      */
     public function bind(string $name, callable $callback): Route
     {
-        if ($this->inheriting && isset($this->bindings[$name])) {
+        if ($this->inheriting && isset($this->getLocalBindings()[$name])) {
             return $this;
         }
         return parent::bind($name, $callback);
@@ -143,7 +144,7 @@ class HttpRoute extends BaseHttpRoute
      */
     public function placeholder(string $name, string $value): Route
     {
-        if ($this->inheriting && array_key_exists($name, $this->placeholders)) {
+        if ($this->inheriting && array_key_exists($name, $this->getLocalPlaceholders())) {
             return $this;
         }
         return parent::placeholder($name, $value);
@@ -155,7 +156,7 @@ class HttpRoute extends BaseHttpRoute
      */
     public function implicit(string $name, $value): Route
     {
-        if ($this->inheriting && array_key_exists($name, $this->defaults)) {
+        if ($this->inheriting && array_key_exists($name, $this->getLocalDefaults())) {
             return $this;
         }
         return parent::implicit($name, $value);
