@@ -19,13 +19,13 @@ namespace Opis\Colibri\Rendering;
 
 use Opis\Stream\IContent;
 use Opis\Stream\Wrapper\AbstractContentStreamWrapper;
-use function Opis\Colibri\Functions\{collect, uuid4};
+use function Opis\Colibri\Functions\collect;
 
 final class TemplateStream extends AbstractContentStreamWrapper
 {
     const PROTOCOL = 'template';
 
-    private const REGEX = '`^' . self::PROTOCOL . '://(?<type>[^/]+)/(?<id>.*)\.(?<ext>.*)(\?[a-fA-F0-9]{32})?$`';
+    private const REGEX = '`^' . self::PROTOCOL . '://(?<type>[^/]+)/(?<id>.*)\.(?<ext>.*)$`';
 
     /**
      * @inheritDoc
@@ -55,14 +55,6 @@ final class TemplateStream extends AbstractContentStreamWrapper
     /**
      * @inheritDoc
      */
-    protected function cacheKey(string $path): string
-    {
-        return md5(self::formatPath($path));
-    }
-
-    /**
-     * @inheritDoc
-     */
     public static function protocol(): string
     {
         return self::PROTOCOL;
@@ -72,16 +64,11 @@ final class TemplateStream extends AbstractContentStreamWrapper
      * @param string $type
      * @param string $id
      * @param string $extension
-     * @param bool $use_id
      * @return string
      */
-    public static function url(string $type, string $id, string $extension, bool $use_id = false): string
+    public static function url(string $type, string $id, string $extension): string
     {
-        $url = self::PROTOCOL . "://{$type}/{$id}.{$extension}";
-        if ($use_id) {
-            $url .= '?' . uuid4('');
-        }
-        return $url;
+        return self::PROTOCOL . "://{$type}/{$id}.{$extension}";
     }
 
     /**
@@ -90,14 +77,5 @@ final class TemplateStream extends AbstractContentStreamWrapper
     public static function clearCache(): void
     {
         self::$cached = [];
-    }
-
-    /**
-     * @param string $path
-     * @return string
-     */
-    private static function formatPath(string $path): string
-    {
-        return strpos($path, '?') === false ? $path : strstr($path, '?', true);
     }
 }
