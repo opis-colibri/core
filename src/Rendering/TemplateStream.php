@@ -25,7 +25,7 @@ final class TemplateStream extends AbstractContentStreamWrapper
 {
     const PROTOCOL = 'template';
 
-    private const REGEX = '`^' . self::PROTOCOL . '://(?<type>[^/]+)/(?<id>.*)\.(?<ext>.*)\?[a-fA-F0-9]{32}$`';
+    private const REGEX = '`^' . self::PROTOCOL . '://(?<type>[^/]+)/(?<id>.*)\.(?<ext>.*)(\?[a-fA-F0-9]{32})?$`';
 
     /**
      * @inheritDoc
@@ -72,11 +72,16 @@ final class TemplateStream extends AbstractContentStreamWrapper
      * @param string $type
      * @param string $id
      * @param string $extension
+     * @param bool $use_id
      * @return string
      */
-    public static function url(string $type, string $id, string $extension): string
+    public static function url(string $type, string $id, string $extension, bool $use_id = false): string
     {
-        return self::PROTOCOL . "://{$type}/{$id}.{$extension}?" . uuid4('');
+        $url = self::PROTOCOL . "://{$type}/{$id}.{$extension}";
+        if ($use_id) {
+            $url .= '?' . uuid4('');
+        }
+        return $url;
     }
 
     /**
