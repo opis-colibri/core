@@ -50,6 +50,7 @@ class CommandLoader implements CommandLoaderInterface
                 'uninstall' => Uninstall::class,
 
                 'assets:build' => Assets\Build::class,
+                'assets:yarn' => Assets\Yarn::class,
                 'spa:build' => Spa\Build::class,
             ] + $classes;
 
