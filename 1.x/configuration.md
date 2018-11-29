@@ -1,7 +1,7 @@
 ---
 layout: project
 version: 1.x
-title: COnfiguration
+title: Configuration
 description: Learn how to configure the Opis Colibri framework
 ---
 # Configuration
