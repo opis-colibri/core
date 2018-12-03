@@ -6,18 +6,16 @@ description: Learn how to collect routes
 ---
 # Routes
 
+* [Collecting routes](#collecting-routes)
 * [Creating routes](#creating-routes)
 * [HTTP verbs](#b)
 * [Regex constraints](#c)
 * [Route variables](#d)
 
-**Name:** `routes`{:.text-secondary}  
-**Class:** `Opis\Colibri\ItemsCollector\RouteCollector`{:.text-secondary}
+## Collecting routes
 
-## Creating routes
-
-Routes are created by simply defining an URI path and an associated callback that will be invoked
-when the route is executed.
+Routes are collected with the help of a collector named `routes`, which is represented 
+by the `Opis\Colibti\ItemCollectors\RouteCollector` class. 
 
 ```php
 namespace Vendor\Module;
@@ -31,27 +29,36 @@ class Collector extends AbstractCollector
 {
     public function routes(RouteCollector $route)
     {
-        $route->get('/', function(){
-            return 'Hello world';
-        });
-        
-        $route->post('/', function(){
-            return 'Hello world';
-        });      
-        
-        $route->put('/', function(){
-            return 'Hello world';
-        }); 
-        
-        $route->patch('/', function(){
-            return 'Hello world';
-        });
-        
-        $route->delete('/', function(){
-            return 'Hello world';
-        });
+        // routes are defined here
     }
 }
+```
+
+## Creating routes
+
+Creating a route is simply a matter of defining an URI path and an associated callback that will be invoked
+when the route is executed.
+
+```php
+$route->get('/', function(){
+    return 'Hello world';
+});
+
+$route->post('/', function(){
+    return 'Hello world';
+});      
+
+$route->put('/', function(){
+    return 'Hello world';
+}); 
+
+$route->patch('/', function(){
+    return 'Hello world';
+});
+
+$route->delete('/', function(){
+    return 'Hello world';
+});
 ```
 
 Another way of creating a route is through direct invocation of the collector object.

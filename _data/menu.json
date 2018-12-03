@@ -30,11 +30,11 @@
             ]
         },
         {
-            "title": "Collectors",
+            "title": "Routing",
             "pages": [
                 {
                     "title": "Routes",
-                    "url": "/1.x/collectors/routes.html"
+                    "url": "/1.x/routing/routes.html"
                 }
             ]
         }
