@@ -1,21 +1,20 @@
 ---
 layout: project
 version: 1.x
-title: Routes
+title: The basics | Routing
 description: Learn how to collect routes
 ---
-# Routes
+# The basics
 
 * [Collecting routes](#collecting-routes)
 * [Creating routes](#creating-routes)
-* [HTTP verbs](#b)
-* [Regex constraints](#c)
-* [Route variables](#d)
+* [Route parameters](#route-parameters)
+
 
 ## Collecting routes
 
 Routes are collected with the help of a collector named `routes`, which is represented 
-by the `Opis\Colibti\ItemCollectors\RouteCollector` class. 
+by the `Opis\Colibri\ItemCollectors\RouteCollector` class. 
 
 ```php
 namespace Vendor\Module;
@@ -108,3 +107,47 @@ $route->all('/', function(){
     return 'Hello world';
 });
 ```
+
+## Route parameters
+
+You can capture segments of your route's path by defining route parameters. 
+All route parameters can be referenced on the route's callback.
+
+```php
+$route('/article/{id}', function($id){
+    return $id;
+});
+
+$route('/article/{id}/edit', function($id){
+    return $id;
+});
+```
+
+A path can contain multiple route parameters and they can be referenced in any order you want.
+
+```php
+$route('/blog/{id}/preview/{article}', function($article, $id){
+    return $id . ':' . $article;
+});
+
+// The order on which route parameters are referenced is irrelevant
+
+$route('/blog/{id}/preview/{article}', function($id, $article){
+    return $id . ':' . $article;
+});
+```
+
+#### Optional parameters
+
+A route parameter can be marked as being optional by putting the `?` sign after the parameter's name.
+
+```php
+// Add a default value for the optional route parameter
+$route('/article/{id?}', function($id = 1){
+    return $id;
+});
+```
+
+In the above example, accessing `/article/1` has the same effect as accessing`/article`.
+
+#### Regex constraints
