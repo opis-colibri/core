@@ -9,7 +9,7 @@
                     "description": "Learn how to install the framework"
                 },
                 {
-                    "title": "Quick start",
+                    "title": "Quick Start",
                     "url": "/1.x/quick-start.html",
                     "description": "Getting started with the Opis Colibri framework"
                 },
@@ -33,8 +33,12 @@
             "title": "Routing",
             "pages": [
                 {
-                    "title": "The basics",
+                    "title": "The Basics",
                     "url": "/1.x/routing/"
+                },
+                {
+                    "title": "Globals",
+                    "url": "/1.x/routing/globals.html"
                 }
             ]
         }

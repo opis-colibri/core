@@ -1,15 +1,15 @@
 ---
 layout: project
 version: 1.x
-title: The basics | Routing
+title: The Basics | Routing
 description: Learn how to collect routes
 ---
-# The basics
+# The Basics
 
 * [Collecting routes](#collecting-routes)
 * [Creating routes](#creating-routes)
 * [Route parameters](#route-parameters)
-
+* [Implicit values](#implicit-values)
 
 ## Collecting routes
 
@@ -151,3 +151,55 @@ $route('/article/{id?}', function($id = 1){
 In the above example, accessing `/article/1` has the same effect as accessing`/article`.
 
 #### Regex constraints
+
+Adding a regex constraint that targets a specific route parameter is done by using the `where` method. The method
+takes as arguments the parameter's name and a regular expression.
+
+```php
+$route('/article/{id}', function($id){
+    return $id;
+})
+->where('id', '[0-9]+');
+```
+
+Constraining a parameter to a list of values is done by using the `whereIn` method.
+
+```php
+$route('/article/{id}/{action}', function($id, $action){
+    return $action . ':' . $id;
+})
+->where('id', '[0-9]+')
+->whereIn('action', ['edit', 'delete', 'foo.bar']);
+
+// equivalent of..
+
+$route('/article/{id}/{action}', function($id, $action){
+    return $action . ':' . $id;
+})
+->where('id', '[0-9]+')
+->where('action', 'edit|delete|foo\.bar');
+```
+
+## Implicit values
+
+Setting an implicit value for an optional parameter is done by using the `implicit` method.
+
+```php
+
+$route('/user/{name?}', function($name){
+    return $name;
+})
+->implicit('name', 'John Doe');
+```
+
+You can also use the `implicit` method to declare values that are not defined as route parameters. These values
+can also be referenced by the route's callback.
+
+```php
+$route('/test', function($foo, $bar, $baz){
+    return $foo . $bar . $baz;
+})
+->implicit('foo', 'Foo value')
+->implicit('bar', 'Bar value')
+->implicit('baz', 'Baz value');
+```
