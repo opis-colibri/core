@@ -9,6 +9,7 @@ description: Learn how to collect routes
 * [Collecting routes](#collecting-routes)
 * [Creating routes](#creating-routes)
 * [Route parameters](#route-parameters)
+* [Route constraints](#route-constraints)
 * [Implicit values](#implicit-values)
 
 ## Collecting routes
@@ -150,6 +151,8 @@ $route('/article/{id?}', function($id = 1){
 
 In the above example, accessing `/article/1` has the same effect as accessing`/article`.
 
+## Route constraints
+
 #### Regex constraints
 
 Adding a regex constraint that targets a specific route parameter is done by using the `where` method. The method
@@ -180,6 +183,51 @@ $route('/article/{id}/{action}', function($id, $action){
 ->where('action', 'edit|delete|foo\.bar');
 ```
 
+##### Inline regex constraints
+
+#### Domain constraints
+
+Routes can be constrained to be available only for a specific domain or sub-domain, by using the `domain` method.
+
+```php
+$route('/', function(){
+    return 'Hello';
+})
+->domain('example.com');
+```
+
+This method will also allow you to capture segments of the domain as parameters. 
+These parameters can be then referenced on the route's callback.
+
+```php
+$route('/', function($subdomain){
+    return $subdomain;
+})
+->domain('{subdomain}.example.com');
+```
+
+Segments can be marked as being optional and regex constraints can be applied to them.
+
+```php
+$route('/', function($subdomain = 'www'){
+    return $subdomain;
+})
+->domain('{subdomain?}.example.com')
+->whereIn('subdomain', ['www', 'api', 'docs']);
+```
+
+#### Secure connections
+
+Routes can be constrained to be available only when they are accessed using a secured HTTPS connection, with
+the help of the `secure` method.
+
+```php
+$route('/', function(){
+    return 'Hello';
+})
+->secure();
+```
+
 ## Implicit values
 
 Setting an implicit value for an optional parameter is done by using the `implicit` method.
@@ -203,3 +251,8 @@ $route('/test', function($foo, $bar, $baz){
 ->implicit('bar', 'Bar value')
 ->implicit('baz', 'Baz value');
 ```
+
+#### Built-in implicit values
+
+## Bindings
+
