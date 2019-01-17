@@ -15,27 +15,27 @@ description: Learn about the routing process and its phases
 
 In this phase, the routes are sorted based on their priority, and after the 
 sorting process completes, each route is checked if it's a match for the 
-request's path URI. If the route is a match, then it is added into the *queue of
+request's path URI. If the route is a match, then it is added to the *list of
 matched routes*.
 
-After checking each route, if the queue of matched routes is empty, then
+After checking each route, if the *list of matched routes* is empty, then
 a `404` error is returned with the help of the `Opis\Http\Response` class.
 Otherwise, the algorithm advances to the next phase.
 
 ## Second phase
 
-At this phase, each route from the *queue of matched routes* is taken in turn
+At this phase, each route from the *list of matched routes* is taken in turn
 and becomes the *current route*. The *current route* is passed through a series of internal 
 filters and also through all user-defined filters that were set for this particular route, if any. 
 The first route that passes all filters becomes the *candidate route*.
 
 If no *candidate route* was found, then a `404` error is returned. Otherwise, when a *candidate route* is found, 
-the remaining routes from the *queue of matched routes* are discarded and the algorithm advances to the next phase.
+the remaining routes from the *list of matched routes* are discarded and the algorithm advances to the next phase.
 
 ## Third phase
 
-The algorithm checks if there are callbacks that were set as *guard filters* to the *candidate route* and 
-execute them in turn. If one of the *guard filters* is not passed, then a `404` error is returned. Otherwise
+The algorithm checks if there are any callbacks that were set as *guard filters* to the *candidate route* and 
+execute them in order. If one of the *guard filters* is not passed, then a `404` error is returned. Otherwise
 the algorithm continues with the fourth phase and the *candidate route* becomes the *matched route*.
 
 ## Fourth phase
