@@ -183,7 +183,58 @@ $route('/article/{id}/{action}', function($id, $action){
 ->where('action', 'edit|delete|foo\.bar');
 ```
 
+A regex constraint can be added not only to whole route segments, but also to a subsection of them.
+The value of these subsections can be also referenced by the route's callback.
+
+```php
+$route('/images/logo.{extension}', function($extension) {
+    return $extension
+})
+->whereIn('extension', ['png', 'jpg', 'svg']);
+```
+
 ##### Inline regex constraints
+
+There are two types of inline regex constraints: anonymous constraints and named constraints.
+Named constraints are just a convenient way of defining constraints for route parameters, 
+without using the `where` method. 
+
+```php
+$route('/article/{id=[0-9]+}', function($id){
+    return $id;
+});
+
+$route('/user/{name?=[a-z]+}', function($name = 'admin'){
+    return $name;
+});
+
+// same as
+
+$route('/article/{id}', function($id){
+    return $id;
+})
+->where('id', '[0-9]+');
+
+$route('/user/{name?}', function($name = 'admin'){
+    return $name;
+})
+->where('name', '[a-z]+');
+```
+
+As their name suggest, anonymous constraints are just a way of adding regex constraints to a route segment or
+to a subsection.
+
+```php
+$route('/user/{=[a-z]+}', function(){
+    // Matches `/user/foo`, `/user/bar`, etc
+});
+
+//optional segment
+
+$route('/user/{?=[a-z]}', function(){
+    // Matches `/user`, `/user/foo`, `/user/bar`, etc
+});
+``` 
 
 #### Domain constraints
 
