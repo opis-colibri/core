@@ -305,5 +305,10 @@ $route('/test', function($foo, $bar, $baz){
 
 #### Built-in implicit values
 
+- **$app**: An instance of `Opis\Colibri\Application` class
+- **$request**: An instance of `Opis\Http\Request` class
+- **$lang**: A string representing the language in use. Default value is `en`
+- **$route**: The current route instance 
+
 ## Bindings
 
