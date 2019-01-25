@@ -291,8 +291,8 @@ $route('/user/{name?}', function($name){
 ->implicit('name', 'John Doe');
 ```
 
-You can also use the `implicit` method to declare values that are not defined as route parameters. These values
-can also be referenced by the route's callback.
+You can also use the `implicit` method to declare values that are not defined as route parameters. 
+These values ​​can then be used by various callbacks.
 
 ```php
 $route('/test', function($foo, $bar, $baz){
@@ -305,10 +305,81 @@ $route('/test', function($foo, $bar, $baz){
 
 #### Built-in implicit values
 
-- **$app**: An instance of `Opis\Colibri\Application` class
-- **$request**: An instance of `Opis\Http\Request` class
-- **$lang**: A string representing the language in use. Default value is `en`
-- **$route**: The current route instance 
+Beside the user-defined implicit values, there are a series of globally available values, 
+defined by the framework itself.  
+
+- **$request**: An instance of the `Opis\Http\Request` class, representing the current request.
+- **$app**: An instance of the `Opis\Colibri\Application` class.
+- **$lang**: A string representing the language in use for the current request. Its default value is `en`.
+- **$route**: An object representing the current route, which is available starting with 
+the second phase of the routing process.
 
 ## Bindings
+
+Adding a binding to a route is done by using the `bind` method. 
+Each binding has a name and a callback that will be invoked in order to resolve the binding. 
+The value obtained by resolving the binding will be considered to be the binding's value.
+Just like the implicit values described above, a binding can be referenced by callbacks.
+The major difference between implicit values and bindings is given by the fact that the bindings 
+are only available starting with the [third phase](./#third-phase) of the routing process.
+
+```php
+$route('/', function(string $foo){
+    return $foo;
+})
+->bind('foo', function(){
+    return 'Hello, World!';
+});
+```
+
+A binding is resolved only when is referenced by a callback that it's about to be invoked. 
+If a binding is not referenced in any callback at all, or if the callback is not going to be invoked, 
+then the binding will not be resolved.
+
+```php
+$route('/', function($foo){
+    return $foo;
+})
+
+// this binding will be resolved 
+// because $foo is referenced in the route's callback
+->bind('foo', function(){
+    return 'foo';
+})
+
+// this binding will not be resolved
+// since there is no reference to $bar in any callbacks at all
+->bind('bar', function($baz){
+    return 'bar';
+})
+
+// even though there is a reference to $baz
+// this binding will not be resolved because the callback
+// referencing $baz will never be invoked
+->bind('baz', function(){
+    return 'baz';
+});
+```
+
+A binding can be used to define new route variables, or tho overwrite the value of existing 
+route variables like route parameters, domain parameters, implicit values, and even other bindings.
+
+```php
+$route('/user/{name}', function($foo){
+    return $foo . bar;
+})
+// reference $name route parameter
+// and use it to define $foo route variable 
+->bind('foo', function($name){
+    return 'foo-' . $name;
+});
+
+// change the value of $name
+$route('/user/{name}', function($name){
+    return $name;
+})
+->bind('name', function($name){
+    return strtoupper($name);
+});
+```
 
