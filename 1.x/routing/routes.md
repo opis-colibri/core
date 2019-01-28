@@ -8,9 +8,20 @@ description: Learn about routes and how to use them
 
 * [Collecting routes](#collecting-routes)
 * [Creating routes](#creating-routes)
+    * [Respond to multiple HTTP verbs](#respond-to-multiple-http-verbs)
 * [Route parameters](#route-parameters)
+    * [Optional parameters](#optional-parameters)
 * [Route constraints](#route-constraints)
+    * [Regex constraints](#regex-constraints)
+    * [Domain constraints](#domain-constraints)
+    * [Secure connections](#secure-connections)
 * [Implicit values](#implicit-values)
+    * [Built-in implicit values](#built-in-implicit-values)
+* [Bindings](#bindings)
+* [Filters](#filters)
+    * [Callbacks](#callbacks)
+    * [Regular filters](#regular-filters)
+    * [Guard filters](#guard-filters)
 
 ## Collecting routes
 
@@ -381,5 +392,139 @@ $route('/user/{name}', function($name){
 ->bind('name', function($name){
     return strtoupper($name);
 });
+```
+
+## Filters
+
+There are some situations when just adding various constraints to your routes isn't enough to properly filter them.
+In order to help you overcome this kind of situations, the framework allows you to define custom filters in the
+form of callbacks.
+
+#### Callbacks
+
+Defining a callback is done with the help of the `callback` method.
+This method takes as arguments the name of the callback and a callable value that will be invoked when
+the filter is evaluated. The callable must return a boolean value.
+
+```php
+$route('/', function(){
+    // do something
+})
+->callback('foo', function(){
+   return true; 
+});
+```
+
+You can define as many callbacks as you want, but they won't be invoked unless they are explicitly 
+used in the filtering process.
+
+```php
+// None of the callbacks defined here will be invoked
+$route('/', function(){
+    // do something
+})
+->callback('foo', function(){
+   return true; 
+})
+->callback('bar', function(){
+   return true; 
+})
+->callback('baz', function(){
+   return true; 
+});
+```
+
+Callbacks can reference all kind route variables, depending on the type of the filter that is using them.
+
+```php
+$route('/user/{name}', function($name){
+    return $name;
+})
+->callback('is_admin', function($name){
+    return $name === 'admin';
+});
+```
+
+#### Regular filters
+
+These filters are applied in the [second phase](./#second-phase) of the routing process and are defined with the help 
+of the `filter` method. The method takes as arguments a series of one or more callback names.
+
+```php
+$route('/user/{name}', function($name){
+    return $name;
+})
+->callback('is_admin', function($name){
+    return $name === 'admin';
+})
+->filter('is_admin');
+
+$route('/', function(){
+    // do something
+})
+->callback('foo', function(){
+   return true; 
+})
+->callback('bar', function(){
+   return true; 
+})
+->callback('baz', function(){
+   return true; 
+})
+->filter('foo', 'bar', 'baz');
+```
+
+#### Guard filters
+
+This kind of filters are applied in the [third phase](./#third-phase) of the routing process, and in contrast
+to regular filters they can reference bindings. Applying guard filters is done with the help of the `guard` method.
+The method takes as arguments a series of one or more callback names.
+
+```php
+$route('/', function(){
+    // do something
+})
+->callback('foo', function(){
+   return true; 
+})
+->callback('bar', function(){
+   return true; 
+})
+->callback('baz', function(){
+   return true; 
+})
+->guard('foo', 'bar', 'baz');
+```
+
+To better exemplify their use case, let's take the following example and explain it.
+
+```php
+$route('/user/{id}', function(User $user){
+    return $user->name();
+})
+->where('id', '[1-9][0-9]*')
+->bind('user', function($id){
+    return entity(User::class)->find($id);
+});
+```
+
+The route defined above will match any `GET` request of which the URI path has the following form: 
+`/user/1`, `/user/29`, `/user/113`, etc. The `user` binding is defined with the help of the `id` route parameter and is
+finally used in the route's callback. The binding is resolved to an instance of the `User` entity by trying to load
+that entity by its ID with the help of the `find` method. The problem occurs when no entity that has the specified ID
+is found and the binding is resolved to `null`. To overcome this situation, a guard filter is  exactly what we need.
+
+```php
+$route('/user/{id}', function(User $user){
+    return $user->name();
+})
+->where('id', '[1-9][0-9]*')
+->bind('user', function($id){
+    return entity(User::class)->find($id);
+})
+->callback('user_exists', function($user){
+    return $user !== null;
+})
+->guard('user_exists');
 ```
 
