@@ -17,16 +17,18 @@
 
 namespace Opis\Colibri\Commands\Spa;
 
-use Composer\Factory;
-use Composer\IO\ConsoleIO;
+use Opis\Colibri\Application;
 use Opis\Colibri\Core\{
-    Handlers\SpaHandler, PackageInstaller
+    SPA\DataHandler
 };
 use function Opis\Colibri\Functions\{
-    app, info, module
+    app, info
 };
-use Symfony\Component\Console\{
-    Command\Command, Helper\HelperSet, Input\InputArgument, Input\InputInterface, Output\OutputInterface
+use Symfony\Component\Console\{Command\Command,
+    Input\InputArgument,
+    Input\InputInterface,
+    Input\InputOption,
+    Output\OutputInterface
 };
 
 class Build extends Command
@@ -35,52 +37,37 @@ class Build extends Command
     {
         $this
             ->setName('spa:build')
-            ->setDescription('Build SPA')
-            ->addArgument('module', InputArgument::REQUIRED, "Module's name");
+            ->setDescription('Rebuild SPAs')
+            ->addArgument('apps', InputArgument::IS_ARRAY|InputArgument::OPTIONAL, " A list of SPAs")
+            ->addOption('clean', null, InputOption::VALUE_NONE, 'Clean build');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $module_name = $input->getArgument('module');
-        $module = module($module_name);
+        $apps = $input->getArgument('apps');
+        $clean = $input->hasOption('clean');
 
-        if (!$module->exists()) {
-            $output->writeln("<error>Unknown module  $module_name</error>");
-            return;
+        $data = new DataHandler(info());
+
+        foreach ($apps as $app) {
+            $data->rebuild($app, $clean);
         }
 
-        $console = new ConsoleIO($input, $output, new HelperSet());
-        $appInfo = info();
-        $rootDir = $appInfo->rootDir();
-        $composerFile = $appInfo->composerFile();
-        $composer = (new Factory())->createComposer($console, $composerFile, false, $rootDir);
-        $installer = new PackageInstaller($appInfo, $console, $composer);
+        $data->save();
 
-        $handler = null;
+        $cmd = new class extends Application {
 
-        foreach ($installer->getHandlers() as $handler) {
-            if ($handler instanceof SpaHandler) {
-                break;
+            public function __construct()
+            {
+                // DO NOT INVOKE PARENT
             }
-        }
 
-        if (!isset($handler)) {
-            return;
-        }
-
-        $handler->moduleStatusChanged($module->package(), 'enabled', true);
-
-        $installed = $enabled = [];
-
-        foreach (app()->getModules() as $module) {
-            if ($module->isInstalled()) {
-                $installed[] = $module->name();
-                if ($module->isEnabled()) {
-                    $enabled[] = $module->name();
-                }
+            public function appDumpAutoload(Application $app)
+            {
+                return $app->dumpAutoload();
             }
-        }
+        };
 
-        $handler->rebuild($installed, $enabled);
+        $cmd->appDumpAutoload(app());
     }
 }
