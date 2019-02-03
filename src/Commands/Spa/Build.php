@@ -45,7 +45,7 @@ class Build extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $apps = $input->getArgument('apps');
-        $clean = $input->hasOption('clean');
+        $clean = $input->getOption('clean');
 
         $data = new DataHandler(info());
 
