@@ -60,7 +60,7 @@ class Install extends Command
 
         $modules = $input->getArgument('module');
         $enable = $input->getOption('enable');
-        $recursive = $input->hasOption('recursive');
+        $recursive = $input->getOption('recursive');
 
         foreach ($modules as $moduleName) {
 
