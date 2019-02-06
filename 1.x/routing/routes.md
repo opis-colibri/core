@@ -72,7 +72,7 @@ $route->delete('/', function(){
 });
 ```
 
-Another way of creating a route is through direct invocation of the collector object.
+Another way of creating a route is through the direct invocation of the collector object.
 
 ```php
 // Implicit GET
@@ -207,7 +207,7 @@ $route('/images/logo.{extension}', function($extension) {
 ##### Inline regex constraints
 
 There are two types of inline regex constraints: anonymous constraints and named constraints.
-Named constraints are just a convenient way of defining constraints for route parameters, 
+Named constraints are just a convenient way of defining constraints for route parameters 
 without using the `where` method. 
 
 ```php
@@ -249,7 +249,7 @@ $route('/user/{?=[a-z]}', function(){
 
 #### Domain constraints
 
-Routes can be constrained to be available only for a specific domain or sub-domain, by using the `domain` method.
+By using the `domain` method, routes can be constrained to be available only for a specific domain or sub-domain.
 
 ```php
 $route('/', function(){

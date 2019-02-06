@@ -13,6 +13,9 @@
         "title": "Opis Colibri",
         "url": "https://opiscolibri.com"
     },
+    "container": {
+        "nav": "container"
+    },
     "favicon": "/assets/img/favicon.png",
     "classes": {
         "body": "d-flex flex-column",

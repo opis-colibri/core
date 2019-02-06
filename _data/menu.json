@@ -1,7 +1,7 @@
 {
     "1.x": [
         {
-            "title": "Opis Colibri",
+            "title": "Let's roll",
             "pages": [
                 {
                     "title": "Installation",
@@ -20,7 +20,7 @@
             ]
         },
         {
-            "title": "Let's roll",
+            "title": "The basics",
             "pages": [
                 {
                     "title": "Modules",
@@ -39,6 +39,14 @@
                 {
                     "title": "Routes",
                     "url": "/1.x/routing/routes.html"
+                },
+                {
+                    "title": "Middleware",
+                    "url": "/1.x/routing/middleware.html"
+                },
+                {
+                    "title": "Controllers",
+                    "url": "/1.x/routing/controllers.html"
                 },
                 {
                     "title": "Globals",
