@@ -22,6 +22,7 @@ description: Learn about routes and how to use them
     * [Callbacks](#callbacks)
     * [Regular filters](#regular-filters)
     * [Guard filters](#guard-filters)
+{:.page-menu}
 
 ## Collecting routes
 
