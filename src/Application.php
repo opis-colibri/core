@@ -46,7 +46,7 @@ use Opis\Session\{ISession, Session};
 use Opis\Validation\Placeholder;
 use Opis\View\ViewRenderer;
 use Opis\Intl\Translator\IDriver as TranslatorDriver;
-use Opis\Colibri\Core\{Module, AppInfo, IBootstrap, ISettingsContainer, ModuleManager, ModuleNotifier};
+use Opis\Colibri\Core\{Module, AppInfo, IApplicationInitializer, IApplicationContainer, ModuleManager, ModuleNotifier};
 use Opis\Colibri\Rendering\{
     CallbackTemplateHandler,
     TemplateStream,
@@ -60,7 +60,7 @@ use Opis\Colibri\{
     Collector\Manager as CollectorManager
 };
 
-class Application implements ISettingsContainer
+class Application implements IApplicationContainer
 {
     /** @var AppInfo */
     protected $info;
@@ -296,7 +296,7 @@ class Application implements ISettingsContainer
     /**
      * @inheritDoc
      */
-    public function setDefaultLanguage(string $language): ISettingsContainer
+    public function setDefaultLanguage(string $language): IApplicationContainer
     {
         $this->defaultLanguage = $language;
         if ($this->translatorInstance !== null) {
@@ -611,9 +611,9 @@ class Application implements ISettingsContainer
 
     /**
      * @param IDataStore $driver
-     * @return ISettingsContainer
+     * @return IApplicationContainer
      */
-    public function setConfigDriver(IDataStore $driver): ISettingsContainer
+    public function setConfigDriver(IDataStore $driver): IApplicationContainer
     {
         $this->implicit['config'] = $driver;
 
@@ -622,9 +622,9 @@ class Application implements ISettingsContainer
 
     /**
      * @param CacheInterface $driver
-     * @return ISettingsContainer
+     * @return IApplicationContainer
      */
-    public function setCacheDriver(CacheInterface $driver): ISettingsContainer
+    public function setCacheDriver(CacheInterface $driver): IApplicationContainer
     {
         $this->implicit['cache'] = $driver;
 
@@ -633,9 +633,9 @@ class Application implements ISettingsContainer
 
     /**
      * @param TranslatorDriver $driver
-     * @return ISettingsContainer
+     * @return IApplicationContainer
      */
-    public function setTranslatorDriver(TranslatorDriver $driver): ISettingsContainer
+    public function setTranslatorDriver(TranslatorDriver $driver): IApplicationContainer
     {
         $this->translatorDriver = $driver;
         return $this;
@@ -643,9 +643,9 @@ class Application implements ISettingsContainer
 
     /**
      * @param Connection $connection
-     * @return ISettingsContainer
+     * @return IApplicationContainer
      */
-    public function setDatabaseConnection(Connection $connection): ISettingsContainer
+    public function setDatabaseConnection(Connection $connection): IApplicationContainer
     {
         $this->implicit['connection'] = $connection;
 
@@ -654,9 +654,9 @@ class Application implements ISettingsContainer
 
     /**
      * @param SessionHandlerInterface $session
-     * @return ISettingsContainer
+     * @return IApplicationContainer
      */
-    public function setSessionHandler(SessionHandlerInterface $session): ISettingsContainer
+    public function setSessionHandler(SessionHandlerInterface $session): IApplicationContainer
     {
         $this->implicit['session'] = $session;
 
@@ -665,9 +665,9 @@ class Application implements ISettingsContainer
 
     /**
      * @param LoggerInterface $logger
-     * @return ISettingsContainer
+     * @return IApplicationContainer
      */
-    public function setDefaultLogger(LoggerInterface $logger): ISettingsContainer
+    public function setDefaultLogger(LoggerInterface $logger): IApplicationContainer
     {
         $this->implicit['logger'] = $logger;
 
@@ -700,7 +700,7 @@ class Application implements ISettingsContainer
     public function bootstrap(): self
     {
         if (!$this->info->installMode()) {
-            $this->getBootstrapInstance()->bootstrap($this);
+            $this->getApplicationInitializer()->init($this);
             $this->emit('system.init');
 
             return $this;
@@ -733,7 +733,7 @@ class Application implements ISettingsContainer
             $enabled[$module->name()] = Module::ENABLED;
         }
 
-        $this->getBootstrapInstance()->bootstrap($this);
+        $this->getApplicationInitializer()->init($this);
         $manager->setStatusList($enabled);
 
         $this->emit('system.init');
@@ -1022,18 +1022,18 @@ class Application implements ISettingsContainer
     }
 
     /**
-     * @return IBootstrap
+     * @return IApplicationInitializer
      */
-    protected function getBootstrapInstance(): IBootstrap
+    protected function getApplicationInitializer(): IApplicationInitializer
     {
         if (!$this->info->installMode()) {
             /** @noinspection PhpIncludeInspection */
-            return require $this->info->bootstrapFile();
+            return require $this->info->initFile();
         }
 
-        return new class implements IBootstrap
+        return new class implements IApplicationInitializer
         {
-            public function bootstrap(ISettingsContainer $app)
+            public function init(IApplicationContainer $app)
             {
                 $app->setCacheDriver(new MemoryDriver())
                     ->setConfigDriver(new MemoryConfig())

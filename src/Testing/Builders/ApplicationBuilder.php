@@ -32,7 +32,7 @@ class ApplicationBuilder
     /** @var null|string */
     protected $vendorDir;
 
-    /** @var BootstrapBuilder */
+    /** @var AppInitBuilder */
     protected $builder = null;
 
     /** @var array */
@@ -57,14 +57,14 @@ class ApplicationBuilder
      * AppBuilder constructor.
      * @param string $vendorDir
      * @param null|string $rootDir
-     * @param null|BootstrapBuilder $boot
+     * @param null|AppInitBuilder $boot
      */
-    public function __construct(string $vendorDir, ?string $rootDir = null, ?BootstrapBuilder $boot = null)
+    public function __construct(string $vendorDir, ?string $rootDir = null, ?AppInitBuilder $boot = null)
     {
         $this->baseRootDir = sys_get_temp_dir();
         $this->rootDir = $rootDir;
         $this->vendorDir = $vendorDir;
-        $this->builder = $boot ?? new BootstrapBuilder();
+        $this->builder = $boot ?? new AppInitBuilder();
     }
 
     /**
@@ -138,18 +138,18 @@ class ApplicationBuilder
     }
 
     /**
-     * @return BootstrapBuilder
+     * @return AppInitBuilder
      */
-    public function getBootstrapBuilder(): BootstrapBuilder
+    public function getBootstrapBuilder(): AppInitBuilder
     {
         return $this->builder;
     }
 
     /**
-     * @param BootstrapBuilder|null $builder
+     * @param AppInitBuilder|null $builder
      * @return ApplicationBuilder
      */
-    public function setBootstrapBuilder(BootstrapBuilder $builder): self
+    public function setBootstrapBuilder(AppInitBuilder $builder): self
     {
         $this->builder = $builder;
         return $this;

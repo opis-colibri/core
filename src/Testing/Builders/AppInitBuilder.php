@@ -18,10 +18,10 @@
 namespace Opis\Colibri\Testing\Builders;
 
 use SessionHandler as DefaultSession;
-use Opis\Colibri\Testing\Bootstrap;
+use Opis\Colibri\Testing\ApplicationInitializer;
 use Opis\Intl\Locale;
 use SessionHandlerInterface;
-use Opis\Colibri\Core\IBootstrap;
+use Opis\Colibri\Core\IApplicationInitializer;
 use Opis\Database\Connection;
 use Opis\Intl\Translator\IDriver;
 use Opis\DataStore\{IDataStore, Drivers\Memory as DefaultConfig};
@@ -29,7 +29,7 @@ use Psr\Log\{LoggerInterface, NullLogger as DefaultLogger};
 use Opis\Cache\{CacheInterface, Drivers\Memory as DefaultCache};
 use Opis\Intl\Translator\{Drivers\Memory as DefaultTranslator, IDriver as TranslatorDriver};
 
-class BootstrapBuilder
+class AppInitBuilder
 {
     /** @var null|IDataStore */
     protected $config = null;
@@ -56,11 +56,11 @@ class BootstrapBuilder
     protected $logger = null;
 
     /**
-     * @return IBootstrap
+     * @return IApplicationInitializer
      */
-    public function build(): IBootstrap
+    public function build(): IApplicationInitializer
     {
-        return new Bootstrap($this);
+        return new ApplicationInitializer($this);
     }
 
     /**
@@ -76,7 +76,7 @@ class BootstrapBuilder
 
     /**
      * @param null|string $timezone
-     * @return BootstrapBuilder
+     * @return AppInitBuilder
      */
     public function setTimezone(?string $timezone): self
     {
@@ -97,7 +97,7 @@ class BootstrapBuilder
 
     /**
      * @param string|null $language
-     * @return BootstrapBuilder
+     * @return AppInitBuilder
      */
     public function setLanguage(?string $language): self
     {
@@ -118,7 +118,7 @@ class BootstrapBuilder
 
     /**
      * @param IDataStore|null $driver
-     * @return BootstrapBuilder
+     * @return AppInitBuilder
      */
     public function setConfigDriver(?IDataStore $driver): self
     {
@@ -139,7 +139,7 @@ class BootstrapBuilder
 
     /**
      * @param CacheInterface|null $cache
-     * @return BootstrapBuilder
+     * @return AppInitBuilder
      */
     public function setCacheDriver(?CacheInterface $cache): self
     {
@@ -160,7 +160,7 @@ class BootstrapBuilder
 
     /**
      * @param SessionHandlerInterface|null $session
-     * @return BootstrapBuilder
+     * @return AppInitBuilder
      */
     public function setSessionHandler(?SessionHandlerInterface $session = null): self
     {
@@ -181,7 +181,7 @@ class BootstrapBuilder
 
     /**
      * @param Connection|null $database
-     * @return BootstrapBuilder
+     * @return AppInitBuilder
      */
     public function setDatabaseConnection(?Connection $database): self
     {
@@ -202,7 +202,7 @@ class BootstrapBuilder
 
     /**
      * @param LoggerInterface|null $logger
-     * @return BootstrapBuilder
+     * @return AppInitBuilder
      */
     public function setLogger(?LoggerInterface $logger = null): self
     {
@@ -223,7 +223,7 @@ class BootstrapBuilder
 
     /**
      * @param IDriver|null $translator
-     * @return BootstrapBuilder
+     * @return AppInitBuilder
      */
     public function setTranslator(?IDriver $translator): self
     {

@@ -20,7 +20,7 @@ namespace Opis\Colibri\Testing;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\ArrayInput;
 use Opis\Http\{Request, Response};
-use Opis\Colibri\Testing\Builders\{ApplicationBuilder, BootstrapBuilder};
+use Opis\Colibri\Testing\Builders\{ApplicationBuilder, AppInitBuilder};
 
 abstract class ApplicationTestCase extends TestCase
 {
@@ -59,9 +59,9 @@ abstract class ApplicationTestCase extends TestCase
     }
 
     /**
-     * @return null|BootstrapBuilder
+     * @return null|AppInitBuilder
      */
-    protected static function bootstrapBuilder(): ?BootstrapBuilder
+    protected static function bootstrapBuilder(): ?AppInitBuilder
     {
         return null;
     }
@@ -69,10 +69,10 @@ abstract class ApplicationTestCase extends TestCase
     /**
      * @param string $vendorDir
      * @param null|string $rootDir
-     * @param null|BootstrapBuilder $builder
+     * @param null|AppInitBuilder $builder
      * @return ApplicationBuilder
      */
-    protected static function applicationBuilder(string $vendorDir, ?string $rootDir, ?BootstrapBuilder $builder): ApplicationBuilder
+    protected static function applicationBuilder(string $vendorDir, ?string $rootDir, ?AppInitBuilder $builder): ApplicationBuilder
     {
         return new ApplicationBuilder($vendorDir, $rootDir, $builder);
     }

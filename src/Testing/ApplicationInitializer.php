@@ -18,27 +18,27 @@
 namespace Opis\Colibri\Testing;
 
 use Opis\Colibri\Core\{
-    IBootstrap, ISettingsContainer
+    IApplicationInitializer, IApplicationContainer
 };
-use Opis\Colibri\Testing\Builders\BootstrapBuilder;
+use Opis\Colibri\Testing\Builders\AppInitBuilder;
 
-class Bootstrap implements IBootstrap
+class ApplicationInitializer implements IApplicationInitializer
 {
-    /** @var BootstrapBuilder */
+    /** @var AppInitBuilder */
     protected $builder;
 
     /**
-     * @param BootstrapBuilder $builder
+     * @param AppInitBuilder $builder
      */
-    public function __construct(BootstrapBuilder $builder)
+    public function __construct(AppInitBuilder $builder)
     {
         $this->builder = $builder;
     }
 
     /**
-     * @return BootstrapBuilder
+     * @return AppInitBuilder
      */
-    public function builder(): BootstrapBuilder
+    public function builder(): AppInitBuilder
     {
         return $this->builder;
     }
@@ -46,7 +46,7 @@ class Bootstrap implements IBootstrap
     /**
      * @inheritDoc
      */
-    public function bootstrap(ISettingsContainer $app)
+    public function init(IApplicationContainer $app)
     {
         $builder = $this->builder;
 
@@ -59,7 +59,5 @@ class Bootstrap implements IBootstrap
         $app->setTranslatorDriver($builder->getTranslator());
         $app->setDefaultLogger($builder->getLogger());
         $app->setDatabaseConnection($builder->getDatabaseConnection());
-
     }
-
 }

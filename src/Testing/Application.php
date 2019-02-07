@@ -19,7 +19,7 @@ namespace Opis\Colibri\Testing;
 
 use Opis\Session\ISession;
 use Opis\Colibri\Application as BaseApplication;
-use Opis\Colibri\Core\{IBootstrap, AppInfo, ModuleManager};
+use Opis\Colibri\Core\{IApplicationInitializer, AppInfo, ModuleManager};
 use Opis\Colibri\Rendering\TemplateStream;
 
 class Application extends BaseApplication
@@ -30,18 +30,18 @@ class Application extends BaseApplication
     /** @var null|callable */
     protected $autoloader = null;
 
-    /** @var IBootstrap */
-    protected $bootstrap;
+    /** @var IApplicationInitializer */
+    protected $initializer;
 
     /** @noinspection PhpMissingParentConstructorInspection */
     /**
-     * @param IBootstrap $bootstrap
+     * @param IApplicationInitializer $initializer
      * @param AppInfo $info
      * @param string $installed
      * @param callable|null $autoloader
      */
-    public function __construct(IBootstrap $bootstrap, AppInfo $info, string $installed, ?callable $autoloader = null) {
-        $this->bootstrap = $bootstrap;
+    public function __construct(IApplicationInitializer $initializer, AppInfo $info, string $installed, ?callable $autoloader = null) {
+        $this->initializer = $initializer;
         $this->info = $info;
         $this->installedJson = $installed;
 
@@ -62,7 +62,7 @@ class Application extends BaseApplication
     {
         if ($hard) {
             $this->installedJson = null;
-            $this->bootstrap = null;
+            $this->initializer = null;
 
             if ($this->autoloader) {
                 spl_autoload_unregister($this->autoloader);
@@ -149,9 +149,9 @@ class Application extends BaseApplication
     /**
      * @inheritDoc
      */
-    protected function getBootstrapInstance(): IBootstrap
+    protected function getApplicationInitializer(): IApplicationInitializer
     {
-        return $this->bootstrap;
+        return $this->initializer;
     }
 
     /**
