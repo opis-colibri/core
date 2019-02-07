@@ -60,7 +60,7 @@ class Disable extends Command
 
         $modules = $input->getArgument('module');
         $uninstall = $input->getOption('uninstall');
-        $recursive = $input->hasOption('recursive');
+        $recursive = $input->getOption('recursive');
 
         foreach ($modules as $moduleName) {
 

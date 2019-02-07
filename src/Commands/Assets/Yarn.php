@@ -58,11 +58,11 @@ class Yarn extends Command
 
         $args = $input->getArgument('packages');
 
-        if ($input->hasOption('dev')) {
+        if ($input->getOption('dev')) {
             $args[] = '--dev';
         }
 
-        if ($input->hasOption('prod')) {
+        if ($input->getOption('prod')) {
             $args[] = '--prod';
         }
 
