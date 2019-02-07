@@ -102,6 +102,22 @@ $route('/', function(){
 }, 'DELETE');
 ```
 
+You can use for the route's callback any type of callable values, not only closures. 
+Just make sure that the callable value you're using is serializable (closures are serialized with the help 
+of the [opis/closure](https://opis.io/closure){: target="_blank"} library). 
+
+```php
+// static method
+$route('/', Foo::class . '::staticMethod');
+
+// non-static method
+$route('/', [new Foo(), 'bar']);
+
+// invokable object
+$route('/', new Invokable());
+```
+
+
 #### Respond to multiple HTTP verbs
 
 Creating a route that responds to multiple HTTP verbs is extremely easy.
@@ -377,7 +393,7 @@ route variables like route parameters, domain parameters, implicit values, and e
 
 ```php
 $route('/user/{name}', function($foo){
-    return $foo . bar;
+    return $foo;
 })
 // reference $name route parameter
 // and use it to define $foo route variable 
