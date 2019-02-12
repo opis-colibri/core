@@ -399,7 +399,6 @@ class Manager
         }
 
         $this->collectorsIncluded = true;
-        $collectorList = $this->app->getCollectorList();
 
         foreach ($this->app->getModules() as $module) {
 
@@ -415,60 +414,92 @@ class Manager
                 continue;
             }
 
-            $map = [];
+            $this->doCollect($module, $instance, $reflection, false);
+        }
+    }
 
-            foreach ($instance() as $key => $value) {
-                if (is_array($value)) {
-                    list($name, $priority) = $value;
-                    $name = strtolower($name);
-                } elseif (is_int($value)) {
-                    $name = $this->fromCamelCase($key);
-                    $priority = (int)$value;
-                } else {
-                    $name = $this->fromCamelCase($value);
-                    $priority = 0;
-                }
+    private function doCollect(Module $module, Collector $instance, ReflectionClass $reflection, bool $delegate)
+    {
+        $map = [];
 
-                $map[$key] = [$name, $priority];
+        $mappings = $instance();
+        $delegateCollectors = $delegate ? [] : ($mappings['@'] ?? []);
+        $collectorList = $this->app->getCollectorList();
+
+        unset($mappings['@']);
+
+        foreach ($mappings as $key => $value) {
+            if (is_array($value)) {
+                list($name, $priority) = $value;
+                $name = strtolower($name);
+            } elseif (is_int($value)) {
+                $name = $this->fromCamelCase($key);
+                $priority = (int)$value;
+            } else {
+                $name = $this->fromCamelCase($value);
+                $priority = 0;
             }
 
-            foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+            $map[$key] = [$name, $priority];
+        }
 
-                $methodName = $method->getShortName();
+        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
 
-                if (substr($methodName, 0, 2) === '__') {
+            $methodName = $method->getShortName();
+
+            if (substr($methodName, 0, 2) === '__') {
+                continue;
+            }
+
+            if (isset($map[$methodName])) {
+                list($name, $priority) = $map[$methodName];
+            } else {
+                $name = $this->fromCamelCase($methodName);
+                $priority = 0;
+            }
+
+            if (isset($collectorList[$name])) {
+                $options = $collectorList[$name]['options'] ?? [];
+                $options += [
+                    'invertedPriority' => true,
+                ];
+                if ($options['invertedPriority']) {
+                    $priority *= -1;
+                }
+            }
+
+            $callback = function (ItemCollector $collector) use (
+                $instance,
+                $methodName,
+                $module,
+                $name,
+                $priority
+            ) {
+                $this->proxy->update($collector, $module, $name, $priority);
+                $instance->{$methodName}($collector);
+            };
+
+            $this->router->handle($name, $callback, $priority);
+        }
+
+        if (!$delegate) {
+            if (!is_array($delegateCollectors)) {
+                $delegateCollectors = [$delegateCollectors];
+            }
+            foreach ($delegateCollectors as $collector){
+                if (!is_string($collector)) {
                     continue;
                 }
-
-                if (isset($map[$methodName])) {
-                    list($name, $priority) = $map[$methodName];
-                } else {
-                    $name = $this->fromCamelCase($methodName);
-                    $priority = 0;
+                try {
+                    $reflection = new ReflectionClass($collector);
+                } catch (\ReflectionException $exception) {
+                    continue;
                 }
-
-                if (isset($collectorList[$name])) {
-                    $options = $collectorList[$name]['options'] ?? [];
-                    $options += [
-                        'invertedPriority' => true,
-                    ];
-                    if ($options['invertedPriority']) {
-                        $priority *= -1;
-                    }
+                if (!$reflection->isSubclassOf(DelegateCollector::class)) {
+                    continue;
                 }
-
-                $callback = function (ItemCollector $collector) use (
-                    $instance,
-                    $methodName,
-                    $module,
-                    $name,
-                    $priority
-                ) {
-                    $this->proxy->update($collector, $module, $name, $priority);
-                    $instance->{$methodName}($collector);
-                };
-
-                $this->router->handle($name, $callback, $priority);
+                $collector = $this->container->make($collector);
+                $this->doCollect($module, $collector, $reflection, true);
             }
         }
     }

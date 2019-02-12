@@ -17,42 +17,9 @@
 
 namespace Opis\Colibri\Collector;
 
-use Opis\Colibri\ItemCollector;
-use ReflectionMethod;
-use ReflectionObject;
+use Opis\Colibri\Collector;
 
-abstract class DelegateCollector
+abstract class DelegateCollector extends Collector
 {
-    /** @var string[] */
-    private $ignore;
 
-    /**
-     * DelegateCollector constructor.
-     * @param string[] $ignore
-     */
-    public function __construct(array $ignore = [])
-    {
-        $this->ignore = $ignore;
-    }
-
-    /**
-     * Collect items
-     *
-     * @param   ItemCollector $collector
-     */
-    public function collect(ItemCollector $collector)
-    {
-        $reflection = new ReflectionObject($this);
-
-        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-
-            if ($method->getShortName() == __FUNCTION__ || in_array($method->getShortName(), $this->ignore) ||
-                $method->isStatic() || $method->isConstructor() || $method->isDestructor()
-            ) {
-                continue;
-            }
-
-            $method->invoke($this, $collector);
-        }
-    }
 }
