@@ -137,12 +137,13 @@ function schema(string $connection = 'default'): Schema
 
 /**
  * @param callable $callback
+ * @param mixed $default
  * @param string $connection
  * @return mixed|false
  */
-function transaction(callable $callback, string $connection = 'default')
+function transaction(callable $callback, $default = false, string $connection = 'default')
 {
-    return connection($connection)->transaction($callback, null, false);
+    return connection($connection)->transaction($callback, null, $default);
 }
 
 /**
