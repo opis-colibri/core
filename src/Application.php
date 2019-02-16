@@ -932,7 +932,7 @@ class Application implements IApplicationContainer
                 $this->getCollector()->recollect();
             }
 
-            $this->emit('module.installed.' . $module->name());
+            $this->emit('module.enabled.' . $module->name());
         };
 
         $manager = $this->moduleManager();
