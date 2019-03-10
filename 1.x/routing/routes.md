@@ -320,10 +320,10 @@ $route('/test', function($foo, $bar, $baz){
 Beside the user-defined implicit values, there are a series of globally available values, 
 defined by the framework itself.  
 
-- **$request**: An instance of the `Opis\Http\Request` class, representing the current request.
-- **$app**: An instance of the `Opis\Colibri\Application` class.
-- **$lang**: A string representing the language in use for the current request. Its default value is `en`.
-- **$route**: An object representing the current route, which is available starting with 
+- `$request`: An instance of the `Opis\Http\Request` class, representing the current request.
+- `$app`: An instance of the `Opis\Colibri\Application` class.
+- `$lang`: A string representing the language in use for the current request. Its default value is `en`.
+- `route`: An object representing the current route, which is available starting with 
 the second phase of the routing process.
 
 ## Bindings
