@@ -1,0 +1,25 @@
+{
+    "title": "Opis Colibri",
+    "github": "https://github.com/opis-colibri/framework",
+    "version": "1.0.0",
+    "url": "/framework",
+    "copyright": "2018 Zindex Software",
+    "title_suffix": " | Opis Colibri",
+    "ga": false,
+    "brand": {
+        "logo": "/assets/img/logo.svg",
+        "title": "Opis Colibri",
+        "url": "https://opiscolibri.com"
+    },
+    "favicon": "/assets/img/favicon.png",
+    "styles": [
+        "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700",
+        "https://use.fontawesome.com/releases/v5.7.2/css/all.css",
+        "/assets/css/theme.css",
+        "/assets/css/prism/prism-darcula.css"
+    ],
+    "scripts": [
+        "/assets/js/prism.js",
+        "/assets/js/script.js"
+    ]
+}

@@ -1,0 +1,62 @@
+[
+    {
+        "chapter": "Let's roll",
+        "pages": [
+            {
+                "title": "Installation",
+                "url": "/1.x/",
+                "description": "Learn how to install the framework"
+            },
+            {
+                "title": "Quick Start",
+                "url": "/1.x/quick-start.html",
+                "description": "Getting started with the framework"
+            },
+            {
+                "title": "Configuration",
+                "url": "/1.x/configuration.html",
+                "description": "Learn how to configure the framework"
+            }
+        ]
+    },
+    {
+        "chapter": "The basics",
+        "pages": [
+            {
+                "title": "Modules",
+                "url": "/1.x/modules.html",
+                "description": "Learn about modules"
+            }
+        ]
+    },
+    {
+        "chapter": "Routing",
+        "pages": [
+            {
+                "title": "Routing phases",
+                "url": "/1.x/routing/",
+                "description": "Learn about routing phases"
+            },
+            {
+                "title": "Routes",
+                "url": "/1.x/routing/routes.html",
+                "description": "Learn how to create new routes"
+            },
+            {
+                "title": "Middleware",
+                "url": "/1.x/routing/middleware.html",
+                "description": "Learn about middleware and how to use them"
+            },
+            {
+                "title": "Controllers",
+                "url": "/1.x/routing/controllers.html",
+                "description": "Learn about controllers and their utility"
+            },
+            {
+                "title": "Globals",
+                "url": "/1.x/routing/globals.html",
+                "description": "Learn about global values"
+            }
+        ]
+    }
+]
