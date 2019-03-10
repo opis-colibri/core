@@ -4,12 +4,6 @@ version: 1.x
 title: Routing phases | Routing
 description: Learn about the routing process and its phases
 ---
-# Routing phases
-
-* [First phase](#first-phase)
-* [Second phase](#second-phase)
-* [Third phase](#third-phase)
-* [Fourth phase](#fourth-phase)
 
 ## First phase
 

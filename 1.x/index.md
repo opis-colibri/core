@@ -4,12 +4,6 @@ version: 1.x
 title: Installation
 description: Learn how to install the Opis Colibri framework
 ---
-# Installation
-
-* [Prerequisites](#prerequisites)
-* [Installing the framework](#installing-the-framework)
-
-## Prerequisites
 
 Before proceeding with the framework installation, make sure that you have [NodeJS], [Composer] and [Yarn] installed and
 globally available. 

@@ -4,24 +4,6 @@ version: 1.x
 title: Routes | Routing
 description: Learn about routes and how to use them
 ---
-# Routes
-
-* [Collecting routes](#collecting-routes)
-* [Creating routes](#creating-routes)
-    * [Respond to multiple HTTP verbs](#respond-to-multiple-http-verbs)
-* [Route parameters](#route-parameters)
-    * [Optional parameters](#optional-parameters)
-* [Route constraints](#route-constraints)
-    * [Regex constraints](#regex-constraints)
-    * [Domain constraints](#domain-constraints)
-    * [Secure connections](#secure-connections)
-* [Implicit values](#implicit-values)
-    * [Built-in implicit values](#built-in-implicit-values)
-* [Bindings](#bindings)
-* [Filters](#filters)
-    * [Callbacks](#callbacks)
-    * [Regular filters](#regular-filters)
-    * [Guard filters](#guard-filters)
 
 ## Collecting routes
 
@@ -118,7 +100,7 @@ $route('/', new Invokable());
 ```
 
 
-#### Respond to multiple HTTP verbs
+### Respond to multiple HTTP verbs
 
 Creating a route that responds to multiple HTTP verbs is extremely easy.
 
@@ -165,7 +147,7 @@ $route('/blog/{id}/preview/{article}', function($id, $article){
 });
 ```
 
-#### Optional parameters
+### Optional parameters
 
 A route parameter can be marked as being optional by putting the `?` sign after the parameter's name.
 
@@ -180,7 +162,10 @@ In the above example, accessing `/article/1` has the same effect as accessing`/a
 
 ## Route constraints
 
-#### Regex constraints
+Route constraints are an effective way of filtering routes. 
+The framework support several types of constraints that can be applied simultaneously.
+
+### Regex constraints
 
 Adding a regex constraint that targets a specific route parameter is done by using the `where` method. The method
 takes as arguments the parameter's name and a regular expression.
@@ -220,7 +205,7 @@ $route('/images/logo.{extension}', function($extension) {
 ->whereIn('extension', ['png', 'jpg', 'svg']);
 ```
 
-##### Inline regex constraints
+#### Inline regex constraints
 
 There are two types of inline regex constraints: anonymous constraints and named constraints.
 Named constraints are just a convenient way of defining constraints for route parameters 
@@ -263,7 +248,7 @@ $route('/user/{?=[a-z]}', function(){
 });
 ``` 
 
-#### Domain constraints
+### Domain constraints
 
 By using the `domain` method, routes can be constrained to be available only for a specific domain or sub-domain.
 
@@ -294,7 +279,7 @@ $route('/', function($subdomain = 'www'){
 ->whereIn('subdomain', ['www', 'api', 'docs']);
 ```
 
-#### Secure connections
+### Secure connections
 
 Routes can be constrained to be available only when they are accessed using a secured HTTPS connection, with
 the help of the `secure` method.
@@ -330,7 +315,7 @@ $route('/test', function($foo, $bar, $baz){
 ->implicit('baz', 'Baz value');
 ```
 
-#### Built-in implicit values
+### Built-in implicit values
 
 Beside the user-defined implicit values, there are a series of globally available values, 
 defined by the framework itself.  
@@ -416,7 +401,7 @@ There are some situations when just adding various constraints to your routes is
 In order to help you overcome this kind of situations, the framework allows you to define custom filters in the
 form of callbacks.
 
-#### Callbacks
+### Callbacks
 
 Defining a callback is done with the help of the `callback` method.
 This method takes as arguments the name of the callback and a callable value that will be invoked when
@@ -461,7 +446,7 @@ $route('/user/{name}', function($name){
 });
 ```
 
-#### Regular filters
+### Regular filters
 
 These filters are applied in the [second phase](./#second-phase) of the routing process and are defined with the help 
 of the `filter` method. The method takes as arguments a series of one or more callback names.
@@ -490,7 +475,7 @@ $route('/', function(){
 ->filter('foo', 'bar', 'baz');
 ```
 
-#### Guard filters
+### Guard filters
 
 This kind of filters are applied in the [third phase](./#third-phase) of the routing process, and in contrast
 to regular filters they can reference bindings. Applying guard filters is done with the help of the `guard` method.

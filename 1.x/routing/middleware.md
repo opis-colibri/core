@@ -4,14 +4,6 @@ version: 1.x
 title: Middleware | Routing
 description: Learn about the middleware and how to use them
 ---
-# Middleware
-
-* [Introduction](#introduction)
-* [Creating a middleware](#creating-a-middleware)
-* [Applying a middleware](#applying-a-middleware)
-* [Reference route variables](#reference-route-variables)
-
-## Introduction
 
 An HTTP middleware is an extremely useful mechanism that can be used to perform a variety of tasks, like
 checking if a user is authenticated before invoking the route's callback, or altering the response received form 
@@ -90,7 +82,7 @@ $route('/', function(){
 ->middleware(Foo::class, Bar::class, Baz::class);
 ```
 
-## Reference route variables
+## Referencing route variables
 
 A middleware can reference any kind of route variable, from bindings to implicit values or to route parameters.
 

@@ -5,7 +5,10 @@
             {
                 "title": "Installation",
                 "url": "/1.x/",
-                "description": "Learn how to install the framework"
+                "description": "Learn how to install the framework",
+                "items": {
+                    "#installing-the-framework": "Installing the framework"
+                }
             },
             {
                 "title": "Quick Start",
@@ -35,17 +38,66 @@
             {
                 "title": "Routing phases",
                 "url": "/1.x/routing/",
-                "description": "Learn about routing phases"
+                "description": "Learn about routing phases",
+                "items": {
+                    "#first-phase": "First phase",
+                    "#second-phase": "Second phase",
+                    "#third-phase": "Third phase",
+                    "#fourth-phase": "Fourth phase"
+                }
             },
             {
                 "title": "Routes",
                 "url": "/1.x/routing/routes.html",
-                "description": "Learn how to create new routes"
+                "description": "Learn how to create new routes",
+                "items": {
+                    "#collecting-routes": "Collecting routes",
+                    "#creating-routes": {
+                        "title": "Creating routes",
+                        "items": {
+                            "#respond-to-multiple-http-verbs": "Respond to multiple HTTP verbs"
+                        }
+                    },
+                    "#route-parameters": {
+                        "title": "Route parameters",
+                        "items": {
+                            "#optional-parameters": "Optional parameters"
+                        }
+                    },
+                    "#route-constraints": {
+                        "title": "Route constraints",
+                        "items": {
+                            "#regex-constraints": "Regex constraints",
+                            "#domain-constraints": "Domain constraints",
+                            "#secure-connections": "Secure connections"
+                        }
+                    },
+                    "#implicit-values": {
+                        "title": "Implicit values",
+                        "items": {
+                            "#built-in-implicit-values": "Built-in implicit values"
+                        }
+                    },
+                    "#bindings": "Bindings",
+                    "#filters": {
+                        "title": "Filters",
+                        "items": {
+                            "#callbacks": "Callbacks",
+                            "#regular-filters": "Regular filters",
+                            "#guard-filters": "Guard filters"
+                        }
+                    }
+                }
             },
             {
                 "title": "Middleware",
                 "url": "/1.x/routing/middleware.html",
-                "description": "Learn about middleware and how to use them"
+                "description": "Learn about middleware and how to use them",
+                "items": {
+                    "#creating-a-middleware": "Creating a middleware",
+                    "#applying-a-middleware": "Applying a middleware",
+                    "#referencing-route-variables": "Referencing route variables"
+                }
             },
             {
                 "title": "Controllers",

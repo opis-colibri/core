@@ -12,11 +12,22 @@
         "url": "https://opiscolibri.com"
     },
     "favicon": "/assets/img/favicon.png",
+    "nav": {
+        "Home": "https://opiscolibri.com",
+        "GitHub": {
+            "url": "https://github.com/opis-colibri/framework",
+            "target": "_blank"
+        },
+        "Twitter": {
+            "url": "https://twitter.com/OpisColibri",
+            "target": "_blank"
+        }
+    },
     "styles": [
         "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700",
         "https://use.fontawesome.com/releases/v5.7.2/css/all.css",
         "/assets/css/theme.css",
-        "/assets/css/prism/prism-darcula.css"
+        "/assets/css/prism/prism-base16-ateliersulphurpool.light.css"
     ],
     "scripts": [
         "/assets/js/prism.js",
