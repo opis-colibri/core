@@ -30,6 +30,8 @@
         "/assets/css/prism/prism-base16-ateliersulphurpool.light.css"
     ],
     "scripts": [
+        "https://cdn.jsdelivr.net/npm/algoliasearch@3.32.0/dist/algoliasearchLite.min.js",
+        "https://cdn.jsdelivr.net/npm/instantsearch.js@3.0.0/dist/instantsearch.production.min.js",
         "/assets/js/prism.js",
         "/assets/js/script.js"
     ]
