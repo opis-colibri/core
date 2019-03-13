@@ -23,6 +23,12 @@
             "target": "_blank"
         }
     },
+    "versions": {
+        "current": 0,
+        "list": [
+            {"name": "1.x", "path": "/1.x"}
+        ]
+    },
     "styles": [
         "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700",
         "https://use.fontawesome.com/releases/v5.7.2/css/all.css",
