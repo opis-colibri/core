@@ -23,6 +23,11 @@
             "target": "_blank"
         }
     },
+    "search": {
+        "index": "opiscolibri",
+        "app_id": "NMQ2IFNV6E",
+        "api_key": "f8653941bd9a6d355cc22fb710a143fe"
+    },
     "versions": {
         "current": 0,
         "list": [
