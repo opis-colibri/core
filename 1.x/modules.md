@@ -16,17 +16,36 @@ This is an alert. The text here is very important for users
 
 {% capture tab_id %}{% increment tab_id %}{% endcapture %}
 {% capture tabs %}
-{% capture content %}
+{% capture php %}
 ```php
 echo 123;
 ```
 {% endcapture %}
-{% include tab.html id=tab_id name='php' title='PHP' content=content checked=true %}
-{% capture content%}
+{% capture json%}
 ```json
 [1,2,3]
 ```
 {% endcapture %}
-{% include tab.html id=tab_id name='json' title='JSON' content=content %}
+{% include tab.html id=tab_id name='php' title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id name='json' title='JSON' content=json %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
+
+Another 
+
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture php %}
+```php
+echo 'Hello world';
+```
+{% endcapture %}
+{% capture json%}
+```json
+{"name": "Opis Colibri"}
+```
+{% endcapture %}
+{% include tab.html id=tab_id name='php' title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id name='json' title='JSON' content=json %}
 {% endcapture %}
 {% include tabs.html content=tabs %}
