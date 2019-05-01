@@ -14,3 +14,19 @@ This is an alert. The text here is very important for users
 This is an alert. The text here is very important for users
 {:.alert.alert-success data-title="Remember"}
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture content %}
+```php
+echo 123;
+```
+{% endcapture %}
+{% include tab.html id=tab_id name='php' title='PHP' content=content checked=true %}
+{% capture content%}
+```json
+[1,2,3]
+```
+{% endcapture %}
+{% include tab.html id=tab_id name='json' title='JSON' content=content %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
