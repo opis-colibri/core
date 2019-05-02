@@ -26,8 +26,8 @@ echo 123;
 [1,2,3]
 ```
 {% endcapture %}
-{% include tab.html id=tab_id name='php' title='PHP' content=php checked=true %}
-{% include tab.html id=tab_id name='json' title='JSON' content=json %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='JSON' content=json %}
 {% endcapture %}
 {% include tabs.html content=tabs %}
 
@@ -45,7 +45,7 @@ echo 'Hello world';
 {"name": "Opis Colibri"}
 ```
 {% endcapture %}
-{% include tab.html id=tab_id name='php' title='PHP' content=php checked=true %}
-{% include tab.html id=tab_id name='json' title='JSON' content=json %}
+{% include tab.html id=tab_id title='PHP' content=php checked=true %}
+{% include tab.html id=tab_id title='JSON' content=json %}
 {% endcapture %}
 {% include tabs.html content=tabs %}
