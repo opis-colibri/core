@@ -17,7 +17,7 @@ The middleware class must define a public `__invoke` method that will be called 
 ```php
 namespace Vendor\Module;
 
-Opis\Colibri\Routing\Middleware;
+use Opis\Colibri\Routing\Middleware;
 
 class MyMiddleware extends Middleware
 {
@@ -86,20 +86,13 @@ $route('/', function(){
 
 A middleware can reference any kind of route variable, from bindings to implicit values or to route parameters.
 
+{% capture tab_id %}{% increment tab_id %}{% endcapture %}
+{% capture tabs %}
+{% capture middleware %}
 ```php
-class Collector extends AbstractCollector
-{
-    public function routes(RouteCollector $route)
-    {
-        $route('/user/{name}', function(string $name){
-            return $name;
-        })
-        ->where('name', '[a-z]+')
-        ->middleware(MyMiddleware::class);
-    }
-}
+namespace Vendor\Module;
 
-// ....
+use Opis\Colibri\Routing\Middleware;
 
 class MyMiddleware extends Middleware
 {
@@ -113,3 +106,30 @@ class MyMiddleware extends Middleware
     }
 }
 ```
+{% endcapture %}
+{% capture collector%}
+```php
+namespace Vendor\Module;
+
+use Opis\Colibri\{
+    Collector as AbstractCollector,
+    ItemCollectors\RouteCollector
+};
+
+class Collector extends AbstractCollector
+{
+    public function routes(RouteCollector $route)
+    {
+        $route('/user/{name}', function(string $name){
+            return $name;
+        })
+        ->where('name', '[a-z]+')
+        ->middleware(MyMiddleware::class);
+    }
+}
+```
+{% endcapture %}
+{% include tab.html id=tab_id title='Middleware' content=middleware checked=true %}
+{% include tab.html id=tab_id title='Collector' content=collector %}
+{% endcapture %}
+{% include tabs.html content=tabs %}
