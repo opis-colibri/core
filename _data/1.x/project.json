@@ -38,7 +38,7 @@
         "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700",
         "https://use.fontawesome.com/releases/v5.7.2/css/all.css",
         "/assets/css/theme.css",
-        "/assets/css/prism/prism-base16-ateliersulphurpool.light.css"
+        "/assets/css/prism/opis.css"
     ],
     "scripts": [
         "https://cdn.jsdelivr.net/npm/algoliasearch@3.32.0/dist/algoliasearchLite.min.js",
