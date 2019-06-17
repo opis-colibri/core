@@ -3,7 +3,7 @@
     "github": "https://github.com/opis-colibri/framework",
     "version": "1.0.0",
     "url": "/framework",
-    "copyright": "2018 Zindex Software",
+    "copyright": "Copyright © Zindex Software. All rights reserved",
     "title_suffix": " | Opis Colibri",
     "ga": false,
     "brand": {
@@ -39,7 +39,8 @@
         "https://fonts.googleapis.com/css?family=Roboto+Mono:400&display=swap",
         "https://use.fontawesome.com/releases/v5.7.2/css/all.css",
         "/assets/css/theme.css",
-        "/assets/css/prism/opis.css"
+        "/assets/css/style.css",
+        "/assets/css/prism.css"
     ],
     "scripts": [
         "https://cdn.jsdelivr.net/npm/algoliasearch@3.32.0/dist/algoliasearchLite.min.js",
