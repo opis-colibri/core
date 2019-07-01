@@ -43,6 +43,7 @@ use Opis\View\{
 };
 use Opis\Cache\CacheInterface;
 use Psr\Log\LoggerInterface;
+use function Opis\Colibri\Functions\convertToCase;
 
 class Manager
 {
@@ -433,10 +434,10 @@ class Manager
                 list($name, $priority) = $value;
                 $name = strtolower($name);
             } elseif (is_int($value)) {
-                $name = $this->fromCamelCase($key);
+                $name = convertToCase($key, 'kebab-case');
                 $priority = (int)$value;
             } else {
-                $name = $this->fromCamelCase($value);
+                $name = convertToCase($value, 'kebab-case');
                 $priority = 0;
             }
 
@@ -454,7 +455,7 @@ class Manager
             if (isset($map[$methodName])) {
                 list($name, $priority) = $map[$methodName];
             } else {
-                $name = $this->fromCamelCase($methodName);
+                $name = convertToCase($methodName, 'kebab-case');
                 $priority = 0;
             }
 
@@ -503,19 +504,4 @@ class Manager
             }
         }
     }
-
-    /**
-     * @param string $value
-     * @return string
-     */
-    private function fromCamelCase(string $value): string
-    {
-        preg_match_all('~([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)~', $value, $matches);
-        $ret = [];
-        foreach ($matches[0] as $match) {
-            $ret[] = strtolower($match);
-        }
-        return implode('-', $ret);
-    }
-
 }
