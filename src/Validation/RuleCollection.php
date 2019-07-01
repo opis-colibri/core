@@ -15,21 +15,31 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\ItemCollectors;
+namespace Opis\Colibri\Validation;
 
-use ArrayObject;
+use Opis\Colibri\Validation\Rules\Csrf;
 use Opis\Validation\IValidationRule;
+use Opis\Validation\RuleCollection as BaseCollection;
+use function Opis\Colibri\Functions\{
+    app
+};
 
-/**
- * @property ArrayObject $data
- */
-class ValidatorCollector extends ClassCollector
+class RuleCollection extends BaseCollection
 {
     /**
      * @inheritDoc
      */
-    protected function getClass(): string
+    protected function resolveRule(string $name): ?IValidationRule
     {
-        return IValidationRule::class;
+        if (null !== $rule = app()->getCollector()->getValidators()->get($name)) {
+            return $rule;
+        }
+
+        switch ($name) {
+            case 'field:csrf':
+                return new Csrf();
+        }
+
+        return parent::resolveRule($name);
     }
 }

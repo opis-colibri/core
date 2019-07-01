@@ -101,7 +101,7 @@ class Application extends BaseApplication
         $this->translatorInstance = null;
         $this->defaultLanguage = null;
         $this->csrfTokenInstance = null;
-        $this->placeholderInstance = null;
+        $this->formatter = null;
         $this->cache = null;
         $this->connection = null;
         $this->database = null;

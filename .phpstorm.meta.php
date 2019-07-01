@@ -46,3 +46,13 @@ namespace PHPSTORM_META {
         'template-stream-handlers' => \Opis\Colibri\Serializable\AdvancedClassList::class,
     ]));
 }
+
+namespace Opis\Validation\Types {
+    class Field {
+        /**
+         * @param bool|true $remove
+         * @return self
+         */
+        public function csrf(bool $remove = true): self {}
+    }
+}

@@ -43,7 +43,7 @@ use Opis\Database\{
 use Opis\ORM\EntityManager;
 use Opis\Routing\Context;
 use Opis\Session\{ISession, Session};
-use Opis\Validation\Placeholder;
+use Opis\Validation\Formatter;
 use Opis\View\ViewRenderer;
 use Opis\Intl\Translator\IDriver as TranslatorDriver;
 use Opis\Colibri\Core\{Module, AppInfo, IApplicationInitializer, IApplicationContainer, ModuleManager, ModuleNotifier};
@@ -55,7 +55,7 @@ use Opis\Colibri\Rendering\{
 use Opis\Colibri\{
     Util\CSRFToken,
     Validation\Validator,
-    Validation\ValidatorCollection,
+    Validation\RuleCollection,
     Routing\HttpRouter,
     Collector\Manager as CollectorManager
 };
@@ -89,8 +89,8 @@ class Application implements IApplicationContainer
     /** @var  CSRFToken */
     protected $csrfTokenInstance;
 
-    /** @var  Placeholder */
-    protected $placeholderInstance;
+    /** @var  Formatter */
+    protected $formatter;
 
     /** @var  CacheInterface[] */
     protected $cache = [];
@@ -331,17 +331,17 @@ class Application implements IApplicationContainer
     }
 
     /**
-     * Get a placeholder object
+     * Get a formatter object
      *
-     * @return  Placeholder
+     * @return Formatter
      */
-    public function getPlaceholder(): Placeholder
+    public function getFormatter(): Formatter
     {
-        if ($this->placeholderInstance === null) {
-            $this->placeholderInstance = new Placeholder();
+        if ($this->formatter === null) {
+            $this->formatter = new Formatter();
         }
 
-        return $this->placeholderInstance;
+        return $this->formatter;
     }
 
     /**
@@ -352,9 +352,9 @@ class Application implements IApplicationContainer
     public function getValidator(): Validator
     {
         if ($this->validator === null) {
-            $this->validator = new Validator(new ValidatorCollection(), $this->getPlaceholder());
+            $this->validator = new Validator(new RuleCollection(), $this->getFormatter());
         }
-
+        $this->validator->field('a');
         return $this->validator;
     }
 

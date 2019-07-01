@@ -17,33 +17,20 @@
 
 namespace Opis\Colibri\Validation;
 
-use Opis\Validation\DefaultValidatorTrait;
-use Opis\Validation\Validator as BaseValidator;
+use Opis\Validation\{Result, Validator as BaseValidator};
+use function Opis\Colibri\Functions\request;
 
 class Validator extends BaseValidator
 {
-    use DefaultValidatorTrait;
-
     /**
-     * @param bool $remove
-     * @return Validator
+     * @inheritDoc
      */
-    public function csrf(bool $remove = true): self
+    public function validate(array $data = null): Result
     {
-        return $this->push([
-            'name' => __FUNCTION__,
-            'arguments' => [$remove],
-        ]);
-    }
+        if ($data === null) {
+            $data = request()->getFormData() + request()->getUploadedFiles();
+        }
 
-    /**
-     * @param array $validator
-     * @return Validator
-     */
-    protected function push(array $validator): self
-    {
-        $this->stack[] = $validator;
-        return $this;
+        return parent::validate($data);
     }
-
 }

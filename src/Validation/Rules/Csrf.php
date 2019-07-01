@@ -15,14 +15,14 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Validation\Validators;
+namespace Opis\Colibri\Validation\Rules;
 
-use Opis\Validation\ValidatorInterface;
+use Opis\Validation\IValidationRule;
 use function Opis\Colibri\Functions\{
     validateCSRFToken
 };
 
-class Csrf implements ValidatorInterface
+class Csrf implements IValidationRule
 {
     /**
      * Validator's name
@@ -31,7 +31,7 @@ class Csrf implements ValidatorInterface
      */
     public function name(): string
     {
-        return 'csrf';
+        return 'field:csrf';
     }
 
     /**
@@ -54,6 +54,14 @@ class Csrf implements ValidatorInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function prepareValue($value, array $arguments)
+    {
+        return $value;
+    }
+
+    /**
      * Validate
      *
      * @param mixed $value
@@ -64,5 +72,4 @@ class Csrf implements ValidatorInterface
     {
         return validateCSRFToken($value, $arguments['remove']);
     }
-
 }
