@@ -58,16 +58,25 @@ class Dispatcher implements IDispatcher
             return httpError(404);
         }
 
-        $callbacks = $route->getCallbacks();
         $invoker = $router->resolveInvoker($route);
+        $guards = $route->getRouteCollection()->getGuards();
 
-        foreach ($route->get('guard', []) as $guard) {
-            if (isset($callbacks[$guard])) {
-                $callback = $callbacks[$guard];
-                $args = $invoker->getArgumentResolver()->resolve($callback);
-                if (false === $callback(...$args)) {
-                    return httpError(404);
+        /**
+         * @var string $name
+         * @var callable|null $callback
+         */
+        foreach ($route->get('guards', []) as $name => $callback) {
+            if ($callback === null) {
+                if (!isset($guards[$name])) {
+                    continue;
                 }
+                $callback = $guards[$name];
+            }
+
+            $args = $invoker->getArgumentResolver()->resolve($callback);
+
+            if (false === $callback(...$args)) {
+                return httpError(404);
             }
         }
 

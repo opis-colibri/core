@@ -62,16 +62,28 @@ class RouterGlobalsCollector extends ItemCollector
     }
 
     /**
-     * Defines a global callback
+     * Define global filter
      *
-     * @param   string $name The name of the callback
-     * @param   callable $callback A callback
-     *
-     * @return  $this
+     * @param string $name
+     * @param callable $callback
+     * @return $this
      */
-    public function callback(string $name, callable $callback): self
+    public function filter(string $name, callable $callback): self
     {
-        $this->data->callback($name, $callback);
+        $this->data->filter($name, $callback);
+        return $this;
+    }
+
+    /**
+     * Define a global guard
+     *
+     * @param string $name
+     * @param callable $callback
+     * @return $this
+     */
+    public function guard(string $name, callable $callback): self
+    {
+        $this->data->guard($name, $callback);
         return $this;
     }
 

@@ -35,7 +35,7 @@ class Collector extends BaseCollector
         $global->implicit('g1', 'G1');
         $global->implicit('gow', 'foo');
 
-        $global->callback('filter_g1', function () {
+        $global->filter('filter_g1', function () {
             return false;
         });
 
@@ -87,21 +87,23 @@ class Collector extends BaseCollector
 
         $route('/foo-guard1', function () {
             return 'foo';
-        })->callback('guard1', function () {
+        })->guard('guard1', function () {
             return true;
-        })->guard('guard1');
+        });
 
         $route('/foo-guard2', function () {
             return 'foo';
-        })->callback('guard1', function () {
+        })->guard('guard1', function () {
             return true;
-        })->callback('guard2', function () {
+        })->guard('guard2', function () {
             return true;
-        })->guard('guard1', 'guard2');
+        });
 
         $route('/foo-guard-uk', function () {
             return 'foo';
-        })->guard('guard_uk1', 'guard_uk2');
+        })
+            ->guard('guard_uk1')
+            ->guard('guard_uk2');
 
         $route('/foo/bind/1/{foo1}', function ($foo1, $foo2) {
             return $foo1 . $foo2;

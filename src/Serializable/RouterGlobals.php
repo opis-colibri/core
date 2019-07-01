@@ -28,7 +28,8 @@ class RouterGlobals implements Serializable
         'mixin' => [],
         'implicit' => [],
         'bind' => [],
-        'callback' => [],
+        'filter' => [],
+        'guard' => [],
         'placeholder' => [],
     ];
 
@@ -54,7 +55,16 @@ class RouterGlobals implements Serializable
      * @param string $name
      * @param callable $callback
      */
-    public function callback(string $name, callable $callback)
+    public function filter(string $name, callable $callback)
+    {
+        $this->globals[__FUNCTION__][$name] = $callback;
+    }
+
+    /**
+     * @param string $name
+     * @param callable $callback
+     */
+    public function guard(string $name, callable $callback)
     {
         $this->globals[__FUNCTION__][$name] = $callback;
     }

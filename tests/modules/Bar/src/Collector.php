@@ -55,11 +55,11 @@ class Collector extends BaseCollector
 
         $route('/bar-guard2', function () {
             return 'bar';
-        })->callback('guard1', function () {
+        })->guard('guard1', function () {
             return true;
-        })->callback('guard2', function () {
+        })->guard('guard2', function () {
             return false;
-        })->guard('guard1', 'guard2');
+        });
 
         $route->group(function (RouteCollector $route) {
             $route('/foo', function ($upName) {
@@ -128,10 +128,9 @@ class Collector extends BaseCollector
         $route('/foo-filter1', function () {
             return 'bar';
         })
-            ->callback('filter1', function () {
+            ->filter('filter1', function () {
                 return false;
-            })
-            ->filter('filter1');
+            });
 
 
         $route('/foo-filter-g1', function () {
@@ -142,10 +141,9 @@ class Collector extends BaseCollector
         $route('/foo-filter-g1-pass', function () {
             return 'bar';
         })
-            ->callback('filter_g1', function () {
+            ->filter('filter_g1', function () {
                 return true;
-            })
-            ->filter('filter_g1');
+            });
     }
 
     public function priorityGlobals(RouterGlobalsCollector $global)

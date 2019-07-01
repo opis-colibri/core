@@ -109,18 +109,18 @@ class HttpRoute extends BaseHttpRoute
      * @inheritDoc
      * @return static|HttpRoute
      */
-    public function callback(string $name, callable $callback): BaseHttpRoute
+    public function filter(string $name, callable $callback = null): BaseHttpRoute
     {
-        $list = $this->get('callbacks', []);
+        return $this->setCallback('filters', $name, $callback);
+    }
 
-        if ($this->inheriting && isset($list[$name])) {
-            return $this;
-        }
-
-        $list[$name] = $callback;
-        parent::set('callbacks', $list);
-
-        return $this;
+    /**
+     * @inheritDoc
+     * @return static|HttpRoute
+     */
+    public function guard(string $name, callable $callback = null): BaseHttpRoute
+    {
+        return $this->setCallback('guards', $name, $callback);
     }
 
     /**
@@ -183,6 +183,26 @@ class HttpRoute extends BaseHttpRoute
             throw new \RuntimeException("Unknown mixin name " . $name);
         }
         $mixins[$name]($this, $config);
+        return $this;
+    }
+
+    /**
+     * @param string $type
+     * @param string $name
+     * @param callable|null $callback
+     * @return HttpRoute
+     */
+    private function setCallback(string $type, string $name, ?callable $callback): self
+    {
+        $list = $this->get($type, []);
+
+        if ($this->inheriting && isset($list[$name])) {
+            return $this;
+        }
+
+        $list[$name] = $callback;
+        parent::set($type, $list);
+
         return $this;
     }
 }
