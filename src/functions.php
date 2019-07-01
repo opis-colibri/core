@@ -417,6 +417,59 @@ function random_str(int $length): string
     return $str;
 }
 
+function convertToCase(string $value, string  $to='snake_case', string $from = 'camelCase'): string
+{
+    $allowed = ['PacalCase', 'camelCase', 'snake_case', 'kebab-case'];
+
+    if (!in_array($to, $allowed) || !in_array($from, $allowed)) {
+        return $value;
+    }
+
+    switch ($from) {
+        case 'camelCase':
+        case 'PascalCase':
+            if ($from[0] === 'P') {
+                $value = lcfirst($value);
+            }
+            preg_match_all('~([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)~', $value, $matches);
+            $words = [];
+            foreach ($matches[0] as $match) {
+                $words[] = strtolower($match);
+            }
+            break;
+        case 'snake_case':
+        case 'kebab-case':
+            $words = explode($from[0] === 's' ? '_' : '-', strtolower($value));
+            break;
+        default:
+            $words = [];
+    }
+
+
+    switch ($to) {
+        case 'camelCase':
+        case 'PascalCase':
+            foreach ($words as &$word) {
+                $word = ucfirst($word);
+            }
+            if ($to[0] === 'c') {
+                $words[0] = lcfirst($words[0]);
+            }
+            $separator = '';
+            break;
+        case 'snake_case':
+            $separator = '_';
+            break;
+        case 'kebab-case':
+            $separator = '-';
+            break;
+        default:
+            $separator = '';
+    }
+
+    return implode($separator, $words);
+}
+
 /**
  * @param string $type
  * @param bool $fresh
