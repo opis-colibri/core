@@ -364,7 +364,6 @@ class ApplicationBuilder
         return $this->addModuleFromPath($dir, Module::ENABLED, $autoload);
     }
 
-    /** @noinspection PhpDocMissingThrowsInspection */
     /**
      * @param string $dir
      * @param int $status
@@ -407,7 +406,7 @@ class ApplicationBuilder
         }
 
         if (!isset($data->time)) {
-            $data->time = (new \DateTime())->format(DATE_ATOM);
+            $data->time = date_create()->format(DATE_ATOM);
         }
 
         $this->pathModules[$data->name] = $data;
