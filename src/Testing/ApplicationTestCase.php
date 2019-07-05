@@ -181,7 +181,7 @@ abstract class ApplicationTestCase extends TestCase
     }
 
     /**
-     * @param string ...$command
+     * @param string[] $command
      * @return int
      * @throws \Exception
      */

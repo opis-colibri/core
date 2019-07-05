@@ -210,7 +210,7 @@ class ApplicationBuilder
     }
 
     /**
-     * @param string ...$dependencies
+     * @param string[] $dependencies
      * @return ApplicationBuilder
      */
     public function addDependencies(string ...$dependencies): self
@@ -220,7 +220,7 @@ class ApplicationBuilder
     }
 
     /**
-     * @param string ...$dependencies
+     * @param string[] $dependencies
      * @return ApplicationBuilder
      */
     public function removeDependencies(string ...$dependencies): self
@@ -299,7 +299,7 @@ class ApplicationBuilder
     }
 
     /**
-     * @param string ...$modules
+     * @param string[] $modules
      * @return ApplicationBuilder
      */
     public function markModulesAsUninstalled(string ...$modules): self
@@ -311,7 +311,7 @@ class ApplicationBuilder
     }
 
     /**
-     * @param string ...$modules
+     * @param string[] $modules
      * @return ApplicationBuilder
      */
     public function markModulesAsInstalled(string ...$modules): self
@@ -323,7 +323,7 @@ class ApplicationBuilder
     }
 
     /**
-     * @param string ...$modules
+     * @param string[] $modules
      * @return ApplicationBuilder
      */
     public function markModulesAsEnabled(string ...$modules): self
@@ -364,6 +364,7 @@ class ApplicationBuilder
         return $this->addModuleFromPath($dir, Module::ENABLED, $autoload);
     }
 
+    /** @noinspection PhpDocMissingThrowsInspection */
     /**
      * @param string $dir
      * @param int $status

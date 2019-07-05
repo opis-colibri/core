@@ -116,7 +116,7 @@ class Application implements IApplicationContainer
     /** @var  ViewRenderer */
     protected $viewRenderer;
 
-    /** @var \Psr\Log\LoggerInterface[] */
+    /** @var LoggerInterface[] */
     protected $loggers = [];
 
     /** @var  EventDispatcher */

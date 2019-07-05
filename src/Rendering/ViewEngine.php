@@ -29,7 +29,7 @@ class ViewEngine extends PHPEngine
     /**
      * @param string $name
      * @param array $arguments
-     * @return \Opis\Colibri\View
+     * @return View
      */
     public function view(string $name, array $arguments = []): View
     {

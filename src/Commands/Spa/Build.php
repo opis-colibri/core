@@ -57,6 +57,7 @@ class Build extends Command
 
         $cmd = new class extends Application {
 
+            /** @noinspection PhpMissingParentConstructorInspection */
             public function __construct()
             {
                 // DO NOT INVOKE PARENT

@@ -20,7 +20,7 @@ namespace Opis\Colibri\Commands\Assets;
 use Composer\Factory;
 use Composer\IO\ConsoleIO;
 use Opis\Colibri\Core\{
-    Handlers\AssetHandler, PackageInstaller
+    Handlers\AssetHandler, PackageInstaller, Module
 };
 use Symfony\Component\Console\{
     Command\Command,
@@ -31,10 +31,10 @@ use Symfony\Component\Console\{
     Input\InputOption,
     Output\OutputInterface
 };
+use Symfony\Component\Filesystem\Filesystem;
 use function Opis\Colibri\Functions\{
     info, app, module
 };
-use Symfony\Component\Filesystem\Filesystem;
 
 class Build extends Command
 {
@@ -92,7 +92,7 @@ class Build extends Command
             }, $modules);
         }
 
-        /** @var \Opis\Colibri\Core\Module $module */
+        /** @var Module $module */
         foreach ($modules as $module) {
 
             if (!$module->exists()) {
