@@ -419,7 +419,7 @@ function random_str(int $length): string
 
 function convertToCase(string $value, string  $to='snake_case', string $from = 'camelCase'): string
 {
-    $allowed = ['PacalCase', 'camelCase', 'snake_case', 'kebab-case'];
+    $allowed = ['PascalCase', 'camelCase', 'snake_case', 'kebab-case'];
 
     if (!in_array($to, $allowed) || !in_array($from, $allowed)) {
         return $value;
