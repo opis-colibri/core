@@ -285,7 +285,7 @@ function alerts(): Alerts
  */
 function r(string $text, array $placeholders): string
 {
-    return Application::getInstance()->getFormatter()->replace($text, $placeholders);
+    return Application::getInstance()->getFormatter()->format($text, $placeholders);
 }
 
 /**
