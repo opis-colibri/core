@@ -17,7 +17,6 @@
 
 namespace Opis\Colibri;
 
-use Opis\Colibri\Validation\Validator;
 use function Opis\Colibri\Functions\session;
 
 class Alerts extends View
@@ -158,17 +157,5 @@ class Alerts extends View
     public function info(string $message): self
     {
         return $this->alert('info', $message);
-    }
-
-    /**
-     * @param Validator $validator
-     * @return Alerts
-     */
-    public function fromValidator(Validator $validator): self
-    {
-        foreach ($validator->getErrors() as $error) {
-            $this->error($error);
-        }
-        return $this;
     }
 }
