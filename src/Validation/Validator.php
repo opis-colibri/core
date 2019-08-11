@@ -31,6 +31,10 @@ class Validator extends BaseValidator
             $data = request()->getFormData() + request()->getUploadedFiles();
         }
 
-        return parent::validate($data);
+        $result = parent::validate($data);
+
+        $this->validationData = [];
+
+        return $result;
     }
 }
