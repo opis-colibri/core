@@ -354,7 +354,6 @@ class Application implements IApplicationContainer
         if ($this->validator === null) {
             $this->validator = new Validator(new RuleCollection(), $this->getFormatter());
         }
-        $this->validator->field('a');
         return $this->validator;
     }
 
