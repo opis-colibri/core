@@ -18,9 +18,13 @@
 namespace Opis\Colibri\Functions;
 
 use Opis\Cache\CacheInterface;
-use Opis\Colibri\{
-    Alerts, Application, Core\AppInfo, View, Validation\Validator, Serializable\ControllerCallback
-};
+use Opis\Colibri\{Alerts,
+    Application,
+    Core\AppInfo,
+    Session,
+    View,
+    Validation\Validator,
+    Serializable\ControllerCallback};
 use Opis\Database\{
     Connection as DBConnection,
     Database,
@@ -41,7 +45,6 @@ use Opis\Http\{Request, Response as HttpResponse, Response};
 use Opis\Http\Responses\{
     HtmlResponse, JsonResponse, RedirectResponse
 };
-use Opis\Session\ISession;
 use Opis\View\IView;
 use Psr\Log\LoggerInterface;
 use Opis\Colibri\Core\Module;
@@ -261,11 +264,12 @@ function logger(string $logger = 'default'): LoggerInterface
 }
 
 /**
- * @return ISession
+ * @param string $name
+ * @return Session
  */
-function session(): ISession
+function session(string $name = 'default'): Session
 {
-    return Application::getInstance()->getSession();
+    return Application::getInstance()->getSession($name);
 }
 
 /**
