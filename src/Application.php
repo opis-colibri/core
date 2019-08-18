@@ -1152,6 +1152,11 @@ class Application implements IApplicationContainer
                 header(sprintf('%s: %s', $name, $value));
             }
 
+            foreach ($this->getSessionCookieContainer()->getAddedCookies() as $cookie) {
+                $response->setCookie($cookie['name'], $cookie['value'], $cookie['expire'], $cookie['path'], $cookie['domain'],
+                    $cookie['secure'], $cookie['http_only']);
+            }
+
             foreach ($response->getCookies() as $cookie) {
                 setcookie($cookie['name'], $cookie['value'], $cookie['expire'], $cookie['path'], $cookie['domain'],
                     $cookie['secure'], $cookie['http_only']);
