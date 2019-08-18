@@ -17,9 +17,9 @@
 
 namespace Opis\Colibri;
 
+use Opis\Session\{Handlers\File as SessionHandler, ISessionHandler};
 use Throwable;
 use Opis\DataStore\IDataStore;
-use SessionHandlerInterface;
 use Composer\Package\CompletePackageInterface;
 use Psr\Log\{
     NullLogger,
@@ -42,7 +42,6 @@ use Opis\Database\{
 };
 use Opis\ORM\EntityManager;
 use Opis\Routing\Context;
-use Opis\Session\{ISession, Session};
 use Opis\Validation\Formatter;
 use Opis\View\ViewRenderer;
 use Opis\Intl\Translator\IDriver as TranslatorDriver;
@@ -52,13 +51,12 @@ use Opis\Colibri\Rendering\{
     TemplateStream,
     ViewEngine
 };
-use Opis\Colibri\{
+use Opis\Colibri\{Session\CookieContainer,
     Util\CSRFToken,
     Validation\Validator,
     Validation\RuleCollection,
     Routing\HttpRouter,
-    Collector\Manager as CollectorManager
-};
+    Collector\Manager as CollectorManager};
 
 class Application implements IApplicationContainer
 {
@@ -107,8 +105,11 @@ class Application implements IApplicationContainer
     /** @var  EntityManager[] */
     protected $entityManager = [];
 
-    /** @var  ISession */
-    protected $session;
+    /** @var  Session[] */
+    protected $session = [];
+
+    /** @var CookieContainer */
+    protected $sessionCookieContainer;
 
     /** @var  HttpRouter */
     protected $httpRouter;
@@ -381,20 +382,38 @@ class Application implements IApplicationContainer
     }
 
     /**
-     * Returns a session storage
+     * Get session
      *
-     * @return  ISession
+     * @param string $name
+     * @return Session
      */
-    public function getSession(): ISession
+    public function getSession(string $name = 'default'): Session
     {
-        if ($this->session === null) {
-            if (!isset($this->implicit['session'])) {
-                throw new \RuntimeException('The default session storage was not set');
+        if (!isset($this->session[$name])) {
+            if ($name === 'default') {
+                if (!isset($this->implicit['session'])) {
+                    throw new \RuntimeException('The default session handler was not set');
+                }
+                $session = $this->implicit['session'];
+                $this->session[$name] = new Session($session['handler'], $session['config']);
+            } else {
+                $this->session[$name] = $this->getCollector()->getSessionHandler($name);
             }
-            $this->session = new Session($this->getCollector()->getSessionHandler($this->implicit['session']));
         }
 
-        return $this->session;
+        return $this->session[$name];
+    }
+
+    /**
+     * @return CookieContainer
+     */
+    public function getSessionCookieContainer(): CookieContainer
+    {
+        if ($this->sessionCookieContainer === null) {
+            $this->sessionCookieContainer = new CookieContainer($this->getHttpRequest());
+        }
+
+        return $this->sessionCookieContainer;
     }
 
     /**
@@ -652,12 +671,16 @@ class Application implements IApplicationContainer
     }
 
     /**
-     * @param SessionHandlerInterface $session
+     * @param ISessionHandler $handler
+     * @param array $config
      * @return IApplicationContainer
      */
-    public function setSessionHandler(SessionHandlerInterface $session): IApplicationContainer
+    public function setSessionHandler(ISessionHandler $handler, array $config = []): IApplicationContainer
     {
-        $this->implicit['session'] = $session;
+        $this->implicit['session'] = [
+            'handler' => $handler,
+            'config' => $config
+        ];
 
         return $this;
     }
@@ -1037,7 +1060,7 @@ class Application implements IApplicationContainer
                 $app->setCacheDriver(new MemoryDriver())
                     ->setConfigDriver(new MemoryConfig())
                     ->setDefaultLogger(new NullLogger())
-                    ->setSessionHandler(new \SessionHandler());
+                    ->setSessionHandler(new SessionHandler($app->getAppInfo()->writableDir() . DIRECTORY_SEPARATOR . 'session'));
             }
         };
     }

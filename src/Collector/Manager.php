@@ -18,9 +18,7 @@
 namespace Opis\Colibri\Collector;
 
 use ReflectionClass, ReflectionMethod, RuntimeException;
-use Opis\Colibri\{
-    Application, Container, Collector, ItemCollector, Routing\HttpRouteCollection
-};
+use Opis\Colibri\{Application, Container, Collector, ItemCollector, Routing\HttpRouteCollection, Session};
 use Opis\Colibri\Core\Module;
 use Opis\DataStore\IDataStore;
 use Opis\Colibri\Serializable\{
@@ -195,22 +193,13 @@ class Manager
     }
 
     /**
-     * @param \SessionHandlerInterface $default
+     * @param string $name
      * @param bool $fresh
-     * @return \SessionHandlerInterface
+     * @return Session
      */
-    public function getSessionHandler(\SessionHandlerInterface $default, bool $fresh = false): \SessionHandlerInterface
+    public function getSessionHandler(string $name, bool $fresh = false): Session
     {
-        $list = $this->collect('session-handlers', $fresh)->getList();
-
-        if (isset($list['session'])) {
-            $instance = $list['session']();
-            if ($instance instanceof \SessionHandlerInterface) {
-                return $instance;
-            }
-        }
-
-        return $default;
+        return $this->collect('session-handlers', $fresh)->get($name);
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2019 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,34 +15,16 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\ItemCollectors;
+namespace Opis\Colibri;
 
-use Opis\Colibri\ItemCollector;
-use Opis\Colibri\Serializable\SessionList;
+use Opis\Session\ISessionHandler;
+use Opis\Session\Session as BaseSession;
+use function Opis\Colibri\Functions\app;
 
-/**
- * @property SessionList $data
- */
-class SessionCollector extends ItemCollector
+class Session extends BaseSession
 {
-    /**
-     * Constructor
-     */
-    public function __construct()
+    public function __construct(ISessionHandler $handler, array $config = [])
     {
-        parent::__construct(new SessionList());
-    }
-
-    /**
-     * @param string $name
-     * @param callable $constructor
-     * @param array $config
-     * @return SessionCollector
-     */
-    public function register(string $name, callable $constructor, array $config = []): self
-    {
-        $config['cookie_name'] = $name;
-        $this->data->register($name, $constructor, $config);
-        return $this;
+        parent::__construct(app()->getSessionCookieContainer(), $handler, $config);
     }
 }
