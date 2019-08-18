@@ -25,6 +25,6 @@ class Session extends BaseSession
 {
     public function __construct(ISessionHandler $handler, array $config = [])
     {
-        parent::__construct(app()->getSessionCookieContainer(), $handler, $config);
+        parent::__construct($handler, $config, app()->getSessionCookieContainer());
     }
 }
