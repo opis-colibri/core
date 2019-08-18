@@ -17,7 +17,8 @@
 
 namespace Opis\Colibri\Testing\Builders;
 
-use SessionHandler as DefaultSession;
+use Opis\Colibri\Session\MemoryHandler;
+use Opis\Session\ISessionHandler;
 use Opis\Colibri\Testing\ApplicationInitializer;
 use Opis\Intl\Locale;
 use SessionHandlerInterface;
@@ -148,9 +149,9 @@ class AppInitBuilder
     }
 
     /**
-     * @return null|SessionHandlerInterface
+     * @return ISessionHandler
      */
-    public function getSessionHandler(): ?SessionHandlerInterface
+    public function getSessionHandler(): ?ISessionHandler
     {
         if ($this->session === null) {
             $this->session = $this->defaultSessionHandler();
@@ -159,10 +160,10 @@ class AppInitBuilder
     }
 
     /**
-     * @param SessionHandlerInterface|null $session
+     * @param ISessionHandler|null $session
      * @return AppInitBuilder
      */
-    public function setSessionHandler(?SessionHandlerInterface $session = null): self
+    public function setSessionHandler(?ISessionHandler $session = null): self
     {
         $this->session = $session;
         return $this;
@@ -264,11 +265,11 @@ class AppInitBuilder
     }
 
     /**
-     * @return SessionHandlerInterface
+     * @return ISessionHandler
      */
-    protected function defaultSessionHandler(): SessionHandlerInterface
+    protected function defaultSessionHandler(): ISessionHandler
     {
-        return new DefaultSession();
+        return new MemoryHandler();
     }
 
     /**
