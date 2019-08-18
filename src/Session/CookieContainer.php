@@ -53,7 +53,7 @@ class CookieContainer implements ICookieContainer
     public function setCookie(
         string $name,
         string $value,
-        int $expires = 0,
+        int $expire = 0,
         string $path = "",
         string $domain = "",
         bool $secure = false,
@@ -62,7 +62,7 @@ class CookieContainer implements ICookieContainer
         $this->cookies[$name] = [
             'name' => $name,
             'value' => $value,
-            'expires' => $expires,
+            'expire' => $expire,
             'path' => $path,
             'domain' => $domain,
             'secure' => $secure,
