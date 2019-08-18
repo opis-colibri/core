@@ -1153,7 +1153,7 @@ class Application implements IApplicationContainer
             }
 
             foreach ($this->getSessionCookieContainer()->getAddedCookies() as $cookie) {
-                $response->setCookie($cookie['name'], $cookie['value'], $cookie['expire'], $cookie['path'], $cookie['domain'],
+                setCookie($cookie['name'], $cookie['value'], $cookie['expire'], $cookie['path'], $cookie['domain'],
                     $cookie['secure'], $cookie['http_only']);
             }
 
