@@ -231,11 +231,12 @@ function httpError(int $status, $body = null, array $headers = []): HttpResponse
 /**
  * @param string $location
  * @param int $code
+ * @param array $headers
  * @return RedirectResponse
  */
-function redirect(string $location, int $code = 301): RedirectResponse
+function redirect(string $location, int $code = 301, array $headers = []): RedirectResponse
 {
-    return new RedirectResponse($location, $code);
+    return new RedirectResponse($location, $code, $headers);
 }
 
 /**
