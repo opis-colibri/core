@@ -34,7 +34,7 @@ namespace PHPSTORM_META {
         'event-handlers' => \Opis\Events\RouteCollection::class,
         'view-engines' => \Opis\Colibri\Serializable\ViewEngineResolver::class,
         'cache-drivers' => \Opis\Colibri\Serializable\StorageCollection::class,
-        'session-handlers' => \Opis\Colibri\Serializable\CallbackList::class,
+        'session-handlers' => \Opis\Colibri\Serializable\SessionList::class,
         'config-drivers' => \Opis\Colibri\Serializable\StorageCollection::class,
         'translations' => \Opis\Colibri\Serializable\Translations::class,
         'translation-filters' => \Opis\Colibri\Serializable\ClassList::class,
