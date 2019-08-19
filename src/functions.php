@@ -234,7 +234,7 @@ function httpError(int $status, $body = null, array $headers = []): HttpResponse
  * @param array $headers
  * @return RedirectResponse
  */
-function redirect(string $location, int $code = 301, array $headers = []): RedirectResponse
+function redirect(string $location, int $code = 302, array $headers = []): RedirectResponse
 {
     return new RedirectResponse($location, $code, $headers);
 }
