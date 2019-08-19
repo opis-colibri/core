@@ -704,7 +704,7 @@ class Application implements IApplicationContainer
         $this->containerInstance = null;
         $this->eventDispatcher = null;
         $this->viewRenderer = null;
-        $this->session = null;
+        $this->session[] = null;
         $this->httpRouter = null;
         $this->collectorList = null;
         $this->cache = [];
