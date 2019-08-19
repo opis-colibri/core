@@ -19,10 +19,18 @@ namespace Opis\Colibri\Serializable;
 
 use Opis\Closure\SerializableClosure;
 use Opis\Colibri\Session;
+use Opis\Session\ISessionHandler;
 
 class SessionList implements \Serializable
 {
+    /** @var array */
     private $sessions = [];
+
+    /** @var ISessionHandler[] */
+    private $handlers = [];
+
+    /** @var Session[] */
+    private $instances = [];
 
     /**
      * @param string $name
@@ -47,10 +55,28 @@ class SessionList implements \Serializable
             return null;
         }
 
-        $callback = $this->sessions[$name]['callback'];
-        $config = $this->sessions[$name]['config'];
+        if (!isset($this->instances[$name])) {
+            $this->instances[$name] = new Session($this->handler($name), $this->sessions[$name]['config']);
+        }
 
-        return new Session($callback($name), $config);
+        return $this->instances[$name];
+    }
+
+    /**
+     * @param string $name
+     * @return ISessionHandler|null
+     */
+    public function handler(string $name): ?ISessionHandler
+    {
+        if (!isset($this->sessions[$name])) {
+            return null;
+        }
+
+        if (!isset($this->handlers[$name])) {
+            return $this->handlers[$name] = ($this->sessions[$name]['callback'])($name);
+        }
+
+        return $this->handlers[$name];
     }
 
     /**
