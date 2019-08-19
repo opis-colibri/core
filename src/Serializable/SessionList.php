@@ -43,7 +43,7 @@ class SessionList implements \Serializable
      */
     public function get(string $name): ?Session
     {
-        if (isset($this->sessions[$name])) {
+        if (!isset($this->sessions[$name])) {
             return null;
         }
 
