@@ -62,8 +62,32 @@ class MemoryHandler implements ISessionHandler
      */
     public function delete(SessionData $data): bool
     {
-        unset($this->sessions[$data->id()]);
+        return $this->deleteById($data->id());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteById(string $session_id): bool
+    {
+        unset($this->sessions[$session_id]);
         return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteMultipleById(array $session_ids): int
+    {
+        $count = 0;
+
+        foreach ($session_ids as $session_id) {
+            if ($this->deleteById($session_id)) {
+                $count++;
+            }
+        }
+
+        return $count;
     }
 
     /**
