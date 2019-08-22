@@ -90,7 +90,9 @@ class Application extends BaseApplication
                 }
             }
             if ($this->session) {
-                $this->session->destroy();
+                foreach ($this->session as $session) {
+                    $session->destroy();
+                }
             }
         }
 
@@ -106,7 +108,7 @@ class Application extends BaseApplication
         $this->connection = null;
         $this->database = null;
         $this->entityManager = null;
-        $this->session = null;
+        $this->session = [];
         $this->httpRequest = null;
         $this->httpRouter = null;
         $this->viewRenderer = null;
@@ -129,10 +131,14 @@ class Application extends BaseApplication
      */
     public function getSession(string $name = 'default'): Session
     {
-        if ($this->session === null) {
-            $this->session = $this->useMemorySession() ? new Session(new Session\MemoryHandler()) : parent::getSession($name);
+        if ($name === 'default') {
+            if (!isset($this->implicit['session']) && $this->useMemorySession()) {
+                return $this->implicit['session'] = new Session(new Session\MemoryHandler());
+            }
+            return $this->implicit['session'];
         }
-        return $this->session;
+
+        return parent::getSession($name);
     }
 
     /**
