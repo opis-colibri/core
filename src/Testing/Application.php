@@ -124,12 +124,10 @@ class Application extends BaseApplication
         static::$instance = null;
     }
 
-
-
     /**
      * @inheritDoc
      */
-    public function getSession(string $name = 'default'): Session
+    /*public function getSession(string $name = 'default'): Session
     {
         if ($name === 'default') {
             if (!isset($this->implicit['session']) && $this->useMemorySession()) {
@@ -139,7 +137,7 @@ class Application extends BaseApplication
         }
 
         return parent::getSession($name);
-    }
+    }*/
 
     /**
      * @return ModuleManager

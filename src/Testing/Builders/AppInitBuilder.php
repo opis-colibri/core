@@ -154,18 +154,41 @@ class AppInitBuilder
     public function getSessionHandler(): ?ISessionHandler
     {
         if ($this->session === null) {
-            $this->session = $this->defaultSessionHandler();
+            $this->session = [
+                'handler' => $this->defaultSessionHandler(),
+                'config' => []
+            ];
         }
-        return $this->session;
+
+        return $this->session['handler'];
+    }
+
+    /**
+     * @return array
+     */
+    public function getSessionConfig(): array
+    {
+        if ($this->session === null) {
+            $this->session = [
+                'handler' => $this->defaultSessionHandler(),
+                'config' => []
+            ];
+        }
+
+        return $this->session['config'];
     }
 
     /**
      * @param ISessionHandler|null $session
+     * @param array $config
      * @return AppInitBuilder
      */
-    public function setSessionHandler(?ISessionHandler $session = null): self
+    public function setSessionHandler(?ISessionHandler $session = null, array $config = []): self
     {
-        $this->session = $session;
+        $this->session = [
+            'handler' => $session,
+            'config' => $config
+        ];
         return $this;
     }
 
