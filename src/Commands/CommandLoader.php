@@ -42,6 +42,7 @@ class CommandLoader implements CommandLoaderInterface
         $this->classes = [
                 'about' => About::class,
                 'collect' => Collect::class,
+                'setup' => Setup::class,
 
                 'modules' => Modules::class,
                 'install' => Install::class,
