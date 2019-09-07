@@ -33,7 +33,7 @@ use Opis\Cache\{
 use Opis\Events\{
     Event, EventDispatcher
 };
-use Opis\Http\{Request as HttpRequest, Request, Response as HttpResponse, Response};
+use Opis\Http\{Request as HttpRequest, Response as HttpResponse, Responses\HtmlResponse};
 use Opis\DataStore\Drivers\Memory as MemoryConfig;
 use Opis\Database\{
     Connection,
@@ -138,8 +138,11 @@ class Application implements IApplicationContainer
     /** @var null|callable[] */
     protected $assets = null;
 
-    /** @var Request|null */
+    /** @var HttpRequest|null */
     protected $httpRequest;
+
+    /** @var bool */
+    protected $isReady = false;
 
     /** @var  Application */
     protected static $instance;
@@ -245,9 +248,9 @@ class Application implements IApplicationContainer
     }
 
     /**
-     * @return Request
+     * @return HttpRequest
      */
-    public function getHttpRequest(): Request
+    public function getHttpRequest(): HttpRequest
     {
         return $this->httpRequest;
     }
@@ -722,6 +725,7 @@ class Application implements IApplicationContainer
     public function bootstrap(): self
     {
         if (!$this->info->installMode()) {
+            $this->isReady = true;
             $this->getApplicationInitializer()->init($this);
             $this->emit('system.init');
 
@@ -745,14 +749,15 @@ class Application implements IApplicationContainer
             }
         }
 
-        if ($installer === null) {
-            throw new \RuntimeException("No application installer was found");
-        }
+        $enabled = [];
 
-        $enabled = [$installer->name() => Module::ENABLED];
+        if ($installer !== null) {
+            $this->isReady = true;
+            $enabled[$installer->name()] = Module::ENABLED;
 
-        foreach ($manager->recursiveDependencies($installer) as $module) {
-            $enabled[$module->name()] = Module::ENABLED;
+            foreach ($manager->recursiveDependencies($installer) as $module) {
+                $enabled[$module->name()] = Module::ENABLED;
+            }
         }
 
         $this->getApplicationInitializer()->init($this);
@@ -768,9 +773,9 @@ class Application implements IApplicationContainer
      *
      * @param   HttpRequest|null $request
      *
-     * @return  Response
+     * @return  HttpResponse
      */
-    public function run(HttpRequest $request = null): Response
+    public function run(HttpRequest $request = null): HttpResponse
     {
         if ($request === null) {
             $request = HttpRequest::fromGlobals();
@@ -778,12 +783,18 @@ class Application implements IApplicationContainer
 
         $this->httpRequest = $request;
 
-        $context = new Context($request->getUri()->getPath(), $request);
-
-        $response = $this->getHttpRouter()->route($context);
-
-        if (!$response instanceof HttpResponse) {
-            $response = new HttpResponse($response);
+        if ($this->isReady) {
+            $context = new Context($request->getUri()->getPath(), $request);
+            $response = $this->getHttpRouter()->route($context);
+            if (!$response instanceof HttpResponse) {
+                $response = new HtmlResponse($response);
+            }
+        } else {
+            $view = new View('error.500', [
+                'status' => 500,
+                'message' => HttpResponse::HTTP_STATUS[500] ?? 'HTTP Error',
+            ]);
+            $response = new HtmlResponse($view, 500);
         }
 
         $this->flushResponse($request, $response);
@@ -1131,11 +1142,11 @@ class Application implements IApplicationContainer
     }
 
     /**
-     * @param Request $request
-     * @param Response $response
+     * @param HttpRequest $request
+     * @param HttpResponse $response
      * @param int $chunkSize
      */
-    protected function flushResponse(Request $request, Response $response, int $chunkSize = 8192)
+    protected function flushResponse(HttpRequest $request, HttpResponse $response, int $chunkSize = 8192)
     {
         if (PHP_SAPI === 'cli') {
             return;
