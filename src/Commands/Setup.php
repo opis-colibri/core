@@ -17,7 +17,6 @@
 
 namespace Opis\Colibri\Commands;
 
-use Opis\Colibri\Core\ModuleManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -49,13 +48,7 @@ class Setup extends Command
             return 1;
         }
 
-        $app = app();
-
-        $moduleManager = new ModuleManager($info->vendorDir(), function () use($app){
-            return $app->getConfig();
-        });
-
-        if ($this->hasInstaller($moduleManager)) {
+        if ($this->hasInstaller()) {
             $output->writeln('<error>The web application provides an installer module</error>');
             return 1;
         }
@@ -73,12 +66,11 @@ class Setup extends Command
     }
 
     /**
-     * @param ModuleManager $manager
      * @return bool
      */
-    private function hasInstaller(ModuleManager $manager): bool
+    private function hasInstaller(): bool
     {
-        foreach ($manager->modules() as $module) {
+        foreach (app()->getModules() as $module) {
             if ($module->isApplicationInstaller()) {
                 return true;
             }
