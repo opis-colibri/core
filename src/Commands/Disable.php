@@ -30,7 +30,9 @@ use function Opis\Colibri\Functions\{
 
 class Disable extends Command
 {
-
+    /**
+     * @inheritDoc
+     */
     protected function configure()
     {
         $this
@@ -42,15 +44,13 @@ class Disable extends Command
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
-     * @throws \Exception
+     * @inheritDoc
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (info()->installMode()) {
-            die('Opis Colibri is not installed' . PHP_EOL);
+            $output->writeln('<error>The web application was not setup</error>');
+            return 1;
         }
 
         $output->getFormatter()->setStyle('b-error', new OutputFormatterStyle('white', 'red', ['bold']));
@@ -96,5 +96,7 @@ class Disable extends Command
                 $output->writeln('<error>Module <b-error>' . $moduleName . '</b-error> could not be disabled.</error>');
             }
         }
+
+        return 0;
     }
 }

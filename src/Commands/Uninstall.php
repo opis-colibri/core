@@ -29,7 +29,9 @@ use function Opis\Colibri\Functions\{
 
 class Uninstall extends Command
 {
-
+    /**
+     * @inheritDoc
+     */
     protected function configure()
     {
         $this
@@ -40,15 +42,13 @@ class Uninstall extends Command
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
-     * @throws \Exception
+     * @inheritDoc
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (info()->installMode()) {
-            die('Opis Colibri is not installed' . PHP_EOL);
+            $output->writeln('<error>The web application was not setup</error>');
+            return 1;
         }
 
         $output->getFormatter()->setStyle('b-error', new OutputFormatterStyle('white', 'red', ['bold']));
@@ -84,5 +84,7 @@ class Uninstall extends Command
                 $output->writeln('<error>Module <b-error>' . $moduleName . '</b-error> could not be uninstalled.</error>');
             }
         }
+
+        return 0;
     }
 }

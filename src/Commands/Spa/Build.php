@@ -33,6 +33,9 @@ use Symfony\Component\Console\{Command\Command,
 
 class Build extends Command
 {
+    /**
+     * @inheritDoc
+     */
     protected function configure()
     {
         $this
@@ -42,6 +45,9 @@ class Build extends Command
             ->addOption('clean', null, InputOption::VALUE_NONE, 'Clean build');
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $apps = $input->getArgument('apps');

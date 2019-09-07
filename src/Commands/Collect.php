@@ -26,7 +26,9 @@ use function Opis\Colibri\Functions\{
 
 class Collect extends Command
 {
-
+    /**
+     * @inheritDoc
+     */
     protected function configure()
     {
         $this
@@ -34,6 +36,9 @@ class Collect extends Command
             ->setDescription('Collect items');
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (info()->installMode()) {
