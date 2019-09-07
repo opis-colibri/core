@@ -44,7 +44,7 @@ class Setup extends Command
         $info = info();
 
         if (!$info->installMode()) {
-            $output->writeln('<error>The web application is already setup</error>');
+            $output->writeln('<error>The web application was already setup</error>');
             return 1;
         }
 
