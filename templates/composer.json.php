@@ -26,10 +26,12 @@
         "module": {
             "title": "<?= $title ?>",
 <?php if ($assets): ?>
-            "assets": "<?= $assets ?>",
+            "assets": "assets",
 <?php endif; ?>
-            "collector": "<?= $namespace ?>\\Collector",
-            "installer": "<?= $namespace ?>\\Installer"
+<?php if ($installer): ?>
+            "installer": "<?= $namespace ?>\\Installer",
+<?php endif; ?>
+            "collector": "<?= $namespace ?>\\Collector"
         },
         "branch-alias": {
             "dev-master": "1.0.x-dev"

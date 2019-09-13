@@ -35,11 +35,11 @@ class CreateModule extends Command
         $this
             ->setName('create-module')
             ->setDescription('Create local module')
-            ->addArgument('module', InputArgument::REQUIRED, 'Module name')
+            ->addArgument('module', InputArgument::REQUIRED, "Module's name")
             ->addOption('title', null,InputOption::VALUE_REQUIRED, "Module's title")
             ->addOption('description', null,InputOption::VALUE_REQUIRED, "Module's description")
-            ->addOption('namespace', null,InputOption::VALUE_REQUIRED, "Module's namespace")
-            ->addOption('assets', null,InputOption::VALUE_REQUIRED, "Create assets folder");
+            ->addOption('installer', null,InputOption::VALUE_NONE, "Create installer class")
+            ->addOption('assets', null,InputOption::VALUE_NONE, "Create assets folder");
     }
 
     /**
@@ -70,11 +70,8 @@ class CreateModule extends Command
         }
 
         $vendor = 'local';
-
-        if (null === $namespace = $input->getOption('namespace')) {
-            $namespace = convertToCase($vendor, 'PascalCase', 'kebab-case')
-                . '\\' .convertToCase($module, 'PascalCase', 'kebab-case');
-        }
+        $namespace = convertToCase($vendor, 'PascalCase', 'kebab-case')
+            . '\\' .convertToCase($module, 'PascalCase', 'kebab-case');
 
         if (null === $title = $input->getOption('title')) {
             $title = ucfirst(implode(' ', explode('-', $module)));
@@ -82,19 +79,14 @@ class CreateModule extends Command
 
         $description = $input->getOption('description') ?? 'Local module';
 
-        $assets = $input->getOption('assets');
-
-        if ($assets !== null && !preg_match($regex, $assets)) {
-            $assets = null;
-        }
-
         $args = [
             'vendor' => $vendor,
             'module' => $module,
             'title' => trim(json_encode($title), '"'),
             'description' => trim(json_encode($description), '"'),
             'namespace' => trim(json_encode($namespace), '"'),
-            'assets' => $assets,
+            'assets' => $input->hasOption('assets'),
+            'installer' => $input->hasOption('installer')
         ];
 
         $data = $this->template(__DIR__ . '/../../templates/composer.json.php', $args);
@@ -116,22 +108,25 @@ class CreateModule extends Command
             return 1;
         }
 
-        $data = $this->template(__DIR__ . '/../../templates/Installer.php', ['namespace' => $namespace]);
+        if ($input->hasOption('installer')) {
+            $data = $this->template(__DIR__ . '/../../templates/Installer.php', ['namespace' => $namespace]);
 
-        if (!file_put_contents($dir . '/src/Installer.php', $data)) {
-            $output->writeln('<error>Unable to create Installer.php file</error>');
-            return 1;
+            if (!file_put_contents($dir . '/src/Installer.php', $data)) {
+                $output->writeln('<error>Unable to create Installer.php file</error>');
+                return 1;
+            }
         }
 
-        if ($assets !== null) {
-            if (!@mkdir($dir . '/' . $assets, 0775)) {
+
+        if ($input->hasOption('assets')) {
+            if (!@mkdir($dir . '/assets', 0775)) {
                 $output->writeln('<error>Could not create assets directory</error>');
                 return 1;
             }
 
             $data = $this->template(__DIR__ . '/../../templates/package.json.php', ['vendor' => $vendor, 'module' => $module]);
 
-            if (!file_put_contents($dir . '/' . $assets . '/package.json', $data)) {
+            if (!file_put_contents($dir . '/assets/package.json', $data)) {
                 $output->writeln('<error>Unable to create package.json file</error>');
                 return 1;
             }
