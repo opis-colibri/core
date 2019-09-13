@@ -79,14 +79,17 @@ class CreateModule extends Command
 
         $description = $input->getOption('description') ?? 'Local module';
 
+        $assets = $input->getOption('assets');
+        $installer = $input->getOption('installer');
+
         $args = [
             'vendor' => $vendor,
             'module' => $module,
             'title' => trim(json_encode($title), '"'),
             'description' => trim(json_encode($description), '"'),
             'namespace' => trim(json_encode($namespace), '"'),
-            'assets' => $input->hasOption('assets'),
-            'installer' => $input->hasOption('installer')
+            'assets' => $assets,
+            'installer' => $installer,
         ];
 
         $data = $this->template(__DIR__ . '/../../templates/composer.json.php', $args);
@@ -108,7 +111,7 @@ class CreateModule extends Command
             return 1;
         }
 
-        if ($input->hasOption('installer')) {
+        if ($installer) {
             $data = $this->template(__DIR__ . '/../../templates/Installer.php', ['namespace' => $namespace]);
 
             if (!file_put_contents($dir . '/src/Installer.php', $data)) {
@@ -118,7 +121,7 @@ class CreateModule extends Command
         }
 
 
-        if ($input->hasOption('assets')) {
+        if ($assets) {
             if (!@mkdir($dir . '/assets', 0775)) {
                 $output->writeln('<error>Could not create assets directory</error>');
                 return 1;
