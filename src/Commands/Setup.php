@@ -53,7 +53,7 @@ class Setup extends Command
             return 1;
         }
 
-        $source = __DIR__ . '/../../init.php.stub';
+        $source = __DIR__ . '/../../templates/init.php';
         $dest = $info->initFile();
 
         if (!copy($source, $dest)) {

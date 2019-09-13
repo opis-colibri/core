@@ -43,6 +43,7 @@ class CommandLoader implements CommandLoaderInterface
                 'about' => About::class,
                 'collect' => Collect::class,
                 'setup' => Setup::class,
+                'create-module' => CreateModule::class,
 
                 'modules' => Modules::class,
                 'install' => Install::class,

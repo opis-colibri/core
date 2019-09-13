@@ -33,19 +33,19 @@ return new class implements IApplicationInitializer
      */
     public function init(IApplicationContainer $app)
     {
-        // Uncomment and set your timezone
+        // Timezone settings
         //date_default_timezone_set('UTC');
 
         $dir = $app->getAppInfo()->writableDir();
 
-        // Setup database connection
-        // $connection = new \Opis\Database\Connection('dsn', 'user', 'password');
-        
         $app->setCacheDriver(new CacheDriver($dir . DIRECTORY_SEPARATOR . 'cache'))
             ->setConfigDriver(new ConfigDriver($dir . DIRECTORY_SEPARATOR . 'config', '', true))
             ->setTranslatorDriver(new TranslatorDriver($dir . DIRECTORY_SEPARATOR . 'intl'))
             ->setDefaultLogger(new Logger())
-            //->setDatabaseConnection($connection)
             ->setSessionHandler(new SessionHandler($dir . DIRECTORY_SEPARATOR . 'session'));
+
+        // Setup database connection
+        // $connection = new \Opis\Database\Connection('dsn', 'user', 'password');
+        // $app->setDatabaseConnection($connection);
     }
 };
