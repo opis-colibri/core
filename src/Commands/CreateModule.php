@@ -91,9 +91,9 @@ class CreateModule extends Command
         $args = [
             'vendor' => $vendor,
             'module' => $module,
-            'title' => $title,
-            'description' => $description,
-            'namespace' => $namespace,
+            'title' => trim(json_encode($title), '"'),
+            'description' => trim(json_encode($description), '"'),
+            'namespace' => trim(json_encode($namespace), '"'),
             'assets' => $assets,
         ];
 
@@ -109,14 +109,14 @@ class CreateModule extends Command
             return 1;
         }
 
-        $data = $this->template(__DIR__ . '/../../templates/Collector.php', $args);
+        $data = $this->template(__DIR__ . '/../../templates/Collector.php', ['namespace' => $namespace]);
 
         if (!file_put_contents($dir . '/src/Collector.php', $data)) {
             $output->writeln('<error>Unable to create Collector.php file</error>');
             return 1;
         }
 
-        $data = $this->template(__DIR__ . '/../../templates/Installer.php', $args);
+        $data = $this->template(__DIR__ . '/../../templates/Installer.php', ['namespace' => $namespace]);
 
         if (!file_put_contents($dir . '/src/Installer.php', $data)) {
             $output->writeln('<error>Unable to create Installer.php file</error>');
@@ -129,7 +129,7 @@ class CreateModule extends Command
                 return 1;
             }
 
-            $data = $this->template(__DIR__ . '/../../templates/package.json.php', $args);
+            $data = $this->template(__DIR__ . '/../../templates/package.json.php', ['vendor' => $vendor, 'module' => $module]);
 
             if (!file_put_contents($dir . '/' . $assets . '/package.json', $data)) {
                 $output->writeln('<error>Unable to create package.json file</error>');
@@ -152,16 +152,9 @@ class CreateModule extends Command
         if (!isset($composer['repositories']['local'])) {
             return null;
         }
-        $file = realpath(info()->rootDir() . '/' . trim($composer['repositories']['local'], '*/'));
+        $file = realpath(info()->rootDir() . '/' . trim($composer['repositories']['local']['url'], '*/'));
 
         return $file ? $file : null;
-    }
-
-    private function createAssets(string $vendor, $module, string $dir, ?string $assets): bool
-    {
-        if ($assets === null) {
-            return true;
-        }
     }
 
     /**

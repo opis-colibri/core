@@ -2,7 +2,7 @@
     "name": "<?= $vendor ?>/<?= $module ?>",
     "type": "opis-colibri-module",
     "license": "proprietary",
-    "description": "<?= json_encode($description) ?>",
+    "description": "<?= $description ?>",
     "keywords": [
         "opis",
         "colibri",
@@ -11,7 +11,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "<?= json_encode($namespace) ?>\\": "src/"
+            "<?= $namespace ?>\\": "src/"
         }
     },
     "require": {
@@ -24,12 +24,12 @@
     "minimum-stability": "dev",
     "extra": {
         "module": {
-            "title": "<?= json_encode($title) ?>",
-            <?php if ($assets): ?>
-            "assets": "<?= json_encode($assets) ?>"
-            <?php endif; ?>
-            "collector": "<?= json_encode($namespace) ?>\\Collector",
-            "installer": "<?= json_encode($namespace) ?>\\Installer"
+            "title": "<?= $title ?>",
+<?php if ($assets): ?>
+            "assets": "<?= $assets ?>",
+<?php endif; ?>
+            "collector": "<?= $namespace ?>\\Collector",
+            "installer": "<?= $namespace ?>\\Installer"
         },
         "branch-alias": {
             "dev-master": "1.0.x-dev"
