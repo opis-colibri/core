@@ -54,6 +54,7 @@ class CommandLoader implements CommandLoaderInterface
                 'assets:build' => Assets\Build::class,
                 'assets:yarn' => Assets\Yarn::class,
                 'spa:build' => Spa\Build::class,
+                'session:gc'=> Session\GC::class,
             ] + $classes;
 
         $this->builders = array_filter($builders, function ($callable) {
