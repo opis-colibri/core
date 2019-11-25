@@ -413,11 +413,7 @@ class Application implements IApplicationContainer
     public function getSessionCookieContainer(): CookieContainer
     {
         if ($this->sessionCookieContainer === null) {
-            if ($this->info->cliMode()) {
-                $this->sessionCookieContainer = new CookieContainer(null);
-            } else {
-                $this->sessionCookieContainer = new CookieContainer($this->getHttpRequest());
-            }
+            $this->sessionCookieContainer = new CookieContainer($this->info->cliMode() ? null : $this->getHttpRequest());
         }
 
         return $this->sessionCookieContainer;
