@@ -22,11 +22,16 @@ use Opis\Session\ICookieContainer;
 
 class CookieContainer implements ICookieContainer
 {
+    /** @var Request|null */
     private $request;
 
     private $cookies = [];
 
-    public function __construct(Request $request)
+    /**
+     * CookieContainer constructor.
+     * @param Request|null $request
+     */
+    public function __construct(?Request $request)
     {
         $this->request = $request;
     }
@@ -36,6 +41,10 @@ class CookieContainer implements ICookieContainer
      */
     public function hasCookie(string $name): bool
     {
+        if ($this->request === null) {
+            return false;
+        }
+
         return $this->request->hasCookie($name);
     }
 
@@ -44,6 +53,10 @@ class CookieContainer implements ICookieContainer
      */
     public function getCookie(string $name): ?string
     {
+        if ($this->request === null) {
+            return null;
+        }
+
         return $this->request->getCookie($name);
     }
 
