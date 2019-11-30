@@ -101,7 +101,7 @@ class MemoryHandler implements ISessionHandler
     /**
      * @inheritDoc
      */
-    public function gc(): bool
+    public function gc(int $maxLifeTime): bool
     {
         return true;
     }
