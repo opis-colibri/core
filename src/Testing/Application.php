@@ -17,7 +17,6 @@
 
 namespace Opis\Colibri\Testing;
 
-use Opis\Colibri\Session;
 use Opis\Colibri\Application as BaseApplication;
 use Opis\Colibri\Core\{IApplicationInitializer, AppInfo, ModuleManager};
 use Opis\Colibri\Rendering\TemplateStream;
@@ -125,21 +124,6 @@ class Application extends BaseApplication
     }
 
     /**
-     * @inheritDoc
-     */
-    /*public function getSession(string $name = 'default'): Session
-    {
-        if ($name === 'default') {
-            if (!isset($this->implicit['session']) && $this->useMemorySession()) {
-                return $this->implicit['session'] = new Session(new Session\MemoryHandler());
-            }
-            return $this->implicit['session'];
-        }
-
-        return parent::getSession($name);
-    }*/
-
-    /**
      * @return ModuleManager
      */
     protected function moduleManager(): ModuleManager
@@ -167,14 +151,6 @@ class Application extends BaseApplication
     {
         $this->collector = null;
         parent::clearCachedObjects();
-    }
-
-    /**
-     * @return bool
-     */
-    protected function useMemorySession(): bool
-    {
-        return true;
     }
 
     /**

@@ -54,7 +54,7 @@ class ApplicationInitializer implements IApplicationInitializer
 
         $app->setConfigDriver($builder->getConfigDriver());
         $app->setCacheDriver($builder->getCacheDriver());
-        $app->setSessionHandler($builder->getSessionHandler());
+        $app->setSessionHandler($builder->getSessionHandler(), $builder->getSessionConfig());
         $app->setDefaultLanguage($builder->getLanguage());
         $app->setTranslatorDriver($builder->getTranslator());
         $app->setDefaultLogger($builder->getLogger());

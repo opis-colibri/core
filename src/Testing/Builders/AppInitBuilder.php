@@ -17,17 +17,16 @@
 
 namespace Opis\Colibri\Testing\Builders;
 
-use Opis\Colibri\Session\MemoryHandler;
 use Opis\Session\ISessionHandler;
-use Opis\Colibri\Testing\ApplicationInitializer;
-use Opis\Intl\Locale;
-use SessionHandlerInterface;
+use Opis\Colibri\Session\MemoryHandler;
 use Opis\Colibri\Core\IApplicationInitializer;
+use Opis\Colibri\Testing\ApplicationInitializer;
 use Opis\Database\Connection;
-use Opis\Intl\Translator\IDriver;
 use Opis\DataStore\{IDataStore, Drivers\Memory as DefaultConfig};
 use Psr\Log\{LoggerInterface, NullLogger as DefaultLogger};
 use Opis\Cache\{CacheInterface, Drivers\Memory as DefaultCache};
+use Opis\Intl\Locale;
+use Opis\Intl\Translator\IDriver;
 use Opis\Intl\Translator\{Drivers\Memory as DefaultTranslator, IDriver as TranslatorDriver};
 
 class AppInitBuilder
@@ -44,8 +43,11 @@ class AppInitBuilder
     /** @var null|CacheInterface */
     protected $cache = null;
 
-    /** @var null|SessionHandlerInterface */
-    protected $session = null;
+    /** @var null|ISessionHandler */
+    protected $sessionHandler = null;
+
+    /** @var null|array */
+    protected $sessionConfig = null;
 
     /** @var null|IDriver */
     protected $translator = null;
@@ -153,14 +155,11 @@ class AppInitBuilder
      */
     public function getSessionHandler(): ?ISessionHandler
     {
-        if ($this->session === null) {
-            $this->session = [
-                'handler' => $this->defaultSessionHandler(),
-                'config' => []
-            ];
+        if ($this->sessionHandler === null) {
+            $this->sessionHandler = $this->defaultSessionHandler();
         }
 
-        return $this->session['handler'];
+        return $this->sessionHandler;
     }
 
     /**
@@ -168,27 +167,32 @@ class AppInitBuilder
      */
     public function getSessionConfig(): array
     {
-        if ($this->session === null) {
-            $this->session = [
-                'handler' => $this->defaultSessionHandler(),
-                'config' => []
-            ];
+        if ($this->sessionConfig === null) {
+            $this->sessionConfig = $this->defaultSessionConfig();
         }
 
-        return $this->session['config'];
+        return $this->sessionConfig;
     }
 
     /**
      * @param ISessionHandler|null $session
-     * @param array $config
      * @return AppInitBuilder
      */
-    public function setSessionHandler(?ISessionHandler $session = null, array $config = []): self
+    public function setSessionHandler(?ISessionHandler $session = null): self
     {
-        $this->session = [
-            'handler' => $session,
-            'config' => $config
-        ];
+        $this->sessionHandler = $session;
+
+        return $this;
+    }
+
+    /**
+     * @param array|null $config
+     * @return AppInitBuilder
+     */
+    public function setSessionConfig(?array $config = null): self
+    {
+        $this->sessionConfig = $config;
+
         return $this;
     }
 
@@ -293,6 +297,16 @@ class AppInitBuilder
     protected function defaultSessionHandler(): ISessionHandler
     {
         return new MemoryHandler();
+    }
+
+    /**
+     * @return array
+     */
+    protected function defaultSessionConfig(): array
+    {
+        return [
+
+        ];
     }
 
     /**

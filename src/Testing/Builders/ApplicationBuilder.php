@@ -431,7 +431,7 @@ class ApplicationBuilder
      */
     protected function createAutoloader(array $map): callable
     {
-        return function (string $class) use ($map): bool {
+        return static function (string $class) use ($map): bool {
             $class = ltrim($class, '\\');
 
             foreach ($map as $dir => $namespace) {
