@@ -305,7 +305,16 @@ class AppInitBuilder
     protected function defaultSessionConfig(): array
     {
         return [
-
+            'flash_slot' => '__flash__',
+            'gc_probability' => 0,
+            'gc_divisor' => 100,
+            'gc_maxlifetime' => 10,
+            'cookie_name' => 'PHPSESSID',
+            'cookie_lifetime' => 0,
+            'cookie_path' => '/',
+            'cookie_domain' => '',
+            'cookie_secure' => false,
+            'cookie_httponly' => false,
         ];
     }
 

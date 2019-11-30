@@ -90,7 +90,9 @@ class Application extends BaseApplication
             }
             if ($this->session) {
                 foreach ($this->session as $session) {
-                    $session->destroy();
+                    if ($session) {
+                        $session->destroy();
+                    }
                 }
             }
         }
