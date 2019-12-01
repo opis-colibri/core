@@ -19,8 +19,8 @@ namespace Opis\Colibri\Commands\Assets;
 
 use Composer\Factory;
 use Composer\IO\ConsoleIO;
-use Opis\Colibri\{
-    Handlers\AssetHandler, PackageInstaller, Module
+use Opis\Colibri\Plugin\{
+    Handlers\AssetHandler, PackageInstaller, Settings
 };
 use Symfony\Component\Console\{
     Command\Command,
@@ -31,6 +31,7 @@ use Symfony\Component\Console\{
     Input\InputOption,
     Output\OutputInterface
 };
+use Opis\Colibri\Module;
 use Symfony\Component\Filesystem\Filesystem;
 use function Opis\Colibri\Functions\{
     info, app, module
@@ -66,8 +67,9 @@ class Build extends Command
         $appInfo = info();
         $rootDir = $appInfo->rootDir();
         $composerFile = $appInfo->composerFile();
+
         $composer = (new Factory())->createComposer($console, $composerFile, false, $rootDir);
-        $installer = new PackageInstaller($appInfo, $console, $composer);
+        $installer = new PackageInstaller($appInfo->getPluginSettings(), $console, $composer);
 
         $handler = null;
 

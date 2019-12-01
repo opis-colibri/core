@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Commands\Assets;
 
-use Opis\Colibri\YarnPackageManager;
+use Opis\Colibri\Plugin\YarnPackageManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;

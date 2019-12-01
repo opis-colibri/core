@@ -17,11 +17,12 @@
 
 namespace Opis\Colibri;
 
+use Opis\Colibri\Plugin\Settings;
+
 class AppInfo
 {
     const ROOT_DIR = 'root-dir';
     const PUBLIC_DIR = 'public-dir';
-    const ASSETS_DIR = 'assets-dir';
     const WRITABLE_DIR = 'writable-dir';
     const TEMP_DIR = 'temp-dir';
     const CLI_MODE = 'cli-mode';
@@ -41,6 +42,12 @@ class AppInfo
     /** @var  string */
     protected $rootDir;
 
+    /** @var Settings */
+    protected $pluginSettings;
+
+    /** @var null|array */
+    private $extra;
+
     /**
      * AppInfo constructor.
      * @param string $rootDir
@@ -54,7 +61,6 @@ class AppInfo
         $this->settings += [
             self::VENDOR_DIR => 'vendor',
             self::PUBLIC_DIR => 'public',
-            self::ASSETS_DIR => 'assets',
             self::WRITABLE_DIR => 'storage',
             self::TEMP_DIR => sys_get_temp_dir(),
             self::INIT_FILE => 'init.php',
@@ -79,7 +85,7 @@ class AppInfo
      */
     public function assetsDir(): string
     {
-        return $this->getFsPath(self::ASSETS_DIR);
+        return $this->getPluginSettings()->assetsDir();
     }
 
     /**
@@ -209,6 +215,22 @@ class AppInfo
     }
 
     /**
+     * @return Settings
+     */
+    public function getPluginSettings(): Settings
+    {
+        if ($this->pluginSettings === null) {
+            $settings = $this->getComposerExtra()['opis/colibri'] ?? [];
+            if (!is_array($settings)) {
+                $settings = [];
+            }
+            $this->pluginSettings = new Settings($this->rootDir, $settings);
+        }
+
+        return $this->pluginSettings;
+    }
+
+    /**
      * Clear cache
      */
     public function clearCache()
@@ -233,5 +255,17 @@ class AppInfo
         }
 
         return $this->cache[$name];
+    }
+
+    /**
+     * @return array
+     */
+    protected function getComposerExtra(): array
+    {
+        if ($this->extra === null) {
+            $this->extra = json_decode(file_get_contents($this->composerFile()), true);
+        }
+
+        return $this->extra;
     }
 }
