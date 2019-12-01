@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri;
 
-use Opis\Colibri\Core\Module;
+use Opis\Colibri\Module;
 use Throwable;
 
 abstract class Installer

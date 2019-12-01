@@ -19,7 +19,7 @@ namespace Opis\Colibri\Commands\Assets;
 
 use Composer\Factory;
 use Composer\IO\ConsoleIO;
-use Opis\Colibri\Core\{
+use Opis\Colibri\{
     Handlers\AssetHandler, PackageInstaller, Module
 };
 use Symfony\Component\Console\{

@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-use Opis\Colibri\Core\{
+use Opis\Colibri\{
     IApplicationInitializer,
     IApplicationContainer
 };

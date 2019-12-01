@@ -74,7 +74,7 @@ class Disable extends Command
             if (!$module->isEnabled()) {
                 $output->writeln('<warning>Module <b-warning>' . $moduleName . '</b-warning> is already disabled.</warning>');
                 continue;
-            };
+            }
 
             if ($module->isApplicationInstaller()) {
                 $output->writeln('<error>Module <b-error>' . $moduleName . '</b-error> is hidden and can\'t be disabled.');

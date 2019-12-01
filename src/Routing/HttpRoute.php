@@ -20,6 +20,7 @@ namespace Opis\Colibri\Routing;
 use Opis\Routing\Route;
 use Opis\HttpRouting\Route as BaseHttpRoute;
 use Opis\Colibri\Serializable\ControllerCallback;
+use RuntimeException;
 use function Opis\Colibri\Functions\{
     app, make
 };
@@ -69,7 +70,7 @@ class HttpRoute extends BaseHttpRoute
             $className = substr($className, 1);
             $class = $argResolver->getArgumentValue($className);
             if ($class === null) {
-                throw new \RuntimeException("Unknown controller variable '$className'");
+                throw new RuntimeException("Unknown controller variable '$className'");
             }
         } else {
             $class = $className;
@@ -79,7 +80,7 @@ class HttpRoute extends BaseHttpRoute
             $methodName = substr($methodName, 1);
             $method = $argResolver->getArgumentValue($methodName);
             if ($method === null) {
-                throw new \RuntimeException("Unknown controller variable '$methodName'");
+                throw new RuntimeException("Unknown controller variable '$methodName'");
             }
         } else {
             $method = $methodName;
@@ -180,7 +181,7 @@ class HttpRoute extends BaseHttpRoute
         $collection = $this->getRouteCollection();
         $mixins = $collection->getMixins();
         if (!isset($mixins[$name])) {
-            throw new \RuntimeException("Unknown mixin name " . $name);
+            throw new RuntimeException("Unknown mixin name " . $name);
         }
         $mixins[$name]($this, $config);
         return $this;

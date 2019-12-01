@@ -19,7 +19,7 @@ namespace Opis\Colibri\Collector;
 
 use ReflectionClass, ReflectionMethod, RuntimeException;
 use Opis\Colibri\{Application, Container, Collector, ItemCollector, Routing\HttpRouteCollection, Session};
-use Opis\Colibri\Core\Module;
+use Opis\Colibri\Module;
 use Opis\DataStore\IDataStore;
 use Opis\Colibri\Serializable\{
     AdvancedClassList,

@@ -1,5 +1,5 @@
 <?php
-/* ============================================================================
+/* ===========================================================================
  * Copyright 2018 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,17 +15,13 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Testing;
+namespace Opis\Colibri;
 
-use Opis\Colibri\AppInfo;
-
-class InstalledAppInfo extends AppInfo
+interface IApplicationInitializer
 {
     /**
-     * @return bool
+     * @param IApplicationContainer $container
+     * @return mixed
      */
-    public function installMode(): bool
-    {
-        return false;
-    }
+    public function init(IApplicationContainer $container);
 }

@@ -18,9 +18,10 @@
 namespace Opis\Colibri\Testing\Builders;
 
 use Opis\Session\ISessionHandler;
-use Opis\Colibri\Session\MemoryHandler;
-use Opis\Colibri\Core\IApplicationInitializer;
 use Opis\Colibri\Testing\ApplicationInitializer;
+use Opis\Intl\Locale;
+use SessionHandlerInterface;
+use Opis\Colibri\IApplicationInitializer;
 use Opis\Database\Connection;
 use Opis\DataStore\{IDataStore, Drivers\Memory as DefaultConfig};
 use Psr\Log\{LoggerInterface, NullLogger as DefaultLogger};

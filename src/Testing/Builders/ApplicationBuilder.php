@@ -17,8 +17,11 @@
 
 namespace Opis\Colibri\Testing\Builders;
 
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use SplFileInfo;
 use stdClass;
-use Opis\Colibri\Core\{Module, AppInfo, ModuleManager};
+use Opis\Colibri\{Module, AppInfo, ModuleManager};
 use Opis\Colibri\Testing\{Application, InstalledAppInfo};
 
 class ApplicationBuilder
@@ -117,12 +120,12 @@ class ApplicationBuilder
         $dir = $info->rootDir();
 
         if ($dir && is_dir($dir)) {
-            $files = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
-                \RecursiveIteratorIterator::CHILD_FIRST
+            $files = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
+                RecursiveIteratorIterator::CHILD_FIRST
             );
 
-            /** @var \SplFileInfo $fileInfo */
+            /** @var SplFileInfo $fileInfo */
             foreach ($files as $fileInfo) {
                 if ($fileInfo->isDir()) {
                     rmdir($fileInfo->getRealPath());
@@ -210,7 +213,7 @@ class ApplicationBuilder
     }
 
     /**
-     * @param string[] $dependencies
+     * @param string ...$dependencies
      * @return ApplicationBuilder
      */
     public function addDependencies(string ...$dependencies): self
@@ -220,7 +223,7 @@ class ApplicationBuilder
     }
 
     /**
-     * @param string[] $dependencies
+     * @param string ...$dependencies
      * @return ApplicationBuilder
      */
     public function removeDependencies(string ...$dependencies): self
@@ -299,7 +302,7 @@ class ApplicationBuilder
     }
 
     /**
-     * @param string[] $modules
+     * @param string ...$modules
      * @return ApplicationBuilder
      */
     public function markModulesAsUninstalled(string ...$modules): self
@@ -311,7 +314,7 @@ class ApplicationBuilder
     }
 
     /**
-     * @param string[] $modules
+     * @param string ...$modules
      * @return ApplicationBuilder
      */
     public function markModulesAsInstalled(string ...$modules): self
@@ -323,7 +326,7 @@ class ApplicationBuilder
     }
 
     /**
-     * @param string[] $modules
+     * @param string ...$modules
      * @return ApplicationBuilder
      */
     public function markModulesAsEnabled(string ...$modules): self

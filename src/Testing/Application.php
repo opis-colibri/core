@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Testing;
 
 use Opis\Colibri\Application as BaseApplication;
-use Opis\Colibri\Core\{IApplicationInitializer, AppInfo, ModuleManager};
+use Opis\Colibri\{IApplicationInitializer, AppInfo, ModuleManager};
 use Opis\Colibri\Rendering\TemplateStream;
 
 class Application extends BaseApplication
@@ -153,13 +153,5 @@ class Application extends BaseApplication
     {
         $this->collector = null;
         parent::clearCachedObjects();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function dumpAutoload(bool $quiet = false): int
-    {
-        return parent::dumpAutoload(true);
     }
 }

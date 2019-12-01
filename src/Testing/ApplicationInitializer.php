@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Testing;
 
-use Opis\Colibri\Core\{
+use Opis\Colibri\{
     IApplicationInitializer, IApplicationContainer
 };
 use Opis\Colibri\Testing\Builders\AppInitBuilder;

@@ -17,15 +17,15 @@
 
 namespace Opis\Colibri;
 
-use Opis\Session\{Handlers\File as SessionHandler, ISessionHandler};
+use RuntimeException;
 use Throwable;
+use Opis\Session\{Handlers\File as SessionHandler, ISessionHandler};
 use Opis\DataStore\IDataStore;
 use Composer\Package\CompletePackageInterface;
 use Psr\Log\{
     NullLogger,
     LoggerInterface
 };
-use Symfony\Component\Console\{Input\ArrayInput, Output\NullOutput};
 use Opis\Cache\{
     CacheInterface,
     Drivers\Memory as MemoryDriver
@@ -45,18 +45,19 @@ use Opis\Routing\Context;
 use Opis\Validation\Formatter;
 use Opis\View\ViewRenderer;
 use Opis\Intl\Translator\IDriver as TranslatorDriver;
-use Opis\Colibri\Core\{Module, AppInfo, IApplicationInitializer, IApplicationContainer, ModuleManager, ModuleNotifier};
 use Opis\Colibri\Rendering\{
     CallbackTemplateHandler,
     TemplateStream,
     ViewEngine
 };
-use Opis\Colibri\{Session\CookieContainer,
+use Opis\Colibri\{
+    Session\CookieContainer,
     Util\CSRFToken,
     Validation\Validator,
     Validation\RuleCollection,
     Routing\HttpRouter,
-    Collector\Manager as CollectorManager};
+    Collector\Manager as CollectorManager
+};
 
 class Application implements IApplicationContainer
 {
@@ -65,9 +66,6 @@ class Application implements IApplicationContainer
 
     /** @var null|ModuleManager */
     protected $moduleManager = null;
-
-    /** @var null|ModuleNotifier */
-    protected $moduleNotifier = null;
 
     /** @var  CollectorManager */
     protected $collector;
@@ -373,7 +371,7 @@ class Application implements IApplicationContainer
         if (!isset($this->cache[$storage])) {
             if ($storage === 'default') {
                 if (!isset($this->implicit['cache'])) {
-                    throw new \RuntimeException('The default cache storage was not set');
+                    throw new RuntimeException('The default cache storage was not set');
                 }
                 $this->cache[$storage] = $this->implicit['cache'];
             } else {
@@ -395,7 +393,7 @@ class Application implements IApplicationContainer
         if (!isset($this->session[$name])) {
             if ($name === 'default') {
                 if (!isset($this->implicit['session'])) {
-                    throw new \RuntimeException('The default session handler was not set');
+                    throw new RuntimeException('The default session handler was not set');
                 }
                 $session = $this->implicit['session'];
                 $this->session[$name] = new Session($session['handler'], $session['config']);
@@ -431,7 +429,7 @@ class Application implements IApplicationContainer
         if (!isset($this->config[$driver])) {
             if ($driver === 'default') {
                 if (!isset($this->implicit['config'])) {
-                    throw new \RuntimeException('The default config storage was not set');
+                    throw new RuntimeException('The default config storage was not set');
                 }
                 $this->config[$driver] = $this->implicit['config'];
             } else {
@@ -453,7 +451,7 @@ class Application implements IApplicationContainer
 
     /**
      * @param string $name
-     * @throws  \RuntimeException
+     * @throws  RuntimeException
      * @return  Connection
      */
     public function getConnection(string $name = 'default'): Connection
@@ -525,7 +523,7 @@ class Application implements IApplicationContainer
         if (!isset($this->loggers[$logger])) {
             if ($logger === 'default') {
                 if (!isset($this->implicit['logger'])) {
-                    throw new \RuntimeException('The default logger was not set');
+                    throw new RuntimeException('The default logger was not set');
                 }
                 $this->loggers[$logger] = $this->implicit['logger'];
             } else {
@@ -742,7 +740,7 @@ class Application implements IApplicationContainer
                 if ($installer !== null) {
                     $formatText = '%s was defined as an application installer before %s';
                     $formatArgs = [$installer->name(), $module->name()];
-                    throw new \RuntimeException(vsprintf($formatText, $formatArgs));
+                    throw new RuntimeException(vsprintf($formatText, $formatArgs));
                 }
 
                 $installer = $module;
@@ -959,8 +957,6 @@ class Application implements IApplicationContainer
         };
 
         $callback = function (Module $module) use ($recollect) {
-            $this->notify($module, 'enabled', true);
-
             if ($recollect) {
                 $this->getCollector()->recollect();
             }
@@ -1025,8 +1021,6 @@ class Application implements IApplicationContainer
         };
 
         $callback = function (Module $module) use ($recollect) {
-            $this->notify($module, 'enabled', false);
-
             if ($recollect) {
                 $this->getCollector()->recollect();
             }
@@ -1084,61 +1078,6 @@ class Application implements IApplicationContainer
     protected function emit(string $name, bool $cancelable = false): Event
     {
         return $this->getEventDispatcher()->emit($name, $cancelable);
-    }
-
-    /**
-     * @param Module $module
-     * @param string $status
-     * @param bool $value
-     * @param bool $overwrite
-     * @return bool
-     */
-    protected function notify(Module $module, string $status, bool $value, bool $overwrite = false): bool
-    {
-        if ($this->moduleNotifier === null) {
-            $this->moduleNotifier = new ModuleNotifier($this->info->writableDir());
-        }
-
-        if ($this->moduleNotifier->write($module->name(), $status, $value, $overwrite)) {
-            return $this->dumpAutoload() === 0;
-        }
-
-        return false;
-    }
-
-    /**
-     * @param bool $quiet
-     * @return int
-     */
-    protected function dumpAutoload(bool $quiet = false): int
-    {
-        if (PHP_SAPI !== 'cli') {
-            if (getenv('COMPOSER_HOME') === false && function_exists('posix_getpwuid')) {
-                /** @noinspection PhpComposerExtensionStubsInspection */
-                $dir = posix_getpwuid(fileowner($this->info->rootDir()))['dir'];
-                putenv('COMPOSER_HOME=' . $dir . DIRECTORY_SEPARATOR . '.composer');
-            }
-        }
-
-        $cwd = getcwd();
-        chdir($this->info->rootDir());
-        $console = new \Composer\Console\Application();
-        $console->setAutoExit(false);
-
-        try {
-            $command = ['command' => 'dump-autoload'];
-            if ($quiet) {
-                $command[] = '--quiet';
-            }
-
-            return $console->run(new ArrayInput($command), $quiet ? new NullOutput() : null);
-        } catch (Throwable $e) {
-            $this->getLog()->error($e->getMessage());
-        } finally {
-            chdir($cwd);
-        }
-
-        return -1;
     }
 
     /**

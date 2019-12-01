@@ -20,7 +20,7 @@ namespace Opis\Colibri\Functions;
 use Opis\Cache\CacheInterface;
 use Opis\Colibri\{Alerts,
     Application,
-    Core\AppInfo,
+    AppInfo,
     Session,
     View,
     Validation\Validator,
@@ -47,7 +47,7 @@ use Opis\Http\Responses\{
 };
 use Opis\View\IView;
 use Psr\Log\LoggerInterface;
-use Opis\Colibri\Core\Module;
+use Opis\Colibri\Module;
 
 /**
  * @return Application
