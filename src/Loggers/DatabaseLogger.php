@@ -25,8 +25,10 @@ class DatabaseLogger extends AbstractLogger
 {
     /** @var Database */
     protected $db;
+
     /** @var string */
     protected $table;
+
     /** @var array */
     protected $columns;
 
@@ -40,11 +42,11 @@ class DatabaseLogger extends AbstractLogger
         $this->db = new Database($connection);
         $this->table = $table;
         $this->columns = $columns + [
-                'level' => 'level',
-                'message' => 'message',
-                'context' => 'context',
-                'date' => 'date',
-            ];
+            'level' => 'level',
+            'message' => 'message',
+            'context' => 'context',
+            'date' => 'date',
+        ];
     }
 
     /**
