@@ -17,16 +17,15 @@
 
 namespace Opis\Colibri\Testing\Builders;
 
+use Opis\Colibri\Session\MemoryHandler;
 use Opis\Session\ISessionHandler;
 use Opis\Colibri\Testing\ApplicationInitializer;
 use Opis\Intl\Locale;
-use SessionHandlerInterface;
 use Opis\Colibri\IApplicationInitializer;
 use Opis\Database\Connection;
 use Opis\DataStore\{IDataStore, Drivers\Memory as DefaultConfig};
 use Psr\Log\{LoggerInterface, NullLogger as DefaultLogger};
 use Opis\Cache\{CacheInterface, Drivers\Memory as DefaultCache};
-use Opis\Intl\Locale;
 use Opis\Intl\Translator\IDriver;
 use Opis\Intl\Translator\{Drivers\Memory as DefaultTranslator, IDriver as TranslatorDriver};
 
