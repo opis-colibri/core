@@ -117,7 +117,6 @@ class Application extends BaseApplication
         $this->eventDispatcher = null;
         $this->validator = null;
         $this->collectorList = null;
-        $this->alerts = null;
         $this->config = null;
 
         TemplateStream::clearCache();

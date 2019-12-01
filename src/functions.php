@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Functions;
 
 use Opis\Cache\CacheInterface;
-use Opis\Colibri\{Alerts,
+use Opis\Colibri\{
     Application,
     AppInfo,
     Session,
@@ -271,14 +271,6 @@ function logger(string $logger = 'default'): LoggerInterface
 function session(string $name = 'default'): Session
 {
     return Application::getInstance()->getSession($name);
-}
-
-/**
- * @return Alerts
- */
-function alerts(): Alerts
-{
-    return Application::getInstance()->getAlerts();
 }
 
 /**

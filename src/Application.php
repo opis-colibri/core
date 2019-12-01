@@ -130,8 +130,6 @@ class Application implements IApplicationContainer
     /** @var  array|null */
     protected $collectorList;
 
-    /** @var Alerts|null */
-    protected $alerts;
 
     /** @var null|callable[] */
     protected $assets = null;
@@ -273,9 +271,6 @@ class Application implements IApplicationContainer
             $this->viewRenderer->handle('error.{error}', function ($error) {
                 return TemplateStream::url('callback', '\Opis\Colibri\Rendering\Template::error' . $error, 'php');
             }, -100)->where('error', '401|403|404|405|500|503');
-            $this->viewRenderer->handle('alerts', function () {
-                return TemplateStream::url('callback', '\Opis\Colibri\Rendering\Template::alerts', 'php');
-            }, -100);
         }
 
         return $this->viewRenderer;
@@ -568,18 +563,6 @@ class Application implements IApplicationContainer
         }
 
         return $this->collector;
-    }
-
-    /**
-     * @return Alerts
-     */
-    public function getAlerts(): Alerts
-    {
-        if ($this->alerts === null) {
-            $this->alerts = new Alerts();
-        }
-
-        return $this->alerts;
     }
 
     /**

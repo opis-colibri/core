@@ -70,43 +70,6 @@ class Template
     /**
      * @return string
      */
-    public static function alerts()
-    {
-        return <<<'TEMPLATE'
-<?php if($has_alerts): ?>
-<?php $messages = [
-    'alert-info' => $info,
-    'alert-success' => $success,
-    'alert-warning' => $warning,
-    'alert-danger' => $error,
-];?>
-<div class="opis-colibri-alerts">
-<?php foreach($messages as $class => $type): ?>
-    <?php if($type): ?>
-        <div class="alert <?= $class ?>" role="alert">
-            <?php if($dismissible): ?>
-           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-             <span aria-hidden="true">&times;</span>
-           </button>
-            <?php endif; ?>
-            <ul>
-            <?php foreach($type as $message): ?>
-                <li>
-                    <?= $message ?>
-                </li>
-            <?php endforeach; ?>
-            </ul>
-        </div>
-    <?php endif; ?>
-<?php endforeach;?>
-</div>
-<?php endif; ?>
-TEMPLATE;
-    }
-
-    /**
-     * @return string
-     */
     public static function error()
     {
         return <<<'TEMPLATE'
