@@ -543,7 +543,6 @@ class ApplicationBuilder
         return new InstalledAppInfo($rootDir, [
             AppInfo::VENDOR_DIR => $vendorDir,
             AppInfo::PUBLIC_DIR => 'public',
-            AppInfo::ASSETS_DIR => 'assets',
             AppInfo::WRITABLE_DIR => 'storage',
             AppInfo::TEMP_DIR => 'tmp',
         ]);
