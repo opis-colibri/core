@@ -17,9 +17,9 @@
 
 namespace Opis\Colibri;
 
-use Opis\Events\Event;
+use Opis\Events\Event as BaseEvent;
 
-class DataEvent extends Event
+class Event extends BaseEvent
 {
     /** @var mixed */
     private $data;
