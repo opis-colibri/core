@@ -41,7 +41,6 @@ use Opis\View\{
 };
 use Opis\Cache\CacheInterface;
 use Psr\Log\LoggerInterface;
-use function Opis\Colibri\Functions\convertToCase;
 
 class Manager
 {
@@ -390,6 +389,13 @@ class Manager
 
         $this->collectorsIncluded = true;
 
+        $invertedList = [];
+        $collectorList = $this->app->getCollectorList();
+
+        foreach ($collectorList as $key => $value) {
+            $invertedList[$value['class']] = $key;
+        }
+
         foreach ($this->app->getModules() as $module) {
 
             if (!$module->isEnabled() || $module->collector() === null) {
@@ -404,35 +410,12 @@ class Manager
                 continue;
             }
 
-            $this->doCollect($module, $instance, $reflection, false);
+            $this->doCollect($module, $instance, $reflection, $collectorList, $invertedList);
         }
     }
 
-    private function doCollect(Module $module, Collector $instance, ReflectionClass $reflection, bool $delegate)
+    private function doCollect(Module $module, Collector $instance, ReflectionClass $reflection, array $collectorList, array $invertedList)
     {
-        $map = [];
-
-        $mappings = $instance();
-        $delegateCollectors = $delegate ? [] : ($mappings['@'] ?? []);
-        $collectorList = $this->app->getCollectorList();
-
-        unset($mappings['@']);
-
-        foreach ($mappings as $key => $value) {
-            if (is_array($value)) {
-                list($name, $priority) = $value;
-                $name = strtolower($name);
-            } elseif (is_int($value)) {
-                $name = convertToCase($key, 'kebab-case');
-                $priority = (int)$value;
-            } else {
-                $name = convertToCase($value, 'kebab-case');
-                $priority = 0;
-            }
-
-            $map[$key] = [$name, $priority];
-        }
-
         foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
 
             $methodName = $method->getShortName();
@@ -441,11 +424,33 @@ class Manager
                 continue;
             }
 
-            if (isset($map[$methodName])) {
-                list($name, $priority) = $map[$methodName];
-            } else {
-                $name = convertToCase($methodName, 'kebab-case');
-                $priority = 0;
+            $params = $method->getParameters();
+
+            if (empty($params) || !$params[0]->hasType()) {
+                continue;
+            }
+
+            $type = (string) $params[0]->getType();
+            $name = $invertedList[$type] ?? null;
+
+            if ($name === null) {
+                continue;
+            }
+
+            $priority = 0;
+            $param = $params[1] ?? null;
+
+            if (isset($param)) {
+                if (!$param->isOptional()) {
+                    continue;
+                }
+                if ('priority' === $param->getName() && $param->hasType() && 'int' === (string) $param->getType()  ) {
+                    try {
+                        $priority = (int) $param->getDefaultValue();
+                    } catch (\ReflectionException $exception) {
+                        $priority = 0;
+                    }
+                }
             }
 
             if (isset($collectorList[$name])) {
@@ -470,27 +475,6 @@ class Manager
             };
 
             $this->router->handle($name, $callback, $priority);
-        }
-
-        if (!$delegate) {
-            if (!is_array($delegateCollectors)) {
-                $delegateCollectors = [$delegateCollectors];
-            }
-            foreach ($delegateCollectors as $collector){
-                if (!is_string($collector)) {
-                    continue;
-                }
-                try {
-                    $reflection = new ReflectionClass($collector);
-                } catch (\ReflectionException $exception) {
-                    continue;
-                }
-                if (!$reflection->isSubclassOf(DelegateCollector::class)) {
-                    continue;
-                }
-                $collector = $this->container->make($collector);
-                $this->doCollect($module, $collector, $reflection, true);
-            }
         }
     }
 }

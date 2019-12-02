@@ -23,14 +23,6 @@ use Opis\Colibri\ItemCollectors\RouteCollector;
 
 class Collector extends BaseCollector
 {
-    public function __invoke(): array
-    {
-        return [
-            'priorityRoutes' => ['routes', 1],
-            'priorityGlobals' => ['router-globals', 1],
-        ];
-    }
-
     public function routes(RouteCollector $route)
     {
         $route('/bar', function () {
@@ -119,7 +111,7 @@ class Collector extends BaseCollector
 
     }
 
-    public function priorityRoutes(RouteCollector $route)
+    public function priorityRoutes(RouteCollector $route, int $priority = 1)
     {
         $route('/foo', function () {
             return 'Bar';
@@ -146,7 +138,7 @@ class Collector extends BaseCollector
             });
     }
 
-    public function priorityGlobals(RouterGlobalsCollector $global)
+    public function priorityGlobals(RouterGlobalsCollector $global, int $priority = 1)
     {
         $global->implicit('gow', 'bar');
     }

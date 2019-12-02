@@ -26,14 +26,4 @@ abstract class Collector
     {
         // Nothing here
     }
-
-    /**
-     * Collector invoke
-     *
-     * @return array
-     */
-    public function __invoke(): array
-    {
-        return [];
-    }
 }
