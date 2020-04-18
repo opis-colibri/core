@@ -17,8 +17,8 @@ algolia:
   application_id: NMQ2IFNV6E
   index_name: opiscolibri
 favicon: /assets/img/favicon.png
-layouts_dir: shared/_layouts
-includes_dir: shared/_includes
+layouts_dir: shared/_layouts/next
+includes_dir: shared/_includes/next
 exclude: ["Gemfile", "Gemfile.lock", "composer.lock", "node_modules", "vendor", "tests", "shared"]
 plugins:
   - jekyll-coffeescript
