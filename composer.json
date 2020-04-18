@@ -1,7 +1,7 @@
 {
-    "name": "opis/colibri",
+    "name": "opis-colibri/core",
     "license": "Apache-2.0",
-    "description": "Opis Colibri Framework",
+    "description": "Opis Colibri framework core",
     "keywords": ["opis", "colibri", "framework", "core"],
     "homepage": "http://opis.io",
     "authors": [
@@ -52,7 +52,7 @@
     "minimum-stability": "dev",
     "extra": {
         "branch-alias": {
-            "dev-master": "2.0.x-dev"
+            "dev-master": "1.0.x-dev"
         }
     }
 }

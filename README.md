@@ -1,5 +1,5 @@
-Opis Colibri
+Opis Colibri Core
 =================
 
-This is the Opis Colibri framework
+This is the core of the Opis Colibri framework
 
