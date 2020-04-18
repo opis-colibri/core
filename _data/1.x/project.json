@@ -1,8 +1,8 @@
 {
-    "title": "Opis Colibri",
-    "github": "https://github.com/opis-colibri/framework",
+    "title": "Opis Colibri Core",
+    "github": "https://github.com/opis-colibri/core",
     "version": "1.0.0",
-    "url": "/framework",
+    "url": "/core",
     "copyright": "Copyright © Zindex Software. All rights reserved",
     "title_suffix": " | Opis Colibri",
     "ga": false,
