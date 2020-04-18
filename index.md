@@ -1,4 +1,4 @@
 ---
 layout: meta-redirect
-location: /framework/1.x
+location: /core/1.x
 ---
