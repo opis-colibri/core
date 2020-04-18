@@ -86,8 +86,6 @@ $route('/', function(){
 
 A middleware can reference any kind of route variable, from bindings to implicit values or to route parameters.
 
-{% capture tab_id %}{% increment tab_id %}{% endcapture %}
-{% capture tabs %}
 {% capture middleware %}
 ```php
 namespace Vendor\Module;
@@ -129,7 +127,4 @@ class Collector extends AbstractCollector
 }
 ```
 {% endcapture %}
-{% include tab.html id=tab_id title='Middleware' content=middleware checked=true %}
-{% include tab.html id=tab_id title='Collector' content=collector %}
-{% endcapture %}
-{% include tabs.html content=tabs %}
+{% include tabs.html 1="Middleware" 2="Collector" _1=middleware _2=collector %}
