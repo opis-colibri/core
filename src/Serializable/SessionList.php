@@ -56,7 +56,7 @@ class SessionList implements \Serializable
         }
 
         if (!isset($this->instances[$name])) {
-            $this->instances[$name] = new Session($this->handler($name), $this->sessions[$name]['config']);
+            $this->instances[$name] = new Session($this->sessions[$name]['config'], $this->handler($name));
         }
 
         return $this->instances[$name];

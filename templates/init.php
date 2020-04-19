@@ -41,8 +41,7 @@ return new class implements IApplicationInitializer
         $app->setCacheDriver(new CacheDriver($dir . DIRECTORY_SEPARATOR . 'cache'))
             ->setConfigDriver(new ConfigDriver($dir . DIRECTORY_SEPARATOR . 'config', '', true))
             ->setTranslatorDriver(new TranslatorDriver($dir . DIRECTORY_SEPARATOR . 'intl'))
-            ->setDefaultLogger(new Logger())
-            ->setSessionHandler(new SessionHandler($dir . DIRECTORY_SEPARATOR . 'session'));
+            ->setDefaultLogger(new Logger());
 
         // Setup database connection
         // $connection = new \Opis\Database\Connection('dsn', 'user', 'password');

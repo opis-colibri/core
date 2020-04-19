@@ -388,10 +388,11 @@ class Application implements IApplicationContainer
         if (!isset($this->session[$name])) {
             if ($name === 'default') {
                 if (!isset($this->implicit['session'])) {
-                    throw new RuntimeException('The default session handler was not set');
+                    $this->session[$name] = new Session();
+                } else {
+                    $session = $this->implicit['session'];
+                    $this->session[$name] = new Session($session['config'], $session['handler']);
                 }
-                $session = $this->implicit['session'];
-                $this->session[$name] = new Session($session['handler'], $session['config']);
             } else {
                 $this->session[$name] = $this->getCollector()->getSessionHandler($name);
             }

@@ -23,8 +23,8 @@ use function Opis\Colibri\Functions\app;
 
 class Session extends BaseSession
 {
-    public function __construct(ISessionHandler $handler, array $config = [])
+    public function __construct(array $config = [], ISessionHandler $handler = null)
     {
-        parent::__construct($handler, $config, app()->getSessionCookieContainer());
+        parent::__construct($config, $handler, app()->getSessionCookieContainer());
     }
 }
