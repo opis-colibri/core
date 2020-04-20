@@ -20,11 +20,9 @@ use Opis\Colibri\{
     IApplicationContainer
 };
 
-use Psr\Log\NullLogger as Logger;
 use Opis\Cache\Drivers\File as CacheDriver;
 use Opis\DataStore\Drivers\JSONFile as ConfigDriver;
 use Opis\Intl\Translator\Drivers\JsonFile as TranslatorDriver;
-use Opis\Session\Handlers\File as SessionHandler;
 
 return new class implements IApplicationInitializer
 {
@@ -40,8 +38,7 @@ return new class implements IApplicationInitializer
 
         $app->setCacheDriver(new CacheDriver($dir . DIRECTORY_SEPARATOR . 'cache'))
             ->setConfigDriver(new ConfigDriver($dir . DIRECTORY_SEPARATOR . 'config', '', true))
-            ->setTranslatorDriver(new TranslatorDriver($dir . DIRECTORY_SEPARATOR . 'intl'))
-            ->setDefaultLogger(new Logger());
+            ->setTranslatorDriver(new TranslatorDriver($dir . DIRECTORY_SEPARATOR . 'intl'));
 
         // Setup database connection
         // $connection = new \Opis\Database\Connection('dsn', 'user', 'password');

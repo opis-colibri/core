@@ -514,14 +514,15 @@ class Application implements IApplicationContainer
      *
      * @return  LoggerInterface
      */
-    public function getLog(string $logger = 'default'): LoggerInterface
+    public function getLogger(string $logger = 'default'): LoggerInterface
     {
         if (!isset($this->loggers[$logger])) {
             if ($logger === 'default') {
                 if (!isset($this->implicit['logger'])) {
-                    throw new RuntimeException('The default logger was not set');
+                    $this->loggers[$logger] = new NullLogger();
+                } else {
+                    $this->loggers[$logger] = $this->implicit['logger'];
                 }
-                $this->loggers[$logger] = $this->implicit['logger'];
             } else {
                 $this->loggers[$logger] = $this->getCollector()->getLogger($logger);
             }

@@ -261,7 +261,7 @@ function info(): AppInfo
  */
 function logger(string $logger = 'default'): LoggerInterface
 {
-    return Application::getInstance()->getLog($logger);
+    return Application::getInstance()->getLogger($logger);
 }
 
 /**
