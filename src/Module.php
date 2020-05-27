@@ -18,6 +18,7 @@
 namespace Opis\Colibri;
 
 use Composer\Package\CompletePackageInterface;
+use Opis\Colibri\ModuleManager;
 
 class Module
 {

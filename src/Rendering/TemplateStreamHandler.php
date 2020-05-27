@@ -19,33 +19,12 @@ namespace Opis\Colibri\Rendering;
 
 use Opis\Stream\Content;
 
-final class CallbackContent extends Content
+interface TemplateStreamHandler
 {
-    /** @var string */
-    private $extension;
-
     /**
-     * CallbackContent constructor.
-     * @param callable $func
+     * @param string $id
      * @param string $extension
+     * @return null|Content
      */
-    public function __construct(callable $func, string $extension)
-    {
-        parent::__construct($func);
-        $this->extension = $extension;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function data(?array $options = null): ?string
-    {
-        $data = ($this->data)($this->extension, $options);
-
-        if (is_scalar($data) || (is_object($data) && method_exists($data, '__toString'))) {
-            return (string)$data;
-        }
-
-        return null;
-    }
+    public function handle(string $id, string $extension): ?Content;
 }

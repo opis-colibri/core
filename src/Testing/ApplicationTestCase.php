@@ -88,7 +88,7 @@ abstract class ApplicationTestCase extends TestCase
     /**
      * @inheritdoc
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $builder = static::applicationBuilder(static::vendorDir(), static::rootDir(), static::bootstrapBuilder());
 
@@ -110,7 +110,7 @@ abstract class ApplicationTestCase extends TestCase
     /**
      * @inheritdoc
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         if (static::$onAppDestroy !== null) {
             (static::$onAppDestroy)();

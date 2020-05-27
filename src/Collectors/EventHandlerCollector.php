@@ -15,15 +15,33 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Test\Foo\Middleware;
+namespace Opis\Colibri\Collectors;
 
-use Opis\Routing\Middleware;
-use function Opis\Colibri\Functions\response;
+use Opis\Events\{EventDispatcher, EventHandler};
 
-class AuthMiddleware extends Middleware
+/**
+ * @property EventDispatcher $data
+ */
+class EventHandlerCollector extends BaseCollector
 {
-    public function __invoke()
+    /**
+     * Constructor
+     */
+    public function __construct()
     {
-        return response('Unauthorized', 401);
+        parent::__construct(new EventDispatcher());
+    }
+
+    /**
+     * Register a new event handler
+     *
+     * @param   string $event Event name
+     * @param   callable $callback A callback that will be executed
+     *
+     * @return  EventHandler
+     */
+    public function handle(string $event, callable $callback): EventHandler
+    {
+        return $this->data->handle($event, $callback, $this->crtPriority);
     }
 }

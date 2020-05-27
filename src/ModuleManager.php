@@ -21,7 +21,7 @@ use Throwable, ArrayObject, Generator;
 use Composer\Json\JsonFile;
 use Composer\Package\CompletePackageInterface;
 use Composer\Repository\InstalledFilesystemRepository;
-use Opis\DataStore\IDataStore;
+use Opis\DataStore\DataStore;
 
 class ModuleManager
 {
@@ -353,9 +353,9 @@ class ModuleManager
     }
 
     /**
-     * @return IDataStore
+     * @return DataStore
      */
-    protected function config(): IDataStore
+    protected function config(): DataStore
     {
         return ($this->config)();
     }

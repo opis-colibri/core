@@ -17,11 +17,11 @@
 
 namespace Opis\Colibri\Rendering;
 
-use Opis\Colibri\View;
-use Opis\Intl\Translator\LanguageInfo;
+use Opis\Colibri\Core\View;
+use Opis\I18n\Translator\LanguageInfo;
 use Opis\View\PHPEngine;
 use function Opis\Colibri\Functions\{
-    view, render, asset, getURI, generateCSRFToken, r, t
+    view, render, asset, getURI, generateCSRFToken, t
 };
 
 class ViewEngine extends PHPEngine
@@ -62,16 +62,6 @@ class ViewEngine extends PHPEngine
     public function getURI(string $path): string
     {
         return getURI($path);
-    }
-
-    /**
-     * @param string $text
-     * @param array $placeholders
-     * @return string
-     */
-    public function r(string $text, array $placeholders): string
-    {
-        return r($text, $placeholders);
     }
 
     /**

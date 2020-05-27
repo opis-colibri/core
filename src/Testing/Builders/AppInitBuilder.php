@@ -17,21 +17,20 @@
 
 namespace Opis\Colibri\Testing\Builders;
 
-use Opis\Colibri\Session\MemoryHandler;
-use Opis\Session\ISessionHandler;
+use Opis\Session\Handlers\Memory;
+use Opis\Session\SessionHandler;
 use Opis\Colibri\Testing\ApplicationInitializer;
-use Opis\Intl\Locale;
+use Opis\I18n\Locale;
 use Opis\Colibri\IApplicationInitializer;
 use Opis\Database\Connection;
-use Opis\DataStore\{IDataStore, Drivers\Memory as DefaultConfig};
+use Opis\DataStore\{DataStore, Drivers\Memory as DefaultConfig};
 use Psr\Log\{LoggerInterface, NullLogger as DefaultLogger};
-use Opis\Cache\{CacheInterface, Drivers\Memory as DefaultCache};
-use Opis\Intl\Translator\IDriver;
-use Opis\Intl\Translator\{Drivers\Memory as DefaultTranslator, IDriver as TranslatorDriver};
+use Opis\Cache\{CacheDriver, Drivers\Memory as DefaultCache};
+use Opis\I18n\Translator\{Drivers\Memory as DefaultTranslator, Driver as TranslatorDriver};
 
 class AppInitBuilder
 {
-    /** @var null|IDataStore */
+    /** @var null|DataStore */
     protected $config = null;
 
     /** @var null|string */
@@ -40,16 +39,16 @@ class AppInitBuilder
     /** @var null|string */
     protected $language = null;
 
-    /** @var null|CacheInterface */
+    /** @var null|CacheDriver */
     protected $cache = null;
 
-    /** @var null|ISessionHandler */
+    /** @var null|SessionHandler */
     protected $sessionHandler = null;
 
     /** @var null|array */
     protected $sessionConfig = null;
 
-    /** @var null|IDriver */
+    /** @var null|TranslatorDriver */
     protected $translator = null;
 
     /** @var null|Connection */
@@ -109,9 +108,9 @@ class AppInitBuilder
     }
 
     /**
-     * @return null|IDataStore
+     * @return null|DataStore
      */
-    public function getConfigDriver(): ?IDataStore
+    public function getConfigDriver(): ?DataStore
     {
         if ($this->config === null) {
             $this->config = $this->defaultConfigDriver();
@@ -120,19 +119,19 @@ class AppInitBuilder
     }
 
     /**
-     * @param IDataStore|null $driver
+     * @param DataStore|null $driver
      * @return AppInitBuilder
      */
-    public function setConfigDriver(?IDataStore $driver): self
+    public function setConfigDriver(?DataStore $driver): self
     {
         $this->config = $driver;
         return $this;
     }
 
     /**
-     * @return null|CacheInterface
+     * @return null|CacheDriver
      */
-    public function getCacheDriver(): ?CacheInterface
+    public function getCacheDriver(): ?CacheDriver
     {
         if ($this->cache === null) {
             $this->cache = $this->defaultCacheDriver();
@@ -141,19 +140,19 @@ class AppInitBuilder
     }
 
     /**
-     * @param CacheInterface|null $cache
+     * @param CacheDriver|null $cache
      * @return AppInitBuilder
      */
-    public function setCacheDriver(?CacheInterface $cache): self
+    public function setCacheDriver(?CacheDriver $cache): self
     {
         $this->cache = $cache;
         return $this;
     }
 
     /**
-     * @return ISessionHandler
+     * @return SessionHandler
      */
-    public function getSessionHandler(): ?ISessionHandler
+    public function getSessionHandler(): ?SessionHandler
     {
         if ($this->sessionHandler === null) {
             $this->sessionHandler = $this->defaultSessionHandler();
@@ -175,10 +174,10 @@ class AppInitBuilder
     }
 
     /**
-     * @param ISessionHandler|null $session
+     * @param SessionHandler|null $session
      * @return AppInitBuilder
      */
-    public function setSessionHandler(?ISessionHandler $session = null): self
+    public function setSessionHandler(?SessionHandler $session = null): self
     {
         $this->sessionHandler = $session;
 
@@ -239,9 +238,9 @@ class AppInitBuilder
     }
 
     /**
-     * @return null|IDriver
+     * @return null|TranslatorDriver
      */
-    public function getTranslator(): ?IDriver
+    public function getTranslator(): ?TranslatorDriver
     {
         if ($this->translator === null) {
             $this->translator = $this->defaultTranslator();
@@ -250,10 +249,10 @@ class AppInitBuilder
     }
 
     /**
-     * @param IDriver|null $translator
+     * @param TranslatorDriver|null $translator
      * @return AppInitBuilder
      */
-    public function setTranslator(?IDriver $translator): self
+    public function setTranslator(?TranslatorDriver $translator): self
     {
         $this->translator = $translator;
         return $this;
@@ -276,27 +275,27 @@ class AppInitBuilder
     }
 
     /**
-     * @return IDataStore
+     * @return DataStore
      */
-    protected function defaultConfigDriver(): IDataStore
+    protected function defaultConfigDriver(): DataStore
     {
         return new DefaultConfig();
     }
 
     /**
-     * @return CacheInterface
+     * @return CacheDriver
      */
-    protected function defaultCacheDriver(): CacheInterface
+    protected function defaultCacheDriver(): CacheDriver
     {
         return new DefaultCache();
     }
 
     /**
-     * @return ISessionHandler
+     * @return SessionHandler
      */
-    protected function defaultSessionHandler(): ISessionHandler
+    protected function defaultSessionHandler(): SessionHandler
     {
-        return new MemoryHandler();
+        return new Memory();
     }
 
     /**

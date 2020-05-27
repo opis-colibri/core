@@ -17,131 +17,69 @@
 
 namespace Opis\Colibri;
 
-use RuntimeException;
-use Throwable;
-use Opis\Session\{Handlers\File as SessionHandler, ISessionHandler};
-use Opis\DataStore\IDataStore;
+use RuntimeException, Throwable;
 use Composer\Package\CompletePackageInterface;
-use Psr\Log\{
-    NullLogger,
-    LoggerInterface
-};
-use Opis\Cache\{
-    CacheInterface,
-    Drivers\Memory as MemoryDriver
-};
-use Opis\Events\{
-    Event, EventDispatcher
-};
+use Opis\Session\{Handlers\File as DefaultSessionHandler, SessionHandler, Containers\RequestContainer};
+use Psr\Log\{NullLogger, LoggerInterface};
+use Opis\Cache\{CacheDriver, Drivers\Memory as MemoryDriver};
+use Opis\Events\{Event, EventDispatcher};
+use Opis\I18n\Translator\{Driver as TranslatorDriver};
+use Opis\View\{Renderer};
 use Opis\Http\{Request as HttpRequest, Response as HttpResponse, Responses\HtmlResponse};
-use Opis\DataStore\Drivers\Memory as MemoryConfig;
-use Opis\Database\{
-    Connection,
-    Database,
-    Schema
-};
+use Opis\DataStore\{DataStore, Drivers\Memory as MemoryConfig};
+use Opis\Database\{ Connection, Database, Schema};
 use Opis\ORM\EntityManager;
-use Opis\Routing\Context;
-use Opis\Validation\Formatter;
-use Opis\View\ViewRenderer;
-use Opis\Intl\Translator\IDriver as TranslatorDriver;
-use Opis\Colibri\Rendering\{
-    CallbackTemplateHandler,
-    TemplateStream,
-    ViewEngine
-};
-use Opis\Colibri\{
-    Session\CookieContainer,
-    Util\CSRFToken,
-    Validation\Validator,
-    Validation\RuleCollection,
-    Routing\HttpRouter,
-    Collector\Manager as CollectorManager
-};
+use Opis\Colibri\Rendering\{CallbackTemplateHandler, TemplateStream};
+use Opis\Colibri\Core\{Container, CSRFToken, Router, Session, Translator, View};
 
 class Application implements IApplicationContainer
 {
-    /** @var AppInfo */
-    protected $info;
+    protected AppInfo $info;
+    protected ?ModuleManager $moduleManager = null;
+    protected ?ItemCollector $collector = null;
+    protected ?Container $containerInstance = null;
+    protected ?Translator $translatorInstance = null;
+    protected ?string $defaultLanguage = null;
+    protected ?CSRFToken $csrfTokenInstance = null;
+    protected ?RequestContainer $sessionCookieContainer = null;
+    protected ?Router $httpRouter = null;
+    protected ?Renderer $viewRenderer = null;
+    protected ?EventDispatcher $eventDispatcher = null;
+    protected ?HttpRequest $httpRequest = null;
+    protected ?Connection $defaultConnection = null;
+    protected ?Session $defaultSession = null;
+    protected ?DataStore $defaultConfigDriver = null;
+    protected ?CacheDriver $defaultCacheDriver = null;
+    protected ?LoggerInterface $defaultLogger = null;
+    protected ?TranslatorDriver $defaultTranslatorDriver = null;
+    protected ?array $collectorList = null;
+    protected bool $isReady = false;
 
-    /** @var null|ModuleManager */
-    protected $moduleManager = null;
+    /** @var  CacheDriver[] */
+    protected array $cache = [];
 
-    /** @var  CollectorManager */
-    protected $collector;
-
-    /** @var  Container */
-    protected $containerInstance;
-
-    /** @var TranslatorDriver */
-    protected $translatorDriver;
-
-    /** @var  Translator */
-    protected $translatorInstance;
-
-    /** @var string|null */
-    protected $defaultLanguage = null;
-
-    /** @var  CSRFToken */
-    protected $csrfTokenInstance;
-
-    /** @var  Formatter */
-    protected $formatter;
-
-    /** @var  CacheInterface[] */
-    protected $cache = [];
-
-    /** @var  IDataStore[] */
-    protected $config = [];
+    /** @var  DataStore[] */
+    protected array $config = [];
 
     /** @var  Connection[] */
-    protected $connection = [];
+    protected array $connection = [];
 
     /** @var  Database[] */
-    protected $database = [];
+    protected array $database = [];
 
     /** @var  EntityManager[] */
-    protected $entityManager = [];
+    protected array $entityManager = [];
 
     /** @var  Session[] */
-    protected $session = [];
-
-    /** @var CookieContainer */
-    protected $sessionCookieContainer;
-
-    /** @var  HttpRouter */
-    protected $httpRouter;
-
-    /** @var  ViewRenderer */
-    protected $viewRenderer;
+    protected array $session = [];
 
     /** @var LoggerInterface[] */
-    protected $loggers = [];
+    protected array $loggers = [];
 
-    /** @var  EventDispatcher */
-    protected $eventDispatcher;
+    /** @var callable[]|null */
+    protected ?array $assets = null;
 
-    /** @var  Validator */
-    protected $validator;
-
-    /** @var array */
-    protected $implicit = [];
-
-    /** @var  array|null */
-    protected $collectorList;
-
-
-    /** @var null|callable[] */
-    protected $assets = null;
-
-    /** @var HttpRequest|null */
-    protected $httpRequest;
-
-    /** @var bool */
-    protected $isReady = false;
-
-    /** @var  Application */
-    protected static $instance;
+    protected static Application $instance;
 
     /**
      * Application constructor.
@@ -168,10 +106,8 @@ class Application implements IApplicationContainer
         }
     }
 
-    /**
-     * @return Application|null
-     */
-    public static function getInstance()
+
+    public static function getInstance(): ?Application
     {
         return static::$instance;
     }
@@ -232,12 +168,12 @@ class Application implements IApplicationContainer
     /**
      * Get the HTTP router
      *
-     * @return  HttpRouter
+     * @return  Router
      */
-    public function getHttpRouter(): HttpRouter
+    public function getHttpRouter(): Router
     {
         if ($this->httpRouter === null) {
-            $this->httpRouter = new HttpRouter($this);
+            $this->httpRouter = new Router($this);
         }
 
         return $this->httpRouter;
@@ -254,20 +190,17 @@ class Application implements IApplicationContainer
     /**
      * Get the view renderer
      *
-     * @return  ViewRenderer
+     * @return  Renderer
      */
-    public function getViewRenderer(): ViewRenderer
+    public function getViewRenderer(): Renderer
     {
         if ($this->viewRenderer === null) {
             $collector = $this->getCollector();
-            $routes = $collector->getViews();
-            $resolver = $collector->getViewEngineResolver();
+            $this->viewRenderer = $collector->getRenderer();
             $templateHandlers = $collector->getTemplateStreamHandlers();
             if (!$templateHandlers->has('callback')) {
                 $templateHandlers->add('callback', CallbackTemplateHandler::class);
             }
-            $this->viewRenderer = new ViewRenderer($routes, new ViewEngine());
-            $resolver->copyEngines($this->viewRenderer->getEngineResolver());
             $this->viewRenderer->handle('error.{error}', function ($error) {
                 return TemplateStream::url('callback', '\Opis\Colibri\Rendering\Template::error' . $error, 'php');
             }, -100)->where('error', '401|403|404|405|500|503');
@@ -308,7 +241,7 @@ class Application implements IApplicationContainer
     public function getTranslator(): Translator
     {
         if ($this->translatorInstance === null) {
-            $this->translatorInstance = new Translator($this->translatorDriver, $this->defaultLanguage);
+            $this->translatorInstance = new Translator($this->defaultTranslatorDriver, $this->defaultLanguage);
         }
 
         return $this->translatorInstance;
@@ -328,50 +261,20 @@ class Application implements IApplicationContainer
     }
 
     /**
-     * Get a formatter object
-     *
-     * @return Formatter
+     * @param string|null $storage
+     * @return CacheDriver
      */
-    public function getFormatter(): Formatter
+    public function getCache(string $storage = null): CacheDriver
     {
-        if ($this->formatter === null) {
-            $this->formatter = new Formatter();
-        }
-
-        return $this->formatter;
-    }
-
-    /**
-     * Returns validator instance
-     *
-     * @return  Validator
-     */
-    public function getValidator(): Validator
-    {
-        if ($this->validator === null) {
-            $this->validator = new Validator(new RuleCollection(), $this->getFormatter());
-        }
-        return $this->validator;
-    }
-
-    /**
-     * Returns a caching storage
-     *
-     * @param   string $storage (optional) Storage name
-     *
-     * @return  CacheInterface
-     */
-    public function getCache(string $storage = 'default'): CacheInterface
-    {
-        if (!isset($this->cache[$storage])) {
-            if ($storage === 'default') {
-                if (!isset($this->implicit['cache'])) {
-                    throw new RuntimeException('The default cache storage was not set');
-                }
-                $this->cache[$storage] = $this->implicit['cache'];
-            } else {
-                $this->cache[$storage] = $this->getCollector()->getCacheDriver($storage);
+        if ($storage === null) {
+            if ($this->defaultCacheDriver === null) {
+                throw new RuntimeException('The default cache storage was not set');
             }
+            return $this->defaultCacheDriver;
+        }
+
+        if (!isset($this->cache[$storage])) {
+            $this->cache[$storage] = $this->getCollector()->getCacheDriver($storage);
         }
 
         return $this->cache[$storage];
@@ -380,57 +283,53 @@ class Application implements IApplicationContainer
     /**
      * Get session
      *
-     * @param string $name
+     * @param string|null $name
      * @return Session
      */
-    public function getSession(string $name = 'default'): Session
+    public function getSession(string $name = null): Session
     {
-        if (!isset($this->session[$name])) {
-            if ($name === 'default') {
-                if (!isset($this->implicit['session'])) {
-                    $this->session[$name] = new Session();
-                } else {
-                    $session = $this->implicit['session'];
-                    $this->session[$name] = new Session($session['config'], $session['handler']);
-                }
-            } else {
-                $this->session[$name] = $this->getCollector()->getSessionHandler($name);
+        if ($name === null) {
+            if ($this->defaultSession === null) {
+                $this->defaultSession = new Session();
             }
+            return $this->defaultSession;
+        }
+
+        if (!isset($this->session[$name])) {
+            $this->session[$name] = $this->getCollector()->getSession($name);
         }
 
         return $this->session[$name];
     }
 
     /**
-     * @return CookieContainer
+     * @return RequestContainer
      */
-    public function getSessionCookieContainer(): CookieContainer
+    public function getSessionCookieContainer(): RequestContainer
     {
         if ($this->sessionCookieContainer === null) {
-            $this->sessionCookieContainer = new CookieContainer($this->info->cliMode() ? null : $this->getHttpRequest());
+            $this->sessionCookieContainer = new RequestContainer($this->info->cliMode() ? null : $this->getHttpRequest());
         }
 
         return $this->sessionCookieContainer;
     }
 
     /**
-     * Returns a config storage
-     *
-     * @param   string $driver (optional) Driver's name
-     *
-     * @return  IDataStore
+     * Get config driver
+     * @param string|null $driver
+     * @return DataStore
      */
-    public function getConfig(string $driver = 'default'): IDataStore
+    public function getConfig(string $driver = null): DataStore
     {
-        if (!isset($this->config[$driver])) {
-            if ($driver === 'default') {
-                if (!isset($this->implicit['config'])) {
-                    throw new RuntimeException('The default config storage was not set');
-                }
-                $this->config[$driver] = $this->implicit['config'];
-            } else {
-                $this->config[$driver] = $this->getCollector()->getConfigDriver($driver);
+        if ($driver === null) {
+            if ($this->defaultConfigDriver === null) {
+                throw new RuntimeException('The default config storage was not set');
             }
+            return $this->defaultConfigDriver;
+        }
+
+        if (!isset($this->config[$driver])) {
+            $this->config[$driver] = $this->getCollector()->getConfigDriver($driver);
         }
 
         return $this->config[$driver];
@@ -438,7 +337,7 @@ class Application implements IApplicationContainer
 
     /**
      *
-     * @return  Console
+     * @return Console
      */
     public function getConsole(): Console
     {
@@ -446,65 +345,56 @@ class Application implements IApplicationContainer
     }
 
     /**
-     * @param string $name
-     * @throws  RuntimeException
-     * @return  Connection
+     * @param string|null $name
+     * @return Connection
      */
-    public function getConnection(string $name = 'default'): Connection
+    public function getConnection(string $name = null): Connection
     {
-        if (!isset($this->connection[$name])) {
-            if ($name === 'default' && isset($this->implicit['connection'])) {
-                $this->connection[$name] = $this->implicit['connection'];
-            } else {
-                $this->connection[$name] = $this->getCollector()->getConnection($name);
+        if ($name === null) {
+            if ($this->defaultConnection === null) {
+                throw new RuntimeException('The default database connection was not set');
             }
+            return $this->defaultConnection;
+        }
+
+        if (!isset($this->connection[$name])) {
+            $this->connection[$name] = $this->getCollector()->getConnection($name);
         }
 
         return $this->connection[$name];
     }
 
     /**
-     * Returns a database abstraction layer
-     *
-     * @param   string $connection (optional) Connection name
-     *
-     * @return  Database
+     * @param string|null $connection
+     * @return Database
      */
-    public function getDatabase(string $connection = 'default'): Database
+    public function getDatabase(string $connection = null): Database
     {
-        if (!isset($this->database[$connection])) {
-            $this->database[$connection] = new Database($this->getConnection($connection));
-        }
-
-        return $this->database[$connection];
+        return $this->getConnection($connection)->getDatabase();
     }
 
     /**
-     * Returns a database schema abstraction layer
-     *
-     * @param   string $connection (optional) Connection name
-     *
-     * @return  Schema
+     * @param string|null $connection
+     * @return Schema
      */
-    public function getSchema(string $connection = 'default'): Schema
+    public function getSchema(string $connection = null): Schema
     {
-        return $this->getDatabase($connection)->schema();
+        return $this->getConnection($connection)->getSchema();
     }
 
     /**
-     * Returns an entity manager
-     *
-     * @param   string|null $connection (optional) Connection name
-     *
-     * @return  EntityManager
+     * @param string|null $connection
+     * @return EntityManager
      */
-    public function getEntityManager(string $connection = 'default'): EntityManager
+    public function getEntityManager(string $connection = null): EntityManager
     {
-        if (!isset($this->entityManager[$connection])) {
-            $this->entityManager[$connection] = new EntityManager($this->getConnection($connection));
+        $entry = $connection ?? '#default';
+
+        if (!isset($this->entityManager[$entry])) {
+            $this->entityManager[$entry] = new EntityManager($this->getConnection($connection));
         }
 
-        return $this->entityManager[$connection];
+        return $this->entityManager[$entry];
     }
 
     /**
@@ -516,16 +406,15 @@ class Application implements IApplicationContainer
      */
     public function getLogger(string $logger = 'default'): LoggerInterface
     {
-        if (!isset($this->loggers[$logger])) {
-            if ($logger === 'default') {
-                if (!isset($this->implicit['logger'])) {
-                    $this->loggers[$logger] = new NullLogger();
-                } else {
-                    $this->loggers[$logger] = $this->implicit['logger'];
-                }
-            } else {
-                $this->loggers[$logger] = $this->getCollector()->getLogger($logger);
+        if ($logger === null) {
+            if ($this->defaultLogger === null) {
+                $this->defaultLogger = new NullLogger();
             }
+            return $this->defaultLogger;
+        }
+
+        if (!isset($this->loggers[$logger])) {
+            $this->loggers[$logger] = $this->getCollector()->getLogger($logger);
         }
 
         return $this->loggers[$logger];
@@ -537,7 +426,7 @@ class Application implements IApplicationContainer
     public function getEventDispatcher(): EventDispatcher
     {
         if ($this->eventDispatcher === null) {
-            $this->eventDispatcher = new EventDispatcher($this->getCollector()->getEventHandlers());
+            $this->eventDispatcher = $this->getCollector()->getEventDispatcher();
         }
 
         return $this->eventDispatcher;
@@ -556,12 +445,12 @@ class Application implements IApplicationContainer
     /**
      * Get collector
      *
-     * @return CollectorManager
+     * @return ItemCollector
      */
-    public function getCollector(): CollectorManager
+    public function getCollector(): ItemCollector
     {
         if ($this->collector === null) {
-            $this->collector = new CollectorManager($this);
+            $this->collector = new ItemCollector($this);
         }
 
         return $this->collector;
@@ -592,7 +481,7 @@ class Application implements IApplicationContainer
     public function resolveAsset(string $module, string $path)
     {
         if ($this->assets === null) {
-            $this->assets = $this->collector->getAssetHandlers()->getList();
+            $this->assets = $this->collector->getAssetHandlers()->getEntries();
         }
 
         if (isset($this->assets[$module])) {
@@ -614,24 +503,22 @@ class Application implements IApplicationContainer
     }
 
     /**
-     * @param IDataStore $driver
+     * @param DataStore $driver
      * @return IApplicationContainer
      */
-    public function setConfigDriver(IDataStore $driver): IApplicationContainer
+    public function setConfigDriver(DataStore $driver): IApplicationContainer
     {
-        $this->implicit['config'] = $driver;
-
+        $this->defaultConfigDriver = $driver;
         return $this;
     }
 
     /**
-     * @param CacheInterface $driver
+     * @param CacheDriver $driver
      * @return IApplicationContainer
      */
-    public function setCacheDriver(CacheInterface $driver): IApplicationContainer
+    public function setCacheDriver(CacheDriver $driver): IApplicationContainer
     {
-        $this->implicit['cache'] = $driver;
-
+        $this->defaultCacheDriver = $driver;
         return $this;
     }
 
@@ -641,7 +528,7 @@ class Application implements IApplicationContainer
      */
     public function setTranslatorDriver(TranslatorDriver $driver): IApplicationContainer
     {
-        $this->translatorDriver = $driver;
+        $this->defaultTranslatorDriver = $driver;
         return $this;
     }
 
@@ -651,23 +538,18 @@ class Application implements IApplicationContainer
      */
     public function setDatabaseConnection(Connection $connection): IApplicationContainer
     {
-        $this->implicit['connection'] = $connection;
-
+        $this->defaultConnection = $connection;
         return $this;
     }
 
     /**
-     * @param ISessionHandler $handler
+     * @param SessionHandler $handler
      * @param array $config
      * @return IApplicationContainer
      */
-    public function setSessionHandler(ISessionHandler $handler, array $config = []): IApplicationContainer
+    public function setSessionHandler(SessionHandler $handler, array $config = []): IApplicationContainer
     {
-        $this->implicit['session'] = [
-            'handler' => $handler,
-            'config' => $config
-        ];
-
+        $this->defaultSession = new Session($config, $handler);
         return $this;
     }
 
@@ -677,8 +559,7 @@ class Application implements IApplicationContainer
      */
     public function setDefaultLogger(LoggerInterface $logger): IApplicationContainer
     {
-        $this->implicit['logger'] = $logger;
-
+        $this->defaultLogger = $logger;
         return $this;
     }
 
@@ -690,14 +571,15 @@ class Application implements IApplicationContainer
         $this->containerInstance = null;
         $this->eventDispatcher = null;
         $this->viewRenderer = null;
-        $this->session[] = null;
         $this->httpRouter = null;
         $this->collectorList = null;
+        $this->session = [];
         $this->cache = [];
         $this->config = [];
         $this->connection = [];
         $this->database = [];
         $this->entityManager = [];
+        $this->loggers = [];
         TemplateStream::clearCache();
     }
 
@@ -767,8 +649,7 @@ class Application implements IApplicationContainer
         $this->httpRequest = $request;
 
         if ($this->isReady) {
-            $context = new Context($request->getUri()->getPath(), $request);
-            $response = $this->getHttpRouter()->route($context);
+            $response = $this->getHttpRouter()->route($request);
             if (!$response instanceof HttpResponse) {
                 $response = new HtmlResponse($response);
             }
@@ -1050,7 +931,7 @@ class Application implements IApplicationContainer
                 $app->setCacheDriver(new MemoryDriver())
                     ->setConfigDriver(new MemoryConfig())
                     ->setDefaultLogger(new NullLogger())
-                    ->setSessionHandler(new SessionHandler($app->getAppInfo()->writableDir() . DIRECTORY_SEPARATOR . 'session'));
+                    ->setSessionHandler(new DefaultSessionHandler($app->getAppInfo()->writableDir() . DIRECTORY_SEPARATOR . 'session'));
             }
         };
     }
@@ -1112,105 +993,97 @@ class Application implements IApplicationContainer
     }
 
     /**
+     * @return ModuleManager
+     */
+    protected function moduleManager(): ModuleManager
+    {
+        if ($this->moduleManager === null) {
+            $this->moduleManager = new ModuleManager($this->info->vendorDir(), function (): DataStore {
+                return $this->getConfig();
+            });
+        }
+        return $this->moduleManager;
+    }
+
+    /**
      * @return array
      */
     protected function getDefaultCollectors(): array
     {
         return [
             'routes' => [
-                'class' => 'Opis\\Colibri\\ItemCollectors\\RouteCollector',
+                'class' => 'Opis\\Colibri\\Collectors\\RouteCollector',
                 'description' => 'Collects web routes',
                 'options' => [
                     'invertedPriority' => false,
                 ],
             ],
             'router-globals' => [
-                'class' => 'Opis\\Colibri\\ItemCollectors\\RouterGlobalsCollector',
+                'class' => 'Opis\\Colibri\\Collectors\\RouterGlobalsCollector',
                 'description' => 'Collects routing related global items',
             ],
-            'middleware' => [
-                'class' => 'Opis\\Colibri\\ItemCollectors\\MiddlewareCollector',
-                'description' => 'Collects middleware items',
-            ],
             'views' => [
-                'class' => 'Opis\\Colibri\\ItemCollectors\\ViewCollector',
+                'class' => 'Opis\\Colibri\\Collectors\\ViewCollector',
                 'description' => 'Collects views',
                 'options' => [
                     'invertedPriority' => false,
                 ],
             ],
             'contracts' => [
-                'class' => 'Opis\\Colibri\\ItemCollectors\\ContractCollector',
+                'class' => 'Opis\\Colibri\\Collectors\\ContractCollector',
                 'description' => 'Collects contracts',
             ],
             'connections' => [
-                'class' => 'Opis\\Colibri\\ItemCollectors\\ConnectionCollector',
+                'class' => 'Opis\\Colibri\\Collectors\\ConnectionCollector',
                 'description' => 'Collects database connections',
             ],
             'event-handlers' => [
-                'class' => 'Opis\\Colibri\\ItemCollectors\\EventHandlerCollector',
+                'class' => 'Opis\\Colibri\\Collectors\\EventHandlerCollector',
                 'description' => 'Collects event handlers',
                 'options' => [
                     'invertedPriority' => false,
                 ],
             ],
             'view-engines' => [
-                'class' => 'Opis\\Colibri\\ItemCollectors\\ViewEngineCollector',
+                'class' => 'Opis\\Colibri\\Collectors\\ViewEngineCollector',
                 'description' => 'Collects view engines',
             ],
             'cache-drivers' => [
-                'class' => 'Opis\\Colibri\\ItemCollectors\\CacheCollector',
+                'class' => 'Opis\\Colibri\\Collectors\\CacheCollector',
                 'description' => 'Collects cache drivers',
             ],
             'session-handlers' => [
-                'class' => 'Opis\\Colibri\\ItemCollectors\\SessionCollector',
+                'class' => 'Opis\\Colibri\\Collectors\\SessionCollector',
                 'description' => 'Collects session handlers',
             ],
             'config-drivers' => [
-                'class' => 'Opis\\Colibri\\ItemCollectors\\ConfigCollector',
+                'class' => 'Opis\\Colibri\\Collectors\\ConfigCollector',
                 'description' => 'Collects config drivers',
             ],
-            'validators' => [
-                'class' => 'Opis\\Colibri\\ItemCollectors\\ValidatorCollector',
-                'description' => 'Collects validators',
-            ],
             'translations' => [
-                'class' => 'Opis\\Colibri\\ItemCollectors\\TranslationCollector',
+                'class' => 'Opis\\Colibri\\Collectors\\TranslationCollector',
                 'description' => 'Collects translations',
             ],
             'translation-filters' => [
-                'class' => 'Opis\\Colibri\\ItemCollectors\\TranslationFilterCollector',
+                'class' => 'Opis\\Colibri\\Collectors\\TranslationFilterCollector',
                 'description' => 'Collect translation filters',
             ],
             'commands' => [
-                'class' => 'Opis\\Colibri\\ItemCollectors\\CommandCollector',
+                'class' => 'Opis\\Colibri\\Collectors\\CommandCollector',
                 'description' => 'Collects commands',
             ],
             'loggers' => [
-                'class' => 'Opis\\Colibri\\ItemCollectors\\LoggerCollector',
+                'class' => 'Opis\\Colibri\\Collectors\\LoggerCollector',
                 'description' => 'Collects logging handlers',
             ],
             'asset-handlers' => [
-                'class' => 'Opis\\Colibri\\ItemCollectors\\AssetsHandlerCollector',
+                'class' => 'Opis\\Colibri\\Collectors\\AssetsHandlerCollector',
                 'description' => 'Collects asset handlers',
             ],
             'template-stream-handlers' => [
-                'class' => 'Opis\\Colibri\\ItemCollectors\\TemplateStreamHandlerCollector',
+                'class' => 'Opis\\Colibri\\Collectors\\TemplateStreamHandlerCollector',
                 'description' => 'Collects template stream handlers',
             ],
         ];
-    }
-
-    /**
-     * @return ModuleManager
-     */
-    protected function moduleManager(): ModuleManager
-    {
-        if ($this->moduleManager === null) {
-            $this->moduleManager = new ModuleManager($this->info->vendorDir(), function (): IDataStore {
-                return $this->getConfig();
-            });
-        }
-        return $this->moduleManager;
     }
 }

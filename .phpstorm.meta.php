@@ -1,58 +1,44 @@
 <?php
 namespace PHPSTORM_META {
+
     override(\Opis\Colibri\Functions\make(0), type(0));
 
-    override(\Opis\Colibri\Collector\Manager::collect(0), map([
-        'routes' => \Opis\Colibri\Routing\HttpRouteCollection::class,
-        'router-globals' => \Opis\Colibri\Serializable\RouterGlobals::class,
-        'middleware' => \Opis\Colibri\Serializable\ClassList::class,
-        'views' => \Opis\View\RouteCollection::class,
-        'contracts' => \Opis\Colibri\Container::class,
-        'connections' => \Opis\Colibri\Serializable\ConnectionList::class,
-        'event-handlers' => \Opis\Events\RouteCollection::class,
-        'view-engines' => \Opis\Colibri\Serializable\ViewEngineResolver::class,
-        'cache-drivers' => \Opis\Colibri\Serializable\StorageCollection::class,
-        'session-handlers' => \Opis\Colibri\Serializable\CallbackList::class,
-        'config-drivers' => \Opis\Colibri\Serializable\StorageCollection::class,
-        'translations' => \Opis\Colibri\Serializable\Translations::class,
-        'translation-filters' => \Opis\Colibri\Serializable\ClassList::class,
-        'commands' => \Opis\Colibri\Serializable\CallbackList::class,
-        'loggers' => \Opis\Colibri\Serializable\StorageCollection::class,
-        'loggers' => \Opis\Colibri\Serializable\StorageCollection::class,
-        'asset-handlers' => \Opis\Colibri\Serializable\CallbackList::class,
-        'validators' => \Opis\Colibri\Serializable\ClassList::class,
-        'template-stream-handlers' => \Opis\Colibri\Serializable\AdvancedClassList::class,
+
+    override(\Opis\Colibri\ItemCollector::collect(0), map([
+        '\Opis\Colibri\Collectors\AssetsHandlerCollector' => \Opis\Colibri\Serializable\Collection::class,
+        '\Opis\Colibri\Collectors\CacheCollector' => \Opis\Colibri\Serializable\FactoryCollection::class,
+        '\Opis\Colibri\Collectors\CommandCollector' => \Opis\Colibri\Serializable\Collection::class,
+        '\Opis\Colibri\Collectors\ConfigCollector' => \Opis\Colibri\Serializable\FactoryCollection::class,
+        '\Opis\Colibri\Collectors\ConnectionCollector' => \Opis\Colibri\Serializable\FactoryCollection::class,
+        '\Opis\Colibri\Collectors\ContractCollector' => \Opis\Colibri\Core\Container::class,
+        '\Opis\Colibri\Collectors\EventHandlerCollector' => \Opis\Events\EventDispatcher::class,
+        '\Opis\Colibri\Collectors\LoggerCollector' => \Opis\Colibri\Serializable\FactoryCollection::class,
+        '\Opis\Colibri\Collectors\RouteCollector' => \Opis\Routing\RouteCollection::class,
+        '\Opis\Colibri\Collectors\RouterGlobalsCollector' => \Opis\Colibri\Serializable\RouterGlobals::class,
+        '\Opis\Colibri\Collectors\SessionCollector' => \Opis\Colibri\Serializable\SessionCollection::class,
+        '\Opis\Colibri\Collectors\TemplateStreamHandlerCollector' => \Opis\Colibri\Serializable\AdvancedClassList::class,
+        '\Opis\Colibri\Collectors\TranslationCollector' => \Opis\Colibri\Serializable\Translations::class,
+        '\Opis\Colibri\Collectors\TranslationFilterCollector' => \Opis\Colibri\Serializable\ClassList::class,
+        '\Opis\Colibri\Collectors\ViewCollector' => \Opis\View\Renderer::class,
+        '\Opis\Colibri\Collectors\ViewEngineCollector' => \Opis\Colibri\Serializable\Collection::class,
     ]));
 
     override(\Opis\Colibri\Functions\collect(0), map([
-        'routes' => \Opis\Colibri\Routing\HttpRouteCollection::class,
-        'router-globals' => \Opis\Colibri\Serializable\RouterGlobals::class,
-        'middleware' => \Opis\Colibri\Serializable\ClassList::class,
-        'views' => \Opis\View\RouteCollection::class,
-        'contracts' => \Opis\Colibri\Container::class,
-        'connections' => \Opis\Colibri\Serializable\ConnectionList::class,
-        'event-handlers' => \Opis\Events\RouteCollection::class,
-        'view-engines' => \Opis\Colibri\Serializable\ViewEngineResolver::class,
-        'cache-drivers' => \Opis\Colibri\Serializable\StorageCollection::class,
-        'session-handlers' => \Opis\Colibri\Serializable\SessionList::class,
-        'config-drivers' => \Opis\Colibri\Serializable\StorageCollection::class,
-        'translations' => \Opis\Colibri\Serializable\Translations::class,
-        'translation-filters' => \Opis\Colibri\Serializable\ClassList::class,
-        'commands' => \Opis\Colibri\Serializable\CallbackList::class,
-        'loggers' => \Opis\Colibri\Serializable\StorageCollection::class,
-        'loggers' => \Opis\Colibri\Serializable\StorageCollection::class,
-        'asset-handlers' => \Opis\Colibri\Serializable\CallbackList::class,
-        'validators' => \Opis\Colibri\Serializable\ClassList::class,
-        'template-stream-handlers' => \Opis\Colibri\Serializable\AdvancedClassList::class,
+        '\Opis\Colibri\Collectors\AssetsHandlerCollector' => \Opis\Colibri\Serializable\Collection::class,
+        '\Opis\Colibri\Collectors\CacheCollector' => \Opis\Colibri\Serializable\FactoryCollection::class,
+        '\Opis\Colibri\Collectors\CommandCollector' => \Opis\Colibri\Serializable\Collection::class,
+        '\Opis\Colibri\Collectors\ConfigCollector' => \Opis\Colibri\Serializable\FactoryCollection::class,
+        '\Opis\Colibri\Collectors\ConnectionCollector' => \Opis\Colibri\Serializable\FactoryCollection::class,
+        '\Opis\Colibri\Collectors\ContractCollector' => \Opis\Colibri\Core\Container::class,
+        '\Opis\Colibri\Collectors\EventHandlerCollector' => \Opis\Events\EventDispatcher::class,
+        '\Opis\Colibri\Collectors\LoggerCollector' => \Opis\Colibri\Serializable\FactoryCollection::class,
+        '\Opis\Colibri\Collectors\RouteCollector' => \Opis\Routing\RouteCollection::class,
+        '\Opis\Colibri\Collectors\RouterGlobalsCollector' => \Opis\Colibri\Serializable\RouterGlobals::class,
+        '\Opis\Colibri\Collectors\SessionCollector' => \Opis\Colibri\Serializable\SessionCollection::class,
+        '\Opis\Colibri\Collectors\TemplateStreamHandlerCollector' => \Opis\Colibri\Serializable\AdvancedClassList::class,
+        '\Opis\Colibri\Collectors\TranslationCollector' => \Opis\Colibri\Serializable\Translations::class,
+        '\Opis\Colibri\Collectors\TranslationFilterCollector' => \Opis\Colibri\Serializable\ClassList::class,
+        '\Opis\Colibri\Collectors\ViewCollector' => \Opis\View\Renderer::class,
+        '\Opis\Colibri\Collectors\ViewEngineCollector' => \Opis\Colibri\Serializable\Collection::class,
     ]));
-}
-
-namespace Opis\Validation\Types {
-    class Field {
-        /**
-         * @param bool|true $remove
-         * @return self
-         */
-        public function csrf(bool $remove = true): self {}
-    }
 }

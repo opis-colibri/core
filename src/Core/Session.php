@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2019 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Test\Foo\Middleware;
+namespace Opis\Colibri\Core;
 
-use Opis\Routing\Middleware;
-use function Opis\Colibri\Functions\response;
+use Opis\Session\{SessionHandler, Session as BaseSession};
+use function Opis\Colibri\Functions\app;
 
-class AuthMiddleware extends Middleware
+class Session extends BaseSession
 {
-    public function __invoke()
+    public function __construct(array $config = [], SessionHandler $handler = null)
     {
-        return response('Unauthorized', 401);
+        parent::__construct($config, $handler, app()->getSessionCookieContainer());
     }
 }

@@ -15,15 +15,33 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Test\Foo\Middleware;
+namespace Opis\Colibri\Collectors;
 
-use Opis\Routing\Middleware;
-use function Opis\Colibri\Functions\response;
+use Opis\Colibri\Serializable\SessionCollection;
 
-class AuthMiddleware extends Middleware
+/**
+ * @property SessionCollection $data
+ */
+class SessionCollector extends BaseCollector
 {
-    public function __invoke()
+    /**
+     * Constructor
+     */
+    public function __construct()
     {
-        return response('Unauthorized', 401);
+        parent::__construct(new SessionCollection());
+    }
+
+    /**
+     * @param string $name
+     * @param callable $constructor
+     * @param array $config
+     * @return SessionCollector
+     */
+    public function register(string $name, callable $constructor, array $config = []): self
+    {
+        $config['cookie_name'] = $name;
+        $this->data->register($name, $constructor, $config);
+        return $this;
     }
 }

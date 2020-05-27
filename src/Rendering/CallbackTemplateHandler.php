@@ -17,14 +17,14 @@
 
 namespace Opis\Colibri\Rendering;
 
-use Opis\Stream\IContent;
+use Opis\Stream\Content;
 
-class CallbackTemplateHandler implements ITemplateStreamHandler
+class CallbackTemplateHandler implements TemplateStreamHandler
 {
     /**
      * @inheritDoc
      */
-    public function handle(string $id, string $extension): ?IContent
+    public function handle(string $id, string $extension): ?Content
     {
         if (!is_callable($id)) {
             return null;

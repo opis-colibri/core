@@ -15,15 +15,36 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri;
+namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\IApplicationContainer;
+use Opis\Colibri\Application;
+use Opis\Colibri\Module;
 
-interface IApplicationInitializer
+abstract class BaseCollector
 {
+    protected object $data;
+    protected ?Module $crtModule;
+    protected ?string $crtCollectorName;
+    protected ?int $crtPriority;
+
     /**
-     * @param IApplicationContainer $container
-     * @return mixed
+     * BaseCollector constructor.
+     * @param object $data
      */
-    public function init(IApplicationContainer $container);
+    public function __construct(object $data)
+    {
+        $this->data = $data;
+    }
+
+    public static function update(BaseCollector $instance, ?Module $module, ?string $collector, ?int $priority)
+    {
+        $instance->crtModule = $module;
+        $instance->crtCollectorName = $collector;
+        $instance->crtPriority = $priority;
+    }
+
+    public static function getData(BaseCollector $instance): object
+    {
+        return $instance->data;
+    }
 }

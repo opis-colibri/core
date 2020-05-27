@@ -15,15 +15,31 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Test\Foo\Middleware;
+namespace Opis\Colibri\Core;
 
-use Opis\Routing\Middleware;
-use function Opis\Colibri\Functions\response;
+use Opis\Events\Event as BaseEvent;
 
-class AuthMiddleware extends Middleware
+class Event extends BaseEvent
 {
-    public function __invoke()
+    /** @var mixed */
+    private $data;
+
+    /**
+     * @param string $name
+     * @param null $data
+     * @param bool $cancelable
+     */
+    public function __construct(string $name, $data = null, bool $cancelable = false)
     {
-        return response('Unauthorized', 401);
+        $this->data = $data;
+        parent::__construct($name, $cancelable);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function data()
+    {
+        return $this->data;
     }
 }

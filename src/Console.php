@@ -17,6 +17,7 @@
 
 namespace Opis\Colibri;
 
+use Opis\Colibri\Application as WebApplication;
 use Opis\Colibri\Commands\CommandLoader;
 use Symfony\Component\Console\Application as ConsoleApplication;
 
@@ -24,12 +25,16 @@ class Console extends ConsoleApplication
 {
     /**
      * Console constructor.
-     * @param Application $app
+     * @param WebApplication $app
      */
-    public function __construct(Application $app)
+    public function __construct(WebApplication $app)
     {
         parent::__construct("Opis Colibri");
         $this->setAutoExit(false);
         $this->setCommandLoader(new CommandLoader($app->getCollector()->getCommands()));
     }
 }
+
+// opis/view => Opis\View\DefaultView
+// opis/routing => Opis\Routing\Router
+// opis/colibri => Opis\Colibri\Application

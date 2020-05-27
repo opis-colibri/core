@@ -17,21 +17,20 @@
 
 namespace Opis\Colibri\Functions;
 
-use Opis\Cache\CacheInterface;
+use Opis\Cache\CacheDriver;
 use Opis\Colibri\{
     Application,
     AppInfo,
-    Session,
-    View,
-    Validation\Validator,
-    Serializable\ControllerCallback};
+    Core\Session,
+    Core\View as CoreView
+};
 use Opis\Database\{
     Connection as DBConnection,
     Database,
     Schema
 };
-use Opis\DataStore\IDataStore;
-use Opis\Intl\Translator\{
+use Opis\DataStore\DataStore;
+use Opis\I18n\Translator\{
     LanguageInfo,
     SubTranslator
 };
@@ -40,12 +39,13 @@ use Opis\ORM\{
     Core\EntityQuery
 };
 use Opis\Events\Event;
-use Opis\Stream\IStream;
+use Opis\Routing\ControllerCallback;
+use Opis\Stream\Stream;
 use Opis\Http\{Request, Response as HttpResponse, Response};
 use Opis\Http\Responses\{
     HtmlResponse, JsonResponse, RedirectResponse
 };
-use Opis\View\IView;
+use Opis\View\View as OpisView;
 use Psr\Log\LoggerInterface;
 use Opis\Colibri\Module;
 
@@ -59,18 +59,19 @@ function app(): Application
 
 /**
  * @param string $storage
- * @return CacheInterface
+ * @return CacheDriver
  */
-function cache(string $storage = 'default'): CacheInterface
+function cache(string $storage = 'default'): CacheDriver
 {
     return Application::getInstance()->getCache($storage);
 }
 
+
 /**
  * @param string $storage
- * @return IDataStore
+ * @return DataStore
  */
-function config(string $storage = 'default'): IDataStore
+function config(string $storage = 'default'): DataStore
 {
     return Application::getInstance()->getConfig($storage);
 }
@@ -196,7 +197,7 @@ function request(): Request
 }
 
 /**
- * @param string|IStream|array|\stdClass $body
+ * @param string|Stream|array|\stdClass $body
  * @param int $status
  * @param array $headers
  * @return HttpResponse|JsonResponse|HtmlResponse
@@ -212,7 +213,7 @@ function response($body, int $status = 200, array $headers = []): HttpResponse
 
 /**
  * @param int $status
- * @param string|IStream|array|null $body
+ * @param string|Stream|array|null $body
  * @param array $headers
  * @return HttpResponse|JsonResponse|HtmlResponse
  */
@@ -240,14 +241,6 @@ function redirect(string $location, int $code = 302, array $headers = []): Redir
 }
 
 /**
- * @return Validator
- */
-function validator(): Validator
-{
-    return Application::getInstance()->getValidator();
-}
-
-/**
  * @return AppInfo
  */
 function info(): AppInfo
@@ -271,18 +264,6 @@ function logger(string $logger = 'default'): LoggerInterface
 function session(string $name = 'default'): Session
 {
     return Application::getInstance()->getSession($name);
-}
-
-/**
- * Replace
- *
- * @param string $text
- * @param array $placeholders
- * @return string
- */
-function r(string $text, array $placeholders): string
-{
-    return Application::getInstance()->getFormatter()->format($text, $placeholders);
 }
 
 /**
@@ -348,16 +329,16 @@ function module(string $module): Module
 /**
  * @param string $name
  * @param array $vars
- * @return View
+ * @return CoreView
  */
-function view(string $name, array $vars = []): View
+function view(string $name, array $vars = []): CoreView
 {
-    return new View($name, $vars);
+    return new CoreView($name, $vars);
 }
 
 /**
  * @param $view
- * @return string|IView
+ * @return string|OpisView
  */
 function render($view): string
 {

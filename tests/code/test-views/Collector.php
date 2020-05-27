@@ -18,7 +18,7 @@
 namespace Test\Views;
 
 use Opis\Colibri\Collector as BaseCollector;
-use Opis\Colibri\ItemCollectors\ViewCollector;
+use Opis\Colibri\Collectors\ViewCollector;
 
 class Collector extends BaseCollector
 {

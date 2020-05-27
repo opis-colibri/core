@@ -17,11 +17,11 @@
 
 namespace Opis\Colibri\Rendering;
 
-use Opis\Stream\IContent;
-use Opis\Stream\Wrapper\AbstractContentStreamWrapper;
-use function Opis\Colibri\Functions\collect;
+use Opis\Stream\Content;
+use Opis\Stream\Wrapper\ContentStreamWrapper;
+use function Opis\Colibri\Functions\app;
 
-final class TemplateStream extends AbstractContentStreamWrapper
+final class TemplateStream extends ContentStreamWrapper
 {
     const PROTOCOL = 'template';
 
@@ -30,7 +30,7 @@ final class TemplateStream extends AbstractContentStreamWrapper
     /**
      * @inheritDoc
      */
-    protected function content(string $path): ?IContent
+    protected function content(string $path): ?Content
     {
         if (!preg_match(self::REGEX, $path, $m)) {
             return null;
@@ -42,8 +42,8 @@ final class TemplateStream extends AbstractContentStreamWrapper
 
         unset($m);
 
-        /** @var ITemplateStreamHandler $provider */
-        $provider = collect('template-stream-handlers')->get($type);
+        /** @var TemplateStreamHandler $provider */
+        $provider = app()->getCollector()->getTemplateStreamHandlers()->get($type);
 
         if ($provider === null) {
             return null;

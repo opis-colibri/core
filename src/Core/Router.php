@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,25 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Test\Foo\Middleware;
+namespace Opis\Colibri\Core;
 
-use Opis\Routing\Middleware;
-use function Opis\Colibri\Functions\response;
+use Opis\Routing\{DefaultDispatcher, Router as BaseRouter};
+use Opis\Colibri\Application;
 
-class AuthMiddleware extends Middleware
+class Router extends BaseRouter
 {
-    public function __invoke()
+    private Application $app;
+
+    public function __construct(Application $app) {
+        $this->app = $app;
+        parent::__construct($app->getCollector()->getRoutes(), new DefaultDispatcher(), new \ArrayObject([
+            'app' => $app,
+            'lang' => $app->getTranslator()->getDefaultLanguage(),
+        ]));
+    }
+
+    public function getApplication(): Application
     {
-        return response('Unauthorized', 401);
+        return $this->app;
     }
 }

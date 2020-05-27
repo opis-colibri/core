@@ -15,37 +15,25 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Rendering;
+namespace Opis\Colibri\Collectors;
 
-use Opis\Stream\Content;
+use Opis\Colibri\Rendering\TemplateStreamHandler;
 
-final class CallbackContent extends Content
+class TemplateStreamHandlerCollector extends AdvancedClassCollector
 {
-    /** @var string */
-    private $extension;
-
     /**
-     * CallbackContent constructor.
-     * @param callable $func
-     * @param string $extension
+     * @inheritDoc
      */
-    public function __construct(callable $func, string $extension)
+    protected function getClass(): string
     {
-        parent::__construct($func);
-        $this->extension = $extension;
+        return TemplateStreamHandler::class;
     }
 
     /**
      * @inheritDoc
      */
-    public function data(?array $options = null): ?string
+    protected function singletonClasses(): bool
     {
-        $data = ($this->data)($this->extension, $options);
-
-        if (is_scalar($data) || (is_object($data) && method_exists($data, '__toString'))) {
-            return (string)$data;
-        }
-
-        return null;
+        return true;
     }
 }

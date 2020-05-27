@@ -22,8 +22,7 @@ use function Opis\Colibri\Functions\render;
 
 trait RenderableViewTrait
 {
-    /** @var string|null */
-    protected $renderedContent;
+    protected ?string $renderedContent = null;
 
     /**
      * @inheritdoc
@@ -35,6 +34,7 @@ trait RenderableViewTrait
                 $this->renderedContent = render($this);
             } catch (Throwable $e) {
                 $this->renderedContent = $e->getMessage();
+                throw $e;
             }
         }
 

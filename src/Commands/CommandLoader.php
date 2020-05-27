@@ -17,6 +17,7 @@
 
 namespace Opis\Colibri\Commands;
 
+use Opis\Colibri\Commands\About;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\CommandLoader\CommandLoaderInterface;
 

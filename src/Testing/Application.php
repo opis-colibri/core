@@ -97,31 +97,30 @@ class Application extends BaseApplication
             }
         }
 
-        $this->info = null;
         $this->collector = null;
         $this->containerInstance = null;
-        $this->translatorDriver = null;
+        $this->defaultTranslatorDriver = null;
         $this->translatorInstance = null;
         $this->defaultLanguage = null;
         $this->csrfTokenInstance = null;
         $this->formatter = null;
-        $this->cache = null;
-        $this->connection = null;
-        $this->database = null;
-        $this->entityManager = null;
+        $this->cache = [];
+        $this->connection = [];
+        $this->database = [];
+        $this->entityManager = [];
         $this->session = [];
         $this->httpRequest = null;
         $this->httpRouter = null;
         $this->viewRenderer = null;
-        $this->loggers = null;
+        $this->loggers = [];
         $this->eventDispatcher = null;
         $this->validator = null;
         $this->collectorList = null;
-        $this->config = null;
+        $this->config = [];
 
         TemplateStream::clearCache();
         TemplateStream::unregister();
-        static::$instance = null;
+        //static::$instance = null;
     }
 
     /**

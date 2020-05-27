@@ -17,7 +17,7 @@
 
 namespace Test\Foo\Middleware;
 
-use Opis\Colibri\Routing\Middleware;
+use Opis\Routing\Middleware;
 use Opis\Http\Response;
 use Opis\Stream\PHPMemoryStream;
 

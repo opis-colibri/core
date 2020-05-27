@@ -17,13 +17,8 @@
 
 namespace Opis\Colibri\Serializable;
 
-use Serializable;
-use Opis\Routing\ClosureTrait;
-
-class RouterGlobals implements Serializable
+class RouterGlobals
 {
-    use ClosureTrait;
-
     private $globals = [
         'mixin' => [],
         'implicit' => [],
@@ -95,19 +90,13 @@ class RouterGlobals implements Serializable
         return $this->globals;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function serialize()
+    public function __serialize(): array
     {
-        return serialize($this->wrapClosures($this->globals));
+        return $this->globals;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function unserialize($serialized)
+    public function __unserialize(array $data): void
     {
-        $this->globals = $this->unwrapClosures(unserialize($serialized));
+        $this->globals = $data;
     }
 }

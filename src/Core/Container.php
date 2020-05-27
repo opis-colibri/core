@@ -15,15 +15,26 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Test\Foo\Middleware;
+namespace Opis\Colibri\Core;
 
-use Opis\Routing\Middleware;
-use function Opis\Colibri\Functions\response;
+use Opis\Colibri\Application;
+use Opis\Container\Container as BaseContainer;
 
-class AuthMiddleware extends Middleware
+class Container extends BaseContainer
 {
-    public function __invoke()
+    public function __construct()
     {
-        return response('Unauthorized', 401);
+        $this->instances[Application::class] = Application::getInstance();
+    }
+
+    public function __unserialize(array $data): void
+    {
+        parent::__unserialize($data);
+        $this->__construct();
+    }
+
+    public function getInstance(string $key)
+    {
+        return $this->instances[$key] ?? null;
     }
 }

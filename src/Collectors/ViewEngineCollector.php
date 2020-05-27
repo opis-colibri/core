@@ -15,15 +15,34 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Test\Foo\Middleware;
+namespace Opis\Colibri\Collectors;
 
-use Opis\Routing\Middleware;
-use function Opis\Colibri\Functions\response;
+use Opis\Colibri\Serializable\Collection;
 
-class AuthMiddleware extends Middleware
+/**
+ * @property Collection $data
+ */
+class ViewEngineCollector extends BaseCollector
 {
-    public function __invoke()
+    /**
+     * Constructor
+     */
+    public function __construct()
     {
-        return response('Unauthorized', 401);
+        parent::__construct(new Collection());
+    }
+
+    /**
+     * Defines a new view engine
+     *
+     * @param callable $factory
+     *
+     * @return ViewEngineCollector
+     */
+    public function register(callable $factory): self
+    {
+        $key = $this->data->length() + 1;
+        $this->data->add($key, [$factory, $this->crtPriority]);
+        return $this;
     }
 }

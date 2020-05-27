@@ -15,15 +15,12 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Test\Foo\Middleware;
+namespace Opis\Colibri\Core;
 
-use Opis\Routing\Middleware;
-use function Opis\Colibri\Functions\response;
+use Opis\View\DefaultView;
+use Opis\Colibri\Rendering\RenderableViewTrait;
 
-class AuthMiddleware extends Middleware
+class View extends DefaultView
 {
-    public function __invoke()
-    {
-        return response('Unauthorized', 401);
-    }
+    use RenderableViewTrait;
 }

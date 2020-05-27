@@ -17,16 +17,13 @@
 
 namespace Opis\Colibri\Serializable;
 
-use Serializable;
-
-class Translations implements Serializable
+class Translations
 {
+    /** @var array */
+    private $data = [];
 
     /** @var array */
-    protected $data = [];
-
-    /** @var array */
-    protected $comments = [];
+    private $comments = [];
 
     /**
      * @param string $ns
@@ -78,24 +75,17 @@ class Translations implements Serializable
         return $this->comments[$ns][$key] ?? null;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function serialize()
+    public function __serialize(): array
     {
-        return serialize([
+        return [
             'data' => $this->data,
             'comments' => $this->comments,
-        ]);
+        ];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function unserialize($data)
+    public function __unserialize(array $data): void
     {
-        $un = unserialize($data);
-        $this->data = $un['data'] ?? [];
-        $this->comments = $un['comments'] ?? [];
+        $this->data = $data['data'];
+        $this->comments = $data['comments'];
     }
 }

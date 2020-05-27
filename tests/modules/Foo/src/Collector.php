@@ -21,8 +21,8 @@ use Opis\Colibri\Collector as BaseCollector;
 use function Opis\Colibri\Functions\{
     response
 };
-use Opis\Colibri\ItemCollectors\RouterGlobalsCollector;
-use Opis\Colibri\ItemCollectors\RouteCollector;
+use Opis\Colibri\Collectors\RouterGlobalsCollector;
+use Opis\Colibri\Collectors\RouteCollector;
 use Opis\Http\Request;
 use Test\Foo\Middleware\AuthMiddleware;
 use Test\Foo\Middleware\ToUpperMiddleware;
