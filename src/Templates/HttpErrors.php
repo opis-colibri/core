@@ -15,9 +15,9 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Rendering;
+namespace Opis\Colibri\Templates;
 
-class Template
+class HttpErrors
 {
     /**
      * @return string

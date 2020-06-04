@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Collectors;
 
 use Opis\Colibri\Application;
-use Opis\Colibri\Rendering\ViewEngine;
+use Opis\Colibri\Core\ViewEngine;
 use Opis\View\{Renderer, ViewHandler};
 use function Opis\Colibri\Functions\app;
 

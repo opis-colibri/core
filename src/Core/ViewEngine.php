@@ -15,9 +15,8 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Rendering;
+namespace Opis\Colibri\Core;
 
-use Opis\Colibri\Core\View;
 use Opis\I18n\Translator\LanguageInfo;
 use Opis\View\PHPEngine;
 use function Opis\Colibri\Functions\{

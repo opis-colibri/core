@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Rendering;
+namespace Opis\Colibri\Templates;
 
 use Opis\Stream\Content;
 use Opis\Stream\Wrapper\ContentStreamWrapper;

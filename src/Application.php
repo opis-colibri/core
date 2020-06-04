@@ -29,7 +29,7 @@ use Opis\Http\{Request as HttpRequest, Response as HttpResponse, Responses\HtmlR
 use Opis\DataStore\{DataStore, Drivers\Memory as MemoryConfig};
 use Opis\Database\{ Connection, Database, Schema};
 use Opis\ORM\EntityManager;
-use Opis\Colibri\Rendering\{CallbackTemplateHandler, TemplateStream};
+use Opis\Colibri\Templates\{CallbackTemplateHandler, HttpErrors, TemplateStream};
 use Opis\Colibri\Core\{Container, CSRFToken, Router, Session, Translator, View};
 
 class Application implements IApplicationContainer
@@ -202,7 +202,7 @@ class Application implements IApplicationContainer
                 $templateHandlers->add('callback', CallbackTemplateHandler::class);
             }
             $this->viewRenderer->handle('error.{error}', function ($error) {
-                return TemplateStream::url('callback', '\Opis\Colibri\Rendering\Template::error' . $error, 'php');
+                return TemplateStream::url('callback', HttpErrors::class . '::error' . $error, 'php');
             }, -100)->where('error', '401|403|404|405|500|503');
         }
 

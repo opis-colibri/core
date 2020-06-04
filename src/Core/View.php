@@ -18,9 +18,22 @@
 namespace Opis\Colibri\Core;
 
 use Opis\View\DefaultView;
-use Opis\Colibri\Rendering\RenderableViewTrait;
+use function Opis\Colibri\Functions\render;
 
 class View extends DefaultView
 {
-    use RenderableViewTrait;
+    protected ?string $renderedContent = null;
+
+    public function __toString()
+    {
+        if ($this->renderedContent === null) {
+            try {
+                $this->renderedContent = render($this);
+            } catch (\Throwable $e) {
+                $this->renderedContent = $e->getMessage();
+            }
+        }
+
+        return $this->renderedContent;
+    }
 }

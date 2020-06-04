@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Rendering\TemplateStreamHandler;
+use Opis\Colibri\Templates\TemplateStreamHandler;
 
 class TemplateStreamHandlerCollector extends AdvancedClassCollector
 {
