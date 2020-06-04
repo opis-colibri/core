@@ -461,3 +461,32 @@ function recollect(bool $fresh = true): bool
 {
     return Application::getInstance()->getCollector()->recollect($fresh);
 }
+
+function install(Module $module, bool $recollect = true, bool $recursive = false): bool
+{
+    return Application::getInstance()->install($module, $recollect, $recursive);
+}
+
+function uninstall(Module $module, bool $recollect = true, bool $recursive = false): bool
+{
+    return Application::getInstance()->uninstall($module, $recollect, $recursive);
+}
+
+function enable(Module $module, bool $recollect = true, bool $recursive = false): bool
+{
+    return Application::getInstance()->enable($module, $recollect, $recursive);
+}
+
+function disable(Module $module, bool $recollect = true, bool $recursive = false): bool
+{
+    return Application::getInstance()->disable($module, $recollect, $recursive);
+}
+
+/**
+ * @param bool $clear
+ * @return Module[]
+ */
+function getModules(bool $clear = false): array
+{
+    return Application::getInstance()->getModules($clear);
+}

@@ -20,9 +20,7 @@ namespace Opis\Colibri\Commands;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use function Opis\Colibri\{
-    app, info
-};
+use function Opis\Colibri\{getModules, info};
 
 class Setup extends Command
 {
@@ -70,7 +68,7 @@ class Setup extends Command
      */
     private function hasInstaller(): bool
     {
-        foreach (app()->getModules() as $module) {
+        foreach (getModules() as $module) {
             if ($module->isApplicationInstaller()) {
                 return true;
             }

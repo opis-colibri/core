@@ -23,7 +23,7 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use function Opis\Colibri\app;
+use function Opis\Colibri\getModules;
 
 class Modules extends Command
 {
@@ -53,7 +53,7 @@ class Modules extends Command
         $table->setHeaders(array('<white>Name</white>', '<white>Title</white>', '<white>Status</white>'));
 
 
-        foreach (app()->getModules() as $name => $module) {
+        foreach (getModules() as $name => $module) {
 
             if (!$all && $module->isApplicationInstaller()) {
                 continue;

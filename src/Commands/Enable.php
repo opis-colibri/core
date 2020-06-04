@@ -23,9 +23,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use function Opis\Colibri\{
-    app, module, info
-};
+use function Opis\Colibri\{enable, module, info};
 
 class Enable extends Command
 {
@@ -77,7 +75,7 @@ class Enable extends Command
                 continue;
             }
 
-            if (app()->enable($module, true, $recursive)) {
+            if (enable($module, true, $recursive)) {
                 $output->writeln('<info>Module <b-info>' . $moduleName . '</b-info> was enabled.</info>');
             } else {
                 $output->writeln('<error>Module <b-error>' . $moduleName . '</b-error> could not be enabled.</error>');
