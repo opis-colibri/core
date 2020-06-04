@@ -18,31 +18,33 @@
 namespace Opis\Colibri\Serializable;
 
 use RuntimeException;
+use InvalidArgumentException;
 
 class FactoryCollection extends Collection
 {
     private array $cache = [];
+
     /**
      * @var callable|null
      */
     private $builder = null;
 
-    private bool $eception;
+    private bool $exception = true;
 
     public function __construct(callable $builder = null, bool $exception = true)
     {
         $this->builder = $builder;
-        $this->eception = $exception;
+        $this->exception = $exception;
     }
 
     /**
      * @param string $key
      * @param callable $value
      */
-    public function add(string $key, $value)
+    public function add(string $key, $value): void
     {
         if (!is_callable($value)) {
-            throw new \InvalidArgumentException("Callable expected");
+            throw new InvalidArgumentException("Callable expected");
         }
 
         $this->add($key, $value);
@@ -55,7 +57,7 @@ class FactoryCollection extends Collection
         }
 
         if (null === $item = $this::get($key)) {
-            if ($this->eception) {
+            if ($this->exception) {
                 throw new RuntimeException("Invalid key ${key}");
             }
             return null;
@@ -74,7 +76,7 @@ class FactoryCollection extends Collection
     {
         return [
             'builder' => $this->builder,
-            'exception' => $this->eception,
+            'exception' => $this->exception,
             'parent' => parent::__serialize(),
         ];
     }
@@ -83,6 +85,6 @@ class FactoryCollection extends Collection
     {
         parent::__unserialize($data['parent']);
         $this->builder = $data['builder'];
-        $this->eception = $data['exception'];
+        $this->exception = $data['exception'];
     }
 }

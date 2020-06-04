@@ -33,7 +33,7 @@ class Container extends BaseContainer
         $this->__construct();
     }
 
-    public function getInstance(string $key)
+    public function getInstance(string $key): ?object
     {
         return $this->instances[$key] ?? null;
     }

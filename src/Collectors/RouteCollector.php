@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@ use function Opis\Colibri\collect;
  */
 class RouteCollector extends BaseCollector
 {
-    /** @var string */
-    protected $prefix = '';
+
+    protected string $prefix = '';
 
     public function __construct()
     {

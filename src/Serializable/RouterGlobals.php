@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ namespace Opis\Colibri\Serializable;
 
 class RouterGlobals
 {
-    private $globals = [
+    private array $globals = [
         'mixin' => [],
         'implicit' => [],
         'bind' => [],
@@ -31,55 +31,67 @@ class RouterGlobals
     /**
      * @param string $name
      * @param callable $callback
+     * @return self
      */
-    public function mixin(string $name, callable $callback)
+    public function mixin(string $name, callable $callback): self
     {
         $this->globals[__FUNCTION__][$name] = $callback;
+        return $this;
     }
 
     /**
      * @param string $name
      * @param callable $callback
+     * @return self
      */
-    public function bind(string $name, callable $callback)
+    public function bind(string $name, callable $callback): self
     {
         $this->globals[__FUNCTION__][$name] = $callback;
+        return $this;
     }
 
     /**
      * @param string $name
      * @param callable $callback
+     * @return self
      */
-    public function filter(string $name, callable $callback)
+    public function filter(string $name, callable $callback): self
     {
         $this->globals[__FUNCTION__][$name] = $callback;
+        return $this;
     }
 
     /**
      * @param string $name
      * @param callable $callback
+     * @return self
      */
-    public function guard(string $name, callable $callback)
+    public function guard(string $name, callable $callback): self
     {
         $this->globals[__FUNCTION__][$name] = $callback;
+        return $this;
     }
 
     /**
      * @param string $name
      * @param $value
+     * @return self
      */
-    public function implicit(string $name, $value)
+    public function implicit(string $name, $value): self
     {
         $this->globals[__FUNCTION__][$name] = $value;
+        return $this;
     }
 
     /**
      * @param string $name
      * @param string $value
+     * @return self
      */
-    public function placeholder(string $name, string $value)
+    public function placeholder(string $name, string $value): self
     {
         $this->globals[__FUNCTION__][$name] = $value;
+        return $this;
     }
 
     /**

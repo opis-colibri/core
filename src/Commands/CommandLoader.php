@@ -1,6 +1,6 @@
 <?php
 /* ============================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,16 @@
 
 namespace Opis\Colibri\Commands;
 
-use Opis\Colibri\Commands\About;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\CommandLoader\CommandLoaderInterface;
 
 class CommandLoader implements CommandLoaderInterface
 {
     /** @var string[] */
-    protected $classes;
+    protected array $classes;
 
     /** @var callable[] */
-    protected $builders;
+    protected array $builders;
 
     /**
      * CommandLoader constructor.

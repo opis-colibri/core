@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,16 @@
 
 namespace Opis\Colibri\Serializable;
 
-use Serializable;
-use function Opis\Colibri\make;
+use function Opis\Colibri\Functions\make;
 
-class ClassList implements Serializable
+class ClassList
 {
-    /** @var array */
-    protected $list = [];
 
-    /** @var array */
-    protected $cache = null;
+    protected array $list = [];
 
-    /** @var bool */
-    protected $singleton = false;
+    protected ?array $cache = null;
+
+    protected bool $singleton = false;
 
     /**
      * ClassList constructor.
@@ -91,9 +88,9 @@ class ClassList implements Serializable
 
     /**
      * @param string $type
-     * @return null|mixed
+     * @return null|object
      */
-    public function get(string $type)
+    public function get(string $type): ?object
     {
         if (!isset($this->list[$type])) {
             return null;
@@ -110,19 +107,17 @@ class ClassList implements Serializable
         return $this->cache[$type];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function serialize()
+    public function __serialize(): array
     {
-        return serialize($this->list);
+        return [
+            'list' => $this->list,
+            'singleton' => $this->singleton,
+        ];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function unserialize($data)
+    public function __unserialize(array $data): void
     {
-        $this->list = unserialize($data);
+        $this->list = $data['list'];
+        $this->singleton = $data['singleton'];
     }
 }

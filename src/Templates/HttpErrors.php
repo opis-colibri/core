@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ class HttpErrors
     /**
      * @return string
      */
-    public static function error401()
+    public static function error401(): string
     {
         return static::error();
     }
@@ -30,7 +30,7 @@ class HttpErrors
     /**
      * @return string
      */
-    public static function error403()
+    public static function error403(): string
     {
         return static::error();
     }
@@ -38,7 +38,7 @@ class HttpErrors
     /**
      * @return string
      */
-    public static function error404()
+    public static function error404(): string
     {
         return static::error();
     }
@@ -46,7 +46,7 @@ class HttpErrors
     /**
      * @return string
      */
-    public static function error405()
+    public static function error405(): string
     {
         return static::error();
     }
@@ -54,7 +54,7 @@ class HttpErrors
     /**
      * @return string
      */
-    public static function error500()
+    public static function error500(): string
     {
         return static::error();
     }
@@ -62,7 +62,7 @@ class HttpErrors
     /**
      * @return string
      */
-    public static function error503()
+    public static function error503(): string
     {
         return static::error();
     }
@@ -70,7 +70,7 @@ class HttpErrors
     /**
      * @return string
      */
-    public static function error()
+    public static function error(): string
     {
         return <<<'TEMPLATE'
 <!DOCTYPE html>

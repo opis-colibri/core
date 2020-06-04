@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2019 Zindex Software
+ * Copyright 2019-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,14 +23,12 @@ use Opis\Database\{Connection, Database};
 
 class DatabaseLogger extends AbstractLogger
 {
-    /** @var Database */
-    protected $db;
 
-    /** @var string */
-    protected $table;
+    protected Database $db;
 
-    /** @var array */
-    protected $columns;
+    protected string $table;
+
+    protected array $columns;
 
     /**
      * @param Connection $connection

@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,10 @@ namespace Opis\Colibri\Serializable;
 
 class Translations
 {
-    /** @var array */
-    private $data = [];
 
-    /** @var array */
-    private $comments = [];
+    private array $data = [];
+
+    private array $comments = [];
 
     /**
      * @param string $ns
@@ -55,8 +54,8 @@ class Translations
     public function addComment(
         string $ns,
         string $key,
-        string $comment = null,
-        string $translators_comment = null
+        ?string $comment = null,
+        ?string $translators_comment = null
     ): self {
         $this->comments[$ns][$key] = [
             'comment' => $comment,
@@ -70,7 +69,7 @@ class Translations
      * @param string $key
      * @return array|null
      */
-    public function getComment(string $ns, string $key)
+    public function getComment(string $ns, string $key): ?array
     {
         return $this->comments[$ns][$key] ?? null;
     }

@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,6 @@ class ViewCollector extends BaseCollector
      */
     public function handle(string $pattern, callable $resolver): ViewHandler
     {
-        return  $this->data->handle($pattern, $resolver, $this->crtPriority);
+        return $this->data->handle($pattern, $resolver, $this->crtPriority);
     }
 }

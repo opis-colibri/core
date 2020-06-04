@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,10 @@ use function Opis\Colibri\{
 
 class CSRFToken
 {
-    /** @var string */
-    protected $sessionKey;
 
-    /** @var int */
-    protected $maxNumber;
+    protected string $sessionKey;
+
+    protected int $maxNumber;
 
     /**
      * @param string $key

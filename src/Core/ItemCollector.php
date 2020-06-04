@@ -304,7 +304,6 @@ class ItemCollector
     /**
      * Register a new collector
      *
-     * @param string $name
      * @param string $class
      * @param string $description
      * @param array $options
@@ -370,7 +369,7 @@ class ItemCollector
             }
 
             $instance = $this->container->make($module->collector());
-
+            
             $reflection = new ReflectionClass($instance);
 
             if (!$reflection->isSubclassOf(Collector::class)) {

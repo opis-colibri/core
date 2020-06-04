@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,23 +27,17 @@ class Module
 
     const TYPE = 'opis-colibri-module';
 
-    /** @var ModuleManager */
-    protected $manager;
+    protected ModuleManager $manager;
 
-    /** @var string */
-    protected $name;
+    protected string $name;
 
-    /** @var CompletePackageInterface|null */
-    protected $package;
+    protected ?CompletePackageInterface $package = null;
 
-    /** @var array */
-    protected $info = [];
+    protected array $info = [];
 
-    /** @var array */
-    protected $moduleInfo;
+    protected array $moduleInfo;
 
-    /** @var null|bool */
-    protected $exists = null;
+    protected ?bool $exists = null;
 
     /**
      * @param ModuleManager $manager

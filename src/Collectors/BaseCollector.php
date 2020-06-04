@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,14 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Application;
-use Opis\Colibri\Core\Module;
+use Opis\Colibri\Module;
 
 abstract class BaseCollector
 {
     protected object $data;
-    protected ?Module $crtModule;
-    protected ?string $crtCollectorName;
-    protected ?int $crtPriority;
+    protected ?Module $crtModule = null;
+    protected ?string $crtCollectorName = null;
+    protected ?int $crtPriority = null;
 
     /**
      * BaseCollector constructor.
@@ -36,7 +35,7 @@ abstract class BaseCollector
         $this->data = $data;
     }
 
-    public static function update(BaseCollector $instance, ?Module $module, ?string $collector, ?int $priority)
+    public static function update(BaseCollector $instance, ?Module $module, ?string $collector, ?int $priority): void
     {
         $instance->crtModule = $module;
         $instance->crtCollectorName = $collector;

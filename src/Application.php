@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ use Opis\I18n\Translator\{Driver as TranslatorDriver};
 use Opis\View\{Renderer};
 use Opis\Http\{Request as HttpRequest, Response as HttpResponse, Responses\HtmlResponse};
 use Opis\DataStore\{DataStore, Drivers\Memory as MemoryConfig};
-use Opis\Database\{ Connection, Database, Schema};
+use Opis\Database\{Connection, Database, Schema};
 use Opis\ORM\EntityManager;
 use Opis\Colibri\Templates\{CallbackTemplateHandler, HttpErrors, TemplateStream};
 use Opis\Colibri\Core\{Container, CSRFToken, ItemCollector, Module, ModuleManager, Router, Session, Translator, View};
@@ -79,14 +79,14 @@ class Application implements ApplicationContainer
     /** @var callable[]|null */
     protected ?array $assets = null;
 
-    protected static Application $instance;
+    protected static ?Application $instance = null;
 
     /**
      * Application constructor.
      * @param string $rootDir
      * @param array|null $info
      */
-    public function __construct(string $rootDir, array $info = null)
+    public function __construct(string $rootDir, ?array $info = null)
     {
         if ($info === null) {
             $json = $rootDir . DIRECTORY_SEPARATOR . 'composer.json';
@@ -201,6 +201,7 @@ class Application implements ApplicationContainer
             if (!$templateHandlers->has('callback')) {
                 $templateHandlers->add('callback', CallbackTemplateHandler::class);
             }
+            // TODO: fix this
             $this->viewRenderer->handle('error.{error}', function ($error) {
                 return TemplateStream::url('callback', HttpErrors::class . '::error' . $error, 'php');
             }, -100)->where('error', '401|403|404|405|500|503');
@@ -264,7 +265,7 @@ class Application implements ApplicationContainer
      * @param string|null $storage
      * @return CacheDriver
      */
-    public function getCache(string $storage = null): CacheDriver
+    public function getCache(?string $storage = null): CacheDriver
     {
         if ($storage === null) {
             if ($this->defaultCacheDriver === null) {
@@ -286,7 +287,7 @@ class Application implements ApplicationContainer
      * @param string|null $name
      * @return Session
      */
-    public function getSession(string $name = null): Session
+    public function getSession(?string $name = null): Session
     {
         if ($name === null) {
             if ($this->defaultSession === null) {
@@ -319,7 +320,7 @@ class Application implements ApplicationContainer
      * @param string|null $driver
      * @return DataStore
      */
-    public function getConfig(string $driver = null): DataStore
+    public function getConfig(?string $driver = null): DataStore
     {
         if ($driver === null) {
             if ($this->defaultConfigDriver === null) {
@@ -566,7 +567,7 @@ class Application implements ApplicationContainer
     /**
      * Clear cached objects
      */
-    public function clearCachedObjects()
+    public function clearCachedObjects(): void
     {
         $this->containerInstance = null;
         $this->eventDispatcher = null;
@@ -640,7 +641,7 @@ class Application implements ApplicationContainer
      *
      * @return  HttpResponse
      */
-    public function run(HttpRequest $request = null): HttpResponse
+    public function run(?HttpRequest $request = null): HttpResponse
     {
         if ($request === null) {
             $request = HttpRequest::fromGlobals();
@@ -661,6 +662,7 @@ class Application implements ApplicationContainer
             $response = new HtmlResponse($view, 500);
         }
 
+        // TODO: add response handle
         $this->flushResponse($request, $response);
 
         $this->httpRequest = null;
@@ -1018,6 +1020,7 @@ class Application implements ApplicationContainer
      */
     protected function getDefaultCollectors(): array
     {
+        // TODO: change to ::class
         return [
             'routes' => [
                 'class' => 'Opis\\Colibri\\Collectors\\RouteCollector',

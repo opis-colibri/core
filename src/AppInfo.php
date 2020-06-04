@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ use Opis\Colibri\Plugin\Settings;
 
 class AppInfo
 {
-    const ROOT_DIR = 'root-dir';
     const PUBLIC_DIR = 'public-dir';
     const WRITABLE_DIR = 'writable-dir';
     const TEMP_DIR = 'temp-dir';
@@ -33,20 +32,15 @@ class AppInfo
     const INIT_FILE = 'init-file';
     const WEB_PATH = 'web-path';
 
-    /** @var    array */
-    protected $cache = [];
+    protected array $cache = [];
 
-    /** @var  array */
-    protected $settings = [];
+    protected array $settings;
 
-    /** @var  string */
-    protected $rootDir;
+    protected string $rootDir;
 
-    /** @var Settings */
-    protected $pluginSettings;
+    protected Settings $pluginSettings;
 
-    /** @var null|array */
-    private $extra;
+    private ?array $extra;
 
     /**
      * AppInfo constructor.
@@ -233,7 +227,7 @@ class AppInfo
     /**
      * Clear cache
      */
-    public function clearCache()
+    public function clearCache(): void
     {
         $this->cache = [];
     }

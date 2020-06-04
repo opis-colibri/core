@@ -1,6 +1,6 @@
 <?php
 /* ============================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,17 +28,16 @@ class ModuleManager
 {
     const CONFIG_NAME = 'modules';
 
-    /** @var string */
-    protected $vendorDir;
+    protected string $vendorDir;
 
     /** @var callable */
     protected $config;
 
     /** @var null|CompletePackageInterface[] */
-    protected $packages = null;
+    protected ?array $packages = null;
 
     /** @var null|Module[] */
-    protected $modules = null;
+    protected ?array $modules = null;
 
     /**
      * ModuleManager constructor.
@@ -178,9 +177,7 @@ class ModuleManager
      */
     public function recursiveDependencies(Module $module, ?callable $filter = null): array
     {
-        return $this->filteredDeps($module, function (Module $module): array {
-            return $module->dependencies();
-        }, $filter);
+        return $this->filteredDeps($module, static fn (Module $module): array => $module->dependencies(), $filter);
     }
 
     /**
@@ -190,9 +187,7 @@ class ModuleManager
      */
     public function recursiveDependants(Module $module, ?callable $filter = null): array
     {
-        return $this->filteredDeps($module, function (Module $module): array {
-            return $module->dependants();
-        }, $filter);
+        return $this->filteredDeps($module, static fn (Module $module): array => $module->dependants(), $filter);
     }
 
     /**
@@ -258,7 +253,7 @@ class ModuleManager
     /**
      * @return void
      */
-    public function clearCache()
+    public function clearCache(): void
     {
         $this->modules = $this->packages = null;
     }

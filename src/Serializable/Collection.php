@@ -21,7 +21,7 @@ class Collection
 {
     private array $entries = [];
 
-    public function add(string $key, $value)
+    public function add(string $key, $value): void
     {
         $this->entries[$key] = $value;
     }
@@ -31,7 +31,7 @@ class Collection
         return array_key_exists($key, $this->entries);
     }
 
-    public function remove(string $key)
+    public function remove(string $key): void
     {
         unset($this->entries[$key]);
     }

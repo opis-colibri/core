@@ -1,6 +1,6 @@
 <?php
 /* ============================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,6 @@
 
 namespace Opis\Colibri\Serializable;
 
-use Closure;
-use Opis\Closure\SerializableClosure;
-
 class AdvancedClassList extends ClassList
 {
     /**
@@ -34,10 +31,9 @@ class AdvancedClassList extends ClassList
     }
 
     /**
-     * @param string $type
-     * @return null|mixed
+     * @inheritDoc
      */
-    public function get(string $type)
+    public function get(string $type): ?object
     {
         if (!isset($this->list[$type])) {
             return null;
@@ -58,39 +54,5 @@ class AdvancedClassList extends ClassList
         }
 
         return $this->cache[$type];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function serialize()
-    {
-        SerializableClosure::enterContext();
-
-        $object = serialize(array_map(function ($value) {
-            if ($value instanceof Closure) {
-                return SerializableClosure::from($value);
-            }
-            return $value;
-        }, $this->list));
-
-        SerializableClosure::exitContext();
-
-        return $object;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function unserialize($data)
-    {
-        $data = unserialize($data);
-
-        $this->list = array_map(function ($value) {
-            if ($value instanceof SerializableClosure) {
-                return $value->getClosure();
-            }
-            return $value;
-        }, $data);
     }
 }
