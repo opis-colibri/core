@@ -38,9 +38,9 @@ class AppInfo
 
     protected string $rootDir;
 
-    protected Settings $pluginSettings;
+    protected ?Settings $pluginSettings = null;
 
-    private ?array $extra;
+    private ?array $extra = null;
 
     /**
      * AppInfo constructor.
