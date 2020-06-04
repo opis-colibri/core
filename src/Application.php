@@ -64,6 +64,8 @@ class Application implements ApplicationContainer
     protected ?HttpRequest $httpRequest = null;
     protected ?Connection $defaultConnection = null;
     protected ?Session $defaultSession = null;
+    protected ?SessionHandler $defaultSessionHandler = null;
+    protected ?array $defaultSessionConfig = null;
     protected ?DataStore $defaultConfigDriver = null;
     protected ?CacheDriver $defaultCacheDriver = null;
     protected ?LoggerInterface $defaultLogger = null;
@@ -307,7 +309,11 @@ class Application implements ApplicationContainer
     {
         if ($name === null) {
             if ($this->defaultSession === null) {
-                $this->defaultSession = new Session();
+                if ($this->defaultSessionHandler !== null) {
+                    $this->defaultSession = new Session($this->defaultSessionConfig, $this->defaultSessionHandler);
+                } else {
+                    $this->defaultSession = new Session();
+                }
             }
             return $this->defaultSession;
         }
@@ -566,7 +572,8 @@ class Application implements ApplicationContainer
      */
     public function setSessionHandler(SessionHandler $handler, array $config = []): ApplicationContainer
     {
-        $this->defaultSession = new Session($config, $handler);
+        $this->defaultSessionHandler = $handler;
+        $this->defaultSessionConfig = $config;
         return $this;
     }
 
