@@ -17,6 +17,7 @@
 
 namespace Opis\Colibri\Commands;
 
+use Opis\Stream\Wrapper\PHPCodeStreamWrapper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputArgument;
@@ -162,18 +163,6 @@ class CreateModule extends Command
      */
     private function template($file, array $args): string
     {
-        $__file_____ = $file;
-        $__args_____ = $args;
-
-        unset($file, $args);
-
-        if (!ob_start()) {
-            return '';
-        }
-
-        extract($__args_____, EXTR_SKIP);
-        include $__file_____;
-
-        return ob_get_clean();
+        return PHPCodeStreamWrapper::template(file_get_contents($file), $args);
     }
 }
