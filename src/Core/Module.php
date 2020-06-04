@@ -35,7 +35,7 @@ class Module
 
     protected array $info = [];
 
-    protected array $moduleInfo;
+    protected ?array $moduleInfo = null;
 
     protected ?bool $exists = null;
 

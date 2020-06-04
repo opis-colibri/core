@@ -1,6 +1,6 @@
 <?php
 /* ============================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,35 +26,28 @@ use Opis\Colibri\Testing\{Application, InstalledAppInfo};
 
 class ApplicationBuilder
 {
-    /** @var string */
-    protected $baseRootDir;
 
-    /** @var string */
-    protected $rootDir;
+    protected string $baseRootDir;
 
-    /** @var null|string */
-    protected $vendorDir;
+    protected ?string $rootDir = null;
 
-    /** @var AppInitBuilder */
-    protected $builder = null;
+    protected ?string $vendorDir = null;
 
-    /** @var array */
-    protected $autoload = [];
+    protected AppInitBuilder $builder;
 
-    /** @var int[] */
-    protected $modules = [];
+    protected array $autoload = [];
+
+    protected array $modules = [];
 
     /** @var stdClass[] */
-    protected $pathModules = [];
+    protected array $pathModules = [];
 
-    /** @var array[] */
-    protected $createdModules = [];
+    protected array $createdModules = [];
 
     /** @var string[] */
-    protected $dependencies = [];
+    protected array $dependencies = [];
 
-    /** @var array */
-    protected $mainComposerContent = ['type' => 'library'];
+    protected array $mainComposerContent = ['type' => 'library'];
 
     /**
      * AppBuilder constructor.
@@ -149,7 +142,7 @@ class ApplicationBuilder
     }
 
     /**
-     * @param AppInitBuilder|null $builder
+     * @param AppInitBuilder $builder
      * @return ApplicationBuilder
      */
     public function setBootstrapBuilder(AppInitBuilder $builder): self
@@ -552,7 +545,7 @@ class ApplicationBuilder
      * @param Application $app
      * @param string[] $dependencies
      */
-    protected function resolveDependencies(Application $app, array $dependencies)
+    protected function resolveDependencies(Application $app, array $dependencies): void
     {
         $modules = $app->getModules();
 
@@ -573,7 +566,7 @@ class ApplicationBuilder
      * @param string $rootDir
      * @param array $modules
      */
-    protected function handleCreatedModules(string $rootDir, array $modules)
+    protected function handleCreatedModules(string $rootDir, array $modules): void
     {
         $rootDir = realpath($rootDir);
         $rootDir = rtrim($rootDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'modules';

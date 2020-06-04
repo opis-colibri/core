@@ -1,6 +1,6 @@
 <?php
 /* ============================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ use Opis\Colibri\Core\ModuleManager;
 
 class ExtendedModuleManager extends ModuleManager
 {
-    /** @var string */
-    protected $installedJsonFile;
+
+    protected string $installedJsonFile;
 
     /**
      * ExtendedModuleManager constructor.

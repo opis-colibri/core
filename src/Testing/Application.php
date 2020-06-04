@@ -1,6 +1,6 @@
 <?php
 /* ============================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ use Opis\Colibri\Templates\TemplateStream;
 
 class Application extends BaseApplication
 {
-    /** @var string */
-    protected $installedJson;
+
+    protected ?string $installedJson = null;
 
     /** @var null|callable */
     protected $autoloader = null;
@@ -57,7 +57,7 @@ class Application extends BaseApplication
     /**
      * @param bool $hard
      */
-    public function destroy(bool $hard = true)
+    public function destroy(bool $hard = true): void
     {
         if ($hard) {
             $this->installedJson = null;
@@ -147,7 +147,7 @@ class Application extends BaseApplication
     /**
      * @inheritDoc
      */
-    public function clearCachedObjects()
+    public function clearCachedObjects(): void
     {
         $this->collector = null;
         parent::clearCachedObjects();

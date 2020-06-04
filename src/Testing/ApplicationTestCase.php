@@ -24,8 +24,8 @@ use Opis\Colibri\Testing\Builders\{ApplicationBuilder, AppInitBuilder};
 
 abstract class ApplicationTestCase extends TestCase
 {
-    /** @var null|Application */
-    protected static $app = null;
+
+    protected static ?Application $app = null;
 
     /** @var null|callable */
     protected static $onAppDestroy = null;

@@ -1,6 +1,6 @@
 <?php
 /* ============================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,32 +30,24 @@ use Opis\I18n\Translator\{Drivers\Memory as DefaultTranslator, Driver as Transla
 
 class AppInitBuilder
 {
-    /** @var null|DataStore */
-    protected $config = null;
 
-    /** @var null|string */
-    protected $timezone = null;
+    protected ?DataStore $config = null;
 
-    /** @var null|string */
-    protected $language = null;
+    protected ?string $timezone = null;
 
-    /** @var null|CacheDriver */
-    protected $cache = null;
+    protected ?string $language = null;
 
-    /** @var null|SessionHandler */
-    protected $sessionHandler = null;
+    protected ?CacheDriver $cache = null;
 
-    /** @var null|array */
-    protected $sessionConfig = null;
+    protected ?SessionHandler $sessionHandler = null;
 
-    /** @var null|TranslatorDriver */
-    protected $translator = null;
+    protected ?array $sessionConfig = null;
 
-    /** @var null|Connection */
-    protected $databaseConnection = null;
+    protected ?TranslatorDriver $translator = null;
 
-    /** @var null|LoggerInterface */
-    protected $logger = null;
+    protected ?Connection $databaseConnection = null;
+
+    protected ?LoggerInterface $logger = null;
 
     /**
      * @return ApplicationInitializer
