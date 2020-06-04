@@ -18,7 +18,7 @@
 namespace Test\Foo\Middleware;
 
 use Opis\Routing\Middleware;
-use function Opis\Colibri\Functions\response;
+use function Opis\Colibri\response;
 
 class AuthMiddleware extends Middleware
 {

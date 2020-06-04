@@ -17,12 +17,8 @@
 
 namespace Opis\Colibri\Commands;
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use function Opis\Colibri\Functions\{
-    app, info
-};
+use Symfony\Component\Console\{Command\Command, Input\InputInterface, Output\OutputInterface};
+use function Opis\Colibri\{info, recollect};
 
 class Collect extends Command
 {
@@ -45,7 +41,7 @@ class Collect extends Command
             die('Opis Colibri is not installed' . PHP_EOL);
         }
 
-        if (app()->getCollector()->recollect()) {
+        if (recollect()) {
             $output->writeln('<info>All items have been collected.</info>');
         } else {
             $output->writeln('<error>Items were not collected.</error>');

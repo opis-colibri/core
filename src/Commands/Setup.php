@@ -20,7 +20,7 @@ namespace Opis\Colibri\Commands;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use function Opis\Colibri\Functions\{
+use function Opis\Colibri\{
     app, info
 };
 

@@ -22,7 +22,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\{InputArgument, InputInterface, InputOption};
-use function Opis\Colibri\Functions\info;
+use function Opis\Colibri\info;
 
 class Yarn extends Command
 {

@@ -33,7 +33,7 @@ use Symfony\Component\Console\{
 };
 use Opis\Colibri\Core\Module;
 use Symfony\Component\Filesystem\Filesystem;
-use function Opis\Colibri\Functions\{
+use function Opis\Colibri\{
     info, app, module
 };
 

@@ -15,15 +15,10 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Functions;
+namespace Opis\Colibri;
 
 use Opis\Cache\CacheDriver;
-use Opis\Colibri\{
-    Application,
-    AppInfo,
-    Core\Session,
-    Core\View as CoreView
-};
+use Opis\Colibri\Core\{Session, View as CoreView};
 use Opis\Database\{
     Connection as DBConnection,
     Database,

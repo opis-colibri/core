@@ -24,7 +24,7 @@ use Opis\I18n\{
     Translator\Drivers\Memory,
     Translator\Driver
 };
-use function Opis\Colibri\Functions\collect;
+use function Opis\Colibri\collect;
 
 class Translator extends BaseTranslator
 {

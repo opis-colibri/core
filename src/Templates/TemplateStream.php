@@ -19,7 +19,7 @@ namespace Opis\Colibri\Templates;
 
 use Opis\Stream\Content;
 use Opis\Stream\Wrapper\ContentStreamWrapper;
-use function Opis\Colibri\Functions\app;
+use function Opis\Colibri\app;
 
 final class TemplateStream extends ContentStreamWrapper
 {

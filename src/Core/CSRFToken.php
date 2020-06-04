@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Core;
 
-use function Opis\Colibri\Functions\{
+use function Opis\Colibri\{
     random_str, session
 };
 

@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Test;
 
 use Opis\Colibri\Testing\Builders\ApplicationBuilder;
-use function Opis\Colibri\Functions\view;
+use function Opis\Colibri\view;
 
 class ViewsTest extends BaseAppTestCase
 {

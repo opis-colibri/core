@@ -17,9 +17,8 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Application;
 use Opis\Routing\{Route, RouteCollection, RouteGroup};
-use function Opis\Colibri\Functions\app;
+use function Opis\Colibri\collect;
 
 /**
  * Class RouteCollector
@@ -34,7 +33,7 @@ class RouteCollector extends BaseCollector
     public function __construct()
     {
         $routes = new RouteCollection();
-        $globals = app()->getCollector()->getRouterGlobals();
+        $globals = collect(RouterGlobalsCollector::class);
 
         foreach ($globals->getGlobals() as $method => $entries) {
             foreach ($entries as $name => $value) {

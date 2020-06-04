@@ -19,7 +19,7 @@ namespace Opis\Colibri\Core;
 
 use Opis\I18n\Translator\LanguageInfo;
 use Opis\View\PHPEngine;
-use function Opis\Colibri\Functions\{
+use function Opis\Colibri\{
     view, render, asset, getURI, generateCSRFToken, t
 };
 

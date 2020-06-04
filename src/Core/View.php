@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Core;
 
 use Opis\View\DefaultView;
-use function Opis\Colibri\Functions\render;
+use function Opis\Colibri\render;
 
 class View extends DefaultView
 {

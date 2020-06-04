@@ -17,10 +17,9 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Application;
 use Opis\Colibri\Core\ViewEngine;
 use Opis\View\{Renderer, ViewHandler};
-use function Opis\Colibri\Functions\app;
+use function Opis\Colibri\collect;
 
 /**
  * @property  Renderer $data
@@ -31,7 +30,8 @@ class ViewCollector extends BaseCollector
     {
         $renderer = new Renderer(new ViewEngine());
         $resolver = $renderer->getEngineResolver();
-        foreach (app()->getCollector()->getViewEngineResolver()->getEntries() as $entry) {
+
+        foreach (collect(ViewEngineCollector::class)->getEntries() as $entry) {
             $resolver->register($entry[0], $entry[1]);
         }
         $resolver->sort();

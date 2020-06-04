@@ -18,7 +18,7 @@
 namespace Test\Foo;
 
 use Opis\Colibri\Collector as BaseCollector;
-use function Opis\Colibri\Functions\{
+use function Opis\Colibri\{
     response
 };
 use Opis\Colibri\Collectors\RouterGlobalsCollector;

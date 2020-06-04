@@ -19,7 +19,7 @@ namespace Opis\Colibri\Serializable;
 
 use Opis\Session\SessionHandler;
 use Opis\Colibri\Core\Session;
-use function Opis\Colibri\Functions\app;
+use function Opis\Colibri\app;
 
 class SessionCollection extends Collection
 {

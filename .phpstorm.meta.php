@@ -1,7 +1,7 @@
 <?php
 namespace PHPSTORM_META {
 
-    override(\Opis\Colibri\Functions\make(0), type(0));
+    override(\Opis\Colibri\make(0), type(0));
 
 
     override(\Opis\Colibri\Core\ItemCollector::collect(0), map([
@@ -23,7 +23,7 @@ namespace PHPSTORM_META {
         '\Opis\Colibri\Collectors\ViewEngineCollector' => \Opis\Colibri\Serializable\Collection::class,
     ]));
 
-    override(\Opis\Colibri\Functions\collect(0), map([
+    override(\Opis\Colibri\collect(0), map([
         '\Opis\Colibri\Collectors\AssetsHandlerCollector' => \Opis\Colibri\Serializable\Collection::class,
         '\Opis\Colibri\Collectors\CacheCollector' => \Opis\Colibri\Serializable\FactoryCollection::class,
         '\Opis\Colibri\Collectors\CommandCollector' => \Opis\Colibri\Serializable\Collection::class,
