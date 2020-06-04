@@ -968,15 +968,23 @@ class Application implements IApplicationContainer
                 header(sprintf('%s: %s', $name, $value));
             }
 
-            foreach ($this->getSessionCookieContainer()->getAddedCookies() as $cookie) {
-                setCookie($cookie['name'], $cookie['value'], $cookie['expire'], $cookie['path'], $cookie['domain'],
-                    $cookie['secure'], $cookie['http_only']);
-            }
+            $setCookie = static function (array $cookie): bool {
+                $name = $cookie['name'];
+                $value = $cookie['value'];
 
-            foreach ($response->getCookies() as $cookie) {
-                setcookie($cookie['name'], $cookie['value'], $cookie['expire'], $cookie['path'], $cookie['domain'],
-                    $cookie['secure'], $cookie['http_only']);
-            }
+                unset($cookie['name'], $cookie['value']);
+
+                if (!$cookie['samesite']) {
+                    unset($cookie['samesite']);
+                }
+
+                return setcookie($name, $value, $cookie);
+            };
+
+            array_map($setCookie, $this->getSessionCookieContainer()->getAddedCookies());
+            array_map($setCookie, $response->getCookies());
+
+            unset($setCookie);
         }
 
         $body = $response->getBody();
