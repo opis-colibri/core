@@ -18,11 +18,11 @@
 namespace Opis\Colibri\Testing;
 
 use Opis\Colibri\{
-    IApplicationInitializer, IApplicationContainer
+    ApplicationInitializer, ApplicationContainer
 };
 use Opis\Colibri\Testing\Builders\AppInitBuilder;
 
-class ApplicationInitializer implements IApplicationInitializer
+class CustomApplicationInitializer implements ApplicationInitializer
 {
     /** @var AppInitBuilder */
     protected $builder;
@@ -46,7 +46,7 @@ class ApplicationInitializer implements IApplicationInitializer
     /**
      * @inheritDoc
      */
-    public function init(IApplicationContainer $app)
+    public function init(ApplicationContainer $app)
     {
         $builder = $this->builder;
 

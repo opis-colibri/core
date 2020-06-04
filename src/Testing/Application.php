@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Testing;
 
 use Opis\Colibri\Application as BaseApplication;
-use Opis\Colibri\{IApplicationInitializer, AppInfo, ModuleManager};
+use Opis\Colibri\{ApplicationInitializer, AppInfo, ModuleManager};
 use Opis\Colibri\Templates\TemplateStream;
 
 class Application extends BaseApplication
@@ -29,17 +29,17 @@ class Application extends BaseApplication
     /** @var null|callable */
     protected $autoloader = null;
 
-    /** @var IApplicationInitializer */
+    /** @var CustomApplicationInitializer */
     protected $initializer;
 
     /** @noinspection PhpMissingParentConstructorInspection */
     /**
-     * @param IApplicationInitializer $initializer
+     * @param CustomApplicationInitializer $initializer
      * @param AppInfo $info
      * @param string $installed
      * @param callable|null $autoloader
      */
-    public function __construct(IApplicationInitializer $initializer, AppInfo $info, string $installed, ?callable $autoloader = null) {
+    public function __construct(ApplicationInitializer $initializer, AppInfo $info, string $installed, ?callable $autoloader = null) {
         $this->initializer = $initializer;
         $this->info = $info;
         $this->installedJson = $installed;
@@ -139,7 +139,7 @@ class Application extends BaseApplication
     /**
      * @inheritDoc
      */
-    protected function getApplicationInitializer(): IApplicationInitializer
+    protected function getApplicationInitializer(): ApplicationInitializer
     {
         return $this->initializer;
     }

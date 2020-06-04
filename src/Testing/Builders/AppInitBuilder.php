@@ -19,9 +19,9 @@ namespace Opis\Colibri\Testing\Builders;
 
 use Opis\Session\Handlers\Memory;
 use Opis\Session\SessionHandler;
-use Opis\Colibri\Testing\ApplicationInitializer;
+use Opis\Colibri\Testing\CustomApplicationInitializer;
 use Opis\I18n\Locale;
-use Opis\Colibri\IApplicationInitializer;
+use Opis\Colibri\ApplicationInitializer;
 use Opis\Database\Connection;
 use Opis\DataStore\{DataStore, Drivers\Memory as DefaultConfig};
 use Psr\Log\{LoggerInterface, NullLogger as DefaultLogger};
@@ -58,11 +58,11 @@ class AppInitBuilder
     protected $logger = null;
 
     /**
-     * @return IApplicationInitializer
+     * @return ApplicationInitializer
      */
-    public function build(): IApplicationInitializer
+    public function build(): ApplicationInitializer
     {
-        return new ApplicationInitializer($this);
+        return new CustomApplicationInitializer($this);
     }
 
     /**

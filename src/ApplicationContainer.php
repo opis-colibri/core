@@ -18,14 +18,13 @@
 namespace Opis\Colibri;
 
 use Opis\Cache\CacheDriver;
-use Opis\Colibri\AppInfo;
 use Opis\Database\Connection;
 use Opis\DataStore\DataStore;
 use Opis\I18n\Translator\Driver as TranslatorDriver;
 use Opis\Session\SessionHandler;
 use Psr\Log\LoggerInterface;
 
-interface IApplicationContainer
+interface ApplicationContainer
 {
     /**
      * @return AppInfo
@@ -34,44 +33,44 @@ interface IApplicationContainer
 
     /**
      * @param DataStore $driver
-     * @return IApplicationContainer
+     * @return ApplicationContainer
      */
     public function setConfigDriver(DataStore $driver): self;
 
     /**
      * @param CacheDriver $driver
-     * @return IApplicationContainer
+     * @return ApplicationContainer
      */
     public function setCacheDriver(CacheDriver $driver): self;
 
     /**
      * @param TranslatorDriver $driver
-     * @return IApplicationContainer
+     * @return ApplicationContainer
      */
     public function setTranslatorDriver(TranslatorDriver $driver): self;
 
     /**
      * @param string $language
-     * @return IApplicationContainer
+     * @return ApplicationContainer
      */
     public function setDefaultLanguage(string $language): self;
 
     /**
      * @param Connection $connection
-     * @return IApplicationContainer
+     * @return ApplicationContainer
      */
     public function setDatabaseConnection(Connection $connection): self;
 
     /**
      * @param SessionHandler $handler
      * @param array $config
-     * @return IApplicationContainer
+     * @return ApplicationContainer
      */
     public function setSessionHandler(SessionHandler $handler, array $config = []): self;
 
     /**
      * @param LoggerInterface $logger
-     * @return IApplicationContainer
+     * @return ApplicationContainer
      */
     public function setDefaultLogger(LoggerInterface $logger): self;
 }

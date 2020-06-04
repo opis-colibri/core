@@ -32,7 +32,7 @@ use Opis\ORM\EntityManager;
 use Opis\Colibri\Templates\{CallbackTemplateHandler, HttpErrors, TemplateStream};
 use Opis\Colibri\Core\{Container, CSRFToken, Router, Session, Translator, View};
 
-class Application implements IApplicationContainer
+class Application implements ApplicationContainer
 {
     protected AppInfo $info;
     protected ?ModuleManager $moduleManager = null;
@@ -226,7 +226,7 @@ class Application implements IApplicationContainer
     /**
      * @inheritDoc
      */
-    public function setDefaultLanguage(string $language): IApplicationContainer
+    public function setDefaultLanguage(string $language): ApplicationContainer
     {
         $this->defaultLanguage = $language;
         if ($this->translatorInstance !== null) {
@@ -504,9 +504,9 @@ class Application implements IApplicationContainer
 
     /**
      * @param DataStore $driver
-     * @return IApplicationContainer
+     * @return ApplicationContainer
      */
-    public function setConfigDriver(DataStore $driver): IApplicationContainer
+    public function setConfigDriver(DataStore $driver): ApplicationContainer
     {
         $this->defaultConfigDriver = $driver;
         return $this;
@@ -514,9 +514,9 @@ class Application implements IApplicationContainer
 
     /**
      * @param CacheDriver $driver
-     * @return IApplicationContainer
+     * @return ApplicationContainer
      */
-    public function setCacheDriver(CacheDriver $driver): IApplicationContainer
+    public function setCacheDriver(CacheDriver $driver): ApplicationContainer
     {
         $this->defaultCacheDriver = $driver;
         return $this;
@@ -524,9 +524,9 @@ class Application implements IApplicationContainer
 
     /**
      * @param TranslatorDriver $driver
-     * @return IApplicationContainer
+     * @return ApplicationContainer
      */
-    public function setTranslatorDriver(TranslatorDriver $driver): IApplicationContainer
+    public function setTranslatorDriver(TranslatorDriver $driver): ApplicationContainer
     {
         $this->defaultTranslatorDriver = $driver;
         return $this;
@@ -534,9 +534,9 @@ class Application implements IApplicationContainer
 
     /**
      * @param Connection $connection
-     * @return IApplicationContainer
+     * @return ApplicationContainer
      */
-    public function setDatabaseConnection(Connection $connection): IApplicationContainer
+    public function setDatabaseConnection(Connection $connection): ApplicationContainer
     {
         $this->defaultConnection = $connection;
         return $this;
@@ -545,9 +545,9 @@ class Application implements IApplicationContainer
     /**
      * @param SessionHandler $handler
      * @param array $config
-     * @return IApplicationContainer
+     * @return ApplicationContainer
      */
-    public function setSessionHandler(SessionHandler $handler, array $config = []): IApplicationContainer
+    public function setSessionHandler(SessionHandler $handler, array $config = []): ApplicationContainer
     {
         $this->defaultSession = new Session($config, $handler);
         return $this;
@@ -555,9 +555,9 @@ class Application implements IApplicationContainer
 
     /**
      * @param LoggerInterface $logger
-     * @return IApplicationContainer
+     * @return ApplicationContainer
      */
-    public function setDefaultLogger(LoggerInterface $logger): IApplicationContainer
+    public function setDefaultLogger(LoggerInterface $logger): ApplicationContainer
     {
         $this->defaultLogger = $logger;
         return $this;
@@ -915,18 +915,18 @@ class Application implements IApplicationContainer
     }
 
     /**
-     * @return IApplicationInitializer
+     * @return ApplicationInitializer
      */
-    protected function getApplicationInitializer(): IApplicationInitializer
+    protected function getApplicationInitializer(): ApplicationInitializer
     {
         if (!$this->info->installMode()) {
             /** @noinspection PhpIncludeInspection */
             return require $this->info->initFile();
         }
 
-        return new class implements IApplicationInitializer
+        return new class implements ApplicationInitializer
         {
-            public function init(IApplicationContainer $app)
+            public function init(ApplicationContainer $app)
             {
                 $app->setCacheDriver(new MemoryDriver())
                     ->setConfigDriver(new MemoryConfig())

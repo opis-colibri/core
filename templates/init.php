@@ -16,23 +16,23 @@
  * ============================================================================ */
 
 use Opis\Colibri\{
-    IApplicationInitializer,
-    IApplicationContainer
+    ApplicationInitializer,
+    ApplicationContainer
 };
 
 use Opis\Cache\Drivers\File as CacheDriver;
 use Opis\DataStore\Drivers\JSONFile as ConfigDriver;
-use Opis\Intl\Translator\Drivers\JsonFile as TranslatorDriver;
+use Opis\I18n\Translator\Drivers\JsonFile as TranslatorDriver;
 
-return new class implements IApplicationInitializer
+return new class implements ApplicationInitializer
 {
     /**
      * @inheritDoc
      */
-    public function init(IApplicationContainer $app)
+    public function init(ApplicationContainer $app)
     {
         // Timezone settings
-        //date_default_timezone_set('UTC');
+        date_default_timezone_set('UTC');
 
         $dir = $app->getAppInfo()->writableDir();
 

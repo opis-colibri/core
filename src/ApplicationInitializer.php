@@ -17,13 +17,11 @@
 
 namespace Opis\Colibri;
 
-use Opis\Colibri\IApplicationContainer;
-
-interface IApplicationInitializer
+interface ApplicationInitializer
 {
     /**
-     * @param IApplicationContainer $container
+     * @param ApplicationContainer $container
      * @return mixed
      */
-    public function init(IApplicationContainer $container);
+    public function init(ApplicationContainer $container);
 }
