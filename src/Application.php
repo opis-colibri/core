@@ -654,10 +654,11 @@ class Application implements ApplicationContainer
      * Execute
      *
      * @param   HttpRequest|null $request
+     * @param   bool             $flush
      *
      * @return  HttpResponse
      */
-    public function run(?HttpRequest $request = null): HttpResponse
+    public function run(?HttpRequest $request = null, bool $flush = true): HttpResponse
     {
         if ($request === null) {
             $request = HttpRequest::fromGlobals();
@@ -678,8 +679,9 @@ class Application implements ApplicationContainer
             $response = new HtmlResponse($view, 500);
         }
 
-        // TODO: add response handle
-        $this->flushResponse($request, $response);
+        if ($flush) {
+            $this->flushResponse($request, $response);
+        }
 
         $this->httpRequest = null;
 
@@ -969,7 +971,7 @@ class Application implements ApplicationContainer
      * @param HttpResponse $response
      * @param int $chunkSize
      */
-    protected function flushResponse(HttpRequest $request, HttpResponse $response, int $chunkSize = 8192)
+    protected function flushResponse(HttpRequest $request, HttpResponse $response, int $chunkSize = 8192): void
     {
         if (PHP_SAPI === 'cli') {
             return;
@@ -1036,7 +1038,6 @@ class Application implements ApplicationContainer
      */
     protected function getDefaultCollectors(): array
     {
-        // TODO: change to ::class
         return [
             'routes' => [
                 'class' => RouteCollector::class,
