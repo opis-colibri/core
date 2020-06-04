@@ -15,8 +15,9 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri;
+namespace Opis\Colibri\Core;
 
+use Opis\Colibri\Core\Module;
 use Throwable, ArrayObject, Generator;
 use Composer\Json\JsonFile;
 use Composer\Package\CompletePackageInterface;

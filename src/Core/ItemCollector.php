@@ -15,8 +15,11 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri;
+namespace Opis\Colibri\Core;
 
+use Opis\Colibri\Application;
+use Opis\Colibri\Collector;
+use Opis\Colibri\Core\Module;
 use ReflectionClass;
 use ReflectionMethod;
 use RuntimeException;

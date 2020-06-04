@@ -15,10 +15,9 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri;
+namespace Opis\Colibri\Core;
 
 use Composer\Package\CompletePackageInterface;
-use Opis\Colibri\ModuleManager;
 
 class Module
 {

@@ -21,7 +21,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
 use stdClass;
-use Opis\Colibri\{Module, AppInfo, ModuleManager};
+use Opis\Colibri\{Core\Module, AppInfo, Core\ModuleManager};
 use Opis\Colibri\Testing\{Application, InstalledAppInfo};
 
 class ApplicationBuilder

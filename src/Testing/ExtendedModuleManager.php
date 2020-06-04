@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Testing;
 
-use Opis\Colibri\ModuleManager;
+use Opis\Colibri\Core\ModuleManager;
 
 class ExtendedModuleManager extends ModuleManager
 {

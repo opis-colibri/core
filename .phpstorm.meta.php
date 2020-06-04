@@ -4,7 +4,7 @@ namespace PHPSTORM_META {
     override(\Opis\Colibri\Functions\make(0), type(0));
 
 
-    override(\Opis\Colibri\ItemCollector::collect(0), map([
+    override(\Opis\Colibri\Core\ItemCollector::collect(0), map([
         '\Opis\Colibri\Collectors\AssetsHandlerCollector' => \Opis\Colibri\Serializable\Collection::class,
         '\Opis\Colibri\Collectors\CacheCollector' => \Opis\Colibri\Serializable\FactoryCollection::class,
         '\Opis\Colibri\Collectors\CommandCollector' => \Opis\Colibri\Serializable\Collection::class,

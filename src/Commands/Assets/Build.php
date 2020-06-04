@@ -31,7 +31,7 @@ use Symfony\Component\Console\{
     Input\InputOption,
     Output\OutputInterface
 };
-use Opis\Colibri\Module;
+use Opis\Colibri\Core\Module;
 use Symfony\Component\Filesystem\Filesystem;
 use function Opis\Colibri\Functions\{
     info, app, module

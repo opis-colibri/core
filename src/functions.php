@@ -47,7 +47,7 @@ use Opis\Http\Responses\{
 };
 use Opis\View\View as OpisView;
 use Psr\Log\LoggerInterface;
-use Opis\Colibri\Module;
+use Opis\Colibri\Core\Module;
 
 /**
  * @return Application
