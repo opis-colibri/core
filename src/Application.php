@@ -679,6 +679,19 @@ class Application implements ApplicationContainer
             $response = new HtmlResponse($view, 500);
         }
 
+        foreach ($this->getSessionCookieContainer()->getAddedCookies() as $cookie) {
+            $response->setCookie(
+                $cookie['name'],
+                $cookie['value'],
+                $cookie['expires'],
+                $cookie['path'],
+                $cookie['domain'],
+                $cookie['secure'],
+                $cookie['httponly'],
+                $cookie['samesite'],
+            );
+        }
+
         if ($flush) {
             $this->flushResponse($request, $response);
         }
@@ -988,7 +1001,7 @@ class Application implements ApplicationContainer
                 header(sprintf('%s: %s', $name, $value));
             }
 
-            $setCookie = static function (array $cookie): bool {
+            foreach ($response->getCookies() as $cookie) {
                 $name = $cookie['name'];
                 $value = $cookie['value'];
 
@@ -998,13 +1011,8 @@ class Application implements ApplicationContainer
                     unset($cookie['samesite']);
                 }
 
-                return setcookie($name, $value, $cookie);
-            };
-
-            array_map($setCookie, $this->getSessionCookieContainer()->getAddedCookies());
-            array_map($setCookie, $response->getCookies());
-
-            unset($setCookie);
+                setcookie($name, $value, $cookie);
+            }
         }
 
         $body = $response->getBody();
