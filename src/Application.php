@@ -969,9 +969,7 @@ class Application implements ApplicationContainer
             public function init(ApplicationContainer $app)
             {
                 $app->setCacheDriver(new MemoryDriver())
-                    ->setConfigDriver(new MemoryConfig())
-                    ->setDefaultLogger(new NullLogger())
-                    ->setSessionHandler(new DefaultSessionHandler($app->getAppInfo()->writableDir() . DIRECTORY_SEPARATOR . 'session'));
+                    ->setConfigDriver(new MemoryConfig());
             }
         };
     }
