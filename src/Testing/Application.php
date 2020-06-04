@@ -29,8 +29,7 @@ class Application extends BaseApplication
     /** @var null|callable */
     protected $autoloader = null;
 
-    /** @var CustomApplicationInitializer */
-    protected $initializer;
+    protected ?CustomApplicationInitializer $initializer = null;
 
     /** @noinspection PhpMissingParentConstructorInspection */
     /**
@@ -39,7 +38,7 @@ class Application extends BaseApplication
      * @param string $installed
      * @param callable|null $autoloader
      */
-    public function __construct(ApplicationInitializer $initializer, AppInfo $info, string $installed, ?callable $autoloader = null) {
+    public function __construct(CustomApplicationInitializer $initializer, AppInfo $info, string $installed, ?callable $autoloader = null) {
         $this->initializer = $initializer;
         $this->info = $info;
         $this->installedJson = $installed;
@@ -103,7 +102,6 @@ class Application extends BaseApplication
         $this->translatorInstance = null;
         $this->defaultLanguage = null;
         $this->csrfTokenInstance = null;
-        $this->formatter = null;
         $this->cache = [];
         $this->connection = [];
         $this->database = [];
@@ -114,13 +112,13 @@ class Application extends BaseApplication
         $this->viewRenderer = null;
         $this->loggers = [];
         $this->eventDispatcher = null;
-        $this->validator = null;
         $this->collectorList = null;
         $this->config = [];
 
         TemplateStream::clearCache();
         TemplateStream::unregister();
-        //static::$instance = null;
+
+        static::$instance = null;
     }
 
     /**

@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Serializable;
 
-use function Opis\Colibri\Functions\make;
+use function Opis\Colibri\make;
 
 class ClassList
 {

@@ -17,12 +17,22 @@
 
 namespace Opis\Colibri\Core;
 
-use Opis\Colibri\Application;
-use Opis\Colibri\Collector;
-use Opis\Colibri\Core\Module;
 use ReflectionClass;
 use ReflectionMethod;
+use ReflectionException;
 use RuntimeException;
+use Opis\Colibri\{
+    Application, Collector
+};
+use Opis\Colibri\Serializable\{AdvancedClassList, Collection, RouterGlobals, Translations};
+use Opis\Database\{Database, Connection};
+use Opis\Cache\CacheDriver;
+use Opis\DataStore\DataStore;
+use Opis\Events\EventDispatcher;
+use Opis\Routing\RouteCollection;
+use Opis\View\Renderer;
+use Opis\Utils\SortableList;
+use Psr\Log\LoggerInterface;
 use Opis\Colibri\Collectors\{
     AssetsHandlerCollector,
     BaseCollector,
@@ -41,16 +51,6 @@ use Opis\Colibri\Collectors\{
     ViewCollector,
     ViewEngineCollector
 };
-use Opis\Colibri\Core\{Container, Session};
-use Opis\Colibri\Serializable\{AdvancedClassList, Collection, RouterGlobals, Translations};
-use Opis\Database\{Database, Connection};
-use Opis\Cache\CacheDriver;
-use Opis\DataStore\DataStore;
-use Opis\Events\EventDispatcher;
-use Opis\Routing\RouteCollection;
-use Opis\View\Renderer;
-use Psr\Log\LoggerInterface;
-use Opis\Utils\SortableList;
 
 class ItemCollector
 {
@@ -414,12 +414,12 @@ class ItemCollector
                 }
 
                 if ('priority' === $param->getName() && $param->hasType()) {
-                    /** @var $ptype \ReflectionNamedType */
-                    $ptype = $param->getType();
-                    if ($ptype->getName() === 'int') {
+                    /** @var $paramType \ReflectionNamedType */
+                    $paramType = $param->getType();
+                    if ($paramType->getName() === 'int') {
                         try {
                             $priority = (int) $param->getDefaultValue();
-                        } catch (\ReflectionException $exception) {
+                        } catch (ReflectionException $exception) {
                             $priority = 0;
                         }
                     }

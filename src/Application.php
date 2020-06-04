@@ -31,6 +31,22 @@ use Opis\Database\{Connection, Database, Schema};
 use Opis\ORM\EntityManager;
 use Opis\Colibri\Templates\{CallbackTemplateHandler, HttpErrors, TemplateStream};
 use Opis\Colibri\Core\{Container, CSRFToken, ItemCollector, Module, ModuleManager, Router, Session, Translator, View};
+use Opis\Colibri\Collectors\{AssetsHandlerCollector,
+    CacheCollector,
+    CommandCollector,
+    ConfigCollector,
+    ConnectionCollector,
+    ContractCollector,
+    EventHandlerCollector,
+    LoggerCollector,
+    RouteCollector,
+    RouterGlobalsCollector,
+    SessionCollector,
+    TemplateStreamHandlerCollector,
+    TranslationCollector,
+    TranslationFilterCollector,
+    ViewCollector,
+    ViewEngineCollector};
 
 class Application implements ApplicationContainer
 {
@@ -201,7 +217,7 @@ class Application implements ApplicationContainer
             if (!$templateHandlers->has('callback')) {
                 $templateHandlers->add('callback', CallbackTemplateHandler::class);
             }
-            // TODO: fix this
+
             $this->viewRenderer->handle('error.{error}', function ($error) {
                 return TemplateStream::url('callback', HttpErrors::class . '::error' . $error, 'php');
             }, -100)->where('error', '401|403|404|405|500|503');
@@ -1023,76 +1039,76 @@ class Application implements ApplicationContainer
         // TODO: change to ::class
         return [
             'routes' => [
-                'class' => 'Opis\\Colibri\\Collectors\\RouteCollector',
+                'class' => RouteCollector::class,
                 'description' => 'Collects web routes',
                 'options' => [
                     'invertedPriority' => false,
                 ],
             ],
             'router-globals' => [
-                'class' => 'Opis\\Colibri\\Collectors\\RouterGlobalsCollector',
+                'class' => RouterGlobalsCollector::class,
                 'description' => 'Collects routing related global items',
             ],
             'views' => [
-                'class' => 'Opis\\Colibri\\Collectors\\ViewCollector',
+                'class' => ViewCollector::class,
                 'description' => 'Collects views',
                 'options' => [
                     'invertedPriority' => false,
                 ],
             ],
             'contracts' => [
-                'class' => 'Opis\\Colibri\\Collectors\\ContractCollector',
+                'class' => ContractCollector::class,
                 'description' => 'Collects contracts',
             ],
             'connections' => [
-                'class' => 'Opis\\Colibri\\Collectors\\ConnectionCollector',
+                'class' => ConnectionCollector::class,
                 'description' => 'Collects database connections',
             ],
             'event-handlers' => [
-                'class' => 'Opis\\Colibri\\Collectors\\EventHandlerCollector',
+                'class' => EventHandlerCollector::class,
                 'description' => 'Collects event handlers',
                 'options' => [
                     'invertedPriority' => false,
                 ],
             ],
             'view-engines' => [
-                'class' => 'Opis\\Colibri\\Collectors\\ViewEngineCollector',
+                'class' => ViewEngineCollector::class,
                 'description' => 'Collects view engines',
             ],
             'cache-drivers' => [
-                'class' => 'Opis\\Colibri\\Collectors\\CacheCollector',
+                'class' => CacheCollector::class,
                 'description' => 'Collects cache drivers',
             ],
             'session-handlers' => [
-                'class' => 'Opis\\Colibri\\Collectors\\SessionCollector',
+                'class' => SessionCollector::class,
                 'description' => 'Collects session handlers',
             ],
             'config-drivers' => [
-                'class' => 'Opis\\Colibri\\Collectors\\ConfigCollector',
+                'class' => ConfigCollector::class,
                 'description' => 'Collects config drivers',
             ],
             'translations' => [
-                'class' => 'Opis\\Colibri\\Collectors\\TranslationCollector',
+                'class' => TranslationCollector::class,
                 'description' => 'Collects translations',
             ],
             'translation-filters' => [
-                'class' => 'Opis\\Colibri\\Collectors\\TranslationFilterCollector',
+                'class' => TranslationFilterCollector::class,
                 'description' => 'Collect translation filters',
             ],
             'commands' => [
-                'class' => 'Opis\\Colibri\\Collectors\\CommandCollector',
+                'class' => CommandCollector::class,
                 'description' => 'Collects commands',
             ],
             'loggers' => [
-                'class' => 'Opis\\Colibri\\Collectors\\LoggerCollector',
+                'class' => LoggerCollector::class,
                 'description' => 'Collects logging handlers',
             ],
             'asset-handlers' => [
-                'class' => 'Opis\\Colibri\\Collectors\\AssetsHandlerCollector',
+                'class' => AssetsHandlerCollector::class,
                 'description' => 'Collects asset handlers',
             ],
             'template-stream-handlers' => [
-                'class' => 'Opis\\Colibri\\Collectors\\TemplateStreamHandlerCollector',
+                'class' => TemplateStreamHandlerCollector::class,
                 'description' => 'Collects template stream handlers',
             ],
         ];

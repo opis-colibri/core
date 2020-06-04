@@ -27,9 +27,9 @@ class FactoryCollection extends Collection
     /**
      * @var callable|null
      */
-    private $builder = null;
+    private $builder;
 
-    private bool $exception = true;
+    private bool $exception;
 
     public function __construct(callable $builder = null, bool $exception = true)
     {

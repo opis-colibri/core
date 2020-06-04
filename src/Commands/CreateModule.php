@@ -23,7 +23,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use function Opis\Colibri\Functions\{convertToCase, info};
+use function Opis\Colibri\{convertToCase, info};
 
 class CreateModule extends Command
 {

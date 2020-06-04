@@ -26,7 +26,7 @@ use function Opis\Colibri\info;
 
 class Yarn extends Command
 {
-    protected $allowedCommands = ['install', 'upgrade', 'add', 'remove', 'why', 'link', 'unlink'];
+    protected array $allowedCommands = ['install', 'upgrade', 'add', 'remove', 'why', 'link', 'unlink'];
 
     /**
      * @inheritDoc
