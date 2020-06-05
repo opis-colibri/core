@@ -100,7 +100,7 @@ class ClassList
             return make($this->list[$type]);
         }
 
-        if (!array_key_exists($type, $this->cache)) {
+        if (!$this->cache || !array_key_exists($type, $this->cache)) {
             $this->cache[$type] = make($this->list[$type]);
         }
 
