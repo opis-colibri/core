@@ -19,6 +19,7 @@ namespace Opis\Colibri\Core;
 
 use Opis\Routing\{DefaultDispatcher, Router as BaseRouter};
 use Opis\Colibri\Application;
+use function Opis\Colibri\httpError;
 
 class Router extends BaseRouter
 {
@@ -26,7 +27,7 @@ class Router extends BaseRouter
 
     public function __construct(Application $app) {
         $this->app = $app;
-        parent::__construct($app->getCollector()->getRoutes(), new DefaultDispatcher(), new \ArrayObject([
+        parent::__construct($app->getCollector()->getRoutes(), new DefaultDispatcher(fn(int $status) => httpError($status)), new \ArrayObject([
             'app' => $app,
             'lang' => $app->getTranslator()->getDefaultLanguage(),
         ]));
