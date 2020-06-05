@@ -17,6 +17,7 @@
 
 namespace Opis\Colibri\Core;
 
+use Composer\Package\CompletePackageInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionException;
@@ -373,6 +374,8 @@ class ItemCollector
             }
         }
 
+        $this->collectFromCore($collectorList, $invertedList);
+
         foreach ($this->app->getModules() as $module) {
             if (!$module->isEnabled()) {
                 continue;
@@ -392,6 +395,19 @@ class ItemCollector
             /** @var Collector $instance */
             $this->doCollect($module, $instance, $reflection, $collectorList, $invertedList);
         }
+    }
+
+    private function collectFromCore(array $collectorList, array $invertedList)
+    {
+        $fakeModule = new class extends Module {
+            function __construct()
+            {
+                $this->name = 'opis-colibri/core';
+            }
+        };
+        $instance = new \Opis\Colibri\Core\Collector();
+        $reflection = new ReflectionClass($instance);
+        $this->doCollect($fakeModule, $instance, $reflection, $collectorList, $invertedList);
     }
 
     private function doCollect(Module $module, Collector $instance, ReflectionClass $reflection, array $collectorList, array $invertedList)

@@ -213,16 +213,7 @@ class Application implements ApplicationContainer
     public function getViewRenderer(): Renderer
     {
         if ($this->viewRenderer === null) {
-            $collector = $this->getCollector();
-            $this->viewRenderer = $collector->getRenderer();
-            $templateHandlers = $collector->getTemplateStreamHandlers();
-            if (!$templateHandlers->has('callback')) {
-                $templateHandlers->add('callback', CallbackTemplateHandler::class);
-            }
-
-            $this->viewRenderer->handle('error.{error}', function ($error) {
-                return TemplateStream::url('callback', HttpErrors::class . '::error' . $error, 'php');
-            }, -100)->where('error', '401|403|404|405|500|503');
+            $this->viewRenderer = $this->getCollector()->collect(ViewCollector::class);
         }
 
         return $this->viewRenderer;
