@@ -31,8 +31,7 @@ class Collector extends BaseCollector
 
     public function views(ViewCollector $view, int $priority = -100)
     {
-        $view->handle('error.{error}', function ($error) {
-            return TemplateStream::url('callback', HttpErrors::class . '::error' . $error, 'php');
-        })->where('error', '401|403|404|405|500|503');
+        $view->handle('error.{error}', HttpErrors::class . '::handleError')
+            ->where('error', '401|403|404|405|500|503');
     }
 }

@@ -67,6 +67,11 @@ class HttpErrors
         return static::error();
     }
 
+    public static function handleError($error): string
+    {
+        return TemplateStream::url('callback', self::class . '::error' . $error, 'php');
+    }
+
     /**
      * @return string
      */
