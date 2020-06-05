@@ -61,16 +61,12 @@ class ItemCollector
     private array $entries = [];
     private array $cache = [];
     private array $collectedEntries = [];
-    private ?array $invertedList = null;
+    private array $invertedList = [];
 
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $this->container = $container = new Container();
-        foreach ($this->app->getCollectorList() as $name => $collector) {
-            $container->singleton($collector['class']);
-            $container->alias($name, $collector['class']);
-        }
+        $this->setupContainer($this->app->getCollectorList());
     }
 
     /**
@@ -225,7 +221,7 @@ class ItemCollector
 
     public function collect(string $name, bool $fresh = false): object
     {
-        $entry = $this->getInvertedList()[strtolower($name)] ?? null;
+        $entry = $this->invertedList[strtolower($name)] ?? null;
 
         if ($entry === null) {
             throw new RuntimeException("Unknown collector ${$name}");
@@ -283,13 +279,8 @@ class ItemCollector
         if ($fresh) {
             $this->cache = [];
             $this->entries = [];
-            $this->invertedList = null;
             $this->app->clearCachedObjects();
-            $this->container = $container = new Container();
-            foreach ($list as $name => $collector) {
-                $container->singleton($collector['class']);
-                $container->alias($name, $collector['class']);
-            }
+            $this->setupContainer($list);
         }
 
         foreach ($list as $entry) {
@@ -310,38 +301,49 @@ class ItemCollector
      */
     public function register(string $class, string $description, array $options = [])
     {
-        $name = trim(implode('-', explode('\\', trim($class))), '-');
+        $name = $this->classToCollectorName($class);
 
         $this->app->getConfig()->write('collectors.' . $name, [
             'class' => $class,
             'description' => $description,
             'options' => $options,
         ]);
+
         $this->container->singleton($class);
         $this->container->alias($name, $class);
+        $this->invertedList[strtolower($class)] = $name;
     }
 
     /**
      * Unregister an existing collector
      *
-     * @param string $name
+     * @param string $class
      */
-    public function unregister(string $name)
+    public function unregister(string $class)
     {
-        $this->app->getConfig()->delete('collectors.' . strtolower($name));
+        $name = $this->classToCollectorName($class);
+        $this->app->getConfig()->delete('collectors.' . $name);
+        unset($this->invertedList[$class]);
     }
 
-    private function getInvertedList(): array
+    private function classToCollectorName(string $class): string
     {
-        if ($this->invertedList === null) {
-            $list = [];
-            foreach ($this->app->getCollectorList() as $key => $value) {
-                $list[strtolower($value['class'])] = $key;
-            }
-            $this->invertedList = $list;
+        return strtolower(str_replace('\\', '-', trim($class, '\\')));
+    }
+
+    private function setupContainer(array $collectorList): void
+    {
+        $inverted = [];
+        $container = new Container();
+
+        foreach ($collectorList as $name => $collector) {
+            $container->singleton($collector['class']);
+            $container->alias($name, $collector['class']);
+            $inverted[strtolower($collector['class'])] = $name;
         }
 
-        return $this->invertedList;
+        $this->container = $container;
+        $this->invertedList = $inverted;
     }
 
     private function includeCollectors()
@@ -354,7 +356,7 @@ class ItemCollector
 
 
         $collectorList = $this->app->getCollectorList();
-        $invertedList = $this->getInvertedList();
+        $invertedList = $this->invertedList;
 
         foreach (array_keys($collectorList) as $entry) {
             if (!isset($this->entries[$entry])) {
@@ -363,12 +365,14 @@ class ItemCollector
         }
 
         foreach ($this->app->getModules() as $module) {
-
-            if (!$module->isEnabled() || $module->collector() === null) {
+            if (!$module->isEnabled()) {
+                continue;
+            }
+            if (($collector = $module->collector()) === null) {
                 continue;
             }
 
-            $instance = $this->container->make($module->collector());
+            $instance = $this->container->make($collector);
             
             $reflection = new ReflectionClass($instance);
 
@@ -376,6 +380,7 @@ class ItemCollector
                 continue;
             }
 
+            /** @var Collector $instance */
             $this->doCollect($module, $instance, $reflection, $collectorList, $invertedList);
         }
     }
