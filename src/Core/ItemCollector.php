@@ -191,7 +191,7 @@ class ItemCollector
      * @param bool $fresh
      * @return Translations
      */
-    public function getTranslations(bool $fresh = true)
+    public function getTranslations(bool $fresh = false)
     {
         return $this->collect(TranslationCollector::class, $fresh);
     }
@@ -200,7 +200,7 @@ class ItemCollector
      * @param bool $fresh
      * @return RouterGlobals
      */
-    public function getRouterGlobals(bool $fresh = true): RouterGlobals
+    public function getRouterGlobals(bool $fresh = false): RouterGlobals
     {
         return $this->collect(RouterGlobalsCollector::class, $fresh);
     }
@@ -209,7 +209,7 @@ class ItemCollector
      * @param bool $fresh
      * @return Collection
      */
-    public function getAssetHandlers(bool $fresh = true)
+    public function getAssetHandlers(bool $fresh = false)
     {
         return $this->collect(AssetsHandlerCollector::class, $fresh);
     }
@@ -218,7 +218,7 @@ class ItemCollector
      * @param bool $fresh
      * @return AdvancedClassList
      */
-    public function getTemplateStreamHandlers(bool $fresh = true)
+    public function getTemplateStreamHandlers(bool $fresh = false)
     {
         return $this->collect(TemplateStreamHandlerCollector::class, $fresh);
     }
