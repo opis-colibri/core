@@ -29,7 +29,7 @@ use Opis\Http\{Request as HttpRequest, Response as HttpResponse, Responses\HtmlR
 use Opis\DataStore\{DataStore, Drivers\Memory as MemoryConfig};
 use Opis\Database\{Connection, Database, Schema};
 use Opis\ORM\EntityManager;
-use Opis\Colibri\Templates\{CallbackTemplateHandler, HttpErrors, TemplateStream};
+use Opis\Colibri\Templates\TemplateStream;
 use Opis\Colibri\Core\{Container, CSRFToken, ItemCollector, Module, ModuleManager, Router, Session, Translator, View};
 use Opis\Colibri\Collectors\{AssetsHandlerCollector,
     CacheCollector,

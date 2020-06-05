@@ -18,9 +18,12 @@
 namespace Opis\Colibri\Core;
 
 use Opis\Colibri\Collector as BaseCollector;
-use Opis\Colibri\Collectors\TemplateStreamHandlerCollector;
-use Opis\Colibri\Collectors\ViewCollector;
-use Opis\Colibri\Templates\{CallbackTemplateHandler, HttpErrors, TemplateStream};
+use Opis\Colibri\Collectors\{RouteCollector, TemplateStreamHandlerCollector, ViewCollector};
+use Opis\Colibri\Templates\CallbackTemplateHandler;
+use Opis\Colibri\Internal\Views as InternalViews;
+use Opis\Colibri\Internal\Routes as InternalRoutes;
+use Opis\Http\Responses\FileStream;
+use function Opis\Colibri\view;
 
 class Collector extends BaseCollector
 {
@@ -31,7 +34,18 @@ class Collector extends BaseCollector
 
     public function views(ViewCollector $view, int $priority = -100)
     {
-        $view->handle('error.{error}', HttpErrors::class . '::handleError')
+        $view->handle('welcome', InternalViews::class . '::welcome');
+
+        $view->handle('error.{error}', InternalViews::class . '::httpError')
             ->where('error', '401|403|404|405|500|503');
+    }
+
+    public function routes(RouteCollector $route)
+    {
+        $route->group(function (RouteCollector $route) {
+            $route('/', InternalRoutes::class . '::welcome');
+            $route('/opis-colibri/assets/{file}', InternalRoutes::class . '::file')
+                ->whereIn('file', ['background.png', 'favicon.png']);
+        })->filter('opis-colibri-production', InternalRoutes::class . '::filter');
     }
 }
