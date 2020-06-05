@@ -43,7 +43,8 @@
         }
         .subtitle {
             color: #fff;
-            font-size: 1.25rem;
+            font-size: 1.5rem;
+            font-weight: bold;
             text-align: right;
         }
     </style>
@@ -71,7 +72,7 @@
             </svg>
             <span>Opis Colibri</span>
         </div>
-        <div class="subtitle">Take a journey into an amazing new Universe</div>
+        <div class="subtitle">The Versatile PHP Framework</div>
     </div>
 </section>
 </body>
