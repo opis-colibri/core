@@ -1,9 +1,9 @@
 <?= '<?php', PHP_EOL ?>
 namespace <?= $namespace ?>;
 
-use Opis\Colibri\Collector as AbstractCollector;
+use Opis\Colibri\Collector as ModuleCollector;
 
-class Collector extends AbstractCollector
+class Collector extends ModuleCollector
 {
 
 }

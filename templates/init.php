@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2019 Zindex Software
+ * Copyright 2019-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ use Opis\Colibri\{
     ApplicationContainer
 };
 
-use Opis\Cache\Drivers\File as CacheDriver;
+use Opis\Cache\Drivers\{File as CacheDriver, Memory as MemoryCache};
 use Opis\DataStore\Drivers\JSONFile as ConfigDriver;
 use Opis\I18n\Translator\Drivers\JsonFile as TranslatorDriver;
 
@@ -31,14 +31,23 @@ return new class implements ApplicationInitializer
      */
     public function init(ApplicationContainer $app)
     {
+        // Enable closure serialization
+        //\Opis\Closure\init();
+
         // Timezone settings
         date_default_timezone_set('UTC');
 
-        $dir = $app->getAppInfo()->writableDir();
+        $dir = $app->getAppInfo()->writableDir() . DIRECTORY_SEPARATOR;
 
-        $app->setCacheDriver(new CacheDriver($dir . DIRECTORY_SEPARATOR . 'cache'))
-            ->setConfigDriver(new ConfigDriver($dir . DIRECTORY_SEPARATOR . 'config', '', true))
-            ->setTranslatorDriver(new TranslatorDriver($dir . DIRECTORY_SEPARATOR . 'intl'));
+        if (getenv('APP_PRODUCTION') === false) {
+            $cacheDriver = new MemoryCache();
+        } else {
+            $cacheDriver = new CacheDriver($dir . 'cache');
+        }
+
+        $app->setCacheDriver($cacheDriver)
+            ->setConfigDriver(new ConfigDriver($dir . 'config', '', true))
+            ->setTranslatorDriver(new TranslatorDriver($dir . 'intl'));
 
         // Setup database connection
         // $connection = new \Opis\Database\Connection('dsn', 'user', 'password');

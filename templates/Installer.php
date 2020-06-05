@@ -1,9 +1,9 @@
 <?= '<?php', PHP_EOL ?>
 namespace <?= $namespace ?>;
 
-use Opis\Colibri\Installer as AbstractInstaller;
+use Opis\Colibri\Installer as ModuleInstaller;
 
-class Installer extends AbstractInstaller
+class Installer extends ModuleInstaller
 {
 
 }
