@@ -5,7 +5,7 @@
     <title>Welcome</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="/opis-colibri/assets/favicon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&display=swap" rel="stylesheet">
     <style type="text/css">
         *, *::after, *::before {
             box-sizing: border-box;
@@ -43,8 +43,8 @@
         }
         .subtitle {
             color: #fff;
-            font-size: 1.5rem;
-            font-weight: bold;
+            font-size: 1.25rem;
+            font-weight: lighter;
             text-align: right;
         }
     </style>
