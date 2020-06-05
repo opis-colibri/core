@@ -298,8 +298,10 @@ class ItemCollector
      * @param string $class
      * @param string $description
      * @param array $options
+     *
+     * @return self
      */
-    public function register(string $class, string $description, array $options = [])
+    public function register(string $class, string $description, array $options = []): self
     {
         $name = $this->classToCollectorName($class);
 
@@ -312,20 +314,25 @@ class ItemCollector
         $this->container->singleton($class);
         $this->container->alias($name, $class);
         $this->invertedList[strtolower($class)] = $name;
+
+        return $this;
     }
 
     /**
      * Unregister an existing collector
      *
      * @param string $class
+     * @return self
      */
-    public function unregister(string $class)
+    public function unregister(string $class): self
     {
         $name = $this->classToCollectorName($class);
         $this->app->getConfig()->delete('collectors.' . $name);
         unset($this->invertedList[$class]);
         $this->container->alias($name, null);
         $this->container->unbind($class);
+
+        return $this;
     }
 
     private function classToCollectorName(string $class): string
