@@ -49,7 +49,7 @@ class AdvancedClassList extends ClassList
             return $callable($type);
         }
 
-        if (!array_key_exists($type, $this->cache)) {
+        if (!$this->cache || !array_key_exists($type, $this->cache)) {
             $this->cache[$type] = $callable($type);
         }
 
