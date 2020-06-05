@@ -17,6 +17,7 @@
 
 namespace Opis\Colibri\Core;
 
+use Throwable;
 use Opis\View\DefaultView;
 use function Opis\Colibri\render;
 
@@ -29,8 +30,8 @@ class View extends DefaultView
         if ($this->renderedContent === null) {
             try {
                 $this->renderedContent = render($this);
-            } catch (\Throwable $e) {
-                $this->renderedContent = $e->getMessage();
+            } catch (Throwable $e) {
+                $this->renderedContent = (string) $e;
             }
         }
 
