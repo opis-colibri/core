@@ -324,6 +324,8 @@ class ItemCollector
         $name = $this->classToCollectorName($class);
         $this->app->getConfig()->delete('collectors.' . $name);
         unset($this->invertedList[$class]);
+        $this->container->alias($name, null);
+        $this->container->unbind($class);
     }
 
     private function classToCollectorName(string $class): string
