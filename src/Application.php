@@ -952,7 +952,7 @@ class Application implements ApplicationContainer
     {
         if (!$this->info->installMode()) {
             /** @noinspection PhpIncludeInspection */
-            return require $this->info->initFile();
+            return require($this->info->initFile());
         }
 
         return new class implements ApplicationInitializer
