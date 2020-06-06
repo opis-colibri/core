@@ -17,9 +17,9 @@
 
 namespace Opis\Colibri\Testing;
 
-use Opis\Colibri\AppInfo;
+use Opis\Colibri\ApplicationInfo;
 
-class InstalledAppInfo extends AppInfo
+class InstalledAppInfo extends ApplicationInfo
 {
     /**
      * @return bool

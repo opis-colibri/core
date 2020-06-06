@@ -19,7 +19,7 @@ namespace Opis\Colibri;
 
 use Opis\Colibri\Plugin\Settings;
 
-class AppInfo
+class ApplicationInfo
 {
     const PUBLIC_DIR = 'public-dir';
     const WRITABLE_DIR = 'writable-dir';

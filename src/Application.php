@@ -50,7 +50,7 @@ use Opis\Colibri\Collectors\{AssetsHandlerCollector,
 
 class Application implements ApplicationContainer
 {
-    protected AppInfo $info;
+    protected ApplicationInfo $info;
     protected ?ModuleManager $moduleManager = null;
     protected ?ItemCollector $collector = null;
     protected ?Container $containerInstance = null;
@@ -115,7 +115,7 @@ class Application implements ApplicationContainer
             unset($json);
         }
 
-        $this->info = new AppInfo($rootDir, $info ?? []);
+        $this->info = new ApplicationInfo($rootDir, $info ?? []);
 
         TemplateStream::register();
 
@@ -449,9 +449,9 @@ class Application implements ApplicationContainer
     /**
      * Get information about this application
      *
-     * @return  AppInfo
+     * @return  ApplicationInfo
      */
-    public function getAppInfo(): AppInfo
+    public function getAppInfo(): ApplicationInfo
     {
         return $this->info;
     }

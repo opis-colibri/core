@@ -21,7 +21,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
 use stdClass;
-use Opis\Colibri\{Core\Module, AppInfo, Core\ModuleManager};
+use Opis\Colibri\{Core\Module, ApplicationInfo, Core\ModuleManager};
 use Opis\Colibri\Testing\{Application, InstalledAppInfo};
 
 class ApplicationBuilder
@@ -454,10 +454,10 @@ class ApplicationBuilder
     }
 
     /**
-     * @param AppInfo $info
+     * @param ApplicationInfo $info
      * @return string
      */
-    protected function createInstalledDataFile(AppInfo $info): string
+    protected function createInstalledDataFile(ApplicationInfo $info): string
     {
         $list = array_values($this->pathModules);
 
@@ -494,9 +494,9 @@ class ApplicationBuilder
      * @param string $vendorDir
      * @param string $rootDir
      * @param array $dependencies
-     * @return AppInfo
+     * @return ApplicationInfo
      */
-    protected function createAppInfo(string $vendorDir, string $rootDir, array $dependencies): AppInfo
+    protected function createAppInfo(string $vendorDir, string $rootDir, array $dependencies): ApplicationInfo
     {
         $rootDir = rtrim($rootDir, DIRECTORY_SEPARATOR);
 
@@ -534,10 +534,10 @@ class ApplicationBuilder
         }
 
         return new InstalledAppInfo($rootDir, [
-            AppInfo::VENDOR_DIR => $vendorDir,
-            AppInfo::PUBLIC_DIR => 'public',
-            AppInfo::WRITABLE_DIR => 'storage',
-            AppInfo::TEMP_DIR => 'tmp',
+            ApplicationInfo::VENDOR_DIR => $vendorDir,
+            ApplicationInfo::PUBLIC_DIR => 'public',
+            ApplicationInfo::WRITABLE_DIR => 'storage',
+            ApplicationInfo::TEMP_DIR => 'tmp',
         ]);
     }
 

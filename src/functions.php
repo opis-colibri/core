@@ -236,9 +236,9 @@ function redirect(string $location, int $code = 302, array $headers = []): Redir
 }
 
 /**
- * @return AppInfo
+ * @return ApplicationInfo
  */
-function info(): AppInfo
+function info(): ApplicationInfo
 {
     return Application::getInstance()->getAppInfo();
 }

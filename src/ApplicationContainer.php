@@ -27,9 +27,9 @@ use Psr\Log\LoggerInterface;
 interface ApplicationContainer
 {
     /**
-     * @return AppInfo
+     * @return ApplicationInfo
      */
-    public function getAppInfo(): AppInfo;
+    public function getAppInfo(): ApplicationInfo;
 
     /**
      * @param DataStore $driver
