@@ -40,7 +40,7 @@ class Collector extends BaseCollector
             ->where('error', '401|403|404|405|500|503');
     }
 
-    public function routes(RouteCollector $route)
+    public function routes(RouteCollector $route, int $priority = -100)
     {
         $route->group(function (RouteCollector $route) {
             $route('/', InternalRoutes::class . '::welcome');
