@@ -18,11 +18,11 @@
 namespace Opis\Colibri\Core;
 
 use Opis\Colibri\Collectors\{TranslationCollector, TranslationFilterCollector};
-use Opis\I18n\{
-    Locale,
-    Translator\BaseTranslator,
-    Translator\Drivers\Memory,
-    Translator\Driver
+use Opis\I18n\Translator\{
+    BaseTranslator,
+    Drivers\Memory,
+    Driver,
+    Filter
 };
 use function Opis\Colibri\collect;
 
@@ -33,16 +33,13 @@ class Translator extends BaseTranslator
      */
     public function __construct(?Driver $driver = null, ?string $default_language = null)
     {
-        if ($driver === null) {
-            $driver = new Memory([], []);
-        }
-        parent::__construct($driver, $default_language ?? Locale::SYSTEM_LOCALE);
+        parent::__construct($driver ?? new Memory(), $default_language);
     }
 
     /**
      * @inheritDoc
      */
-    protected function loadSystemNS(string $ns)
+    protected function loadSystemNS(string $ns): ?array
     {
         return collect(TranslationCollector::class)->getTranslations($ns);
     }
@@ -50,8 +47,9 @@ class Translator extends BaseTranslator
     /**
      * @inheritDoc
      */
-    protected function getFilter(string $name)
+    protected function getFilter(string $name): ?Filter
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return collect(TranslationFilterCollector::class)->get($name);
     }
 }
