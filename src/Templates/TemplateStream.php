@@ -19,7 +19,8 @@ namespace Opis\Colibri\Templates;
 
 use Opis\Stream\Content;
 use Opis\Stream\Wrapper\ContentStreamWrapper;
-use function Opis\Colibri\app;
+use Opis\Colibri\Collectors\TemplateStreamHandlerCollector;
+use function Opis\Colibri\collect;
 
 final class TemplateStream extends ContentStreamWrapper
 {
@@ -43,7 +44,7 @@ final class TemplateStream extends ContentStreamWrapper
         unset($m);
 
         /** @var TemplateStreamHandler $provider */
-        $provider = app()->getCollector()->getTemplateStreamHandlers()->get($type);
+        $provider = collect(TemplateStreamHandlerCollector::class)->get($type);
 
         if ($provider === null) {
             return null;

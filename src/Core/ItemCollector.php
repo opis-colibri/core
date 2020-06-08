@@ -17,7 +17,6 @@
 
 namespace Opis\Colibri\Core;
 
-use Composer\Package\CompletePackageInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionException;
@@ -25,33 +24,8 @@ use RuntimeException;
 use Opis\Colibri\{
     Application, Collector
 };
-use Opis\Colibri\Serializable\{AdvancedClassList, Collection, RouterGlobals, Translations};
-use Opis\Database\{Database, Connection};
-use Opis\Cache\CacheDriver;
-use Opis\DataStore\DataStore;
-use Opis\Events\EventDispatcher;
-use Opis\Routing\RouteCollection;
-use Opis\View\Renderer;
 use Opis\Utils\SortableList;
-use Psr\Log\LoggerInterface;
-use Opis\Colibri\Collectors\{
-    AssetsHandlerCollector,
-    BaseCollector,
-    CacheCollector,
-    CommandCollector,
-    ConfigCollector,
-    ConnectionCollector,
-    ContractCollector,
-    EventHandlerCollector,
-    LoggerCollector,
-    RouteCollector,
-    RouterGlobalsCollector,
-    SessionCollector,
-    TemplateStreamHandlerCollector,
-    TranslationCollector,
-    ViewCollector,
-    ViewEngineCollector
-};
+use Opis\Colibri\Collectors\BaseCollector;
 
 class ItemCollector
 {
@@ -68,156 +42,6 @@ class ItemCollector
     {
         $this->app = $app;
         $this->setupContainer($this->app->getCollectorList());
-    }
-
-    /**
-     * @param string $name
-     * @param bool $fresh
-     * @return CacheDriver
-     */
-    public function getCacheDriver(string $name, bool $fresh = false): CacheDriver
-    {
-        return $this->collect(CacheCollector::class, $fresh)->getInstance($name);
-    }
-
-    /**
-     * @param bool $fresh
-     * @return Container
-     */
-    public function getContracts(bool $fresh = false): Container
-    {
-        return $this->collect(ContractCollector::class, $fresh);
-    }
-
-    /**
-     * @param bool $fresh
-     * @return callable[]
-     */
-    public function getCommands(bool $fresh = false): array
-    {
-        return $this->collect(CommandCollector::class, $fresh)->getEntries();
-    }
-
-    /**
-     * @param string $name
-     * @param bool $fresh
-     * @return DataStore
-     */
-    public function getConfigDriver(string $name, bool $fresh = false): DataStore
-    {
-        return $this->collect(ConfigCollector::class, $fresh)->get($name);
-    }
-
-    /**
-     * @param string $name
-     * @param bool $fresh
-     * @return Connection
-     */
-    public function getConnection(string $name, bool $fresh = false): Connection
-    {
-        return $this->collect(ConnectionCollector::class, $fresh)->getInstance($name);
-    }
-
-    /**
-     * @param string $name
-     * @param bool $fresh
-     * @return Database
-     */
-    public function getDatabase(string $name, bool $fresh = false): Database
-    {
-        return $this->collect(ConnectionCollector::class, $fresh)->database($name);
-    }
-
-    /**
-     * @param bool $fresh
-     * @return EventDispatcher
-     */
-    public function getEventDispatcher(bool $fresh = false): EventDispatcher
-    {
-        return $this->collect(EventHandlerCollector::class, $fresh);
-    }
-
-    /**
-     * @param string $name
-     * @param bool $fresh
-     * @return LoggerInterface
-     */
-    public function getLogger(string $name, bool $fresh = false): LoggerInterface
-    {
-        return $this->collect(LoggerCollector::class, $fresh)->get($name);
-    }
-
-    /**
-     * @param bool $fresh
-     * @return RouteCollection
-     */
-    public function getRoutes(bool $fresh = false): RouteCollection
-    {
-        return $this->collect(RouteCollector::class, $fresh);
-    }
-
-    /**
-     * @param string $name
-     * @param bool $fresh
-     * @return Session
-     */
-    public function getSession(string $name, bool $fresh = false): Session
-    {
-        return $this->collect(SessionCollector::class, $fresh)->getSession($name);
-    }
-
-    /**
-     * @param bool $fresh
-     * @return Renderer
-     */
-    public function getRenderer(bool $fresh = false): Renderer
-    {
-        return $this->collect(ViewCollector::class, $fresh);
-    }
-
-    /**
-     * @param bool $fresh
-     * @return Collection
-     */
-    public function getViewEngineResolver(bool $fresh = false): Collection
-    {
-        return $this->collect(ViewEngineCollector::class, $fresh);
-    }
-
-    /**
-     * @param bool $fresh
-     * @return Translations
-     */
-    public function getTranslations(bool $fresh = false)
-    {
-        return $this->collect(TranslationCollector::class, $fresh);
-    }
-
-    /**
-     * @param bool $fresh
-     * @return RouterGlobals
-     */
-    public function getRouterGlobals(bool $fresh = false): RouterGlobals
-    {
-        return $this->collect(RouterGlobalsCollector::class, $fresh);
-    }
-
-    /**
-     * @param bool $fresh
-     * @return Collection
-     */
-    public function getAssetHandlers(bool $fresh = false)
-    {
-        return $this->collect(AssetsHandlerCollector::class, $fresh);
-    }
-
-    /**
-     * @param bool $fresh
-     * @return AdvancedClassList
-     */
-    public function getTemplateStreamHandlers(bool $fresh = false)
-    {
-        return $this->collect(TemplateStreamHandlerCollector::class, $fresh);
     }
 
     public function collect(string $name, bool $fresh = false): object
@@ -356,7 +180,7 @@ class ItemCollector
         $this->invertedList = $inverted;
     }
 
-    private function includeCollectors()
+    private function includeCollectors(): void
     {
         if ($this->collectorsIncluded) {
             return;
@@ -392,25 +216,24 @@ class ItemCollector
                 continue;
             }
 
-            /** @var Collector $instance */
+            /** @var DefaultCollector $instance */
             $this->doCollect($module, $instance, $reflection, $collectorList, $invertedList);
         }
     }
 
-    private function collectFromCore(array $collectorList, array $invertedList)
+    private function collectFromCore(array $collectorList, array $invertedList): void
     {
-        $fakeModule = new class extends Module {
-            function __construct()
-            {
-                $this->name = 'opis-colibri/core';
-            }
-        };
-        $instance = new \Opis\Colibri\Core\Collector();
+
+        $fakeModule = $this->app->getModule('opis-colibri/core');
+
+        $instance = new DefaultCollector();
         $reflection = new ReflectionClass($instance);
+
         $this->doCollect($fakeModule, $instance, $reflection, $collectorList, $invertedList);
     }
 
-    private function doCollect(Module $module, Collector $instance, ReflectionClass $reflection, array $collectorList, array $invertedList)
+    private function doCollect(Module $module, Collector $instance, ReflectionClass $reflection,
+                               array $collectorList, array $invertedList): void
     {
         foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
 
@@ -466,7 +289,7 @@ class ItemCollector
                 }
             }
 
-            $callback = function (BaseCollector $collector) use (
+            $callback = static function (BaseCollector $collector) use (
                 $instance,
                 $methodName,
                 $module,

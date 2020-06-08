@@ -31,7 +31,8 @@ use Opis\Database\{Connection, Database, Schema};
 use Opis\ORM\EntityManager;
 use Opis\Colibri\Templates\TemplateStream;
 use Opis\Colibri\Core\{Container, CSRFToken, ItemCollector, Module, ModuleManager, Router, Session, Translator, View};
-use Opis\Colibri\Collectors\{AssetsHandlerCollector,
+use Opis\Colibri\Collectors\{
+    AssetsHandlerCollector,
     CacheCollector,
     CommandCollector,
     ConfigCollector,
@@ -46,7 +47,8 @@ use Opis\Colibri\Collectors\{AssetsHandlerCollector,
     TranslationCollector,
     TranslationFilterCollector,
     ViewCollector,
-    ViewEngineCollector};
+    ViewEngineCollector
+};
 
 class Application implements ApplicationContainer
 {
@@ -139,7 +141,7 @@ class Application implements ApplicationContainer
      */
     public function getPackages(bool $clear = false): array
     {
-        return $this->moduleManager()->packages($clear);
+        return $this->getModuleManager()->packages($clear);
     }
 
     /**
@@ -151,7 +153,7 @@ class Application implements ApplicationContainer
      */
     public function getModules(bool $clear = false): array
     {
-        return $this->moduleManager()->modules($clear);
+        return $this->getModuleManager()->modules($clear);
     }
 
     /**
@@ -160,7 +162,7 @@ class Application implements ApplicationContainer
      */
     public function getModule(string $name): Module
     {
-        return $this->moduleManager()->module($name);
+        return $this->getModuleManager()->module($name);
     }
 
     /**
@@ -170,7 +172,7 @@ class Application implements ApplicationContainer
      */
     public function getAllModuleDependencies(Module $module, ?callable $filter = null): array
     {
-        return $this->moduleManager()->recursiveDependencies($module, $filter);
+        return $this->getModuleManager()->recursiveDependencies($module, $filter);
     }
 
     /**
@@ -180,7 +182,7 @@ class Application implements ApplicationContainer
      */
     public function getAllModuleDependants(Module $module, ?callable $filter = null): array
     {
-        return $this->moduleManager()->recursiveDependants($module, $filter);
+        return $this->getModuleManager()->recursiveDependants($module, $filter);
     }
 
     /**
@@ -198,9 +200,9 @@ class Application implements ApplicationContainer
     }
 
     /**
-     * @return HttpRequest
+     * @return HttpRequest|null
      */
-    public function getHttpRequest(): HttpRequest
+    public function getHttpRequest(): ?HttpRequest
     {
         return $this->httpRequest;
     }
@@ -227,7 +229,7 @@ class Application implements ApplicationContainer
     public function getContainer(): Container
     {
         if ($this->containerInstance === null) {
-            $this->containerInstance = $this->getCollector()->getContracts();
+            $this->containerInstance = $this->getCollector()->collect(ContractCollector::class);
         }
 
         return $this->containerInstance;
@@ -284,7 +286,7 @@ class Application implements ApplicationContainer
         }
 
         if (!isset($this->cache[$storage])) {
-            $this->cache[$storage] = $this->getCollector()->getCacheDriver($storage);
+            $this->cache[$storage] = $this->getCollector()->collect(CacheCollector::class)->getInstance($storage);
         }
 
         return $this->cache[$storage];
@@ -300,17 +302,13 @@ class Application implements ApplicationContainer
     {
         if ($name === null) {
             if ($this->defaultSession === null) {
-                if ($this->defaultSessionHandler !== null) {
-                    $this->defaultSession = new Session($this->defaultSessionConfig, $this->defaultSessionHandler);
-                } else {
-                    $this->defaultSession = new Session();
-                }
+                $this->defaultSession = new Session($this->defaultSessionConfig ?? [], $this->defaultSessionHandler);
             }
             return $this->defaultSession;
         }
 
         if (!isset($this->session[$name])) {
-            $this->session[$name] = $this->getCollector()->getSession($name);
+            $this->session[$name] = $this->getCollector()->collect(SessionCollector::class)->getSession($name);
         }
 
         return $this->session[$name];
@@ -322,7 +320,7 @@ class Application implements ApplicationContainer
     public function getSessionCookieContainer(): RequestContainer
     {
         if ($this->sessionCookieContainer === null) {
-            $this->sessionCookieContainer = new RequestContainer($this->info->cliMode() ? null : $this->getHttpRequest());
+            $this->sessionCookieContainer = new RequestContainer($this->httpRequest);
         }
 
         return $this->sessionCookieContainer;
@@ -343,7 +341,7 @@ class Application implements ApplicationContainer
         }
 
         if (!isset($this->config[$driver])) {
-            $this->config[$driver] = $this->getCollector()->getConfigDriver($driver);
+            $this->config[$driver] = $this->getCollector()->collect(ConfigCollector::class)->get($driver);
         }
 
         return $this->config[$driver];
@@ -362,7 +360,7 @@ class Application implements ApplicationContainer
      * @param string|null $name
      * @return Connection
      */
-    public function getConnection(string $name = null): Connection
+    public function getConnection(?string $name = null): Connection
     {
         if ($name === null) {
             if ($this->defaultConnection === null) {
@@ -372,7 +370,9 @@ class Application implements ApplicationContainer
         }
 
         if (!isset($this->connection[$name])) {
-            $this->connection[$name] = $this->getCollector()->getConnection($name);
+            $this->connection[$name] = $this->getCollector()
+                ->collect(ConnectionCollector::class)
+                ->getInstance($name);
         }
 
         return $this->connection[$name];
@@ -382,7 +382,7 @@ class Application implements ApplicationContainer
      * @param string|null $connection
      * @return Database
      */
-    public function getDatabase(string $connection = null): Database
+    public function getDatabase(?string $connection = null): Database
     {
         return $this->getConnection($connection)->getDatabase();
     }
@@ -391,7 +391,7 @@ class Application implements ApplicationContainer
      * @param string|null $connection
      * @return Schema
      */
-    public function getSchema(string $connection = null): Schema
+    public function getSchema(?string $connection = null): Schema
     {
         return $this->getConnection($connection)->getSchema();
     }
@@ -400,7 +400,7 @@ class Application implements ApplicationContainer
      * @param string|null $connection
      * @return EntityManager
      */
-    public function getEntityManager(string $connection = null): EntityManager
+    public function getEntityManager(?string $connection = null): EntityManager
     {
         $entry = $connection ?? '#default';
 
@@ -418,7 +418,7 @@ class Application implements ApplicationContainer
      *
      * @return  LoggerInterface
      */
-    public function getLogger(string $logger = 'default'): LoggerInterface
+    public function getLogger(?string $logger = null): LoggerInterface
     {
         if ($logger === null) {
             if ($this->defaultLogger === null) {
@@ -428,7 +428,7 @@ class Application implements ApplicationContainer
         }
 
         if (!isset($this->loggers[$logger])) {
-            $this->loggers[$logger] = $this->getCollector()->getLogger($logger);
+            $this->loggers[$logger] = $this->getCollector()->collect(LoggerCollector::class)->get($logger);
         }
 
         return $this->loggers[$logger];
@@ -440,7 +440,7 @@ class Application implements ApplicationContainer
     public function getEventDispatcher(): EventDispatcher
     {
         if ($this->eventDispatcher === null) {
-            $this->eventDispatcher = $this->getCollector()->getEventDispatcher();
+            $this->eventDispatcher = $this->getCollector()->collect(EventHandlerCollector::class);
         }
 
         return $this->eventDispatcher;
@@ -492,10 +492,10 @@ class Application implements ApplicationContainer
      * @param string $path
      * @return string
      */
-    public function resolveAsset(string $module, string $path)
+    public function resolveAsset(string $module, string $path): string
     {
         if ($this->assets === null) {
-            $this->assets = $this->collector->getAssetHandlers()->getEntries();
+            $this->assets = $this->getCollector()->collect(AssetsHandlerCollector::class)->getEntries();
         }
 
         if (isset($this->assets[$module])) {
@@ -612,7 +612,7 @@ class Application implements ApplicationContainer
             return $this;
         }
 
-        $manager = $this->moduleManager();
+        $manager = $this->getModuleManager();
 
         /** @var Module|null $installer */
         $installer = null;
@@ -738,7 +738,7 @@ class Application implements ApplicationContainer
             $this->emit('module.installed.' . $module->name());
         };
 
-        $manager = $this->moduleManager();
+        $manager = $this->getModuleManager();
 
         if ($recursive) {
             foreach ($manager->recursiveDependencies($module) as $dependency) {
@@ -797,7 +797,7 @@ class Application implements ApplicationContainer
             $this->emit('module.uninstalled.' . $module->name());
         };
 
-        $manager = $this->moduleManager();
+        $manager = $this->getModuleManager();
 
         if ($recursive) {
             foreach ($manager->recursiveDependants($module) as $dependant) {
@@ -861,7 +861,7 @@ class Application implements ApplicationContainer
             $this->emit('module.enabled.' . $module->name());
         };
 
-        $manager = $this->moduleManager();
+        $manager = $this->getModuleManager();
 
         if ($recursive) {
             foreach ($manager->recursiveDependencies($module) as $dependency) {
@@ -925,7 +925,7 @@ class Application implements ApplicationContainer
             $this->emit('module.disabled.' . $module->name());
         };
 
-        $manager = $this->moduleManager();
+        $manager = $this->getModuleManager();
 
         if ($recursive) {
             foreach ($manager->recursiveDependants($module) as $dependant) {
@@ -943,6 +943,18 @@ class Application implements ApplicationContainer
         }
 
         return $manager->disable($module, $action, $callback);
+    }
+
+    /**
+     * @return ModuleManager
+     */
+    public function getModuleManager(): ModuleManager
+    {
+        if ($this->moduleManager === null) {
+            $this->moduleManager = new ModuleManager($this->info->vendorDir(), fn (): DataStore => $this->getConfig());
+        }
+
+        return $this->moduleManager;
     }
 
     /**
@@ -1022,19 +1034,6 @@ class Application implements ApplicationContainer
         }
 
         flush();
-    }
-
-    /**
-     * @return ModuleManager
-     */
-    protected function moduleManager(): ModuleManager
-    {
-        if ($this->moduleManager === null) {
-            $this->moduleManager = new ModuleManager($this->info->vendorDir(), function (): DataStore {
-                return $this->getConfig();
-            });
-        }
-        return $this->moduleManager;
     }
 
     /**

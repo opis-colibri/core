@@ -124,12 +124,14 @@ class Application extends BaseApplication
     /**
      * @return ModuleManager
      */
-    protected function moduleManager(): ModuleManager
+    public function getModuleManager(): ModuleManager
     {
         if ($this->moduleManager === null) {
-            $this->moduleManager = new ExtendedModuleManager($this->installedJson, $this->info->vendorDir(), function () {
-                return $this->getConfig();
-            });
+            $this->moduleManager = new ExtendedModuleManager(
+                $this->installedJson,
+                $this->info->vendorDir(),
+                fn () => $this->getConfig()
+            );
         }
         return $this->moduleManager;
     }

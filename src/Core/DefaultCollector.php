@@ -22,10 +22,8 @@ use Opis\Colibri\Collectors\{RouteCollector, TemplateStreamHandlerCollector, Vie
 use Opis\Colibri\Templates\CallbackTemplateHandler;
 use Opis\Colibri\Internal\Views as InternalViews;
 use Opis\Colibri\Internal\Routes as InternalRoutes;
-use Opis\Http\Responses\FileStream;
-use function Opis\Colibri\view;
 
-class Collector extends BaseCollector
+class DefaultCollector extends BaseCollector
 {
     public function templateHandlers(TemplateStreamHandlerCollector $collector, int $priority = -100)
     {

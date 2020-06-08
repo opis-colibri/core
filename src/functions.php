@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ use Opis\ORM\{
     Core\EntityQuery
 };
 use Opis\Events\Event;
+use Opis\Colibri\Core\Event as DataEvent;
 use Opis\Routing\ControllerCallback;
 use Opis\Stream\Stream;
 use Opis\Http\{Request, Response as HttpResponse, Response};
@@ -53,20 +54,20 @@ function app(): Application
 }
 
 /**
- * @param string $storage
+ * @param string|null $storage
  * @return CacheDriver
  */
-function cache(string $storage = 'default'): CacheDriver
+function cache(?string $storage = null): CacheDriver
 {
     return Application::getInstance()->getCache($storage);
 }
 
 
 /**
- * @param string $storage
+ * @param string|null $storage
  * @return DataStore
  */
-function config(string $storage = 'default'): DataStore
+function config(?string $storage = null): DataStore
 {
     return Application::getInstance()->getConfig($storage);
 }
@@ -75,7 +76,7 @@ function config(string $storage = 'default'): DataStore
  * @param string $abstract
  * @return mixed
  */
-function make(string $abstract)
+function make(string $abstract): object
 {
     return Application::getInstance()->getContainer()->make($abstract);
 }
@@ -108,19 +109,19 @@ function removeCSRFToken(string $token): bool
 }
 
 /**
- * @param string $name
+ * @param string|null $name
  * @return DBConnection
  */
-function connection(string $name = 'default'): DBConnection
+function connection(?string $name = null): DBConnection
 {
     return Application::getInstance()->getConnection($name);
 }
 
 /**
- * @param string $connection
+ * @param string|null $connection
  * @return Database
  */
-function db(string $connection = 'default'): Database
+function db(?string $connection = null): Database
 {
     return Application::getInstance()->getDatabase($connection);
 }
@@ -129,7 +130,7 @@ function db(string $connection = 'default'): Database
  * @param string|null $connection
  * @return Schema
  */
-function schema(string $connection = 'default'): Schema
+function schema(?string $connection = null): Schema
 {
     return Application::getInstance()->getSchema($connection);
 }
@@ -137,41 +138,42 @@ function schema(string $connection = 'default'): Schema
 /**
  * @param callable $callback
  * @param mixed $default
- * @param string $connection
+ * @param string|null $connection
  * @return mixed|false
  */
-function transaction(callable $callback, $default = null, string $connection = 'default')
+function transaction(callable $callback, $default = null, ?string $connection = null)
 {
     return connection($connection)->transaction($callback, null, $default);
 }
 
 /**
  * @param string $class
- * @param string $connection
+ * @param string|null $connection
  * @return EntityQuery
  */
-function entity(string $class, string $connection = 'default'): EntityQuery
+function entity(string $class, ?string $connection = null): EntityQuery
 {
     return Application::getInstance()->getEntityManager($connection)->query($class);
 }
 
 /**
- * @param string $connection
+ * @param string|null $connection
  * @return EntityManager
  */
-function entityManager(string $connection = 'default'): EntityManager
+function entityManager(?string $connection = null): EntityManager
 {
     return Application::getInstance()->getEntityManager($connection);
 }
 
 /**
  * @param string $event
+ * @param mixed $data
  * @param bool $cancelable
  * @return Event
  */
-function emit(string $event, bool $cancelable = false): Event
+function emit(string $event, $data = null, bool $cancelable = false): Event
 {
-    return Application::getInstance()->getEventDispatcher()->dispatch(new Event($event, $cancelable));
+    return Application::getInstance()->getEventDispatcher()->dispatch(new DataEvent($event, $data, $cancelable));
 }
 
 /**
@@ -184,9 +186,9 @@ function dispatch(Event $event): Event
 }
 
 /**
- * @return Request
+ * @return Request|null
  */
-function request(): Request
+function request(): ?Request
 {
     return Application::getInstance()->getHttpRequest();
 }
@@ -244,19 +246,19 @@ function info(): ApplicationInfo
 }
 
 /**
- * @param string $logger
+ * @param string|null $logger
  * @return LoggerInterface
  */
-function logger(string $logger = 'default'): LoggerInterface
+function logger(?string $logger = null): LoggerInterface
 {
     return Application::getInstance()->getLogger($logger);
 }
 
 /**
- * @param string $name
+ * @param string|null $name
  * @return Session
  */
-function session(string $name = 'default'): Session
+function session(?string $name = null): Session
 {
     return Application::getInstance()->getSession($name);
 }
@@ -332,8 +334,8 @@ function view(string $name, array $vars = []): CoreView
 }
 
 /**
- * @param $view
- * @return string|OpisView
+ * @param string|OpisView $view
+ * @return string
  */
 function render($view): string
 {
