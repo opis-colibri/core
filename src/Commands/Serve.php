@@ -18,11 +18,8 @@
 namespace Opis\Colibri\Commands;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\{InputInterface, InputOption};
 
 class Serve extends Command
 {
@@ -35,8 +32,7 @@ class Serve extends Command
             ->setName('serve')
             ->setDescription('Start the built-in PHP server')
             ->addOption('host', null, InputOption::VALUE_OPTIONAL, 'HTTP host', 'localhost')
-            ->addOption('port', null, InputOption::VALUE_OPTIONAL, 'HTTP port', 8080)
-            ->addOption('use-ini', null, InputOption::VALUE_NONE, 'Use local php.ini file');
+            ->addOption('port', null, InputOption::VALUE_OPTIONAL, 'HTTP port', 8080);
     }
 
     /**
@@ -46,9 +42,8 @@ class Serve extends Command
     {
         $host = $input->getOption('host');
         $port = $input->getOption('port');
-        $ini = $input->getOption('use-ini');
 
-        $command = 'php -S ' . $host . ':' . $port . ($ini ? ' -c php.ini' : '') . ' -t public/ router.php';
+        $command = 'php -S ' . $host . ':' . $port . ' -c ./ -t public/ router.php';
 
         $status = 0;
         passthru($command, $status);
