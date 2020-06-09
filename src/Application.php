@@ -19,7 +19,7 @@ namespace Opis\Colibri;
 
 use RuntimeException, Throwable;
 use Composer\Package\CompletePackageInterface;
-use Opis\Session\{Handlers\File as DefaultSessionHandler, SessionHandler, Containers\RequestContainer};
+use Opis\Session\{SessionHandler, Containers\RequestContainer};
 use Psr\Log\{NullLogger, LoggerInterface};
 use Opis\Cache\{CacheDriver, Drivers\Memory as MemoryDriver};
 use Opis\Events\{Event, EventDispatcher};
@@ -29,6 +29,7 @@ use Opis\Http\{Request as HttpRequest, Response as HttpResponse, Responses\HtmlR
 use Opis\DataStore\{DataStore, Drivers\Memory as MemoryConfig};
 use Opis\Database\{Connection, Database, Schema};
 use Opis\ORM\EntityManager;
+use Opis\JsonSchema\Validator;
 use Opis\Colibri\Templates\TemplateStream;
 use Opis\Colibri\Core\{Container, CSRFToken, ItemCollector, Module, ModuleManager, Router, Session, Translator, View};
 use Opis\Colibri\Collectors\{
@@ -39,6 +40,7 @@ use Opis\Colibri\Collectors\{
     ConnectionCollector,
     ContractCollector,
     EventHandlerCollector,
+    JsonSchemaResolversCollector,
     LoggerCollector,
     RouteCollector,
     RouterGlobalsCollector,
@@ -72,6 +74,7 @@ class Application implements ApplicationContainer
     protected ?CacheDriver $defaultCacheDriver = null;
     protected ?LoggerInterface $defaultLogger = null;
     protected ?TranslatorDriver $defaultTranslatorDriver = null;
+    protected ?Validator $validator = null;
     protected ?array $collectorList = null;
     protected bool $isReady = false;
 
@@ -468,6 +471,18 @@ class Application implements ApplicationContainer
         }
 
         return $this->collector;
+    }
+
+    /**
+     * @return Validator
+     */
+    public function getValidator(): Validator
+    {
+        if ($this->validator === null) {
+            $this->validator = $this->getCollector()->collect(JsonSchemaResolversCollector::class)->buildValidator();
+        }
+
+        return $this->validator;
     }
 
     /**
@@ -1114,6 +1129,10 @@ class Application implements ApplicationContainer
             'template-stream-handlers' => [
                 'class' => TemplateStreamHandlerCollector::class,
                 'description' => 'Collects template stream handlers',
+            ],
+            'json-schema-resolvers' => [
+                'class' => JsonSchemaResolversCollector::class,
+                'description' => 'Collects JSON Schema resolvers',
             ],
         ];
     }

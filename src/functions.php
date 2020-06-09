@@ -18,6 +18,7 @@
 namespace Opis\Colibri;
 
 use Opis\Cache\CacheDriver;
+use Opis\JsonSchema\Validator;
 use Opis\Colibri\Core\{Session, View as CoreView};
 use Opis\Database\{
     Connection as DBConnection,
@@ -453,6 +454,14 @@ function convertToCase(string $value, string  $to='snake_case', string $from = '
 function collect(string $type, bool $fresh = false)
 {
     return Application::getInstance()->getCollector()->collect($type, $fresh);
+}
+
+/**
+ * @return Validator
+ */
+function validator(): Validator
+{
+    return Application::getInstance()->getValidator();
 }
 
 /**
