@@ -1,6 +1,6 @@
 <?php
 /* ============================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +22,8 @@ use function Opis\Colibri\view;
 
 class ViewsTest extends BaseAppTestCase
 {
-    /**
-     * @param ApplicationBuilder $builder
-     */
-    protected static function applicationSetup(ApplicationBuilder $builder)
+
+    protected static function setupApp(ApplicationBuilder $builder): void
     {
         $builder->createEnabledTestModule('test/views', 'Test\\Views', __DIR__ . '/code/test-views', [
             'collector' => 'Test\\Views\\Collector'

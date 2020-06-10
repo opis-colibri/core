@@ -127,12 +127,29 @@ class Application extends BaseApplication
     public function getModuleManager(): ModuleManager
     {
         if ($this->moduleManager === null) {
-            $this->moduleManager = new ExtendedModuleManager(
+            $this->moduleManager = new class(
                 $this->installedJson,
                 $this->info->vendorDir(),
                 fn () => $this->getConfig()
-            );
+            ) extends ModuleManager {
+                private string $json;
+
+                public function __construct(string $json, string $vendorDir, callable $config)
+                {
+                    $this->json = $json;
+                    parent::__construct($vendorDir, $config);
+                }
+
+                /**
+                 * @inheritDoc
+                 */
+                protected function installedJsonFile(): string
+                {
+                    return $this->json;
+                }
+            };
         }
+
         return $this->moduleManager;
     }
 

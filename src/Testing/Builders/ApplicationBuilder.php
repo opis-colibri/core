@@ -17,12 +17,12 @@
 
 namespace Opis\Colibri\Testing\Builders;
 
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use SplFileInfo;
 use stdClass;
+use SplFileInfo;
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
 use Opis\Colibri\{Core\Module, ApplicationInfo, Core\ModuleManager};
-use Opis\Colibri\Testing\{Application, InstalledAppInfo};
+use Opis\Colibri\Testing\Application;
 
 class ApplicationBuilder
 {
@@ -33,7 +33,7 @@ class ApplicationBuilder
 
     protected ?string $vendorDir = null;
 
-    protected AppInitBuilder $builder;
+    protected ApplicationInitializerBuilder $builder;
 
     protected array $autoload = [];
 
@@ -53,14 +53,14 @@ class ApplicationBuilder
      * AppBuilder constructor.
      * @param string $vendorDir
      * @param null|string $rootDir
-     * @param null|AppInitBuilder $boot
+     * @param null|ApplicationInitializerBuilder $boot
      */
-    public function __construct(string $vendorDir, ?string $rootDir = null, ?AppInitBuilder $boot = null)
+    public function __construct(string $vendorDir, ?string $rootDir = null, ?ApplicationInitializerBuilder $boot = null)
     {
         $this->baseRootDir = sys_get_temp_dir();
         $this->rootDir = $rootDir;
         $this->vendorDir = $vendorDir;
-        $this->builder = $boot ?? new AppInitBuilder();
+        $this->builder = $boot ?? new ApplicationInitializerBuilder();
     }
 
     /**
@@ -134,18 +134,18 @@ class ApplicationBuilder
     }
 
     /**
-     * @return AppInitBuilder
+     * @return ApplicationInitializerBuilder
      */
-    public function getBootstrapBuilder(): AppInitBuilder
+    public function getBootstrapBuilder(): ApplicationInitializerBuilder
     {
         return $this->builder;
     }
 
     /**
-     * @param AppInitBuilder $builder
+     * @param ApplicationInitializerBuilder $builder
      * @return ApplicationBuilder
      */
-    public function setBootstrapBuilder(AppInitBuilder $builder): self
+    public function setBootstrapBuilder(ApplicationInitializerBuilder $builder): self
     {
         $this->builder = $builder;
         return $this;
@@ -533,12 +533,22 @@ class ApplicationBuilder
             mkdir($rootDir . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'tmp', 0777, true);
         }
 
-        return new InstalledAppInfo($rootDir, [
+        $settings = [
             ApplicationInfo::VENDOR_DIR => $vendorDir,
             ApplicationInfo::PUBLIC_DIR => 'public',
             ApplicationInfo::WRITABLE_DIR => 'storage',
             ApplicationInfo::TEMP_DIR => 'tmp',
-        ]);
+        ];
+
+        return new class($rootDir, $settings) extends ApplicationInfo {
+            /**
+             * @inheritDoc
+             */
+            public function installMode(): bool
+            {
+                return false;
+            }
+        };
     }
 
     /**

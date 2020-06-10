@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,8 @@ use Opis\Colibri\Testing\Builders\ApplicationBuilder;
 
 class RoutingTest extends BaseAppTestCase
 {
-    /**
-     * @inheritdoc
-     */
-    protected static function applicationSetup(ApplicationBuilder $builder)
+
+    protected static function setupApp(ApplicationBuilder $builder): void
     {
         $builder->addEnabledModuleFromPath(__DIR__ . '/modules/Foo');
         $builder->addEnabledModuleFromPath(__DIR__ . '/modules/Bar');

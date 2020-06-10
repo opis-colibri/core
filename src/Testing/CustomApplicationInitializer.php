@@ -20,25 +20,25 @@ namespace Opis\Colibri\Testing;
 use Opis\Colibri\{
     ApplicationInitializer, ApplicationContainer
 };
-use Opis\Colibri\Testing\Builders\AppInitBuilder;
+use Opis\Colibri\Testing\Builders\ApplicationInitializerBuilder;
 
 class CustomApplicationInitializer implements ApplicationInitializer
 {
 
-    protected AppInitBuilder $builder;
+    protected ApplicationInitializerBuilder $builder;
 
     /**
-     * @param AppInitBuilder $builder
+     * @param ApplicationInitializerBuilder $builder
      */
-    public function __construct(AppInitBuilder $builder)
+    public function __construct(ApplicationInitializerBuilder $builder)
     {
         $this->builder = $builder;
     }
 
     /**
-     * @return AppInitBuilder
+     * @return ApplicationInitializerBuilder
      */
-    public function builder(): AppInitBuilder
+    public function builder(): ApplicationInitializerBuilder
     {
         return $this->builder;
     }

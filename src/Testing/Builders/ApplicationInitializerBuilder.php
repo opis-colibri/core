@@ -27,7 +27,7 @@ use Psr\Log\{LoggerInterface, NullLogger as DefaultLogger};
 use Opis\Cache\{CacheDriver, Drivers\Memory as DefaultCache};
 use Opis\I18n\Translator\{Drivers\Memory as DefaultTranslator, Driver as TranslatorDriver};
 
-class AppInitBuilder
+class ApplicationInitializerBuilder
 {
 
     protected ?DataStore $config = null;
@@ -69,7 +69,7 @@ class AppInitBuilder
 
     /**
      * @param null|string $timezone
-     * @return AppInitBuilder
+     * @return ApplicationInitializerBuilder
      */
     public function setTimezone(?string $timezone): self
     {
@@ -90,7 +90,7 @@ class AppInitBuilder
 
     /**
      * @param string|null $language
-     * @return AppInitBuilder
+     * @return ApplicationInitializerBuilder
      */
     public function setLanguage(?string $language): self
     {
@@ -111,7 +111,7 @@ class AppInitBuilder
 
     /**
      * @param DataStore|null $driver
-     * @return AppInitBuilder
+     * @return ApplicationInitializerBuilder
      */
     public function setConfigDriver(?DataStore $driver): self
     {
@@ -132,7 +132,7 @@ class AppInitBuilder
 
     /**
      * @param CacheDriver|null $cache
-     * @return AppInitBuilder
+     * @return ApplicationInitializerBuilder
      */
     public function setCacheDriver(?CacheDriver $cache): self
     {
@@ -166,7 +166,7 @@ class AppInitBuilder
 
     /**
      * @param SessionHandler|null $session
-     * @return AppInitBuilder
+     * @return ApplicationInitializerBuilder
      */
     public function setSessionHandler(?SessionHandler $session = null): self
     {
@@ -177,7 +177,7 @@ class AppInitBuilder
 
     /**
      * @param array|null $config
-     * @return AppInitBuilder
+     * @return ApplicationInitializerBuilder
      */
     public function setSessionConfig(?array $config = null): self
     {
@@ -199,7 +199,7 @@ class AppInitBuilder
 
     /**
      * @param Connection|null $database
-     * @return AppInitBuilder
+     * @return ApplicationInitializerBuilder
      */
     public function setDatabaseConnection(?Connection $database): self
     {
@@ -220,7 +220,7 @@ class AppInitBuilder
 
     /**
      * @param LoggerInterface|null $logger
-     * @return AppInitBuilder
+     * @return ApplicationInitializerBuilder
      */
     public function setLogger(?LoggerInterface $logger = null): self
     {
@@ -241,7 +241,7 @@ class AppInitBuilder
 
     /**
      * @param TranslatorDriver|null $translator
-     * @return AppInitBuilder
+     * @return ApplicationInitializerBuilder
      */
     public function setTranslator(?TranslatorDriver $translator): self
     {
