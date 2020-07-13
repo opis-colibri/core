@@ -24,10 +24,9 @@ use Opis\JsonSchema\Resolvers\{
     FormatResolver,
     SchemaResolver
 };
-use Opis\JsonSchema\Parsers\{IKeywordParser, IPragmaParser, IVocabulary, SchemaParser, Vocabulary};
+use Opis\JsonSchema\Parsers\{DefaultVocabulary, KeywordParser, PragmaParser, Vocabulary, SchemaParser};
 use Opis\JsonSchema\{
-    IWrapperKeyword,
-    ISchemaLoader,
+    KeywordValidator,
     SchemaLoader,
     Validator
 };
@@ -126,17 +125,17 @@ class JsonSchemaResolvers
         return new Validator($this->getSchemaLoader(), $this->maxErrors);
     }
 
-    private function getSchemaLoader(): ISchemaLoader
+    private function getSchemaLoader(): SchemaLoader
     {
         $parser = new SchemaParser($this->resolvers, $this->options, $this->getVocabulary());
 
         return new SchemaLoader($parser, $this->schema);
     }
 
-    private function getVocabulary(): ?IVocabulary
+    private function getVocabulary(): ?Vocabulary
     {
         $keywords = [];
-        $wrappers = [];
+        $keywordValidators = [];
         $pragmas = [];
 
         foreach ($this->parsers as $name => $func) {
@@ -149,17 +148,17 @@ class JsonSchemaResolvers
                 continue;
             }
 
-            if ($func instanceof IKeywordParser) {
+            if ($func instanceof KeywordParser) {
                 $keywords[] = $func;
-            } elseif ($func instanceof IWrapperKeyword) {
-                $wrappers[] = $func;
-            } elseif ($func instanceof IPragmaParser) {
+            } elseif ($func instanceof KeywordValidator) {
+                $keywordValidators[] = $func;
+            } elseif ($func instanceof PragmaParser) {
                 $pragmas[] = $func;
             }
         }
 
-        if ($keywords || $wrappers || $pragmas) {
-            return new Vocabulary($keywords, $wrappers, $pragmas);
+        if ($keywords || $keywordValidators || $pragmas) {
+            return new DefaultVocabulary($keywords, $keywordValidators, $pragmas);
         }
 
         return null;
