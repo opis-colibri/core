@@ -32,7 +32,7 @@ return new class implements ApplicationInitializer
     public function init(ApplicationContainer $app)
     {
         // Enable closure serialization
-        //\Opis\Closure\init();
+        // \Opis\Closure\SerializableClosure::init();
 
         // Timezone settings
         date_default_timezone_set('UTC');

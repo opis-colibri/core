@@ -73,6 +73,12 @@ class JsonSchemaResolversCollector extends BaseCollector
         return $this;
     }
 
+    public function addLoader(string $name, ?string $dir = null, ?callable $dynamic = null): self
+    {
+        $this->data->addLoader($name, $dir, $dynamic);
+        return $this;
+    }
+
     public function setMaxErrors(int $max): self
     {
         $this->data->setMaxErrors($max);

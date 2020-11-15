@@ -25,11 +25,7 @@ use Opis\JsonSchema\Resolvers\{
     SchemaResolver
 };
 use Opis\JsonSchema\Parsers\{DefaultVocabulary, KeywordParser, PragmaParser, Vocabulary, SchemaParser};
-use Opis\JsonSchema\{
-    KeywordValidator,
-    SchemaLoader,
-    Validator
-};
+use Opis\JsonSchema\{KeywordValidator, SchemaLoader, Uri, Validator};
 
 class JsonSchemaResolvers
 {
@@ -40,6 +36,7 @@ class JsonSchemaResolvers
     ];
     private array $parsers = [];
     private array $resolvers = [];
+    private array $loaders = [];
     private int $maxErrors = 1;
 
     public function filters(): FilterResolver
@@ -78,6 +75,7 @@ class JsonSchemaResolvers
     {
         if ($this->schema === null) {
             $this->schema = new SchemaResolver();
+            $this->schema->registerProtocol('json-schema', [$this, 'load']);
         }
         return $this->schema;
     }
@@ -100,10 +98,29 @@ class JsonSchemaResolvers
         return $this;
     }
 
+    public function addLoader(string $name, ?string $dir = null, ?callable $dynamic = null): self
+    {
+        if ($dir === null && $dynamic === null) {
+            if (isset($this->loaders[$name])) {
+                unset($this->loaders[$name]);
+            }
+        } else {
+            $this->loaders[$name] = [$dir, $dynamic];
+        }
+
+        return $this;
+    }
+
+    public function buildValidator(): Validator
+    {
+        return new Validator($this->getSchemaLoader(), $this->maxErrors);
+    }
+
     public function __serialize(): array
     {
         return [
             'schema' => $this->schema,
+            'loaders' => $this->loaders,
             'resolvers' => $this->resolvers,
             'options' => $this->options,
             'parsers' => $this->parsers,
@@ -114,22 +131,18 @@ class JsonSchemaResolvers
     public function __unserialize(array $data): void
     {
         $this->schema = $data['schema'];
+        $this->loaders = $data['loaders'];
         $this->resolvers = $data['resolvers'];
         $this->options = $data['options'];
         $this->parsers = $data['parsers'];
         $this->maxErrors = $data['maxErrors'];
     }
 
-    public function buildValidator(): Validator
-    {
-        return new Validator($this->getSchemaLoader(), $this->maxErrors);
-    }
-
     private function getSchemaLoader(): SchemaLoader
     {
         $parser = new SchemaParser($this->resolvers, $this->options, $this->getVocabulary());
 
-        return new SchemaLoader($parser, $this->schema);
+        return new SchemaLoader($parser, $this->schema(), true);
     }
 
     private function getVocabulary(): ?Vocabulary
@@ -162,5 +175,44 @@ class JsonSchemaResolvers
         }
 
         return null;
+    }
+
+    public function load(Uri $uri)
+    {
+        $loader = $this->loaders[$uri->host()] ?? null;
+
+        if (!$loader) {
+            // No loader registered
+            return null;
+        }
+
+        if ($loader[1] && $uri->query() !== null && $uri->query() !== '') {
+            // If the uri has query-string consider it dynamic
+            return $loader[1]($uri);
+        }
+
+        if (!$loader[0]) {
+            // We don't have a dir
+            return null;
+        }
+
+        $path = $uri->path();
+        if ($path === null || $path === '' || $path === '/') {
+            return null;
+        }
+
+        if ($path[0] !== '/') {
+            $path = './' . $path;
+        } else {
+            $path = '.' . $path;
+        }
+
+        $file = (string) Uri::merge($path, rtrim($loader[0], '/') . '/', false);
+
+        if ($file === '' || !is_file($file)) {
+            return null;
+        }
+
+        return json_decode(file_get_contents($file), false);
     }
 }

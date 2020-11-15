@@ -46,8 +46,6 @@ class CORSMiddleware extends Middleware
             return new Response(200, $headers);
         }
 
-        return $this->next()->modify(function (Response $response) use ($headers) {
-            $response->addHeaders($headers);
-        });
+        return $this->next()->modify(static fn (Response $response) => $response->addHeaders($headers));
     }
 }

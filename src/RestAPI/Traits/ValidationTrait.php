@@ -1,6 +1,6 @@
 <?php
 /* ============================================================================
- * Copyright 2019 Zindex Software
+ * Copyright 2019-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 namespace Opis\Colibri\RestAPI\Traits;
 
 use stdClass;
-use Opis\JsonSchema\{Errors\ValidationError, Exceptions\SchemaException};
+use Opis\JsonSchema\{Errors\ValidationError, Exceptions\SchemaException, Schema, Uri};
 use function Opis\Colibri\validator;
 
 // TODO: Review this
@@ -26,7 +26,7 @@ trait ValidationTrait
 {
     /**
      * @param $data
-     * @param stdClass|boolean|string $schema
+     * @param stdClass|boolean|string|Uri|Schema $schema
      * @param array $globals
      * @param boolean $safe
      * @return ValidationError|null
@@ -36,8 +36,10 @@ trait ValidationTrait
         $validator = validator();
 
         try {
-            if (is_string($schema)) {
+            if (is_string($schema) || ($schema instanceof Uri)) {
                 $result = $validator->uriValidation($data, $schema, $globals);
+            } elseif ($schema instanceof Schema) {
+                $result = $validator->schemaValidation($data, $schema, $globals);
             } else {
                 $result = $validator->dataValidation($data, $schema, $globals);
             }
