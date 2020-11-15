@@ -25,7 +25,6 @@ class ApplicationInfo
     const WRITABLE_DIR = 'writable-dir';
     const TEMP_DIR = 'temp-dir';
     const CLI_MODE = 'cli-mode';
-    const INSTALL_MODE = 'install-mode';
     const VENDOR_DIR = 'vendor-dir';
     const COMPOSER_FILE = 'composer-file';
     const ASSETS_PATH = 'assets-path';
