@@ -66,11 +66,6 @@ class Uninstall extends Command
                 continue;
             }
 
-            if ($module->isApplicationInstaller()) {
-                $output->writeln('<error>Module <b-error>' . $moduleName . '</b-error> is hidden and can\'t be uninstalled.');
-                continue;
-            }
-
             if (uninstall($module, true, $recursive)) {
                 $output->writeln('<info>Module <b-info>' . $moduleName . '</b-info> was uninstalled.</info>');
             } else {

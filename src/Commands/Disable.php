@@ -69,11 +69,6 @@ class Disable extends Command
                 continue;
             }
 
-            if ($module->isApplicationInstaller()) {
-                $output->writeln('<error>Module <b-error>' . $moduleName . '</b-error> is hidden and can\'t be disabled.');
-                continue;
-            }
-
             if (disable($module, true, $recursive)) {
                 $output->writeln('<info>Module <b-info>' . $moduleName . '</b-info> was disabled.</info>');
 

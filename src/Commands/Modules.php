@@ -32,9 +32,7 @@ class Modules extends Command
      */
     protected function configure()
     {
-        $this
-            ->setDescription('List all available modules')
-            ->addOption('all', null, InputOption::VALUE_NONE, 'List hidden modules');
+        $this->setDescription('List all available modules');
     }
 
     /**
@@ -47,17 +45,11 @@ class Modules extends Command
         $output->getFormatter()->setStyle('white', new OutputFormatterStyle('white', null, ['bold']));
         $output->getFormatter()->setStyle('yellow', new OutputFormatterStyle('yellow', null, ['bold']));
 
-        $all = $input->getOption('all');
-
         $table = new Table($output);
         $table->setHeaders(array('<white>Name</white>', '<white>Title</white>', '<white>Status</white>'));
 
 
         foreach (getModules() as $name => $module) {
-
-            if (!$all && $module->isApplicationInstaller()) {
-                continue;
-            }
 
             if ($module->isEnabled()) {
                 $status = '<green>enabled</green>';

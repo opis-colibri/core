@@ -157,14 +157,6 @@ class Module
     /**
      * @return bool
      */
-    public function isApplicationInstaller(): bool
-    {
-        return $this->getCached('is-app-installer');
-    }
-
-    /**
-     * @return bool
-     */
     public function exists(): bool
     {
         if ($this->exists === null) {
@@ -309,9 +301,6 @@ class Module
             case 'installer':
                 $value = $this->resolveInstaller();
                 break;
-            case 'is-app-installer':
-                $value = $this->resolveIsAppInstaller();
-                break;
         }
 
         return $this->info[$property] = $value;
@@ -348,16 +337,6 @@ class Module
         }
 
         return $title;
-    }
-
-    /**
-     * Checks if hidden
-     *
-     * @return bool
-     */
-    protected function resolveIsAppInstaller(): bool
-    {
-        return (bool)($this->getModuleInfo()['is-app-installer'] ?? false);
     }
 
     /**

@@ -65,11 +65,6 @@ class Enable extends Command
                 continue;
             }
 
-            if ($module->isApplicationInstaller()) {
-                $output->writeln('<error>Module <b-error>' . $moduleName . '</b-error> is hidden and can\'t be enabled.');
-                continue;
-            }
-
             if (enable($module, true, $recursive)) {
                 $output->writeln('<info>Module <b-info>' . $moduleName . '</b-info> was enabled.</info>');
             } else {

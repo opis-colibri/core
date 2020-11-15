@@ -93,8 +93,6 @@ class About extends Command
             $output->writeln('<p>Dependencies:</p> <e>No dependencies</e>');
         }
 
-
-        $output->writeln('<p>Application installer</p>: <i>' . ($module->isApplicationInstaller() ? 'TRUE' : 'FALSE') . '</i>');
         $output->writeln('<p>Directory</p>: <i>' . $module->directory() . '</i>');
 
         if ($module->collector()) {
