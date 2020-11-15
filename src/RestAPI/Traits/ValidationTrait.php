@@ -18,35 +18,132 @@
 namespace Opis\Colibri\RestAPI\Traits;
 
 use stdClass;
-use Opis\JsonSchema\{Errors\ValidationError, Exceptions\SchemaException, Schema, Uri};
+use Opis\JsonSchema\{Errors\ValidationError, JsonPointer, Schema, Uri};
 use function Opis\Colibri\validator;
 
 // TODO: Review this
 trait ValidationTrait
 {
     /**
-     * @param $data
+     * @param mixed $data
      * @param stdClass|boolean|string|Uri|Schema $schema
-     * @param array $globals
-     * @param boolean $safe
+     * @param array|null $globals
+     * @param array|null $slots
      * @return ValidationError|null
      */
-    protected function validate($data, $schema, array $globals = [], bool $safe = true): ?ValidationError
+    protected function validate($data, $schema, ?array $globals = null, ?array $slots = null): ?ValidationError
     {
         $validator = validator();
 
-        try {
-            if (is_string($schema) || ($schema instanceof Uri)) {
-                $result = $validator->uriValidation($data, $schema, $globals);
-            } elseif ($schema instanceof Schema) {
-                $result = $validator->schemaValidation($data, $schema, $globals);
-            } else {
-                $result = $validator->dataValidation($data, $schema, $globals);
-            }
-        } catch (SchemaException $e) {
-            throw $e; // just throw it back for now and ignore $safe
+        if (is_string($schema) || ($schema instanceof Uri)) {
+            return $validator->uriValidation($data, $schema, $globals, $slots);
         }
 
-        return $result;
+        if ($schema instanceof Schema) {
+            return $validator->schemaValidation($data, $schema, $globals, $slots);
+        }
+
+        return $validator->dataValidation($data, $schema, $globals, $slots);
+    }
+
+    protected function formatErrorMessages(ValidationError $error, bool $multiple = true,
+        ?callable $formatter = null, ?callable $key_formatter = null): array
+    {
+        if (!$key_formatter) {
+            $key_formatter = JsonPointer::class . '::pathToString';
+        }
+
+        $list = [];
+
+        /**
+         * @var ValidationError $error
+         * @var string $message
+         */
+
+        if ($multiple) {
+            foreach ($this->getErrorMessages($error) as $error => $message) {
+                $key = $key_formatter($error->data()->fullPath());
+
+                if (!isset($list[$key])) {
+                    $list[$key] = [];
+                }
+
+                $list[$key][] = $formatter ? $formatter($message, $error) : $message;
+            }
+        } else {
+            foreach ($this->getErrorMessages($error) as $error => $message) {
+                $key = $key_formatter($error->data()->fullPath());
+                if (!isset($list[$key])) {
+                    $list[$key] = $formatter ? $formatter($message, $error) : $message;
+                }
+            }
+        }
+
+        return $list;
+    }
+
+    private function getErrorMessages(ValidationError $error): iterable
+    {
+        $data = $error->schema()->info()->data();
+
+        $map = null;
+        $pMap = null;
+
+        if (is_object($data) && isset($data->{'$error'})) {
+            $map = $data->{'$error'};
+
+            if (is_string($map)) {
+                // We have an global error
+                yield $error => $map;
+                return;
+            }
+
+            if (is_object($map)) {
+                if (isset($map->{$error->keyword()})) {
+                    $pMap = $map->{'*'} ?? null;
+                    $map = $map->{$error->keyword()};
+                    if (is_string($map)) {
+                        yield $error => $map;
+                        return;
+                    }
+                } elseif (isset($map->{'*'})) {
+                    yield $error => $map->{'*'};
+                    return;
+                }
+            }
+        }
+
+        if (!is_object($map)) {
+            $map = null;
+        }
+
+        $subErrors = $error->subErrors();
+
+        if (!$subErrors) {
+            yield $error => $pMap ?? $error->message();
+            return;
+        }
+
+        if ($map) {
+            foreach ($subErrors as $subError) {
+                $path = $subError->data()->path();
+                if (count($path) !== 1) {
+                    yield from $this->getErrorMessages($subError);
+                } else {
+                    $path = $path[0];
+                    if (isset($map->{$path})) {
+                        yield $subError => $map->{$path};
+                    } elseif (isset($map->{'*'})) {
+                        yield $subError => $map->{'*'};
+                    } else {
+                        yield from $this->getErrorMessages($subError);
+                    }
+                }
+            }
+        } else {
+            foreach ($subErrors as $subError) {
+                yield from $this->getErrorMessages($subError);
+            }
+        }
     }
 }
