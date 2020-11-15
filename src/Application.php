@@ -109,18 +109,9 @@ class Application implements ApplicationContainer
      * @param string $rootDir
      * @param array|null $info
      */
-    public function __construct(string $rootDir, ?array $info = null)
+    public function __construct(string $rootDir, array $info = [])
     {
-        if ($info === null) {
-            $json = $rootDir . DIRECTORY_SEPARATOR . 'composer.json';
-            if (is_file($json)) {
-                $json = json_decode(file_get_contents($json), true);
-                $info = $json['extra']['application'] ?? null;
-            }
-            unset($json);
-        }
-
-        $this->info = new ApplicationInfo($rootDir, $info ?? []);
+        $this->info = new ApplicationInfo($rootDir, $info);
 
         TemplateStream::register();
 
