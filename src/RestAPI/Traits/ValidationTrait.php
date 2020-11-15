@@ -53,6 +53,10 @@ trait ValidationTrait
             $key_formatter = JsonPointer::class . '::pathToString';
         }
 
+        if (!$formatter) {
+            $formatter = [$this, 'formatMessage'];
+        }
+
         $list = [];
 
         /**
@@ -80,6 +84,19 @@ trait ValidationTrait
         }
 
         return $list;
+    }
+
+    private function formatMessage(string $message, ValidationError $error): string
+    {
+        $args = $error->args();
+
+        if (!$args) {
+            return $message;
+        }
+
+        return preg_replace_callback('~\@([a-z0-9\-_.:]+)~imu', static function (array $m) use ($args) {
+            return $args[$m[1]] ?? $m[0];
+        }, $message);
     }
 
     private function getErrorMessages(ValidationError $error): iterable
