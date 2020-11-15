@@ -41,11 +41,6 @@ class Setup extends Command
     {
         $info = info();
 
-        if (!$info->installMode()) {
-            $output->writeln('<error>The web application was already setup</error>');
-            return 1;
-        }
-
         if ($this->hasInstaller()) {
             $output->writeln('<error>The web application provides an installer module</error>');
             return 1;

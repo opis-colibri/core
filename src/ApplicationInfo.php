@@ -171,20 +171,6 @@ class ApplicationInfo
     }
 
     /**
-     * Install mode
-     *
-     * @return  boolean
-     */
-    public function installMode(): bool
-    {
-        if (!isset($this->cache[self::INSTALL_MODE])) {
-            $this->cache[self::INSTALL_MODE] = !is_file($this->initFile());
-        }
-
-        return $this->cache[self::INSTALL_MODE];
-    }
-
-    /**
      * CLI mode
      *
      * @return  boolean

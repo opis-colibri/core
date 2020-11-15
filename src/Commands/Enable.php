@@ -44,11 +44,6 @@ class Enable extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (info()->installMode()) {
-            $output->writeln('<error>The web application was not setup</error>');
-            return 1;
-        }
-
         $output->getFormatter()->setStyle('b-error', new OutputFormatterStyle('white', 'red', ['bold']));
         $output->getFormatter()->setStyle('warning', new OutputFormatterStyle('yellow'));
         $output->getFormatter()->setStyle('b-warning', new OutputFormatterStyle('yellow', null, ['bold']));

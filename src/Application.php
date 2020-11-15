@@ -610,45 +610,8 @@ class Application implements ApplicationContainer
      */
     public function bootstrap(): self
     {
-        if (!$this->info->installMode()) {
-            $this->isReady = true;
-            $this->getApplicationInitializer()->init($this);
-            $this->emit('system.init');
-
-            return $this;
-        }
-
-        $manager = $this->getModuleManager();
-
-        /** @var Module|null $installer */
-        $installer = null;
-
-        foreach ($manager->modules() as $module) {
-            if ($module->isApplicationInstaller()) {
-                if ($installer !== null) {
-                    $formatText = '%s was defined as an application installer before %s';
-                    $formatArgs = [$installer->name(), $module->name()];
-                    throw new RuntimeException(vsprintf($formatText, $formatArgs));
-                }
-
-                $installer = $module;
-            }
-        }
-
-        $enabled = [];
-
-        if ($installer !== null) {
-            $this->isReady = true;
-            $enabled[$installer->name()] = Module::ENABLED;
-
-            foreach ($manager->recursiveDependencies($installer) as $module) {
-                $enabled[$module->name()] = Module::ENABLED;
-            }
-        }
-
+        $this->isReady = true;
         $this->getApplicationInitializer()->init($this);
-        $manager->setStatusList($enabled);
-
         $this->emit('system.init');
 
         return $this;
@@ -968,19 +931,8 @@ class Application implements ApplicationContainer
      */
     protected function getApplicationInitializer(): ApplicationInitializer
     {
-        if (!$this->info->installMode()) {
-            /** @noinspection PhpIncludeInspection */
-            return require($this->info->initFile());
-        }
-
-        return new class implements ApplicationInitializer
-        {
-            public function init(ApplicationContainer $app)
-            {
-                $app->setCacheDriver(new MemoryDriver())
-                    ->setConfigDriver(new MemoryConfig());
-            }
-        };
+        /** @noinspection PhpIncludeInspection */
+        return require($this->info->initFile());
     }
 
     /**
