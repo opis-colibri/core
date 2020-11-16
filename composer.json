@@ -28,7 +28,7 @@
     "require": {
         "php": "^7.4",
         "ext-json": "*",
-        "composer/composer": "^1.9",
+        "composer/composer": "^2.0",
         "opis/data-store": "2020.x-dev",
         "opis/cache": "2020.x-dev",
         "opis/closure": "4.x-dev",
