@@ -20,8 +20,7 @@ namespace Opis\Colibri;
 interface ApplicationInitializer
 {
     /**
-     * @param ApplicationContainer $container
-     * @return mixed
+     * @param Application $container
      */
-    public function init(ApplicationContainer $container);
+    public function init(Application $container): void;
 }

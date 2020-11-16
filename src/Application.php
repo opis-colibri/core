@@ -52,7 +52,7 @@ use Opis\Colibri\Collectors\{
     ViewEngineCollector
 };
 
-class Application implements ApplicationContainer
+class Application
 {
     protected ApplicationInfo $info;
     protected ?ModuleManager $moduleManager = null;
@@ -229,9 +229,10 @@ class Application implements ApplicationContainer
     }
 
     /**
-     * @inheritDoc
+     * @param string $language
+     * @return $this
      */
-    public function setDefaultLanguage(string $language): ApplicationContainer
+    public function setDefaultLanguage(string $language): self
     {
         $this->defaultLanguage = $language;
         if ($this->translatorInstance !== null) {
@@ -523,9 +524,9 @@ class Application implements ApplicationContainer
 
     /**
      * @param DataStore $driver
-     * @return ApplicationContainer
+     * @return $this
      */
-    public function setConfigDriver(DataStore $driver): ApplicationContainer
+    public function setConfigDriver(DataStore $driver): self
     {
         $this->defaultConfigDriver = $driver;
         return $this;
@@ -533,9 +534,9 @@ class Application implements ApplicationContainer
 
     /**
      * @param CacheDriver $driver
-     * @return ApplicationContainer
+     * @return $this
      */
-    public function setCacheDriver(CacheDriver $driver): ApplicationContainer
+    public function setCacheDriver(CacheDriver $driver): self
     {
         $this->defaultCacheDriver = $driver;
         return $this;
@@ -543,9 +544,9 @@ class Application implements ApplicationContainer
 
     /**
      * @param TranslatorDriver $driver
-     * @return ApplicationContainer
+     * @return $this
      */
-    public function setTranslatorDriver(TranslatorDriver $driver): ApplicationContainer
+    public function setTranslatorDriver(TranslatorDriver $driver): self
     {
         $this->defaultTranslatorDriver = $driver;
         return $this;
@@ -553,9 +554,9 @@ class Application implements ApplicationContainer
 
     /**
      * @param Connection $connection
-     * @return ApplicationContainer
+     * @return $this
      */
-    public function setDatabaseConnection(Connection $connection): ApplicationContainer
+    public function setDatabaseConnection(Connection $connection): self
     {
         $this->defaultConnection = $connection;
         return $this;
@@ -564,9 +565,9 @@ class Application implements ApplicationContainer
     /**
      * @param SessionHandler $handler
      * @param array $config
-     * @return ApplicationContainer
+     * @return $this
      */
-    public function setSessionHandler(SessionHandler $handler, array $config = []): ApplicationContainer
+    public function setSessionHandler(SessionHandler $handler, array $config = []): self
     {
         $this->defaultSessionHandler = $handler;
         $this->defaultSessionConfig = $config;
@@ -575,9 +576,9 @@ class Application implements ApplicationContainer
 
     /**
      * @param LoggerInterface $logger
-     * @return ApplicationContainer
+     * @return $this
      */
-    public function setDefaultLogger(LoggerInterface $logger): ApplicationContainer
+    public function setDefaultLogger(LoggerInterface $logger): self
     {
         $this->defaultLogger = $logger;
         return $this;
