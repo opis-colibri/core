@@ -25,7 +25,7 @@ use Opis\Cache\{CacheDriver, Drivers\Memory as MemoryDriver};
 use Opis\Events\{Event, EventDispatcher};
 use Opis\I18n\Translator\{Driver as TranslatorDriver};
 use Opis\View\{Renderer};
-use Opis\Http\{Request as HttpRequest, Response as HttpResponse, Responses\HtmlResponse};
+use Opis\Http\{Request as HttpRequest, Response as HttpResponse, Responses\FileStream, Responses\HtmlResponse};
 use Opis\DataStore\{DataStore, Drivers\Memory as MemoryConfig};
 use Opis\Database\{Connection, Database, Schema};
 use Opis\ORM\EntityManager;
@@ -76,7 +76,6 @@ class Application implements ApplicationContainer
     protected ?TranslatorDriver $defaultTranslatorDriver = null;
     protected ?Validator $validator = null;
     protected ?array $collectorList = null;
-    protected bool $isReady = false;
 
     /** @var  CacheDriver[] */
     protected array $cache = [];
@@ -610,7 +609,6 @@ class Application implements ApplicationContainer
      */
     public function bootstrap(): self
     {
-        $this->isReady = true;
         $this->getApplicationInitializer()->init($this);
         $this->emit('system.init');
 
@@ -633,31 +631,13 @@ class Application implements ApplicationContainer
 
         $this->httpRequest = $request;
 
-        if ($this->isReady) {
-            $response = $this->getHttpRouter()->route($request);
-            if (!$response instanceof HttpResponse) {
-                $response = new HtmlResponse($response);
-            }
-        } else {
-            $view = new View('error.500', [
-                'status' => 500,
-                'message' => HttpResponse::HTTP_STATUS[500] ?? 'HTTP Error',
-            ]);
-            $response = new HtmlResponse($view, 500);
+        $response = $this->getHttpRouter()->route($request);
+
+        if (!$response instanceof HttpResponse) {
+            $response = new HtmlResponse($response);
         }
 
-        foreach ($this->getSessionCookieContainer()->getAddedCookies() as $cookie) {
-            $response->setCookie(
-                $cookie['name'],
-                $cookie['value'],
-                $cookie['expires'],
-                $cookie['path'],
-                $cookie['domain'],
-                $cookie['secure'],
-                $cookie['httponly'],
-                $cookie['samesite'],
-            );
-        }
+        $this->addSessionCookies($response);
 
         if ($flush) {
             $this->flushResponse($request, $response);
@@ -666,6 +646,27 @@ class Application implements ApplicationContainer
         $this->httpRequest = null;
 
         return $response;
+    }
+
+    public function serve(): HttpResponse
+    {
+        $request = HttpRequest::fromGlobals();
+
+        $info = $this->getAppInfo();
+        $assetsPath = rtrim($info->assetsPath(), '/') . '/';
+        $path = $request->getUri()->path();
+
+        if (strpos($path, $assetsPath) === 0) {
+            $file = $info->assetsDir() . '/' . substr($path, strlen($assetsPath));
+            if (is_file($file)) {
+                $response = new FileStream($file);
+                $this->addSessionCookies($response);
+                $this->flushResponse($request, $response);
+                return $response;
+            }
+        }
+
+        return $this->run($request);
     }
 
     /**
@@ -943,6 +944,22 @@ class Application implements ApplicationContainer
     protected function emit(string $name, bool $cancelable = false): Event
     {
         return $this->getEventDispatcher()->emit($name, $cancelable);
+    }
+
+    protected function addSessionCookies(HttpResponse $response): void
+    {
+        foreach ($this->getSessionCookieContainer()->getAddedCookies() as $cookie) {
+            $response->setCookie(
+                $cookie['name'],
+                $cookie['value'],
+                $cookie['expires'],
+                $cookie['path'],
+                $cookie['domain'],
+                $cookie['secure'],
+                $cookie['httponly'],
+                $cookie['samesite'],
+            );
+        }
     }
 
     /**
