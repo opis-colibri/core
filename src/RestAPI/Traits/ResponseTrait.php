@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\RestAPI\Traits;
 
-use Opis\Http\Responses\JsonResponse;
+use Opis\Http\Responses\JSONResponse;
 
 trait ResponseTrait
 {
@@ -25,19 +25,19 @@ trait ResponseTrait
      * @param int $status
      * @param mixed $content
      * @param array|null $headers
-     * @return JsonResponse
+     * @return JSONResponse
      */
-    public function response(int $status, $content = null, array $headers = null): JsonResponse
+    public function response(int $status, $content = null, ?array $headers = null): JSONResponse
     {
-        return new JsonResponse($content, $status, $headers ?? []);
+        return new JSONResponse($content, $status, $headers ?? []);
     }
 
     /**
      * 200 OK
      * @param $data
-     * @return JsonResponse
+     * @return JSONResponse
      */
-    public function http200($data): JsonResponse
+    public function http200($data): JSONResponse
     {
         return $this->response(200, $data);
     }
@@ -46,9 +46,9 @@ trait ResponseTrait
      * 201 Created
      * @param string $id
      * @param string|null $location
-     * @return JsonResponse
+     * @return JSONResponse
      */
-    public function http201(string $id, string $location = null): JsonResponse
+    public function http201(string $id, string $location = null): JSONResponse
     {
         if ($location !== null) {
             $location = ['Location' => $location];
@@ -58,19 +58,19 @@ trait ResponseTrait
 
     /**
      * 204 No content
-     * @return JsonResponse
+     * @return JSONResponse
      */
-    public function http204(): JsonResponse
+    public function http204(): JSONResponse
     {
-        return $this->response(204, null);
+        return $this->response(204);
     }
 
     /**
      * 403 Forbidden
      * @param mixed $body
-     * @return JsonResponse
+     * @return JSONResponse
      */
-    public function http403($body = null): JsonResponse
+    public function http403($body = null): JSONResponse
     {
         return $this->response(403, $body);
     }
@@ -78,9 +78,9 @@ trait ResponseTrait
     /**
      * 404 Not found
      * @param mixed $body
-     * @return JsonResponse
+     * @return JSONResponse
      */
-    public function http404($body = null): JsonResponse
+    public function http404($body = null): JSONResponse
     {
         return $this->response(404, $body);
     }
@@ -88,9 +88,9 @@ trait ResponseTrait
     /**
      * 405 Method not allowed
      * @param mixed $body
-     * @return JsonResponse
+     * @return JSONResponse
      */
-    public function http405($body = null): JsonResponse
+    public function http405($body = null): JSONResponse
     {
         return $this->response(405, $body);
     }
@@ -98,20 +98,20 @@ trait ResponseTrait
     /**
      * 422 Unprocessable entity
      * @param array $errors
-     * @return JsonResponse
+     * @return JSONResponse
      */
-    public function http422(array $errors = []): JsonResponse
+    public function http422(array $errors = []): JSONResponse
     {
         return $this->response(422, ['errors' => $errors]);
     }
 
     /**
      * 500 Internal server error
-     * @param null $error
-     * @return JsonResponse
+     * @param mixed $error
+     * @return JSONResponse
      */
-    public function http500($error = null): JsonResponse
+    public function http500($error = null): JSONResponse
     {
-        return $this->response(500, ['error' => $error]);
+        return $this->response(500, $error);
     }
 }

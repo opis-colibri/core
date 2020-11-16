@@ -18,10 +18,9 @@
 namespace Opis\Colibri\RestAPI\Traits;
 
 use stdClass;
-use Opis\JsonSchema\{Errors\ValidationError, JsonPointer, Schema, Uri};
+use Opis\JsonSchema\{JsonPointer, Schema, Uri, Errors\ValidationError};
 use function Opis\Colibri\validator;
 
-// TODO: Review this
 trait ValidationTrait
 {
     /**
@@ -46,9 +45,19 @@ trait ValidationTrait
         return $validator->dataValidation($data, $schema, $globals, $slots);
     }
 
-    protected function formatErrorMessages(ValidationError $error, bool $multiple = true,
-        ?callable $formatter = null, ?callable $key_formatter = null): array
-    {
+    /**
+     * @param ValidationError $error
+     * @param bool $multiple
+     * @param callable|null $formatter
+     * @param callable|null $key_formatter
+     * @return array
+     */
+    protected function formatErrors(
+        ValidationError $error,
+        bool $multiple = true,
+        ?callable $formatter = null,
+        ?callable $key_formatter = null
+    ): array {
         if (!$key_formatter) {
             $key_formatter = JsonPointer::class . '::pathToString';
         }
@@ -86,6 +95,11 @@ trait ValidationTrait
         return $list;
     }
 
+    /**
+     * @param string $message
+     * @param ValidationError $error
+     * @return string
+     */
     private function formatMessage(string $message, ValidationError $error): string
     {
         $args = $error->args();
@@ -94,11 +108,17 @@ trait ValidationTrait
             return $message;
         }
 
-        return preg_replace_callback('~\@([a-z0-9\-_.:]+)~imu', static function (array $m) use ($args) {
-            return $args[$m[1]] ?? $m[0];
-        }, $message);
+        return preg_replace_callback(
+            '~@([a-z0-9\-_.:]+)~imu',
+            static fn(array $m) => $args[$m[1]] ?? $m[0],
+            $message
+        );
     }
 
+    /**
+     * @param ValidationError $error
+     * @return iterable
+     */
     private function getErrorMessages(ValidationError $error): iterable
     {
         $data = $error->schema()->info()->data();

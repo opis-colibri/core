@@ -17,71 +17,110 @@
 
 namespace Opis\Colibri\RestAPI;
 
-use stdClass;
 use Opis\Http\Request;
+use Opis\Routing\{Route, Mixin};
 use function Opis\Colibri\controller;
 
-abstract class ControllerResolver
+abstract class ControllerResolver extends Mixin
 {
     /**
+     * @param Route $route
+     * @param array|null $config
+     *
+     * Use $config['no-cors'] = true to disable the CORSMiddleware
+     */
+    public function __invoke(Route $route, ?array $config)
+    {
+        // Bind methods
+
+        $class = static::class;
+
+        $route
+            // Resolves controller class
+            ->bind('controllerClassName', "{$class}::bindControllerClassName")
+            // Resolves controller method
+            ->bind('controllerMethodName', "{$class}::bindControllerMethodName")
+            // Resolves request body
+            ->bind('data', "{$class}::bindData")
+        ;
+
+        if ($config['no-cors'] ?? false) {
+            // Do not add CORSMiddleware
+            return;
+        }
+
+        // Add cors middleware
+
+        $middleware = $route->getProperties()['middleware'] ?? null;
+
+        if ($middleware) {
+            $route->middleware(CORSMiddleware::class, ...$middleware);
+        } else {
+            $route->middleware(CORSMiddleware::class);
+        }
+    }
+
+    /**
+     * This is a proxy to controller('@controllerClassName', '@controllerMethodName')
      * @return callable
      */
-    public static function apiController(): callable
+    final public static function controller(): callable
     {
-        return controller('@controller', '@action');
+        return controller('@controllerClassName', '@controllerMethodName');
     }
 
     /**
      * @param Request $request
-     * @return stdClass
+     * @return object|array|null
+     * @internal
      */
-    public static function bindData(Request $request): stdClass
+    public static function bindData(Request $request)
     {
         $body = $request->getBody();
 
         if (!$body) {
-            return new stdClass();
+            return null;
         }
 
         $body = (string)$body;
 
         if ($body === '') {
-            return new stdClass();
+            return null;
         }
 
-        $body = json_decode($body, false);
-
-        if (!is_object($body)) {
-            return new stdClass();
-        }
-
-        return $body;
+        return json_decode($body, false);
     }
 
     /**
-     * @param string $controller
-     * @return string
+     * @param string|null $controller
+     * @return string|null
+     * @internal
      */
-    public static function bindController(string $controller): string
+    public static function bindControllerClassName(?string $controller = null): ?string
     {
-        return static::getControllerMap()[$controller];
+        if (!$controller) {
+            return null;
+        }
+
+        return static::controllers()[$controller] ?? null;
     }
 
     /**
      * @param Request $request
-     * @param string $controller Controller class
-     * @param string|null $actionScope
+     * @param string|null $controllerClassName Controller class name
+     * @param string|null $action
      * @return string
+     * @internal
      */
-    public static function bindAction(Request $request, string $controller, string $actionScope = null): string
+    public static function bindControllerMethodName(Request $request, ?string $controllerClassName, ?string $action = null): string
     {
-        $config = static::getControllerConfig()[$controller] ?? null;
-
-        if (!$config) {
+        if (!$controllerClassName ||
+            !class_exists($controllerClassName) ||
+            !is_subclass_of($controllerClassName, RestController::class)) {
             return 'http404';
         }
 
-        $config = $config['actions'][$actionScope ?? 'default'] ?? null;
+        $config = $controllerClassName::actions()[$action ?? 'default'] ?? null;
 
         if (!$config) {
             return 'http404';
@@ -93,12 +132,13 @@ abstract class ControllerResolver
     }
 
     /**
+     * List of the controller names and their corresponding RestController class
+     *
+     * [
+     *      'my-controller' => MyClassExtendingRestController::class,
+     * ]
+     *
      * @return string[]
      */
-    abstract protected static function getControllerMap(): array;
-
-    /**
-     * @return array
-     */
-    abstract protected static function getControllerConfig(): array;
+    abstract protected static function controllers(): array;
 }
