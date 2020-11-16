@@ -24,16 +24,6 @@ use Test\RestTest\API\RestResolver;
 class Collector extends BaseCollector
 {
     /**
-     * @return array
-     */
-    public function __invoke(): array
-    {
-        return [
-            'apiRoutes' => ['routes', 100],
-        ];
-    }
-
-    /**
      * @param JsonSchemaResolversCollector $resolver
      */
     public function jsonSchemaResolvers(JsonSchemaResolversCollector $resolver)
@@ -41,10 +31,12 @@ class Collector extends BaseCollector
         $resolver->addLoader('test.rest-test', __DIR__ . '/../schema');
     }
 
+
     /**
      * @param RouteCollector $route
+     * @param int $priority
      */
-    public function apiRoutes(RouteCollector $route)
+    public function apiRoutes(RouteCollector $route, int $priority = 100)
     {
         $route
             ->group(static function (RouteCollector $route) {
