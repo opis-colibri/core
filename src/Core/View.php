@@ -24,6 +24,42 @@ class View extends DefaultView
 {
     protected ?string $renderedContent = null;
 
+    /**
+     * Set a value
+     *
+     * @param   string $name
+     * @param   mixed $value
+     * @return View|static
+     */
+    protected function set(string $name, $value): self
+    {
+        $this->vars[$name] = $value;
+        return $this;
+    }
+
+    /**
+     * Check if a value was set
+     *
+     * @param   string $name
+     * @return  boolean
+     */
+    protected function has(string $name): bool
+    {
+        return isset($this->vars[$name]);
+    }
+
+    /**
+     * Get a value
+     *
+     * @param   string $name
+     * @param   mixed $default (optional)
+     * @return  mixed
+     */
+    protected function get(string $name, $default = null)
+    {
+        return $this->vars[$name] ?? $default;
+    }
+
     public function __toString()
     {
         if ($this->renderedContent === null) {

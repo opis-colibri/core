@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Core;
+namespace Opis\Colibri\Internal;
 
 use Opis\Colibri\Collector as BaseCollector;
 use Opis\Colibri\Collectors\{RouteCollector, TemplateStreamHandlerCollector, ViewCollector};
@@ -23,19 +23,22 @@ use Opis\Colibri\Templates\CallbackTemplateHandler;
 use Opis\Colibri\Internal\Views as InternalViews;
 use Opis\Colibri\Internal\Routes as InternalRoutes;
 
-class DefaultCollector extends BaseCollector
+class Collector extends BaseCollector
 {
-    public function templateHandlers(TemplateStreamHandlerCollector $collector, int $priority = -100)
+    public function templateHandlers(TemplateStreamHandlerCollector $collector)
     {
         $collector->register('callback', CallbackTemplateHandler::class);
     }
 
-    public function views(ViewCollector $view, int $priority = -100)
+    public function views(ViewCollector $view)
     {
         $view->handle('welcome', InternalViews::class . '::welcome');
 
         $view->handle('error.{error}', InternalViews::class . '::httpError')
             ->where('error', '401|403|404|405|500|503');
+
+        $view->handle('html.{type}', Views::class . '::htmlTemplates')
+            ->where('type', 'document|link|style|script|collection|meta|attributes');
     }
 
     public function routes(RouteCollector $route, int $priority = -100)

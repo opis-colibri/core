@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2020 Zindex Software
+ * Copyright 2018 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,31 +15,40 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Internal;
+namespace Opis\Colibri\HTML;
 
+use Opis\Colibri\Core\View;
 
-use Opis\Colibri\HTML\Template as HtmlTemplate;
-use Opis\Colibri\Templates\TemplateStream;
-
-final class Views
+class Style extends View
 {
-    private function __construct()
+    /**
+     * Style constructor.
+     * @param string|null $content
+     * @param string|null $media
+     */
+    public function __construct(string $content = null, string $media = null)
     {
-        // only static methods
+        parent::__construct('html.style', [
+            'content' => $content,
+            'media' => $media,
+        ]);
     }
 
-    public static function httpError()
+    /**
+     * @param string $content
+     * @return Style
+     */
+    public function content(string $content): self
     {
-        return __DIR__ . '/../../templates/http-error.php';
+        return $this->set('content', $content);
     }
 
-    public static function welcome()
+    /**
+     * @param string $media
+     * @return Style
+     */
+    public function media(string $media): self
     {
-        return __DIR__ . '/../../templates/welcome.php';
-    }
-
-    public static function htmlTemplates(string $type)
-    {
-        return TemplateStream::url('callback', HtmlTemplate::class . '::' . $type, 'php');
+        return $this->set('media', $media);
     }
 }

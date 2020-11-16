@@ -33,7 +33,6 @@ class ApplicationInfo
     protected array $cache = [];
     protected array $settings;
     protected string $rootDir;
-    private ?array $extra = null;
 
     /**
      * AppInfo constructor.

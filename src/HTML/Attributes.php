@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2020 Zindex Software
+ * Copyright 2018 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,31 +15,30 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Internal;
+namespace Opis\Colibri\HTML;
 
+use Opis\Colibri\Core\View;
 
-use Opis\Colibri\HTML\Template as HtmlTemplate;
-use Opis\Colibri\Templates\TemplateStream;
-
-final class Views
+class Attributes extends View
 {
-    private function __construct()
+    /**
+     * Attributes constructor.
+     */
+    public function __construct()
     {
-        // only static methods
+        parent::__construct( 'html.attributes', [
+            'attributes' =>[],
+        ]);
     }
 
-    public static function httpError()
+    /**
+     * @param string $name
+     * @param string|null $value
+     * @return Attributes
+     */
+    public function add(string $name, string $value = null): self
     {
-        return __DIR__ . '/../../templates/http-error.php';
-    }
-
-    public static function welcome()
-    {
-        return __DIR__ . '/../../templates/welcome.php';
-    }
-
-    public static function htmlTemplates(string $type)
-    {
-        return TemplateStream::url('callback', HtmlTemplate::class . '::' . $type, 'php');
+        $this->vars['attributes'][$name] = $value;
+        return $this;
     }
 }

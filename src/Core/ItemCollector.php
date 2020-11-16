@@ -21,9 +21,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionException;
 use RuntimeException;
-use Opis\Colibri\{
-    Application, Collector
-};
+use Opis\Colibri\{Application, Collector, Internal\Collector as InternalCollector};
 use Opis\Utils\SortableList;
 use Opis\Colibri\Collectors\BaseCollector;
 
@@ -32,8 +30,10 @@ class ItemCollector
     private bool $collectorsIncluded =  false;
     private Application $app;
     private Container $container;
+
     /** @var SortableList[] */
     private array $entries = [];
+
     private array $cache = [];
     private array $collectedEntries = [];
     private array $invertedList = [];
@@ -216,7 +216,7 @@ class ItemCollector
                 continue;
             }
 
-            /** @var DefaultCollector $instance */
+            /** @var $instance Collector */
             $this->doCollect($module, $instance, $reflection, $collectorList, $invertedList);
         }
     }
@@ -226,7 +226,7 @@ class ItemCollector
 
         $fakeModule = $this->app->getModule('opis-colibri/core');
 
-        $instance = new DefaultCollector();
+        $instance = new InternalCollector();
         $reflection = new ReflectionClass($instance);
 
         $this->doCollect($fakeModule, $instance, $reflection, $collectorList, $invertedList);

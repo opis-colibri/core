@@ -9,5 +9,8 @@
         <testsuite name="Rest">
             <directory suffix="RestTest.php">./tests</directory>
         </testsuite>
+        <testsuite name="Render">
+            <directory suffix="RenderTest.php">./tests</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
