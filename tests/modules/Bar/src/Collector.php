@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,85 +18,56 @@
 namespace Test\Bar;
 
 use Opis\Colibri\Collector as BaseCollector;
-use Opis\Colibri\Collectors\RouterGlobalsCollector;
-use Opis\Colibri\Collectors\RouteCollector;
+use Opis\Colibri\Collectors\{RouterGlobalsCollector, RouteCollector};
 
 class Collector extends BaseCollector
 {
     public function routes(RouteCollector $route)
     {
-        $route('/bar', function () {
-            return 'Bar';
-        });
+        $route('/bar', static fn() => 'Bar');
 
-        $route('/bar-post', function () {
-            return 'OK';
-        }, ['POST']);
+        $route('/bar-post', static fn() => 'OK', ['POST']);
 
-        $route('/multiple-methods', function () {
-            return 'OK';
-        }, ['GET', 'POST']);
+        $route('/multiple-methods', static fn() => 'OK', ['GET', 'POST']);
 
-        $route('/bar-opt/{bar?}', function ($bar) {
-            return $bar;
-        })->implicit('bar', 'bar');
+        $route('/bar-opt/{bar?}', static fn($bar) => $bar)
+            ->implicit('bar', 'bar');
 
-        $route('/bar-opt-g1/{g1?}', function ($g1) {
-            return $g1;
-        })->implicit('g1', 'OG1');
+        $route('/bar-opt-g1/{g1?}', static fn($g1) => $g1)
+            ->implicit('g1', 'OG1');
 
-        $route('/bar-guard2', function () {
-            return 'bar';
-        })->guard('guard1', function () {
-            return true;
-        })->guard('guard2', function () {
-            return false;
-        });
+        $route('/bar-guard2', static fn() => 'bar')
+            ->guard('guard1', static fn() => true)
+            ->guard('guard2', static fn() => false);
 
-        $route->group(function (RouteCollector $route) {
-            $route('/foo', function ($upName) {
-                return $upName;
-            });
+        $route->group(static function (RouteCollector $route) {
+            $route('/foo', static fn($upName) => $upName);
 
-            $route->group(function (RouteCollector $route) {
-                $route('/foo', function ($upName) {
-                    return $upName;
-                });
+            $route->group(static function (RouteCollector $route) {
+                $route('/foo', static fn($upName) => $upName);
 
-                $route->group(function (RouteCollector $route) {
-                    $route('/', function ($upName) {
-                        return $upName;
-                    })
+                $route->group(static function (RouteCollector $route) {
+                    $route('/', static fn($upName) => $upName)
                         // overwrite implicit again
                         ->implicit('name', 'group3');
                 }, '/baz')
                     // binding should handle & overwrite implicit
-                    ->bind('name', function ($name) {
-                        return implode('-', str_split($name));
-                    })
+                    ->bind('name', static fn($name) => implode('-', str_split($name)))
                     // overwrite binding
-                    ->bind('upName', function ($name) {
-                        return 'UPPER:' . $name;
-                    });
+                    ->bind('upName', static fn($name) => 'UPPER:' . $name);
 
             }, '/bar')
                 // overwrite
                 ->implicit('name', 'group2');
 
-            $route->group(function (RouteCollector $route) {
-                $route('/public', function ($type) {
-                    return $type;
-                });
+            $route->group(static function (RouteCollector $route) {
+                $route('/public', static fn($type) => $type);
 
-                $route('/secret', function ($type) {
-                    return 'secret:' . $type;
-                })
+                $route('/secret', static fn($type) => 'secret:' . $type)
                     // only two types have secrets
                     ->whereIn('type', ['type1', 'type2']);
 
-                $route('/intruder', function ($type) {
-                    return 'intruder:' . $type;
-                })
+                $route('/intruder', static fn($type) => 'intruder:' . $type)
                     // intruder
                     ->whereIn('type', ['type4']);
 
@@ -105,37 +76,22 @@ class Collector extends BaseCollector
 
         }, '/bar-group')
             ->implicit('name', 'group1')
-            ->bind('upName', function ($name) {
-                return strtoupper($name);
-            });
+            ->bind('upName', static fn($name) => strtoupper($name));
 
     }
 
     public function priorityRoutes(RouteCollector $route, int $priority = 1)
     {
-        $route('/foo', function () {
-            return 'Bar';
-        });
+        $route('/foo', static fn() => 'Bar');
 
-        $route('/foo-filter1', function () {
-            return 'bar';
-        })
-            ->filter('filter1', function () {
-                return false;
-            });
+        $route('/foo-filter1', static fn() => 'bar')
+            ->filter('filter1', static fn() => false);
 
-
-        $route('/foo-filter-g1', function () {
-            return 'bar';
-        })
+        $route('/foo-filter-g1', static fn() => 'bar')
             ->filter('filter_g1');
 
-        $route('/foo-filter-g1-pass', function () {
-            return 'bar';
-        })
-            ->filter('filter_g1', function () {
-                return true;
-            });
+        $route('/foo-filter-g1-pass', static fn() => 'bar')
+            ->filter('filter_g1', static fn() => true);
     }
 
     public function priorityGlobals(RouterGlobalsCollector $global, int $priority = 1)

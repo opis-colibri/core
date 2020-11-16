@@ -27,7 +27,7 @@ class Collector extends BaseCollector
      */
     public function views(ViewCollector $view)
     {
-        $view->handle('test.{name}', function (string $name) {
+        $view->handle('test.{name}', static function (string $name) {
             return __DIR__ . "/../../views/test.{$name}.php";
         })
             ->whereIn('name', ['value', 'subview']);

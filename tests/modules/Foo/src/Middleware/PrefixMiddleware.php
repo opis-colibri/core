@@ -25,7 +25,7 @@ class PrefixMiddleware extends Middleware
 {
     public function __invoke()
     {
-        return $this->next()->modify(function(Response $response){
+        return $this->next()->modify(static function(Response $response) {
             $body = new PHPMemoryStream('prefix-' . $response->getBody());
             $response->setBody($body);
         });
