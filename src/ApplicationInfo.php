@@ -162,7 +162,7 @@ class ApplicationInfo
      */
     public function initFile(): string
     {
-        return $this->getFsPath(self::INIT_FILE, true);
+        return $this->getFsPath(self::INIT_FILE);
     }
 
     /**
