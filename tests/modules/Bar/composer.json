@@ -1,11 +1,5 @@
 {
   "name": "test/bar",
-  "require": {
-    "php": "^7.1"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "^7.0"
-  },
   "type": "opis-colibri-module",
   "extra": {
     "module": {

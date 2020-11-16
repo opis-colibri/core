@@ -17,6 +17,7 @@
 
 namespace Opis\Colibri\Testing;
 
+use Opis\Stream\PHPDataStream;
 use Opis\Http\{Request, Response};
 use Opis\Colibri\Testing\Builders\ApplicationBuilder;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -76,6 +77,13 @@ trait ApplicationTestTrait
         return $this->execRequest($request);
     }
 
+    protected function execJSON(string $path, string $method = 'GET', $data = null, array $headers = [], bool $secure = false): Response
+    {
+        $data = $data === null ? null : new PHPDataStream(json_encode($data), 'rb', 'application/json');
+        $request = new Request($method, $path, 'HTTP/1.1', $secure, $headers, [], $data);
+        return $this->execRequest($request);
+    }
+
     protected function execGET(string $path, array $query = [], array $headers = [], bool $secure = false): Response
     {
         $request = new Request('GET', $path, 'HTTP/1.1', $secure, $headers, [], null, [], $query);
@@ -100,5 +108,21 @@ trait ApplicationTestTrait
     protected function execCommand(string ...$command): int
     {
         return $this->app()->getConsole()->run(new ArrayInput($command));
+    }
+
+    protected function getJSONBody(Response $response)
+    {
+        return json_decode((string)$response->getBody(), false);
+    }
+
+    protected function getRestErrors(Response $response): ?array
+    {
+        $body = $this->getJSONBody($response);
+
+        if (isset($body->errors)) {
+            return (array) $body->errors;
+        }
+
+        return null;
     }
 }
