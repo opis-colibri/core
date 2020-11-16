@@ -29,7 +29,6 @@
         "php": "^7.4",
         "ext-json": "*",
         "composer/composer": "^1.9",
-        "opis-colibri/plugin": "1.0.x-dev",
         "opis/data-store": "2020.x-dev",
         "opis/cache": "2020.x-dev",
         "opis/closure": "4.x-dev",

@@ -17,8 +17,6 @@
 
 namespace Opis\Colibri;
 
-use Opis\Colibri\Plugin\Settings;
-
 class ApplicationInfo
 {
     const PUBLIC_DIR = 'public-dir';
@@ -28,17 +26,13 @@ class ApplicationInfo
     const VENDOR_DIR = 'vendor-dir';
     const COMPOSER_FILE = 'composer-file';
     const ASSETS_PATH = 'assets-path';
+    const ASSETS_DIR = 'assets-dir';
     const INIT_FILE = 'init-file';
     const WEB_PATH = 'web-path';
 
     protected array $cache = [];
-
     protected array $settings;
-
     protected string $rootDir;
-
-    protected ?Settings $pluginSettings = null;
-
     private ?array $extra = null;
 
     /**
@@ -55,6 +49,7 @@ class ApplicationInfo
             self::VENDOR_DIR => 'vendor',
             self::PUBLIC_DIR => 'public',
             self::WRITABLE_DIR => 'storage',
+            self::ASSETS_DIR => 'assets',
             self::TEMP_DIR => sys_get_temp_dir(),
             self::INIT_FILE => 'init.php',
             self::ASSETS_PATH => '/assets',
@@ -72,13 +67,13 @@ class ApplicationInfo
     }
 
     /**
-     * Get assets path
+     * Get assets directory
      *
      * @return  string
      */
     public function assetsDir(): string
     {
-        return $this->getPluginSettings()->assetsDir();
+        return $this->getFsPath(self::ASSETS_DIR);
     }
 
     /**
@@ -122,6 +117,7 @@ class ApplicationInfo
     }
 
     /**
+     * Get assets path
      * @return string
      */
     public function assetsPath(): string
@@ -194,22 +190,6 @@ class ApplicationInfo
     }
 
     /**
-     * @return Settings
-     */
-    public function getPluginSettings(): Settings
-    {
-        if ($this->pluginSettings === null) {
-            $settings = $this->getComposerExtra()['opis/colibri'] ?? [];
-            if (!is_array($settings)) {
-                $settings = [];
-            }
-            $this->pluginSettings = new Settings($this->rootDir, $settings);
-        }
-
-        return $this->pluginSettings;
-    }
-
-    /**
      * Clear cache
      */
     public function clearCache(): void
@@ -234,17 +214,5 @@ class ApplicationInfo
         }
 
         return $this->cache[$name];
-    }
-
-    /**
-     * @return array
-     */
-    protected function getComposerExtra(): array
-    {
-        if ($this->extra === null) {
-            $this->extra = json_decode(file_get_contents($this->composerFile()), true);
-        }
-
-        return $this->extra;
     }
 }

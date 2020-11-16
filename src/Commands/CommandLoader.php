@@ -50,9 +50,6 @@ class CommandLoader implements CommandLoaderInterface
                 'enable' => Enable::class,
                 'disable' => Disable::class,
                 'uninstall' => Uninstall::class,
-
-                'assets:build' => Assets\Build::class,
-                'assets:yarn' => Assets\Yarn::class,
             ] + $classes;
 
         $this->builders = array_filter($builders, function ($callable) {
