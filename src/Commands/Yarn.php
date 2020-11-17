@@ -102,10 +102,10 @@ class Yarn extends Command
                 return null;
             }
 
-            $file = $assets . DIRECTORY_SEPARATOR . 'packages.json';
+            $file = $assets . DIRECTORY_SEPARATOR . 'package.json';
 
             if (!is_file($file)) {
-                $output->writeln(sprintf('<err>Module %s does not provide a package.json file</err>', $module));
+                $output->writeln(sprintf('<err>Module %s does not provide a package.json file</err>', $moduleName));
                 return null;
             }
 
@@ -113,12 +113,12 @@ class Yarn extends Command
             $packageName = str_replace('/', '.', $moduleName);
 
             if (!is_object($package) || !property_exists($package, 'name')) {
-                $output->writeln(sprintf('<err>Module %s does not provide a valid package.json file</err>', $module));
+                $output->writeln(sprintf('<err>Module %s does not provide a valid package.json file</err>', $moduleName));
                 return null;
             }
 
             if ($package->name !== $packageName) {
-                $output->writeln(sprintf('<err>Module %s must provide a package named %s</err>', $module, $packageName));
+                $output->writeln(sprintf('<err>Module %s must provide a package named %s</err>', $moduleName, $packageName));
                 return null;
             }
 

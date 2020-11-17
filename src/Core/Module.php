@@ -388,7 +388,7 @@ class Module
             return null;
         }
         $directory = $this->directory() . DIRECTORY_SEPARATOR . trim($module['assets'], DIRECTORY_SEPARATOR);
-        return is_dir($directory) ? realpath($directory) : null;
+        return is_dir($directory) ? $directory : null;
     }
 
     /**
