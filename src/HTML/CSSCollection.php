@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ class CSSCollection extends Collection
      * @param string|null $media
      * @return CSSCollection|Collection
      */
-    public function inline(string $content, string $media = null): self
+    public function inline(string $content, ?string $media = null): self
     {
         return $this->add(new Style($content, $media), md5($content));
     }

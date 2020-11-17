@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ class Style extends View
      * @param string|null $content
      * @param string|null $media
      */
-    public function __construct(string $content = null, string $media = null)
+    public function __construct(string $content = null, ?string $media = null)
     {
         parent::__construct('html.style', [
             'content' => $content,
