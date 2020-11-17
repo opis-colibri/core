@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,8 @@ namespace Opis\Colibri\HTML;
 
 class ScriptCollection extends Collection
 {
-    /** @var  Collection|null */
-    protected $headScripts;
-
-    /** @var  Collection|null */
-    protected $bodyScripts;
+    protected ?Collection $headScripts = null;
+    protected ?Collection $bodyScripts = null;
 
     /**
      * @param string $href
@@ -31,7 +28,7 @@ class ScriptCollection extends Collection
      * @param bool $inBody
      * @return ScriptCollection|Collection
      */
-    public function url(string $href, callable $callback = null, bool $inBody = false): self
+    public function url(string $href, ?callable $callback = null, bool $inBody = false): self
     {
         $script = new Script();
 
@@ -48,7 +45,7 @@ class ScriptCollection extends Collection
      * @param bool $inBody
      * @return ScriptCollection|Collection
      */
-    public function inline(string $content, callable $callback = null, bool $inBody = false): self
+    public function inline(string $content, ?callable $callback = null, bool $inBody = false): self
     {
         $script = new Script();
         if ($callback !== null) {

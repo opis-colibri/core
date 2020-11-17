@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ final class Template
         // nop
     }
 
-    public static function attributes()
+    public static function attributes(): string
     {
         return <<<'TEMPLATE'
         <?php
@@ -40,14 +40,14 @@ final class Template
         TEMPLATE;
     }
 
-    public static function collection()
+    public static function collection(): string
     {
         return <<<'TEMPLATE'
         <?php foreach($items as $item){echo $item;}
         TEMPLATE;
     }
 
-    public static function meta()
+    public static function meta(): string
     {
         return <<<'TEMPLATE'
 
@@ -55,7 +55,7 @@ final class Template
         TEMPLATE;
     }
 
-    public static function link()
+    public static function link(): string
     {
         return <<<'TEMPLATE'
 
@@ -63,7 +63,7 @@ final class Template
         TEMPLATE;
     }
 
-    public static function style()
+    public static function style(): string
     {
         return <<<'TEMPLATE'
         
@@ -74,7 +74,7 @@ final class Template
         TEMPLATE;
     }
 
-    public static function script()
+    public static function script(): string
     {
         return <<<'TEMPLATE'
         
@@ -82,7 +82,7 @@ final class Template
         TEMPLATE;
     }
 
-    public static function document()
+    public static function document(): string
     {
         return <<<'TEMPLATE'
         <!DOCTYPE html>

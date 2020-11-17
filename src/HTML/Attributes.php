@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ class Attributes extends View
     public function __construct()
     {
         parent::__construct( 'html.attributes', [
-            'attributes' =>[],
+            'attributes' => [],
         ]);
     }
 
@@ -36,7 +36,7 @@ class Attributes extends View
      * @param string|null $value
      * @return Attributes
      */
-    public function add(string $name, string $value = null): self
+    public function add(string $name, ?string $value = null): self
     {
         $this->vars['attributes'][$name] = $value;
         return $this;

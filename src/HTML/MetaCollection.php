@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ class MetaCollection extends Collection
      * @param callable|null $callback
      * @return Meta
      */
-    protected function createContentMeta(string $entry, string $name, string $content, callable $callback = null): Meta
+    protected function createContentMeta(string $entry, string $name, string $content, ?callable $callback = null): Meta
     {
         $meta = new Meta();
         $meta->attributes(array(
@@ -59,7 +59,7 @@ class MetaCollection extends Collection
      * @param callable|null $callback
      * @return MetaCollection|Collection
      */
-    public function httpEquiv(string $type, string $value, callable $callback = null): self
+    public function httpEquiv(string $type, string $value, ?callable $callback = null): self
     {
         $meta = new Meta();
 
@@ -80,7 +80,7 @@ class MetaCollection extends Collection
      * @param callable|null $callback
      * @return MetaCollection|Collection
      */
-    public function charset(string $charset = 'utf-8', callable $callback = null): self
+    public function charset(string $charset = 'utf-8', ?callable $callback = null): self
     {
         $meta = new Meta();
         $meta->attribute('charset', $charset);
@@ -97,7 +97,7 @@ class MetaCollection extends Collection
      * @param callable|null $callback
      * @return MetaCollection|Collection
      */
-    public function viewport(string $viewport = 'width=device-width, initial-scale=1, shrink-to-fit=no', callable $callback = null): self
+    public function viewport(string $viewport = 'width=device-width, initial-scale=1, shrink-to-fit=no', ?callable $callback = null): self
     {
         $meta = new Meta();
         $meta->attributes(array(
@@ -117,7 +117,7 @@ class MetaCollection extends Collection
      * @param callable|null $callback
      * @return MetaCollection|Collection
      */
-    public function contentType(string $value, callable $callback = null): self
+    public function contentType(string $value, ?callable $callback = null): self
     {
         return $this->httpEquiv('content-type', $value, $callback);
     }
@@ -127,7 +127,7 @@ class MetaCollection extends Collection
      * @param callable|null $callback
      * @return MetaCollection|Collection
      */
-    public function defaultStyle(string $value, callable $callback = null): self
+    public function defaultStyle(string $value, ?callable $callback = null): self
     {
         return $this->httpEquiv('default-style', $value, $callback);
     }
@@ -137,7 +137,7 @@ class MetaCollection extends Collection
      * @param callable|null $callback
      * @return MetaCollection|Collection
      */
-    public function refresh(string $value, callable $callback = null): self
+    public function refresh(string $value, ?callable $callback = null): self
     {
         return $this->httpEquiv('refresh', $value, $callback);
     }
@@ -147,7 +147,7 @@ class MetaCollection extends Collection
      * @param callable|null $callback
      * @return MetaCollection|Collection
      */
-    public function applicationName(string $value, callable $callback = null): self
+    public function applicationName(string $value, ?callable $callback = null): self
     {
         return $this->add($this->createContentMeta('name', 'application-name', $value, $callback), 'application-name');
     }
@@ -157,7 +157,7 @@ class MetaCollection extends Collection
      * @param callable|null $callback
      * @return MetaCollection|Collection
      */
-    public function author(string $value, callable $callback = null): self
+    public function author(string $value, ?callable $callback = null): self
     {
         return $this->add($this->createContentMeta('name', 'author', $value, $callback), 'author');
     }
@@ -167,7 +167,7 @@ class MetaCollection extends Collection
      * @param callable|null $callback
      * @return MetaCollection|Collection
      */
-    public function copyright(string $value, callable $callback = null): self
+    public function copyright(string $value, ?callable $callback = null): self
     {
         return $this->add($this->createContentMeta('name', 'copyright', $value, $callback), 'copyright');
     }
@@ -177,7 +177,7 @@ class MetaCollection extends Collection
      * @param callable|null $callback
      * @return MetaCollection|Collection
      */
-    public function description(string $value, callable $callback = null): self
+    public function description(string $value, ?callable $callback = null): self
     {
         return $this->add($this->createContentMeta('name', 'description', $value, $callback), 'description');
     }
@@ -187,7 +187,7 @@ class MetaCollection extends Collection
      * @param callable|null $callback
      * @return MetaCollection|Collection
      */
-    public function generator(string $value, callable $callback = null): self
+    public function generator(string $value, ?callable $callback = null): self
     {
         return $this->add($this->createContentMeta('name', 'generator', $value, $callback), 'generator');
     }
@@ -197,7 +197,7 @@ class MetaCollection extends Collection
      * @param callable|null $callback
      * @return MetaCollection|Collection
      */
-    public function keywords($value, callable $callback = null): self
+    public function keywords($value, ?callable $callback = null): self
     {
         if(is_array($value)){
             $value = implode(', ', $value);
@@ -210,7 +210,7 @@ class MetaCollection extends Collection
      * @param callable|null $callback
      * @return MetaCollection|Collection
      */
-    public function robots(string $value, callable $callback = null): self
+    public function robots(string $value, ?callable $callback = null): self
     {
         return $this->add($this->createContentMeta('name', 'robots', $value, $callback), 'robots');
     }
