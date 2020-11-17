@@ -122,6 +122,12 @@ class Yarn extends Command
                 return null;
             }
 
+            $assets = $fs->makePathRelative($assets, $rootDir);
+
+            if (isset($assets[0]) && $assets[0] !== '.' && $assets[0] !== DIRECTORY_SEPARATOR) {
+                $assets = '.' . DIRECTORY_SEPARATOR . $assets;
+            }
+
             $result[] = $fs->makePathRelative($rootDir, $assets);
         }
 
