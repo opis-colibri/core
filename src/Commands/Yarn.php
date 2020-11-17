@@ -124,8 +124,11 @@ class Yarn extends Command
 
             $assets = $fs->makePathRelative($assets, $rootDir);
 
-            if (isset($assets[0]) && $assets[0] !== '.' && $assets[0] !== DIRECTORY_SEPARATOR) {
-                $assets = '.' . DIRECTORY_SEPARATOR . $assets;
+            if (isset($assets[0]) && $assets[0] !== '.' && $assets[0] !== '/') {
+                $assets = './' . $assets;
+            }
+            if (strlen($assets) >= 2 && substr($assets, -2) !== './') {
+                $assets = rtrim($assets, '/');
             }
 
             $result[] = $fs->makePathRelative($rootDir, $assets);
