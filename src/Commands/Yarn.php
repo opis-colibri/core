@@ -131,7 +131,7 @@ class Yarn extends Command
                 $assets = rtrim($assets, '/');
             }
 
-            $result[] = $fs->makePathRelative($rootDir, $assets);
+            $result[] = $assets;
         }
 
         return $result;
