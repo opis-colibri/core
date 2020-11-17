@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ class LinkCollection extends Collection
      * @param string|null $entry
      * @return LinkCollection|Collection
      */
-    public function link(string $rel, string $href, callable $callback = null, string $entry = null): self
+    public function link(string $rel, string $href, ?callable $callback = null, ?string $entry = null): self
     {
         $link = new Link();
 
@@ -59,7 +59,7 @@ class LinkCollection extends Collection
      * @param callable|null $callback
      * @return LinkCollection|Collection
      */
-    public function favicon(string $href, callable $callback = null): self
+    public function favicon(string $href, ?callable $callback = null): self
     {
         return $this->link('icon', $href, $callback);
     }
@@ -69,7 +69,7 @@ class LinkCollection extends Collection
      * @param callable|null $callback
      * @return LinkCollection|Collection
      */
-    public function canonical(string $href, callable $callback = null): self
+    public function canonical(string $href, ?callable $callback = null): self
     {
         return $this->link('canonical', $href, $callback, 'canonical');
     }
