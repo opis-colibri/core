@@ -21,7 +21,6 @@ use ArrayObject;
 use Opis\Routing\{DefaultDispatcher, Router as BaseRouter};
 use Opis\Colibri\Application;
 use Opis\Colibri\Collectors\RouteCollector;
-use function Opis\Colibri\httpError;
 
 class Router extends BaseRouter
 {
@@ -30,7 +29,7 @@ class Router extends BaseRouter
     public function __construct(Application $app) {
         $this->app = $app;
         $routes = $app->getCollector()->collect(RouteCollector::class);
-        parent::__construct($routes, new DefaultDispatcher(static fn(int $status) => httpError($status)), new ArrayObject([
+        parent::__construct($routes, new DefaultDispatcher('\Opis\Colibri\httpError'), new ArrayObject([
             'app' => $app,
             'lang' => $app->getTranslator()->getDefaultLanguage(),
         ]));
