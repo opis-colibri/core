@@ -457,6 +457,24 @@ function collect(string $type, bool $fresh = false)
 }
 
 /**
+ * @param string $class
+ * @param string $description
+ * @param array $options
+ */
+function registerCollector(string $class, string $description, array $options = []): void
+{
+    Application::getInstance()->getCollector()->register($class, $description, $options);
+}
+
+/**
+ * @param string $class
+ */
+function unregisterCollector(string $class): void
+{
+    Application::getInstance()->getCollector()->unregister($class);
+}
+
+/**
  * @return Validator
  */
 function validator(): Validator
