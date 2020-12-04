@@ -614,13 +614,13 @@ class Application
     {
         $initializer = $this->getApplicationInitializer();
 
-        if ($_ENV['OPIS_COLIBRI_DOTENV'] ?? false) {
+        if (!($_ENV['OPIS_COLIBRI_DOTENV'] ?? false)) {
             $info = $this->getAppInfo();
             $dotenv = Dotenv::createImmutable($info->rootDir());
             $initializer->env($dotenv);
-            $config = ['OPIS_COLIBRI_DOTENV' => true] + $dotenv->load();
-            $content = '<?php return ' . var_export($config, true) . ';' . PHP_EOL;
+            $content = '<?php return ' . var_export($dotenv->load(), true) . ';' . PHP_EOL;
             file_put_contents($info->writableDir() . '/env.php', $content);
+            unset($content);
         }
 
         $initializer->init($this);
