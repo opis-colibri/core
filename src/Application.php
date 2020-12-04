@@ -17,6 +17,7 @@
 
 namespace Opis\Colibri;
 
+use Dotenv\Dotenv;
 use RuntimeException, Throwable;
 use Composer\Package\CompletePackageInterface;
 use Opis\Session\{SessionHandler, Containers\RequestContainer};
@@ -76,6 +77,7 @@ class Application
     protected ?TranslatorDriver $defaultTranslatorDriver = null;
     protected ?Validator $validator = null;
     protected ?array $collectorList = null;
+    protected ?ApplicationInitializer $initializer = null;
 
     /** @var  CacheDriver[] */
     protected array $cache = [];
@@ -610,7 +612,18 @@ class Application
      */
     public function bootstrap(): self
     {
-        $this->getApplicationInitializer()->init($this);
+        $initializer = $this->getApplicationInitializer();
+
+        if ($_ENV['OPIS_COLIBRI_DOTENV'] ?? false) {
+            $info = $this->getAppInfo();
+            $dotenv = Dotenv::createImmutable($info->rootDir());
+            $initializer->env($dotenv);
+            $config = ['OPIS_COLIBRI_DOTENV' => true] + $dotenv->load();
+            $content = '<?php return ' . var_export($config, true) . ';' . PHP_EOL;
+            file_put_contents($info->writableDir() . '/env.php', $content);
+        }
+
+        $initializer->init($this);
         $this->emit('system.init');
 
         return $this;
@@ -931,10 +944,14 @@ class Application
     /**
      * @return ApplicationInitializer
      */
-    protected function getApplicationInitializer(): ApplicationInitializer
+    public function getApplicationInitializer(): ApplicationInitializer
     {
-        /** @noinspection PhpIncludeInspection */
-        return require($this->info->initFile());
+        if ($this->initializer === null) {
+            /** @noinspection PhpIncludeInspection */
+            $this->initializer = require($this->info->initFile());
+        }
+
+        return $this->initializer;
     }
 
     /**

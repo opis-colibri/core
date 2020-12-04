@@ -17,10 +17,17 @@
 
 namespace Opis\Colibri;
 
+use Dotenv\Dotenv;
+
 interface ApplicationInitializer
 {
     /**
-     * @param Application $container
+     * @param Application $app
      */
-    public function init(Application $container): void;
+    public function init(Application $app): void;
+
+    /**
+     * @param Dotenv $dotenv
+     */
+    public function env(Dotenv $dotenv): void;
 }
