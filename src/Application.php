@@ -618,7 +618,7 @@ class Application
             $info = $this->getAppInfo();
             $dotenv = Dotenv::createImmutable($info->rootDir());
             $initializer->env($dotenv);
-            $content = '<?php return ' . var_export($dotenv->load(), true) . ';' . PHP_EOL;
+            $content = '<?php return ' . var_export($dotenv->safeLoad(), true) . ';' . PHP_EOL;
             file_put_contents($info->writableDir() . '/env.php', $content);
             unset($content);
         }

@@ -40,7 +40,7 @@ class Env extends Command
     {
         $dotenv = Dotenv::createImmutable(info()->rootDir());
         app()->getApplicationInitializer()->env($dotenv);
-        $content = '<?php return ' . var_export($dotenv->load(), true) . ';' . PHP_EOL;
+        $content = '<?php return ' . var_export($dotenv->safeLoad(), true) . ';' . PHP_EOL;
 
         if (false === file_put_contents(info()->writableDir() . '/env.php', $content)) {
             $output->writeln('<error>Could not generate environment cache file</error>');
