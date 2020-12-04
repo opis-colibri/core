@@ -616,11 +616,11 @@ class Application
 
         if (!($_ENV['OPIS_COLIBRI_DOTENV'] ?? false)) {
             $info = $this->getAppInfo();
-            $dotenv = Dotenv::createImmutable($info->rootDir());
-            $initializer->env($dotenv);
+            $dotenv = Dotenv::createMutable($info->rootDir());
             $content = '<?php return ' . var_export($dotenv->safeLoad(), true) . ';' . PHP_EOL;
             file_put_contents($info->writableDir() . '/env.php', $content);
             unset($content);
+            $initializer->env($dotenv);
         }
 
         $initializer->init($this);

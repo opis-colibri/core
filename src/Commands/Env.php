@@ -38,17 +38,20 @@ class Env extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $dotenv = Dotenv::createImmutable(info()->rootDir());
-        app()->getApplicationInitializer()->env($dotenv);
-        $content = '<?php return ' . var_export($dotenv->safeLoad(), true) . ';' . PHP_EOL;
+        $file = info()->writableDir() . '/env.php';
 
-        if (false === file_put_contents(info()->writableDir() . '/env.php', $content)) {
+        $dotenv = Dotenv::createMutable(info()->rootDir());
+        $content = '<?php return ' . var_export($dotenv->safeLoad(), true) . ';' . PHP_EOL;
+        app()->getApplicationInitializer()->env($dotenv);
+
+        if (false === file_put_contents($file, $content)) {
             $output->writeln('<error>Could not generate environment cache file</error>');
         } else {
             $output->writeln('<info>Environment cache file was generated</info>');
         }
 
         unset($content);
+
         return 0;
     }
 }
