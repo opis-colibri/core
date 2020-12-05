@@ -41,7 +41,7 @@ class Env extends Command
         $file = info()->writableDir() . '/env.php';
 
         $dotenv = Dotenv::createMutable(info()->rootDir());
-        $content = '<?php return ' . var_export($dotenv->safeLoad(), true) . ';' . PHP_EOL;
+        $content = '<?php return ' . var_export($dotenv->load(), true) . ';' . PHP_EOL;
         app()->getApplicationInitializer()->env($dotenv);
 
         if (false === file_put_contents($file, $content)) {
