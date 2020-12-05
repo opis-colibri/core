@@ -31,7 +31,8 @@ class Env extends Command
         $this
             ->setName('env')
             ->setDescription('Generate environment cache file')
-            ->addOption('delete', null, InputOption::VALUE_NONE, 'Delete cache file');
+            ->addOption('delete', null, InputOption::VALUE_NONE, 'Delete cache file')
+            ->addOption('validate', null, InputOption::VALUE_NONE, 'Perform validation only');
     }
 
     /**
@@ -52,6 +53,12 @@ class Env extends Command
         $dotenv = Dotenv::createMutable(info()->rootDir());
         $content = '<?php return ' . var_export($dotenv->load(), true) . ';' . PHP_EOL;
         app()->getApplicationInitializer()->env($dotenv);
+
+        if ($input->getOption('validate')) {
+            unset($content);
+            $output->writeln('<info>Environment settings are valid</info>');
+            return 0;
+        }
 
         if (false === file_put_contents($file, $content)) {
             $output->writeln('<error>Could not generate environment cache file</error>');
