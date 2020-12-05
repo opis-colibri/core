@@ -43,7 +43,7 @@ class Serve extends Command
         $host = $input->getOption('host');
         $port = $input->getOption('port');
 
-        $command = 'php -S ' . $host . ':' . $port . ' -c ./ -t public/ router.php';
+        $command = 'php -S ' . $host . ':' . $port . ' -c ./internal/php.ini -t ./public/ ./internal/router.php';
 
         $status = 0;
         passthru($command, $status);
