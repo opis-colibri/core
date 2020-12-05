@@ -30,8 +30,7 @@ class App extends Command
         $this
             ->setName('app')
             ->setDescription('Setup web application')
-            ->addOption('force', null, InputOption::VALUE_NONE, 'Force setup')
-            ->addOption('bootstrap', null, InputOption::VALUE_NONE, 'Perform bootstrap');
+            ->addOption('force', null, InputOption::VALUE_NONE, 'Force setup');
     }
 
     /**
@@ -52,10 +51,7 @@ class App extends Command
             return 0;
         }
 
-        $_ENV['OPIS_COLIBRI_SKIP_BOOTSTRAP'] = !$input->getOption('bootstrap');
-
-        $app = app()->bootstrap();
-        $app->getApplicationInitializer()->setup($app);
+        app()->getApplicationInitializer()->setup(app());
 
         file_put_contents($file, time());
 

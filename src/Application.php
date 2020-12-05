@@ -626,13 +626,7 @@ class Application
      */
     public function bootstrap(): self
     {
-        if ($_ENV['OPIS_COLIBRI_SKIP_BOOTSTRAP'] ?? false) {
-            return $this;
-        }
-
         $this->getApplicationInitializer()->bootstrap($this);
-        $this->emit('system.ready');
-
         return $this;
     }
 
