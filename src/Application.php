@@ -108,12 +108,11 @@ class Application
 
     /**
      * Application constructor.
-     * @param string $rootDir
-     * @param array|null $info
+     * @param ApplicationInfo $info
      */
-    public function __construct(string $rootDir, array $info = [])
+    public function __construct(ApplicationInfo $info)
     {
-        $this->info = new ApplicationInfo($rootDir, $info);
+        $this->info = $info;
 
         TemplateStream::register();
 
