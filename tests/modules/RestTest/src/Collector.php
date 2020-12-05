@@ -19,6 +19,7 @@ namespace Test\RestTest;
 
 use Opis\Colibri\Collector as BaseCollector;
 use Opis\Colibri\Collectors\{JsonSchemaResolversCollector, RouteCollector};
+use Opis\Colibri\Priority;
 use Test\RestTest\API\RestResolver;
 
 class Collector extends BaseCollector
@@ -31,12 +32,8 @@ class Collector extends BaseCollector
         $resolver->addLoader('test.rest-test', __DIR__ . '/../schema');
     }
 
-
-    /**
-     * @param RouteCollector $route
-     * @param int $priority
-     */
-    public function apiRoutes(RouteCollector $route, int $priority = 100)
+    #[Priority(100)]
+    public function apiRoutes(RouteCollector $route)
     {
         $route
             ->group(static function (RouteCollector $route) {

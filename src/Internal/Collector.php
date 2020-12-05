@@ -18,6 +18,7 @@
 namespace Opis\Colibri\Internal;
 
 use Opis\Colibri\Collector as BaseCollector;
+use Opis\Colibri\Priority;
 use Opis\Colibri\Collectors\{RouteCollector, TemplateStreamHandlerCollector, ViewCollector};
 use Opis\Colibri\Templates\CallbackTemplateHandler;
 use Opis\Colibri\Internal\Views as InternalViews;
@@ -41,7 +42,8 @@ class Collector extends BaseCollector
             ->where('type', 'document|link|style|script|collection|meta|attributes');
     }
 
-    public function routes(RouteCollector $route, int $priority = -100)
+    #[Priority(-100)]
+    public function routes(RouteCollector $route)
     {
         $route->group(function (RouteCollector $route) {
             $route('/', InternalRoutes::class . '::welcome');

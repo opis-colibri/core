@@ -19,9 +19,8 @@ namespace Opis\Colibri\Core;
 
 use ReflectionClass;
 use ReflectionMethod;
-use ReflectionException;
 use RuntimeException;
-use Opis\Colibri\{Application, Collector, Internal\Collector as InternalCollector};
+use Opis\Colibri\{Application, Collector, Internal\Collector as InternalCollector, Priority};
 use Opis\Utils\SortableList;
 use Opis\Colibri\Collectors\BaseCollector;
 
@@ -245,7 +244,7 @@ class ItemCollector
 
             $params = $method->getParameters();
 
-            if (empty($params) || !$params[0]->hasType()) {
+            if (empty($params) || count($params) > 1 || !$params[0]->hasType()) {
                 continue;
             }
 
@@ -259,24 +258,11 @@ class ItemCollector
             }
 
             $priority = 0;
-            $param = $params[1] ?? null;
 
-            if (isset($param)) {
-                if (!$param->isOptional()) {
-                    continue;
-                }
+            $attributes = $method->getAttributes(Priority::class);
 
-                if ('priority' === $param->getName() && $param->hasType()) {
-                    /** @var $paramType \ReflectionNamedType */
-                    $paramType = $param->getType();
-                    if ($paramType->getName() === 'int') {
-                        try {
-                            $priority = (int) $param->getDefaultValue();
-                        } catch (ReflectionException $exception) {
-                            $priority = 0;
-                        }
-                    }
-                }
+            if (!empty($attributes)) {
+                $priority = end($attributes)->getArguments()[0];
             }
 
             if (isset($collectorList[$name])) {
