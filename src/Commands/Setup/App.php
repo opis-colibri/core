@@ -52,7 +52,7 @@ class App extends Command
             return 0;
         }
 
-        $_ENV['OPIS_COLIBRI_SKIP_BOOTSRAP'] = !$input->getOption('bootstrap');
+        $_ENV['OPIS_COLIBRI_SKIP_BOOTSTRAP'] = !$input->getOption('bootstrap');
 
         $app = app()->bootstrap();
         $app->getApplicationInitializer()->setup($app);
