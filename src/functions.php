@@ -520,41 +520,27 @@ function getModules(bool $clear = false): array
     return Application::getInstance()->getModules($clear);
 }
 
-/**
- * @param string $key
- * @param bool|float|int|string|null $default
- * @return bool|float|int|string|null
- */
-function env(string $key, $default = null)
+function env(string $key, mixed $default = null): mixed
 {
-    $value = $_ENV[$key] ?? $default;
+    if (!array_key_exists($key, $_ENV)) {
+        return $default;
+    }
+
+    $value = $_ENV[$key];
 
     if (!is_string($value)) {
         return $value;
-    }
-
-    switch (strtolower($value)) {
-        case "true":
-        case "on":
-        case "1":
-        case "yes":
-            return true;
-        case "false":
-        case "off":
-        case "0":
-        case "no":
-            return false;
-        case "null":
-            return null;
-    }
-
-    if (ctype_digit($value)) {
-        return (int) $value;
-    }
-
-    if (is_numeric($value)) {
+    } elseif (is_numeric($value)) {
+        if (ctype_digit($value)) {
+            return (int) $value;
+        }
         return (float) $value;
     }
 
-    return $value;
+    return match (strtolower($value)) {
+        "true", "on", "1", "yes" => true,
+        "false", "off", "0", "no" => false,
+        "null" => null,
+        default => $value
+    };
 }
