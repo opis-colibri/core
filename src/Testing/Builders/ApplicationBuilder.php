@@ -377,7 +377,7 @@ class ApplicationBuilder
         $dir = rtrim($dir, DIRECTORY_SEPARATOR);
         $file = $dir . DIRECTORY_SEPARATOR . 'composer.json';
 
-        if (!file_exists($file)) {
+        if (!is_file($file)) {
             return false;
         }
 

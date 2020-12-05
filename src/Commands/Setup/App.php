@@ -42,12 +42,12 @@ class App extends Command
         $file = info()->writableDir() . '/setup';
 
         if ($input->getOption('force')) {
-            if (file_exists($file)) {
+            if (is_file($file)) {
                 unlink($file);
             }
         }
 
-        if (file_exists($file)) {
+        if (is_file($file)) {
             $output->writeln('<info>The application was already setup</info>');
             return 0;
         }

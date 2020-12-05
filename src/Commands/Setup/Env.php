@@ -43,7 +43,7 @@ class Env extends Command
         $file = info()->envFile();
 
         if ($input->getOption('delete')) {
-            if (file_exists($file)) {
+            if (is_file($file)) {
                 unlink($file);
             }
             $output->writeln('<info>Environment cache file was deleted</info>');
