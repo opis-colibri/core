@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Commands\Setup;
 
 use Dotenv\Dotenv;
-use Symfony\Component\Console\{Command\Command, Input\InputInterface, Output\OutputInterface};
+use Symfony\Component\Console\{Command\Command, Input\InputInterface, Input\InputOption, Output\OutputInterface};
 use function Opis\Colibri\{info, app};
 
 class Env extends Command
@@ -30,7 +30,8 @@ class Env extends Command
     {
         $this
             ->setName('env')
-            ->setDescription('Generate environment cache file');
+            ->setDescription('Generate environment cache file')
+            ->addOption('delete', null, InputOption::VALUE_NONE, 'Delete cache file');
     }
 
     /**
@@ -39,6 +40,14 @@ class Env extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $file = info()->writableDir() . '/env.php';
+
+        if ($input->getOption('delete')) {
+            if (file_exists($file)) {
+                unlink($file);
+            }
+            $output->writeln('<info>Environment cache file was deleted</info>');
+            return 0;
+        }
 
         $dotenv = Dotenv::createMutable(info()->rootDir());
         $content = '<?php return ' . var_export($dotenv->load(), true) . ';' . PHP_EOL;
