@@ -40,7 +40,7 @@ class Env extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $file = info()->writableDir() . '/env.php';
+        $file = info()->envFile();
 
         if ($input->getOption('delete')) {
             if (file_exists($file)) {

@@ -28,6 +28,7 @@ class ApplicationInfo
     const ASSETS_PATH = 'assets-path';
     const ASSETS_DIR = 'assets-dir';
     const INIT_FILE = 'init-file';
+    const ENV_FILE = 'env-file';
     const WEB_PATH = 'web-path';
 
     protected array $cache = [];
@@ -51,6 +52,7 @@ class ApplicationInfo
             self::ASSETS_DIR => 'assets',
             self::TEMP_DIR => sys_get_temp_dir(),
             self::INIT_FILE => 'init.php',
+            self::ENV_FILE => 'env.php',
             self::ASSETS_PATH => '/assets',
             self::WEB_PATH => '/',
         ];
@@ -162,6 +164,16 @@ class ApplicationInfo
     public function initFile(): string
     {
         return $this->getFsPath(self::INIT_FILE);
+    }
+
+    /**
+     * Env file
+     *
+     * @return string
+     */
+    public function envFile(): string
+    {
+        return $this->getFsPath(self::ENV_FILE, true);
     }
 
     /**
