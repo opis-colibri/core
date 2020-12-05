@@ -30,8 +30,8 @@ class App extends Command
         $this
             ->setName('app')
             ->setDescription('Setup web application')
-            ->addOption('force', null, InputOption::VALUE_NONE, 'Force setup', false)
-            ->addOption('bootstrap', null, InputOption::VALUE_NONE, 'Perform bootstrap', false);
+            ->addOption('force', null, InputOption::VALUE_NONE, 'Force setup')
+            ->addOption('bootstrap', null, InputOption::VALUE_NONE, 'Perform bootstrap');
     }
 
     /**
