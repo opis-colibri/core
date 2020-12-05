@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Internal;
 
 use Opis\Http\Responses\FileStream;
-use function Opis\Colibri\view;
+use function Opis\Colibri\{view, env};
 
 final class Routes
 {
@@ -39,6 +39,6 @@ final class Routes
 
     public static function filter(): bool
     {
-        return getenv('APP_PRODUCTION') === false;
+        return env('APP_PRODUCTION', false) === false;
     }
 }
