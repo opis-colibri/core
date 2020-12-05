@@ -29,8 +29,6 @@ class Application extends BaseApplication
     /** @var null|callable */
     protected $autoloader = null;
 
-    protected ?CustomApplicationInitializer $initializer = null;
-
     /** @noinspection PhpMissingParentConstructorInspection */
     /**
      * @param CustomApplicationInitializer $initializer
@@ -156,7 +154,7 @@ class Application extends BaseApplication
     /**
      * @inheritDoc
      */
-    protected function getApplicationInitializer(): ApplicationInitializer
+    public function getApplicationInitializer(): ApplicationInitializer
     {
         return $this->initializer;
     }

@@ -20,6 +20,7 @@ namespace Opis\Colibri;
 use Dotenv\Dotenv;
 use RuntimeException, Throwable;
 use Composer\Package\CompletePackageInterface;
+use Symfony\Component\Console\Application as ConsoleApplication;
 use Opis\Session\{SessionHandler, Containers\RequestContainer};
 use Psr\Log\{NullLogger, LoggerInterface};
 use Opis\Cache\{CacheDriver, Drivers\Memory as MemoryDriver};
@@ -353,6 +354,20 @@ class Application
     }
 
     /**
+     * @return ConsoleApplication
+     */
+    public function getSetupConsole(): ConsoleApplication
+    {
+        $console = new ConsoleApplication("Opis Colibri Setup");
+        $console->setAutoExit(true);
+
+        $console->add(new Commands\Setup\Env());
+        $console->add(new Commands\Setup\App());
+
+        return $console;
+    }
+
+    /**
      * @param string|null $name
      * @return Connection
      */
@@ -612,19 +627,12 @@ class Application
      */
     public function bootstrap(): self
     {
-        $initializer = $this->getApplicationInitializer();
-
-        if (!($_ENV['OPIS_COLIBRI_DOTENV'] ?? false)) {
-            $info = $this->getAppInfo();
-            $dotenv = Dotenv::createMutable($info->rootDir());
-            $content = '<?php return ' . var_export($dotenv->safeLoad(), true) . ';' . PHP_EOL;
-            file_put_contents($info->writableDir() . '/env.php', $content);
-            unset($content);
-            $initializer->env($dotenv);
+        if ($_ENV['OPIS_COLIBRI_SKIP_BOOTSTRAP'] ?? false) {
+            return $this;
         }
 
-        $initializer->init($this);
-        $this->emit('system.init');
+        $this->getApplicationInitializer()->bootstrap($this);
+        $this->emit('system.ready');
 
         return $this;
     }

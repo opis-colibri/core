@@ -20,6 +20,7 @@ namespace Opis\Colibri\Testing;
 use Opis\Colibri\{
     ApplicationInitializer, Application
 };
+use Dotenv\Dotenv;
 use Opis\Colibri\Testing\Builders\ApplicationInitializerBuilder;
 
 class CustomApplicationInitializer implements ApplicationInitializer
@@ -46,7 +47,7 @@ class CustomApplicationInitializer implements ApplicationInitializer
     /**
      * @inheritDoc
      */
-    public function init(Application $app): void
+    public function bootstrap(Application $app): void
     {
         $builder = $this->builder;
 
@@ -59,5 +60,21 @@ class CustomApplicationInitializer implements ApplicationInitializer
         $app->setTranslatorDriver($builder->getTranslator());
         $app->setDefaultLogger($builder->getLogger());
         $app->setDatabaseConnection($builder->getDatabaseConnection());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setup(Application $app): void
+    {
+        // Setup application
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function env(Dotenv $dotenv): void
+    {
+        // Environment validation
     }
 }

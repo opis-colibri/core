@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Commands;
+namespace Opis\Colibri\Commands\Setup;
 
 use Dotenv\Dotenv;
 use Symfony\Component\Console\{Command\Command, Input\InputInterface, Output\OutputInterface};

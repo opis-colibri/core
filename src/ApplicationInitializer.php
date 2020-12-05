@@ -24,7 +24,12 @@ interface ApplicationInitializer
     /**
      * @param Application $app
      */
-    public function init(Application $app): void;
+    public function bootstrap(Application $app): void;
+
+    /**
+     * @param Application $app
+     */
+    public function setup(Application $app): void;
 
     /**
      * @param Dotenv $dotenv
