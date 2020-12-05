@@ -34,5 +34,5 @@ interface ApplicationInitializer
     /**
      * @param Dotenv $dotenv
      */
-    public function env(Dotenv $dotenv): void;
+    public function validateEnvironmentVariables(Dotenv $dotenv): void;
 }

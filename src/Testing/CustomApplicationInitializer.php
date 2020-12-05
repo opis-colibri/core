@@ -73,7 +73,7 @@ class CustomApplicationInitializer implements ApplicationInitializer
     /**
      * @inheritDoc
      */
-    public function env(Dotenv $dotenv): void
+    public function validateEnvironmentVariables(Dotenv $dotenv): void
     {
         // Environment validation
     }

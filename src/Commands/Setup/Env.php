@@ -52,7 +52,7 @@ class Env extends Command
 
         $dotenv = Dotenv::createMutable(info()->rootDir());
         $content = '<?php return ' . var_export($dotenv->load(), true) . ';' . PHP_EOL;
-        app()->getApplicationInitializer()->env($dotenv);
+        app()->getApplicationInitializer()->validateEnvironmentVariables($dotenv);
 
         if ($input->getOption('validate')) {
             unset($content);
