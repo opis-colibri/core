@@ -49,6 +49,8 @@ class ApplicationBuilder
 
     protected array $mainComposerContent = ['type' => 'library'];
 
+    protected array $env = [];
+
     /**
      * AppBuilder constructor.
      * @param string $vendorDir
@@ -69,7 +71,7 @@ class ApplicationBuilder
     public function build(): Application
     {
         $rootDir = $this->rootDir ?? $this->createRootDir();
-        $info = $this->createAppInfo($this->vendorDir, $rootDir, $this->dependencies);
+        $info = $this->createAppInfo($this->vendorDir, $rootDir, $this->dependencies, $this->env);
 
         if ($this->createdModules) {
             $this->handleCreatedModules($rootDir, $this->createdModules);
@@ -78,6 +80,11 @@ class ApplicationBuilder
         $this->builder->getConfigDriver()->write(ModuleManager::CONFIG_NAME, $this->modules);
 
         $bootstrap = $this->builder->build();
+
+        // Load env
+        if (is_file($info->envFile())) {
+            $_ENV += require_once($info->envFile());
+        }
 
         $app = new Application(
             $bootstrap,
@@ -134,6 +141,24 @@ class ApplicationBuilder
     }
 
     /**
+     * @param array $env
+     * @return self
+     */
+    public function setEnv(array $env): self
+    {
+        $this->env = $env;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEnv(): array
+    {
+        return $this->env;
+    }
+
+    /**
      * @return ApplicationInitializerBuilder
      */
     public function getBootstrapBuilder(): ApplicationInitializerBuilder
@@ -176,7 +201,7 @@ class ApplicationBuilder
      */
     public function addAutoloadPath(string $path, string $ns): self
     {
-        $path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $path = rtrim($path, '/') . '/';
         $ns = trim($ns, '\\') . '\\';
 
         $this->autoload[$path] = $ns;
@@ -192,12 +217,12 @@ class ApplicationBuilder
     public function addAutoloadPaths(array $paths, string $prefix = ''): self
     {
         if ($prefix !== '') {
-            $prefix = rtrim($prefix, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+            $prefix = rtrim($prefix, '/') . '/';
         }
 
         foreach ($paths as $path => $ns) {
             if ($prefix !== '') {
-                $path = ltrim($path, DIRECTORY_SEPARATOR);
+                $path = ltrim($path, '/');
             }
             $this->addAutoloadPath($prefix . $path, $ns);
         }
@@ -241,8 +266,13 @@ class ApplicationBuilder
      * @param string[] $require
      * @return ApplicationBuilder
      */
-    public function createUninstalledTestModule(string $name, string $ns, string $path, array $info = [], array $require = []): self
-    {
+    public function createUninstalledTestModule(
+        string $name,
+        string $ns,
+        string $path,
+        array $info = [],
+        array $require = []
+    ): self {
         return $this->createTestModule($name, $ns, $path, $info, Module::UNINSTALLED, $require);
     }
 
@@ -254,8 +284,13 @@ class ApplicationBuilder
      * @param string[] $require
      * @return ApplicationBuilder
      */
-    public function createInstalledTestModule(string $name, string $ns, string $path, array $info = [], array $require = []): self
-    {
+    public function createInstalledTestModule(
+        string $name,
+        string $ns,
+        string $path,
+        array $info = [],
+        array $require = []
+    ): self {
         return $this->createTestModule($name, $ns, $path, $info, Module::INSTALLED, $require);
     }
 
@@ -267,8 +302,13 @@ class ApplicationBuilder
      * @param string[] $require
      * @return ApplicationBuilder
      */
-    public function createEnabledTestModule(string $name, string $ns, string $path, array $info = [], array $require = []): self
-    {
+    public function createEnabledTestModule(
+        string $name,
+        string $ns,
+        string $path,
+        array $info = [],
+        array $require = []
+    ): self {
         return $this->createTestModule($name, $ns, $path, $info, Module::ENABLED, $require);
     }
 
@@ -281,8 +321,14 @@ class ApplicationBuilder
      * @param null|string[] $require
      * @return ApplicationBuilder
      */
-    protected function createTestModule(string $name, string $ns, string $path, array $info, int $status, ?array $require = null): self
-    {
+    protected function createTestModule(
+        string $name,
+        string $ns,
+        string $path,
+        array $info,
+        int $status,
+        ?array $require = null
+    ): self {
         $this->createdModules[$name] = [
             'name' => $name,
             'ns' => $ns,
@@ -374,8 +420,8 @@ class ApplicationBuilder
 
         $dir = realpath($dir);
 
-        $dir = rtrim($dir, DIRECTORY_SEPARATOR);
-        $file = $dir . DIRECTORY_SEPARATOR . 'composer.json';
+        $dir = rtrim($dir, '/');
+        $file = $dir . '/composer.json';
 
         if (!is_file($file)) {
             return false;
@@ -411,7 +457,7 @@ class ApplicationBuilder
             if (isset($data->autoload->{'psr-4'})) {
                 foreach ($data->autoload->{'psr-4'} as $ns => $path) {
                     if ($path && $path[0] !== '/') {
-                        $path = $dir . DIRECTORY_SEPARATOR . $path;
+                        $path = $dir . '/' . $path;
                     }
                     $this->addAutoloadPath($path, $ns);
                 }
@@ -461,7 +507,7 @@ class ApplicationBuilder
     {
         $list = array_values($this->pathModules);
 
-        $file = $info->vendorDir() . DIRECTORY_SEPARATOR . 'composer' . DIRECTORY_SEPARATOR . 'installed.json';
+        $file = $info->vendorDir() . '/composer/installed.json';
         if (is_file($file)) {
             $data = json_decode(file_get_contents($file));
             if (is_array($data)) {
@@ -469,7 +515,7 @@ class ApplicationBuilder
             }
         }
 
-        $file = $info->rootDir() . DIRECTORY_SEPARATOR . 'installed.json';
+        $file = $info->rootDir() . '/installed.json';
 
         file_put_contents($file, json_encode($list, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 
@@ -482,7 +528,7 @@ class ApplicationBuilder
     protected function createRootDir(): string
     {
         do {
-            $dir = $this->baseRootDir . DIRECTORY_SEPARATOR . uniqid('opis_app_');
+            $dir = $this->baseRootDir . '/' . uniqid('opis_app_');
         } while (is_dir($dir));
 
         mkdir($dir, 0777, true);
@@ -494,13 +540,14 @@ class ApplicationBuilder
      * @param string $vendorDir
      * @param string $rootDir
      * @param array $dependencies
+     * @param array $env
      * @return ApplicationInfo
      */
-    protected function createAppInfo(string $vendorDir, string $rootDir, array $dependencies): ApplicationInfo
+    protected function createAppInfo(string $vendorDir, string $rootDir, array $dependencies, array $env = []): ApplicationInfo
     {
-        $rootDir = rtrim($rootDir, DIRECTORY_SEPARATOR);
+        $rootDir = rtrim($rootDir, '/');
 
-        $vendorDir = rtrim($vendorDir, DIRECTORY_SEPARATOR);
+        $vendorDir = rtrim($vendorDir, '/');
 
         $composer = $this->getMainComposerContent();
 
@@ -515,40 +562,34 @@ class ApplicationBuilder
             }
         }
 
-        file_put_contents($rootDir . DIRECTORY_SEPARATOR . 'composer.json',
-            json_encode((object) $composer, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+        file_put_contents($rootDir . '/composer.json',
+            json_encode((object)$composer, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 
         unset($composer);
 
-        file_put_contents($rootDir . DIRECTORY_SEPARATOR . 'package.json', '{}');
+        file_put_contents($rootDir . '/package.json', '{}');
 
-        foreach (['public', 'assets', 'storage'] as $dir) {
-            if (!is_dir($rootDir . DIRECTORY_SEPARATOR . $dir)) {
-                mkdir($rootDir . DIRECTORY_SEPARATOR . $dir, 0777, true);
+        // Create public dir, assets dir, storage & temp dir
+        foreach (['public', 'assets', 'storage', 'storage/tmp'] as $dir) {
+            if (!is_dir($rootDir . '/' . $dir)) {
+                mkdir($rootDir . '/' . $dir, 0777, true);
             }
         }
 
-        // Create temp dir
-        if (!is_dir($rootDir . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'tmp')) {
-            mkdir($rootDir . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'tmp', 0777, true);
-        }
+        // Write env variables
+        file_put_contents(
+            $rootDir . '/storage/env.php',
+            '<?php return ' . var_export($env, true) . ';'
+        );
 
-        $settings = [
+        return new ApplicationInfo($rootDir, [
             ApplicationInfo::VENDOR_DIR => $vendorDir,
             ApplicationInfo::PUBLIC_DIR => 'public',
+            ApplicationInfo::ASSETS_DIR => 'assets',
             ApplicationInfo::WRITABLE_DIR => 'storage',
             ApplicationInfo::TEMP_DIR => 'tmp',
-        ];
-
-        return new class($rootDir, $settings) extends ApplicationInfo {
-            /**
-             * @inheritDoc
-             */
-            public function installMode(): bool
-            {
-                return false;
-            }
-        };
+            ApplicationInfo::ENV_FILE => 'env.php',
+        ]);
     }
 
     /**
@@ -579,14 +620,14 @@ class ApplicationBuilder
     protected function handleCreatedModules(string $rootDir, array $modules): void
     {
         $rootDir = realpath($rootDir);
-        $rootDir = rtrim($rootDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'modules';
+        $rootDir = rtrim($rootDir, '/') . '/modules';
         if (!is_dir($rootDir)) {
             mkdir($rootDir, 0777, true);
         }
 
         foreach ($modules as $module) {
             $ns = trim($module['ns'], '\\') . '\\';
-            $path = rtrim($module['path'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+            $path = rtrim($module['path'], '/') . '/';
             if (!is_dir($path)) {
                 continue;
             }
@@ -596,14 +637,14 @@ class ApplicationBuilder
                 'type' => Module::TYPE,
                 'autoload' => [
                     'psr-4' => [
-                        $ns => $path
-                    ]
+                        $ns => $path,
+                    ],
                 ],
                 'extra' => [
                     'module' => $module['info'] + [
-                        'title' => 'Autogenerated module ' . $module['name'],
-                    ]
-                ]
+                            'title' => 'Autogenerated module ' . $module['name'],
+                        ],
+                ],
             ];
 
             if ($module['require']) {
@@ -617,10 +658,10 @@ class ApplicationBuilder
                 }
             }
 
-            $dir = $rootDir . DIRECTORY_SEPARATOR . str_replace(DIRECTORY_SEPARATOR, '-', $module['name']);
+            $dir = $rootDir . '/' . str_replace('/', '-', $module['name']);
             mkdir($dir);
 
-            $file = $dir . DIRECTORY_SEPARATOR . 'composer.json';
+            $file = $dir . '/composer.json';
             file_put_contents($file, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 
             $this->addModuleFromPath($dir, $module['status'], true);

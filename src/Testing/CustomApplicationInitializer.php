@@ -17,10 +17,10 @@
 
 namespace Opis\Colibri\Testing;
 
+use Dotenv\Dotenv;
 use Opis\Colibri\{
     ApplicationInitializer, Application
 };
-use Dotenv\Dotenv;
 use Opis\Colibri\Testing\Builders\ApplicationInitializerBuilder;
 
 class CustomApplicationInitializer implements ApplicationInitializer
@@ -68,6 +68,12 @@ class CustomApplicationInitializer implements ApplicationInitializer
     public function setup(Application $app): void
     {
         // Setup application
+
+        $setup = $this->builder->getSetupHandler();
+
+        if ($setup !== null) {
+            $setup($app, $this);
+        }
     }
 
     /**
@@ -75,6 +81,12 @@ class CustomApplicationInitializer implements ApplicationInitializer
      */
     public function validateEnvironmentVariables(Dotenv $dotenv): void
     {
-        // Environment validation
+        // Validate environment
+
+        $validator = $this->builder->getEnvironmentValidator();
+
+        if ($validator !== null) {
+            $validator($dotenv);
+        }
     }
 }

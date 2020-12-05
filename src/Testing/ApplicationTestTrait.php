@@ -29,11 +29,16 @@ trait ApplicationTestTrait
     /** @var callable|null */
     protected static $onAppDestroy = null;
 
+    protected static ?array $env = null;
+
     protected static function buildApp(): void
     {
         if (static::$app) {
             static::destroyApp();
         }
+
+        // Save env
+        static::$env = $_ENV;
 
         $builder = new ApplicationBuilder(static::vendorDir(), static::rootDir());
 
@@ -50,6 +55,11 @@ trait ApplicationTestTrait
     {
         if (static::$onAppDestroy !== null) {
             (static::$onAppDestroy)();
+        }
+        // Restore env
+        if (static::$env !== null) {
+            $_ENV = static::$env;
+            static::$env = null;
         }
         static::$onAppDestroy = null;
         static::$app = null;

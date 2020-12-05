@@ -48,6 +48,12 @@ class ApplicationInitializerBuilder
 
     protected ?LoggerInterface $logger = null;
 
+    /** @var null|callable */
+    protected $environmentValidator = null;
+
+    /** @var null|callable */
+    protected $setupHandler = null;
+
     /**
      * @return CustomApplicationInitializer
      */
@@ -246,6 +252,42 @@ class ApplicationInitializerBuilder
     public function setTranslator(?TranslatorDriver $translator): self
     {
         $this->translator = $translator;
+        return $this;
+    }
+
+    /**
+     * @return callable|null
+     */
+    public function getEnvironmentValidator(): ?callable
+    {
+        return $this->environmentValidator;
+    }
+
+    /**
+     * @param callable|null $validator
+     * @return self
+     */
+    public function setEnvironmentValidator(?callable $validator): self
+    {
+        $this->environmentValidator = $validator;
+        return $this;
+    }
+
+    /**
+     * @return callable|null
+     */
+    public function getSetupHandler(): ?callable
+    {
+        return $this->setupHandler;
+    }
+
+    /**
+     * @param callable|null $setup
+     * @return self
+     */
+    public function setSetupHandler(?callable $setup): self
+    {
+        $this->setupHandler = $setup;
         return $this;
     }
 
