@@ -527,11 +527,11 @@ function getModules(bool $clear = false): array
  */
 function env(string $key, $default = null)
 {
-    if (!isset($_ENV[$key])) {
-        return $default;
-    }
+    $value = $_ENV[$key] ?? $default;
 
-    $value = $_ENV[$key];
+    if (!is_string($value)) {
+        return $value;
+    }
 
     switch (strtolower($value)) {
         case "true":
