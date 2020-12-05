@@ -519,3 +519,42 @@ function getModules(bool $clear = false): array
 {
     return Application::getInstance()->getModules($clear);
 }
+
+/**
+ * @param string $key
+ * @param bool|float|int|string|null $default
+ * @return bool|float|int|string|null
+ */
+function env(string $key, $default = null)
+{
+    if (!isset($_ENV[$key])) {
+        return $default;
+    }
+
+    $value = $_ENV[$key];
+
+    switch (strtolower($value)) {
+        case "true":
+        case "on":
+        case "1":
+        case "yes":
+            return true;
+        case "false":
+        case "off":
+        case "0":
+        case "no":
+            return false;
+        case "null":
+            return null;
+    }
+
+    if (ctype_digit($value)) {
+        return (int) $value;
+    }
+
+    if (is_numeric($value)) {
+        return (float) $value;
+    }
+
+    return $value;
+}
