@@ -17,23 +17,22 @@
 
 namespace Opis\Colibri;
 
-use Dotenv\Dotenv;
 use RuntimeException, Throwable;
 use Composer\Package\CompletePackageInterface;
 use Symfony\Component\Console\Application as ConsoleApplication;
 use Opis\Session\{SessionHandler, Containers\RequestContainer};
 use Psr\Log\{NullLogger, LoggerInterface};
-use Opis\Cache\{CacheDriver, Drivers\Memory as MemoryDriver};
+use Opis\Cache\{CacheDriver};
 use Opis\Events\{Event, EventDispatcher};
 use Opis\I18n\Translator\{Driver as TranslatorDriver};
 use Opis\View\{Renderer};
 use Opis\Http\{Request as HttpRequest, Response as HttpResponse, Responses\FileStream, Responses\HtmlResponse};
-use Opis\DataStore\{DataStore, Drivers\Memory as MemoryConfig};
+use Opis\DataStore\{DataStore};
 use Opis\Database\{Connection, Database, Schema};
 use Opis\ORM\EntityManager;
 use Opis\JsonSchema\Validator;
 use Opis\Colibri\Templates\TemplateStream;
-use Opis\Colibri\Core\{Container, CSRFToken, ItemCollector, Module, ModuleManager, Router, Session, Translator, View};
+use Opis\Colibri\Core\{Container, CSRFToken, ItemCollector, Module, ModuleManager, Router, Session, Translator};
 use Opis\Colibri\Collectors\{
     AssetsHandlerCollector,
     CacheCollector,
@@ -424,7 +423,7 @@ class Application
     /**
      * Returns a logger
      *
-     * @param   string $logger Logger's name
+     * @param   string|null $logger Logger's name
      *
      * @return  LoggerInterface
      */
@@ -632,6 +631,9 @@ class Application
 
 
     /**
+     * @param HttpRequest|null $request
+     * @param bool $flush
+     * @return HttpResponse
      * @throws Throwable
      */
     public function run(?HttpRequest $request = null, bool $flush = true): HttpResponse
@@ -677,6 +679,10 @@ class Application
         return $response;
     }
 
+    /**
+     * @return HttpResponse
+     * @throws Throwable
+     */
     public function serve(): HttpResponse
     {
         $request = HttpRequest::fromGlobals();
@@ -685,7 +691,7 @@ class Application
         $assetsPath = rtrim($info->assetsPath(), '/') . '/';
         $path = $request->getUri()->path();
 
-        if (strpos($path, $assetsPath) === 0) {
+        if (str_starts_with($path, $assetsPath)) {
             $file = $info->assetsDir() . '/' . substr($path, strlen($assetsPath));
             if (is_file($file)) {
                 $response = new FileStream($file);
