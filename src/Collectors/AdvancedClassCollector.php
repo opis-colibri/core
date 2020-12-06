@@ -20,7 +20,7 @@ namespace Opis\Colibri\Collectors;
 use Opis\Colibri\Serializable\AdvancedClassList;
 
 /**
- * @property AdvancedClassList $data
+ * @method AdvancedClassList data()
  */
 abstract class AdvancedClassCollector extends BaseCollector
 {
@@ -42,7 +42,7 @@ abstract class AdvancedClassCollector extends BaseCollector
         if (!class_exists($class) || !is_subclass_of($class, $this->getClass(), true)) {
             return false;
         }
-        $this->data->add($name, $class);
+        $this->data()->add($name, $class);
         return true;
     }
 
@@ -53,7 +53,7 @@ abstract class AdvancedClassCollector extends BaseCollector
      */
     public function registerFactory(string $name, callable $func): bool
     {
-        $this->data->addCallable($name, $func);
+        $this->data()->addCallable($name, $func);
         return true;
     }
 

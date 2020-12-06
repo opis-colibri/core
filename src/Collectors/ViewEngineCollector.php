@@ -20,7 +20,7 @@ namespace Opis\Colibri\Collectors;
 use Opis\Colibri\Serializable\Collection;
 
 /**
- * @property Collection $data
+ * @method Collection data()
  */
 class ViewEngineCollector extends BaseCollector
 {
@@ -41,8 +41,8 @@ class ViewEngineCollector extends BaseCollector
      */
     public function register(callable $factory): self
     {
-        $key = $this->data->length() + 1;
-        $this->data->add($key, [$factory, $this->crtPriority]);
+        $key = $this->data()->length() + 1;
+        $this->data()->add($key, [$factory, $this->crtPriority]);
         return $this;
     }
 }

@@ -20,7 +20,7 @@ namespace Opis\Colibri\Collectors;
 use Opis\Colibri\Serializable\Translations;
 
 /**
- * @property Translations $data
+ * @method Translations data()
  */
 class TranslationCollector extends BaseCollector
 {
@@ -41,7 +41,7 @@ class TranslationCollector extends BaseCollector
      */
     public function addComment(string $ns, string $key, string $comment = null, string $translator_comment = null): self
     {
-        $this->data->addComment($ns, $key, $comment, $translator_comment);
+        $this->data()->addComment($ns, $key, $comment, $translator_comment);
         return $this;
     }
 
@@ -52,7 +52,7 @@ class TranslationCollector extends BaseCollector
      */
     public function addTranslations(string $ns, array $data): self
     {
-        $this->data->addTranslations($ns, $data);
+        $this->data()->addTranslations($ns, $data);
         return $this;
     }
 }

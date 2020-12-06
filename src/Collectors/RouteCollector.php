@@ -21,9 +21,7 @@ use Opis\Routing\{Route, RouteCollection, RouteGroup};
 use function Opis\Colibri\collect;
 
 /**
- * Class RouteCollector
- *
- * @property RouteCollection $data
+ * @method RouteCollection data()
  */
 class RouteCollector extends BaseCollector
 {
@@ -52,7 +50,7 @@ class RouteCollector extends BaseCollector
     public function group(callable $callback, string $prefix = ''): RouteGroup
     {
         // Get current routes
-        $old_routes = $this->data->getRoutes();
+        $old_routes = $this->data()->getRoutes();
 
         // Save current prefix
         $currentPrefix = $this->prefix;
@@ -121,7 +119,7 @@ class RouteCollector extends BaseCollector
      *
      * @param   string $path The path to match
      * @param   callable $action An action that will be executed
-     * @param   string $name (optional) Route name
+     * @param   string|null $name (optional) Route name
      *
      * @return  Route
      */
@@ -206,12 +204,12 @@ class RouteCollector extends BaseCollector
      * @param   string $path The path to match
      * @param   callable $action An action that will be executed
      * @param   array $method Request's method
-     * @param   string $name (optional) Route name
+     * @param   string|null $name (optional) Route name
      *
      * @return  Route
      */
     protected function handle(string $path, callable $action, array $method, string $name = null): Route
     {
-        return $this->data->createRoute($this->prefix . $path, $action, $method, $this->crtPriority, $name);
+        return $this->data()->createRoute($this->prefix . $path, $action, $method, $this->crtPriority, $name);
     }
 }

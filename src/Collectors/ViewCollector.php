@@ -22,7 +22,7 @@ use Opis\View\{Renderer, ViewHandler};
 use function Opis\Colibri\collect;
 
 /**
- * @property  Renderer $data
+ * @method Renderer data()
  */
 class ViewCollector extends BaseCollector
 {
@@ -48,6 +48,6 @@ class ViewCollector extends BaseCollector
      */
     public function handle(string $pattern, callable $resolver): ViewHandler
     {
-        return $this->data->handle($pattern, $resolver, $this->crtPriority);
+        return $this->data()->handle($pattern, $resolver, $this->crtPriority);
     }
 }

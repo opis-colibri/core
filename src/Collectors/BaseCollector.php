@@ -35,6 +35,11 @@ abstract class BaseCollector
         $this->data = $data;
     }
 
+    protected function data(): object
+    {
+        return $this->data;
+    }
+
     public static function update(BaseCollector $instance, ?Module $module, ?string $collector, ?int $priority): void
     {
         $instance->crtModule = $module;

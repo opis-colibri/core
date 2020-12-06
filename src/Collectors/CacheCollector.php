@@ -20,7 +20,7 @@ namespace Opis\Colibri\Collectors;
 use Opis\Colibri\Serializable\FactoryCollection;
 
 /**
- * @property FactoryCollection $data
+ * @method FactoryCollection data()
  */
 class CacheCollector extends BaseCollector
 {
@@ -39,7 +39,7 @@ class CacheCollector extends BaseCollector
      */
     public function register($storage, callable $constructor): self
     {
-        $this->data->add($storage, $constructor);
+        $this->data()->add($storage, $constructor);
         return $this;
     }
 }

@@ -27,7 +27,7 @@ use Opis\JsonSchema\Resolvers\{
 };
 
 /**
- * @property JsonSchemaResolvers $data
+ * @method JsonSchemaResolvers data()
  */
 class JsonSchemaResolversCollector extends BaseCollector
 {
@@ -38,50 +38,50 @@ class JsonSchemaResolversCollector extends BaseCollector
 
     public function filters(): FilterResolver
     {
-        return $this->data->filters();
+        return $this->data()->filters();
     }
 
     public function formats(): FormatResolver
     {
-        return $this->data->formats();
+        return $this->data()->formats();
     }
 
     public function contentEncodings(): ContentEncodingResolver
     {
-        return $this->data->contentEncodings();
+        return $this->data()->contentEncodings();
     }
 
     public function contentMediaTypes(): ContentMediaTypeResolver
     {
-        return $this->data->contentMediaTypes();
+        return $this->data()->contentMediaTypes();
     }
 
     public function schema(): SchemaResolver
     {
-        return $this->data->schema();
+        return $this->data()->schema();
     }
 
     public function setParserOption(string $name, $value): self
     {
-        $this->data->setParserOption($name, $value);
+        $this->data()->setParserOption($name, $value);
         return $this;
     }
 
     public function addParserFactory(string $name, callable $factory): self
     {
-        $this->data->addParserFactory($name, $factory);
+        $this->data()->addParserFactory($name, $factory);
         return $this;
     }
 
     public function addLoader(string $name, ?string $dir = null, ?callable $dynamic = null): self
     {
-        $this->data->addLoader($name, $dir, $dynamic);
+        $this->data()->addLoader($name, $dir, $dynamic);
         return $this;
     }
 
     public function setMaxErrors(int $max): self
     {
-        $this->data->setMaxErrors($max);
+        $this->data()->setMaxErrors($max);
         return $this;
     }
 }

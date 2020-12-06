@@ -20,7 +20,7 @@ namespace Opis\Colibri\Collectors;
 use Opis\Colibri\Serializable\Collection;
 
 /**
- * @property Collection $data
+ * @method Collection data()
  */
 class AssetsHandlerCollector extends BaseCollector
 {
@@ -39,7 +39,7 @@ class AssetsHandlerCollector extends BaseCollector
      */
     public function register(string $name, callable $callback): self
     {
-        $this->data->add($name, $callback);
+        $this->data()->add($name, $callback);
         return $this;
     }
 

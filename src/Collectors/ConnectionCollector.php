@@ -20,7 +20,7 @@ namespace Opis\Colibri\Collectors;
 use Opis\Colibri\Serializable\FactoryCollection;
 
 /**
- * @property FactoryCollection $data
+ * @method FactoryCollection data()
  */
 class ConnectionCollector extends BaseCollector
 {
@@ -39,7 +39,7 @@ class ConnectionCollector extends BaseCollector
      */
     public function create(string $name, callable $callback): self
     {
-        $this->data->add($name, $callback);
+        $this->data()->add($name, $callback);
         return $this;
     }
 }

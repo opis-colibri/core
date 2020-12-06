@@ -20,7 +20,7 @@ namespace Opis\Colibri\Collectors;
 use Opis\Events\{EventDispatcher, EventHandler};
 
 /**
- * @property EventDispatcher $data
+ * @method EventDispatcher data()
  */
 class EventHandlerCollector extends BaseCollector
 {
@@ -42,6 +42,6 @@ class EventHandlerCollector extends BaseCollector
      */
     public function handle(string $event, callable $callback): EventHandler
     {
-        return $this->data->handle($event, $callback, $this->crtPriority);
+        return $this->data()->handle($event, $callback, $this->crtPriority);
     }
 }

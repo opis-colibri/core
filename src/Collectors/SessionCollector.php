@@ -20,7 +20,7 @@ namespace Opis\Colibri\Collectors;
 use Opis\Colibri\Serializable\SessionCollection;
 
 /**
- * @property SessionCollection $data
+ * @method SessionCollection data()
  */
 class SessionCollector extends BaseCollector
 {
@@ -41,7 +41,7 @@ class SessionCollector extends BaseCollector
     public function register(string $name, callable $constructor, array $config = []): self
     {
         $config['cookie_name'] = $name;
-        $this->data->register($name, $constructor, $config);
+        $this->data()->register($name, $constructor, $config);
         return $this;
     }
 }

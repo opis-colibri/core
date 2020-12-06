@@ -20,7 +20,7 @@ namespace Opis\Colibri\Collectors;
 use Opis\Colibri\Serializable\ClassList;
 
 /**
- * @property ClassList $data
+ * @method ClassList data()
  */
 abstract class ClassCollector extends BaseCollector
 {
@@ -42,7 +42,7 @@ abstract class ClassCollector extends BaseCollector
         if (!class_exists($class) || !is_subclass_of($class, $this->getClass(), true)) {
             return false;
         }
-        $this->data->add($name, $class);
+        $this->data()->add($name, $class);
         return true;
     }
 

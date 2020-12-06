@@ -20,7 +20,7 @@ namespace Opis\Colibri\Collectors;
 use Opis\Colibri\Serializable\RouterGlobals;
 
 /**
- * @property RouterGlobals $data
+ * @method RouterGlobals data()
  */
 class RouterGlobalsCollector extends BaseCollector
 {
@@ -41,7 +41,7 @@ class RouterGlobalsCollector extends BaseCollector
      */
     public function mixin(string $name, callable $callback): self
     {
-        $this->data->mixin($name, $callback);
+        $this->data()->mixin($name, $callback);
         return $this;
     }
 
@@ -55,7 +55,7 @@ class RouterGlobalsCollector extends BaseCollector
      */
     public function bind(string $name, callable $callback): self
     {
-        $this->data->bind($name, $callback);
+        $this->data()->bind($name, $callback);
         return $this;
     }
 
@@ -68,7 +68,7 @@ class RouterGlobalsCollector extends BaseCollector
      */
     public function filter(string $name, callable $callback): self
     {
-        $this->data->filter($name, $callback);
+        $this->data()->filter($name, $callback);
         return $this;
     }
 
@@ -81,7 +81,7 @@ class RouterGlobalsCollector extends BaseCollector
      */
     public function guard(string $name, callable $callback): self
     {
-        $this->data->guard($name, $callback);
+        $this->data()->guard($name, $callback);
         return $this;
     }
 
@@ -95,7 +95,7 @@ class RouterGlobalsCollector extends BaseCollector
      */
     public function implicit(string $name, $value): self
     {
-        $this->data->implicit($name, $value);
+        $this->data()->implicit($name, $value);
         return $this;
     }
 
@@ -109,7 +109,7 @@ class RouterGlobalsCollector extends BaseCollector
      */
     public function placeholder(string $name, string $value): self
     {
-        $this->data->placeholder($name, $value);
+        $this->data()->placeholder($name, $value);
         return $this;
     }
 }

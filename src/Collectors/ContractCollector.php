@@ -20,7 +20,7 @@ namespace Opis\Colibri\Collectors;
 use Opis\Colibri\Core\Container;
 
 /**
- * @property Container $data
+ * @method Container data()
  */
 class ContractCollector extends BaseCollector
 {
@@ -43,7 +43,7 @@ class ContractCollector extends BaseCollector
      */
     public function bind(string $abstract, $concrete = null, array $arguments = []): self
     {
-        $this->data->bind($abstract, $concrete, $arguments);
+        $this->data()->bind($abstract, $concrete, $arguments);
 
         return $this;
     }
@@ -58,7 +58,7 @@ class ContractCollector extends BaseCollector
      */
     public function alias(string $alias, string $concrete): self
     {
-        $this->data->alias($alias, $concrete);
+        $this->data()->alias($alias, $concrete);
         return $this;
     }
 
@@ -71,7 +71,7 @@ class ContractCollector extends BaseCollector
      */
     public function extend(string $abstract, callable $extender): self
     {
-        $this->data->extend($abstract, $extender);
+        $this->data()->extend($abstract, $extender);
         return $this;
     }
 
@@ -86,7 +86,7 @@ class ContractCollector extends BaseCollector
      */
     public function singleton(string $abstract, $concrete = null, array $arguments = []): self
     {
-        $this->data->singleton($abstract, $concrete, $arguments);
+        $this->data()->singleton($abstract, $concrete, $arguments);
         return $this;
     }
 }
