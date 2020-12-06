@@ -630,13 +630,9 @@ class Application
         return $this;
     }
 
+
     /**
-     * Execute
-     *
-     * @param   HttpRequest|null $request
-     * @param   bool             $flush
-     *
-     * @return  HttpResponse
+     * @throws Throwable
      */
     public function run(?HttpRequest $request = null, bool $flush = true): HttpResponse
     {
@@ -646,7 +642,25 @@ class Application
 
         $this->httpRequest = $request;
 
-        $response = $this->getHttpRouter()->route($request);
+        try {
+            $response = $this->getHttpRouter()->route($request);
+        } catch (Throwable $exception) {
+            if (env('APP_PRODUCTION', false) === false) {
+                throw $exception;
+            }
+
+            logger()->error('Internal server error', [
+                'message' => $exception->getMessage(),
+                'file' => $exception->getLine(),
+                'line' => $exception->getLine(),
+                'code' => $exception->getCode(),
+                'trace' => $exception->getTraceAsString(),
+            ]);
+
+            $contentType = strtolower(trim(explode(';', $request->getHeader('Content-Type', 'text/html'))[0]));
+
+            return httpError(500, $contentType === 'application/json' ? (object) [] : null);
+        }
 
         if (!$response instanceof HttpResponse) {
             $response = new HtmlResponse($response);

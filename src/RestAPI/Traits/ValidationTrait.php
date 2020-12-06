@@ -46,22 +46,14 @@ trait ValidationTrait
         $validator = validator();
 
         if (is_string($schema) || ($schema instanceof Uri)) {
-            $method = 'uriValidation';
-        } elseif ($schema instanceof Schema) {
-            $method = 'schemaValidation';
-        } else {
-            $method = 'dataValidation';
+            return $validator->uriValidation($data, $schema, $globals, $slots);
         }
 
-        if (env('APP_PRODUCTION', false)) {
-            try {
-                return $validator->{$method}($data, $schema, $globals, $slots);
-            } catch (Throwable $e) {
-                $this->logException($e);
-            }
+        if ($schema instanceof Schema) {
+            return $validator->schemaValidation($data, $schema, $globals, $slots);
         }
 
-        return $validator->{$method}($data, $schema, $globals, $slots);
+        return $validator->dataValidation($data, $schema, $globals, $slots);
     }
 
     /**
@@ -78,18 +70,5 @@ trait ValidationTrait
         ?callable $key_formatter = null
     ): array {
         return $this->errorFormatter()->format($error, $multiple, $formatter, $key_formatter);
-    }
-
-    protected function logException(Throwable $e, ?string $message = null): void
-    {
-        $message ??= 'JsonSchema validation exception: ' . $e->getMessage();
-
-        logger()->error($message, [
-            'message' => $e->getMessage(),
-            'file' => $e->getLine(),
-            'line' => $e->getLine(),
-            'code' => $e->getCode(),
-            'trace' => $e->getTraceAsString(),
-        ]);
     }
 }
