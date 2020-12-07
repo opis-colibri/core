@@ -18,7 +18,7 @@
 namespace Test\Bar;
 
 use Opis\Colibri\Collector as BaseCollector;
-use Opis\Colibri\Priority;
+use Opis\Colibri\Attributes\Priority;
 use Opis\Colibri\Collectors\{RouterGlobalsCollector, RouteCollector};
 
 class Collector extends BaseCollector

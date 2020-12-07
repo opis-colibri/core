@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Internal;
 
 use Opis\Colibri\Collector as BaseCollector;
-use Opis\Colibri\Priority;
+use Opis\Colibri\Attributes\Priority;
 use Opis\Colibri\Collectors\{RouteCollector, TemplateStreamHandlerCollector, ViewCollector};
 use Opis\Colibri\Templates\CallbackTemplateHandler;
 use Opis\Colibri\Internal\Views as InternalViews;

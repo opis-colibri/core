@@ -19,7 +19,7 @@ namespace Test\RestTest;
 
 use Opis\Colibri\Collector as BaseCollector;
 use Opis\Colibri\Collectors\{JsonSchemaResolversCollector, RouteCollector};
-use Opis\Colibri\Priority;
+use Opis\Colibri\Attributes\Priority;
 use Test\RestTest\API\RestResolver;
 
 class Collector extends BaseCollector
