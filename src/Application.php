@@ -717,16 +717,11 @@ class Application
     {
         $action = function (Module $module) {
             $installer = $module->installer();
+
             if ($installer === null) {
                 return true;
             }
 
-            if (!class_exists($installer) || !is_subclass_of($installer, Installer::class, true)) {
-                return false;
-            }
-
-            /** @var Installer $installer */
-            $installer = new $installer($module);
             try {
                 $installer->install();
                 return true;
@@ -776,16 +771,11 @@ class Application
     {
         $action = function (Module $module) {
             $installer = $module->installer();
+
             if ($installer === null) {
                 return true;
             }
 
-            if (!class_exists($installer) || !is_subclass_of($installer, Installer::class, true)) {
-                return false;
-            }
-
-            /** @var Installer $installer */
-            $installer = new $installer($module);
             try {
                 $installer->uninstall();
                 return true;
@@ -843,12 +833,6 @@ class Application
                 return true;
             }
 
-            if (!class_exists($installer) || !is_subclass_of($installer, Installer::class, true)) {
-                return false;
-            }
-
-            /** @var Installer $installer */
-            $installer = new $installer($module);
             try {
                 $installer->enable();
                 return true;
@@ -907,12 +891,6 @@ class Application
                 return true;
             }
 
-            if (!class_exists($installer) || !is_subclass_of($installer, Installer::class, true)) {
-                return false;
-            }
-
-            /** @var Installer $installer */
-            $installer = new $installer($module);
             try {
                 $installer->disable();
                 return true;

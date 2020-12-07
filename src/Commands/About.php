@@ -95,14 +95,14 @@ class About extends Command
 
         $output->writeln('<p>Directory</p>: <i>' . $module->directory() . '</i>');
 
-        if ($module->collector()) {
-            $output->writeln('<p>Collector:</p> <i>' . $module->collector() . '</i>');
+        if ($collector = $module->collector()) {
+            $output->writeln('<p>Collector:</p> <i>' . $collector::class . '</i>');
         } else {
             $output->writeln('<p>Installer:</p> <e>No collector</e>');
         }
 
-        if ($module->installer()) {
-            $output->writeln('<p>Installer:</p> <i>' . $module->installer() . '</i>');
+        if ($installer = $module->installer()) {
+            $output->writeln('<p>Installer:</p> <i>' . $installer::class . '</i>');
         } else {
             $output->writeln('<p>Installer:</p> <e>No installer</e>');
         }

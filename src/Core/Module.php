@@ -17,7 +17,9 @@
 
 namespace Opis\Colibri\Core;
 
+use RuntimeException;
 use Composer\Package\CompletePackageInterface;
+use Opis\Colibri\{Collector, Installer, Attributes\Module as ModuleAttribute};
 
 class Module
 {
@@ -28,16 +30,17 @@ class Module
     const TYPE = 'opis-colibri-module';
 
     protected ModuleManager $manager;
-
     protected string $name;
-
     protected ?CompletePackageInterface $package = null;
-
-    protected array $info = [];
-
-    protected ?array $moduleInfo = null;
-
-    protected ?bool $exists = null;
+    protected ?Collector $collector = null;
+    protected ?Installer $installer = null;
+    protected string $title = '';
+    protected string $description = '';
+    protected ?string $assets = null;
+    protected ?string $directory = null;
+    protected ?array $dependencies = null;
+    protected ?array $dependants = null;
+    protected bool $loaded = false;
 
     /**
      * @param ModuleManager $manager
@@ -51,91 +54,65 @@ class Module
         $this->package = $package;
     }
 
-    /**
-     * @return CompletePackageInterface
-     */
     public function package(): CompletePackageInterface
     {
         if ($this->package === null) {
             $this->package = $this->manager->package($this->name);
             if ($this->package === null) {
-                throw new \RuntimeException("Module '{$this->name}' cannot be resolved");
+                throw new RuntimeException("Package '{$this->name}' cannot be resolved");
             }
         }
 
         return $this->package;
     }
 
-    /**
-     * @return int
-     */
     public function status(): int
     {
         return $this->manager->getStatus($this->name);
     }
 
-    /**
-     * @return string
-     */
     public function name(): string
     {
-        return $this->getCached(__FUNCTION__);
+        return $this->name;
     }
 
-    /**
-     * @return string
-     */
     public function version(): string
     {
-        return $this->getCached(__FUNCTION__);
+        return $this->package()->getPrettyVersion();
     }
 
-    /**
-     * @return string
-     */
     public function title(): string
     {
-        return $this->getCached(__FUNCTION__);
+        return $this->load()->title;
     }
 
-    /**
-     * @return string
-     */
     public function description(): string
     {
-        return $this->getCached(__FUNCTION__);
+        return $this->load()->title;
     }
 
-    /**
-     * @return string
-     */
     public function directory(): string
     {
-        return $this->getCached(__FUNCTION__);
+        if ($this->directory === null) {
+            $this->directory = rtrim($this->manager->vendorDir(), '/') . '/' . $this->name;
+        }
+
+        return $this->directory;
     }
 
-    /**
-     * @return null|string
-     */
-    public function collector(): ?string
+    public function collector(): Collector
     {
-        return $this->getCached(__FUNCTION__);
+        return $this->load()->collector;
     }
 
-    /**
-     * @return null|string
-     */
-    public function installer(): ?string
+    public function installer(): ?Installer
     {
-        return $this->getCached(__FUNCTION__);
+        return $this->load()->installer;
     }
 
-    /**
-     * @return null|string
-     */
     public function assets(): ?string
     {
-        return $this->getCached(__FUNCTION__);
+        return $this->load()->assets;
     }
 
     /**
@@ -143,7 +120,11 @@ class Module
      */
     public function dependencies(): array
     {
-        return $this->getCached(__FUNCTION__);
+        if ($this->dependencies === null) {
+            $this->dependencies = $this->resolveDependencies();
+        }
+
+        return $this->dependencies;
     }
 
     /**
@@ -151,44 +132,34 @@ class Module
      */
     public function dependants(): array
     {
-        return $this->getCached(__FUNCTION__);
+        if ($this->dependants === null) {
+            $this->dependants = $this->resolveDependants();
+        }
+
+        return $this->dependants;
     }
 
-    /**
-     * @return bool
-     */
     public function exists(): bool
     {
-        if ($this->exists === null) {
-            $this->exists = false;
-            if ($this->package !== null) {
-                $this->exists = true;
-            } elseif ($this->package = $this->manager->package($this->name)) {
-                $this->exists = true;
-            }
+        try {
+            $this->load();
+        } catch (RuntimeException) {
+            return false;
         }
-        return $this->exists;
+
+        return true;
     }
 
-    /**
-     * @return bool
-     */
     public function isEnabled(): bool
     {
         return $this->status() === self::ENABLED;
     }
 
-    /**
-     * @return bool
-     */
     public function isInstalled(): bool
     {
         return $this->status() >= self::INSTALLED;
     }
 
-    /**
-     * @return bool
-     */
     public function canBeEnabled(): bool
     {
         if ($this->isEnabled() || !$this->isInstalled()) {
@@ -204,9 +175,6 @@ class Module
         return true;
     }
 
-    /**
-     * @return bool
-     */
     public function canBeDisabled(): bool
     {
         if (!$this->isEnabled()) {
@@ -222,9 +190,6 @@ class Module
         return true;
     }
 
-    /**
-     * @return bool
-     */
     public function canBeInstalled(): bool
     {
         if ($this->isInstalled()) {
@@ -240,9 +205,6 @@ class Module
         return true;
     }
 
-    /**
-     * @return bool
-     */
     public function canBeUninstalled(): bool
     {
         if ($this->isEnabled() || !$this->isInstalled()) {
@@ -258,136 +220,75 @@ class Module
         return true;
     }
 
-    /**
-     * @param string $property
-     * @return mixed
-     */
-    protected function getCached(string $property)
+    protected function load(): static
     {
-        if (array_key_exists($property, $this->info)) {
-            return $this->info[$property];
+        if ($this->loaded) {
+            return $this;
         }
 
-        $value = null;
+        $collector_class = $this->package()->getExtra()['collector'] ?? throw new RuntimeException('No collector specified');
 
-        switch ($property) {
-            case 'name':
-                $value = $this->package()->getName();
-                break;
-            case 'version':
-                $value = $this->package()->getPrettyVersion();
-                break;
-            case 'title':
-                $value = $this->resolveTitle();
-                break;
-            case 'description':
-                $value = $this->package()->getDescription();
-                break;
-            case 'dependencies':
-                $value = $this->resolveDependencies();
-                break;
-            case 'dependants':
-                $value = $this->resolveDependants();
-                break;
-            case 'directory':
-                $value = $this->resolveDirectory($this->name);
-                break;
-            case 'assets':
-                $value = $this->resolveAssets();
-                break;
-            case 'collector':
-                $value = $this->resolveCollector();
-                break;
-            case 'installer':
-                $value = $this->resolveInstaller();
-                break;
+        if (!class_exists($collector_class) || !is_subclass_of($collector_class, Collector::class, true)) {
+            throw new RuntimeException("Invalid module '{$this->name}");
         }
 
-        return $this->info[$property] = $value;
+        $this->collector = new $collector_class();
+
+        $reflection = new \ReflectionObject($this->collector);
+        $args = $reflection->getAttributes(ModuleAttribute::class)[0]?->getArguments() ?? [];
+
+        $this->title = $this->resolveTitle($args);
+        $this->description = $this->resolveDescription($args);
+        $this->installer = $this->resolveInstaller($args);
+        $this->assets = $this->resolveAssets($args);
+
+        return $this;
     }
 
-    /**
-     * Resolve module info
-     * @return array
-     */
-    protected function getModuleInfo(): array
+    protected function resolveTitle(array $args): string
     {
-        if ($this->moduleInfo === null) {
-            $this->moduleInfo = $this->package()->getExtra()['module'] ?? [];
+        if (null !== $title = $args[0] ?? $args['title'] ?? null) {
+            return $title;
         }
 
-        return $this->moduleInfo;
+        $name = substr($this->name, strpos($this->name, '/') + 1);
+        $name = array_map(static function ($value) {
+            return strtolower($value);
+        }, explode('-', $name));
+
+        return ucfirst(implode(' ', $name));
     }
 
-    /**
-     * Resolve module's title
-     *
-     * @return string
-     */
-    protected function resolveTitle(): string
+    protected function resolveDescription(array $args): string
     {
-        $title = trim($this->getModuleInfo()['title'] ?? '');
-
-        if (empty($title)) {
-            $name = substr($this->name, strpos($this->name, '/') + 1);
-            $name = array_map(function ($value) {
-                return strtolower($value);
-            }, explode('-', $name));
-            $title = ucfirst(implode(' ', $name));
+        if (null !== $description = $args[1] ?? $args['description'] ?? null) {
+            return $description;
         }
 
-        return $title;
+        return $this->package()->getDescription();
     }
 
-    /**
-     * Resolve module's directory
-     *
-     * @param string $name
-     * @return string
-     */
-    protected function resolveDirectory(string $name): string
+    protected function resolveInstaller(array $args): ?Installer
     {
-        $dir = rtrim($this->manager->vendorDir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        $dir .= rtrim(implode(DIRECTORY_SEPARATOR, explode('/', $name)), DIRECTORY_SEPARATOR);
-        return $dir;
-    }
-
-    /**
-     * Resolve collector class
-     *
-     * @return string|null
-     */
-    protected function resolveCollector(): ?string
-    {
-        $value = $this->getModuleInfo()['collector'] ?? null;
-
-        return is_string($value) ? $value : null;
-    }
-
-    /**
-     * Resolve installer class
-     *
-     * @return string|null
-     */
-    protected function resolveInstaller(): ?string
-    {
-        $value = $this->getModuleInfo()['installer'] ?? null;
-
-        return is_string($value) ? $value : null;
-    }
-
-    /**
-     * Resolve assets dir
-     *
-     * @return string|null
-     */
-    protected function resolveAssets(): ?string
-    {
-        $module = $this->getModuleInfo();
-        if (!isset($module['assets'])) {
+        if (null === $installer_class = $args[2] ?? $args['installer'] ?? null) {
             return null;
         }
-        $directory = $this->directory() . DIRECTORY_SEPARATOR . trim($module['assets'], DIRECTORY_SEPARATOR);
+
+        if (!class_exists($installer_class) || !is_subclass_of($installer_class, Installer::class)) {
+            return null;
+        }
+
+        return new $installer_class();
+    }
+
+    protected function resolveAssets(array $args): ?string
+    {
+        if (null === $assets = $args[3] ?? $args['assets'] ?? null) {
+            return null;
+        }
+
+        $directory = $this->directory() . '/' . trim($this->removeDots($assets), '/');
+
         return is_dir($directory) ? $directory : null;
     }
 
@@ -432,5 +333,27 @@ class Module
         }
 
         return $dependants;
+    }
+
+    protected function removeDots(string $path): string
+    {
+        $root = ($path[0] === '/') ? '/' : '';
+
+        $segments = explode('/', trim($path, '/'));
+
+        $return = [];
+
+        foreach($segments as $segment){
+            if (($segment == '.') || empty($segment)) {
+                continue;
+            }
+            if ($segment == '..') {
+                array_pop($return);
+            } else {
+                array_push($return, $segment);
+            }
+        }
+
+        return $root . implode('/', $return);
     }
 }
