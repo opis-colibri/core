@@ -89,8 +89,6 @@ class CreateModule extends Command
             'title' => trim(json_encode($title), '"'),
             'description' => trim(json_encode($description), '"'),
             'namespace' => trim(json_encode($namespace), '"'),
-            'assets' => $assets,
-            'installer' => $installer,
         ];
 
         $data = $this->template(__DIR__ . '/../../templates/composer.json.php', $args);
@@ -105,7 +103,11 @@ class CreateModule extends Command
             return 1;
         }
 
-        $data = $this->template(__DIR__ . '/../../templates/Collector.php', ['namespace' => $namespace]);
+        $data = $this->template(__DIR__ . '/../../templates/Collector.php', [
+            'namespace' => $namespace,
+            'assets' => $assets,
+            'installer' => $installer,
+        ]);
 
         if (!file_put_contents($dir . '/src/Collector.php', $data)) {
             $output->writeln('<error>Unable to create Collector.php file</error>');
