@@ -24,7 +24,6 @@
     "prefer-stable": true,
     "minimum-stability": "dev",
     "extra": {
-        "module": {
         "collector": "<?= $namespace ?>\\Collector"
         "branch-alias": {
             "dev-master": "1.0.x-dev"

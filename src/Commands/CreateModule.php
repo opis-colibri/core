@@ -86,7 +86,6 @@ class CreateModule extends Command
         $args = [
             'vendor' => $vendor,
             'module' => $module,
-            'title' => trim(json_encode($title), '"'),
             'description' => trim(json_encode($description), '"'),
             'namespace' => trim(json_encode($namespace), '"'),
         ];
@@ -105,6 +104,7 @@ class CreateModule extends Command
 
         $data = $this->template(__DIR__ . '/../../templates/Collector.php', [
             'namespace' => $namespace,
+            'title' => trim(json_encode($title), '"'),
             'assets' => $assets,
             'installer' => $installer,
         ]);
