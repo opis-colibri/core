@@ -60,7 +60,7 @@ class About extends Command
         }
 
         $output->writeln('<p>Name:</p> <i>' . $module->name() . '</i>');
-        $output->writeln('<p>Title:</p> <i>' . $module->description() . '</i>');
+        $output->writeln('<p>Title:</p> <i>' . $module->title() . '</i>');
         $output->writeln('<p>Version:</p> <i>' . $module->version() . '</i>');
 
         if ($module->description() !== '') {
