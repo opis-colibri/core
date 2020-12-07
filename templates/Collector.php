@@ -6,12 +6,12 @@ use Opis\Colibri\Collector as ModuleCollector;
 
 <?php if ($installer && $assets): ?>
 #[Module('<?= $title ?>', installer: Installer::class, assets: 'assets')]
-<?php elseif (!$assets): ?>
-#[Module('<?= $title ?>', installer: Installer::class)]
+<?php elseif (!$installer && !$assets): ?>
+#[Module('<?= $title ?>')]
 <?php elseif(!$installer): ?>
 #[Module('<?= $title ?>', assets: 'assets')]
 <?php else: ?>
-#[Module('<?= $title ?>')]
+#[Module('<?= $title ?>', installer: Installer::class)]
 <?php endif ?>
 class Collector extends ModuleCollector
 {

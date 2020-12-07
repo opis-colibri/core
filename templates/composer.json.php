@@ -15,7 +15,7 @@
         }
     },
     "require": {
-        "php": "^7.4",
+        "php": "^8.0",
         "opis/colibri": "2020.x-dev"
     },
     "config": {
