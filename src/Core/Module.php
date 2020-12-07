@@ -35,7 +35,7 @@ class Module
     protected ?Collector $collector = null;
     protected ?Installer $installer = null;
     protected string $title = '';
-    protected string $description = '';
+    protected ?string $description = null;
     protected ?string $assets = null;
     protected ?string $directory = null;
     protected ?array $dependencies = null;
@@ -86,9 +86,9 @@ class Module
         return $this->load()->title;
     }
 
-    public function description(): string
+    public function description(): ?string
     {
-        return $this->load()->title;
+        return $this->load()->description;
     }
 
     public function directory(): string
@@ -235,7 +235,8 @@ class Module
         $this->collector = new $collector_class();
 
         $reflection = new \ReflectionObject($this->collector);
-        $args = $reflection->getAttributes(ModuleAttribute::class)[0]?->getArguments() ?? [];
+        $attr = $reflection->getAttributes(ModuleAttribute::class)[0] ?? null;
+        $args = $attr?->getArguments() ?? [];
 
         $this->title = $this->resolveTitle($args);
         $this->description = $this->resolveDescription($args);
@@ -259,7 +260,7 @@ class Module
         return ucfirst(implode(' ', $name));
     }
 
-    protected function resolveDescription(array $args): string
+    protected function resolveDescription(array $args): ?string
     {
         if (null !== $description = $args[1] ?? $args['description'] ?? null) {
             return $description;

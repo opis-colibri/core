@@ -25,9 +25,12 @@ class ViewsTest extends BaseAppTestCase
 
     protected static function setupApp(ApplicationBuilder $builder): void
     {
-        $builder->createEnabledTestModule('test/views', 'Test\\Views', __DIR__ . '/code/test-views', [
-            'collector' => 'Test\\Views\\Collector'
-        ]);
+        $builder->createEnabledTestModule(
+            'test/views',
+            'Test\\Views',
+            __DIR__ . '/code/test-views',
+            'Test\\Views\\Collector'
+        );
     }
 
     public function testValue()

@@ -2,10 +2,7 @@
   "name": "test/foo",
   "type": "opis-colibri-module",
   "extra": {
-    "module": {
-      "title": "Foo",
-      "collector": "Test\\Foo\\Collector"
-    },
+    "collector": "Test\\Foo\\Collector",
     "branch-alias": {
       "dev-master": "1.0.x-dev"
     }

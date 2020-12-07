@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Core;
 
-use ReflectionClass;
+use ReflectionObject;
 use ReflectionMethod;
 use RuntimeException;
 use Opis\Colibri\{Application, Collector, Internal\Collector as InternalCollector, Attributes\Priority};
@@ -203,37 +203,24 @@ class ItemCollector
             if (!$module->isEnabled()) {
                 continue;
             }
-            if (($collector = $module->collector()) === null) {
-                continue;
-            }
-
-            $instance = $this->container->make($collector);
-            
-            $reflection = new ReflectionClass($instance);
-
-            if (!$reflection->isSubclassOf(Collector::class)) {
-                continue;
-            }
-
-            /** @var $instance Collector */
-            $this->doCollect($module, $instance, $reflection, $collectorList, $invertedList);
+            $this->doCollect($module, $module->collector(), $collectorList, $invertedList);
         }
     }
 
     private function collectFromCore(array $collectorList, array $invertedList): void
     {
-
         $fakeModule = $this->app->getModule('opis-colibri/core');
 
         $instance = new InternalCollector();
-        $reflection = new ReflectionClass($instance);
 
-        $this->doCollect($fakeModule, $instance, $reflection, $collectorList, $invertedList);
+        $this->doCollect($fakeModule, $instance, $collectorList, $invertedList);
     }
 
-    private function doCollect(Module $module, Collector $instance, ReflectionClass $reflection,
+    private function doCollect(Module $module, Collector $instance,
                                array $collectorList, array $invertedList): void
     {
+        $reflection = new ReflectionObject($instance);
+
         foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
 
             $methodName = $method->getShortName();

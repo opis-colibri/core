@@ -2,10 +2,7 @@
   "name": "test/bar",
   "type": "opis-colibri-module",
   "extra": {
-    "module": {
-      "title": "Bar",
-      "collector": "Test\\Bar\\Collector"
-    },
+    "collector": "Test\\Bar\\Collector",
     "branch-alias": {
       "dev-master": "1.0.x-dev"
     }

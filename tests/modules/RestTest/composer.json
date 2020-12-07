@@ -2,10 +2,7 @@
   "name": "test/rest-test",
   "type": "opis-colibri-module",
   "extra": {
-    "module": {
-      "title": "RestTest",
-      "collector": "Test\\RestTest\\Collector"
-    },
+    "collector": "Test\\RestTest\\Collector",
     "branch-alias": {
       "dev-master": "1.0.x-dev"
     }
