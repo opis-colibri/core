@@ -279,7 +279,7 @@ class Module
             return null;
         }
 
-        return new $installer_class();
+        return new $installer_class($this);
     }
 
     protected function resolveAssets(array $args): ?string
