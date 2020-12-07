@@ -4,14 +4,14 @@ namespace <?= $namespace ?>;
 use Opis\Colibri\Attributes\Module;
 use Opis\Colibri\Collector as ModuleCollector;
 
-<?php if (!$installer && $assets === null): ?>
-#[Module('<?= $title ?>')]
-<?php elseif ($assets === null): ?>
+<?php if ($installer && $assets): ?>
+#[Module('<?= $title ?>', installer: Installer::class, assets: 'assets')]
+<?php elseif (!$assets): ?>
 #[Module('<?= $title ?>', installer: Installer::class)]
 <?php elseif(!$installer): ?>
-#[Module('<?= $title ?>', assets: '<?= $assets ?>')]
+#[Module('<?= $title ?>', assets: 'assets')]
 <?php else: ?>
-#[Module('<?= $title ?>', installer: Installer::class, assets: '<?= $assets ?>')]
+#[Module('<?= $title ?>')]
 <?php endif ?>
 class Collector extends ModuleCollector
 {
