@@ -965,18 +965,20 @@ class Application
 
     protected function addSessionCookies(HttpResponse $response): void
     {
-        foreach ($this->getSessionCookieContainer()->getAddedCookies() as $cookie) {
-            $response->setCookie(
-                $cookie['name'],
-                $cookie['value'],
-                $cookie['expires'],
-                $cookie['path'],
-                $cookie['domain'],
-                $cookie['secure'],
-                $cookie['httponly'],
-                $cookie['samesite'],
-            );
-        }
+        $response->modify(function (HttpResponse $response) {
+            foreach ($this->getSessionCookieContainer()->getAddedCookies() as $cookie) {
+                $response->setCookie(
+                    $cookie['name'],
+                    $cookie['value'],
+                    $cookie['expires'],
+                    $cookie['path'],
+                    $cookie['domain'],
+                    $cookie['secure'],
+                    $cookie['httponly'],
+                    $cookie['samesite'],
+                );
+            }
+        });
     }
 
     /**
