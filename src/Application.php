@@ -680,10 +680,11 @@ class Application
     }
 
     /**
+     * @param bool $flush
      * @return HttpResponse
      * @throws Throwable
      */
-    public function serve(): HttpResponse
+    public function serve(bool $flush = true): HttpResponse
     {
         $request = HttpRequest::fromGlobals();
 
@@ -695,13 +696,14 @@ class Application
             $file = $info->assetsDir() . '/' . substr($path, strlen($assetsPath));
             if (is_file($file)) {
                 $response = new FileStream($file);
-                $this->addSessionCookies($response);
-                $this->flushResponse($request, $response);
+                if ($flush) {
+                    $this->flushResponse($request, $response);
+                }
                 return $response;
             }
         }
 
-        return $this->run($request);
+        return $this->run($request, $flush);
     }
 
     /**
