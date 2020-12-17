@@ -651,7 +651,7 @@ class Application
                 throw $exception;
             }
 
-            logger()->error('Internal server error', [
+            $this->getLogger()->error('Internal server error', [
                 'message' => $exception->getMessage(),
                 'file' => $exception->getLine(),
                 'line' => $exception->getLine(),
@@ -661,14 +661,14 @@ class Application
 
             $contentType = strtolower(trim(explode(';', $request->getHeader('Content-Type', 'text/html'))[0]));
 
-            return httpError(500, $contentType === 'application/json' ? (object) [] : null);
+            return httpError(500, $contentType === 'application/json' ? (object) ['message' => 'Application error'] : null);
         }
 
         if (!$response instanceof HttpResponse) {
             $response = new HtmlResponse($response);
         }
 
-        $this->addSessionCookies($response);
+        $response = $this->addSessionCookies($response);
 
         if ($flush) {
             $this->flushResponse($request, $response);
@@ -963,10 +963,15 @@ class Application
         return $this->getEventDispatcher()->emit($name, $cancelable);
     }
 
-    protected function addSessionCookies(HttpResponse $response): void
+    protected function addSessionCookies(HttpResponse $response): HttpResponse
     {
-        $response->modify(function (HttpResponse $response) {
-            foreach ($this->getSessionCookieContainer()->getAddedCookies() as $cookie) {
+        $added = $this->getSessionCookieContainer()->getAddedCookies();
+        if (!$added) {
+            return $response;
+        }
+
+        return $response->modify(function (HttpResponse $response) use ($added) {
+            foreach ($added as $cookie) {
                 $response->setCookie(
                     $cookie['name'],
                     $cookie['value'],

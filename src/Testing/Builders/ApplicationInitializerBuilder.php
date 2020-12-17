@@ -346,7 +346,7 @@ class ApplicationInitializerBuilder
             'cookie_path' => '/',
             'cookie_domain' => '',
             'cookie_secure' => false,
-            'cookie_httponly' => false,
+            'cookie_httponly' => true,
             'cookie_samesite' => null,
         ];
     }
