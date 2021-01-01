@@ -459,11 +459,10 @@ function collect(string $type, bool $fresh = false)
 /**
  * @param string $class
  * @param string $description
- * @param array $options
  */
-function registerCollector(string $class, string $description, array $options = []): void
+function registerCollector(string $class, string $description): void
 {
-    Application::getInstance()->getCollector()->register($class, $description, $options);
+    Application::getInstance()->getCollector()->register($class, $description);
 }
 
 /**

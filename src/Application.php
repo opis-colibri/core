@@ -1046,9 +1046,6 @@ class Application
             'routes' => [
                 'class' => RouteCollector::class,
                 'description' => 'Collects web routes',
-                'options' => [
-                    'invertedPriority' => false,
-                ],
             ],
             'router-globals' => [
                 'class' => RouterGlobalsCollector::class,
@@ -1057,9 +1054,6 @@ class Application
             'views' => [
                 'class' => ViewCollector::class,
                 'description' => 'Collects views',
-                'options' => [
-                    'invertedPriority' => false,
-                ],
             ],
             'contracts' => [
                 'class' => ContractCollector::class,
@@ -1072,9 +1066,6 @@ class Application
             'event-handlers' => [
                 'class' => EventHandlerCollector::class,
                 'description' => 'Collects event handlers',
-                'options' => [
-                    'invertedPriority' => false,
-                ],
             ],
             'view-engines' => [
                 'class' => ViewEngineCollector::class,

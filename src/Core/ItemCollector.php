@@ -121,18 +121,16 @@ class ItemCollector
      *
      * @param string $class
      * @param string $description
-     * @param array $options
      *
      * @return self
      */
-    public function register(string $class, string $description, array $options = []): self
+    public function register(string $class, string $description): self
     {
         $name = $this->classToCollectorName($class);
 
         $this->app->getConfig()->write('collectors.' . $name, [
             'class' => $class,
             'description' => $description,
-            'options' => $options,
         ]);
 
         $this->container->singleton($class);
@@ -250,16 +248,6 @@ class ItemCollector
 
             if (!empty($attributes)) {
                 $priority = end($attributes)->getArguments()[0];
-            }
-
-            if (isset($collectorList[$name])) {
-                $options = $collectorList[$name]['options'] ?? [];
-                $options += [
-                    'invertedPriority' => true,
-                ];
-                if ($options['invertedPriority']) {
-                    $priority *= -1;
-                }
             }
 
             $callback = static function (BaseCollector $collector) use (
