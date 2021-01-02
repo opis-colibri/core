@@ -20,12 +20,12 @@ namespace Opis\Colibri\Testing\Builders;
 use Opis\Session\Handlers\Memory;
 use Opis\Session\SessionHandler;
 use Opis\Colibri\Testing\CustomApplicationInitializer;
-use Opis\I18n\Locale;
+use Opis\Colibri\I18n\Locale;
 use Opis\Database\Connection;
-use Opis\DataStore\{DataStore, Drivers\Memory as DefaultConfig};
+use Opis\Colibri\DataStore\{DataStore, Drivers\Memory as DefaultConfig};
 use Psr\Log\{LoggerInterface, NullLogger as DefaultLogger};
-use Opis\Cache\{CacheDriver, Drivers\Memory as DefaultCache};
-use Opis\I18n\Translator\{Drivers\Memory as DefaultTranslator, Driver as TranslatorDriver};
+use Opis\Colibri\Cache\{CacheDriver, Drivers\Memory as DefaultCache};
+use Opis\Colibri\I18n\Translator\{Drivers\Memory as DefaultTranslator, Driver as TranslatorDriver};
 
 class ApplicationInitializerBuilder
 {

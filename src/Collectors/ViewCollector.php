@@ -17,8 +17,7 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Core\ViewEngine;
-use Opis\View\{Renderer, ViewHandler};
+use Opis\Colibri\View\{PHPEngine, Renderer, ViewHandler};
 use function Opis\Colibri\collect;
 
 /**
@@ -28,7 +27,7 @@ class ViewCollector extends BaseCollector
 {
     public function __construct()
     {
-        $renderer = new Renderer(new ViewEngine());
+        $renderer = new Renderer(new PHPEngine());
         $resolver = $renderer->getEngineResolver();
 
         foreach (collect(ViewEngineCollector::class)->getEntries() as $entry) {

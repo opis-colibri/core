@@ -15,23 +15,40 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Core;
+namespace Opis\Colibri\View;
 
-use Opis\View\DefaultView;
 use function Opis\Colibri\render;
 
-class View extends DefaultView
+class View implements Viewable
 {
+    protected string $name;
+    protected array $vars;
     protected ?string $renderedContent = null;
+
+    public function __construct(string $name, array $vars = [])
+    {
+        $this->name = $name;
+        $this->vars = $vars;
+    }
+
+    public function getViewName(): string
+    {
+        return $this->name;
+    }
+
+    public function getViewVariables(): array
+    {
+        return $this->vars;
+    }
 
     /**
      * Set a value
      *
-     * @param   string $name
-     * @param   mixed $value
-     * @return View|static
+     * @param string $name
+     * @param mixed $value
+     * @return $this
      */
-    protected function set(string $name, $value): self
+    protected function set(string $name, mixed $value): static
     {
         $this->vars[$name] = $value;
         return $this;
@@ -51,16 +68,16 @@ class View extends DefaultView
     /**
      * Get a value
      *
-     * @param   string $name
-     * @param   mixed $default (optional)
-     * @return  mixed
+     * @param string $name
+     * @param mixed|null $default
+     * @return mixed
      */
-    protected function get(string $name, $default = null)
+    protected function get(string $name, mixed $default = null): mixed
     {
         return $this->vars[$name] ?? $default;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         if ($this->renderedContent === null) {
             $this->renderedContent = render($this);

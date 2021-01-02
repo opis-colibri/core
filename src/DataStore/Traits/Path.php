@@ -1,5 +1,5 @@
 <?php
-/* ===========================================================================
+/* ============================================================================
  * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,31 +15,20 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Core;
+namespace Opis\Colibri\DataStore\Traits;
 
-use Opis\Events\Event as BaseEvent;
-
-class Event extends BaseEvent
+trait Path
 {
-    /** @var mixed */
-    private $data;
-
     /**
-     * @param string $name
-     * @param null $data
-     * @param bool $cancelable
+     * @param string|string[] $path
+     * @return string[]
      */
-    public function __construct(string $name, $data = null, bool $cancelable = false)
+    protected function normalizePath($path): array
     {
-        $this->data = $data;
-        parent::__construct($name, $cancelable);
-    }
+        if (is_array($path)) {
+            return $path;
+        }
 
-    /**
-     * @return mixed
-     */
-    public function data()
-    {
-        return $this->data;
+        return explode('.', (string)$path);
     }
 }

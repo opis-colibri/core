@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\HTML;
 
-use Opis\Colibri\Core\View;
+use Opis\Colibri\View\View;
 
 class Link extends View
 {

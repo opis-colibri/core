@@ -17,22 +17,23 @@
 
 namespace Opis\Colibri;
 
+use Opis\Colibri\IoC\Container;
 use RuntimeException, Throwable;
 use Composer\Package\CompletePackageInterface;
 use Symfony\Component\Console\Application as ConsoleApplication;
 use Opis\Session\{SessionHandler, Containers\RequestContainer};
 use Psr\Log\{NullLogger, LoggerInterface};
-use Opis\Cache\{CacheDriver};
-use Opis\Events\{Event, EventDispatcher};
-use Opis\I18n\Translator\{Driver as TranslatorDriver};
-use Opis\View\{Renderer};
+use Opis\Colibri\Cache\{CacheDriver};
+use Opis\Colibri\Events\{Event, EventDispatcher};
+use Opis\Colibri\I18n\Translator\{Driver as TranslatorDriver};
+use Opis\Colibri\View\{Renderer};
 use Opis\Http\{Request as HttpRequest, Response as HttpResponse, Responses\FileStream, Responses\HtmlResponse};
-use Opis\DataStore\{DataStore};
+use Opis\Colibri\DataStore\{DataStore};
 use Opis\Database\{Connection, Database, Schema};
 use Opis\ORM\EntityManager;
 use Opis\JsonSchema\Validator;
 use Opis\Colibri\Templates\TemplateStream;
-use Opis\Colibri\Core\{Container, CSRFToken, ItemCollector, Module, ModuleManager, Router, Session, Translator};
+use Opis\Colibri\Core\{CSRFToken, ItemCollector, Module, ModuleManager, Router, Session, Translator};
 use Opis\Colibri\Collectors\{
     AssetsHandlerCollector,
     CacheCollector,

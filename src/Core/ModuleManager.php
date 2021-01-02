@@ -21,7 +21,7 @@ use Throwable, ArrayObject, Generator;
 use Composer\Json\JsonFile;
 use Composer\Package\CompletePackageInterface;
 use Composer\Repository\InstalledFilesystemRepository;
-use Opis\DataStore\DataStore;
+use Opis\Colibri\DataStore\DataStore;
 
 class ModuleManager
 {

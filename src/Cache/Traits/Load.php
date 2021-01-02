@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,26 +15,27 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Core;
+namespace Opis\Colibri\Cache\Traits;
 
-use Opis\Colibri\Application;
-use Opis\Container\Container as BaseContainer;
+use Opis\Colibri\Cache\CacheDriver;
 
-class Container extends BaseContainer
+trait Load
 {
-    public function __construct()
+    /**
+     * @param string $key
+     * @param callable $loader
+     * @param int $ttl
+     * @return mixed
+     */
+    public function load(string $key, callable $loader, int $ttl = 0)
     {
-        $this->instances[Application::class] = Application::getInstance();
-    }
+        /** @var CacheDriver $cache */
+        $cache = $this;
 
-    public function __unserialize(array $data): void
-    {
-        parent::__unserialize($data);
-        $this->__construct();
-    }
+        if (!$cache->has($key)) {
+            $cache->write($key, $loader($key), $ttl);
+        }
 
-    public function getInstance(string $key): ?object
-    {
-        return $this->instances[$key] ?? null;
+        return $cache->read($key);
     }
 }

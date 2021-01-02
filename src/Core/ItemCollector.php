@@ -20,8 +20,12 @@ namespace Opis\Colibri\Core;
 use ReflectionObject;
 use ReflectionMethod;
 use RuntimeException;
-use Opis\Colibri\{Application, Collector, Internal\Collector as InternalCollector, Attributes\Priority};
-use Opis\Utils\SortableList;
+use Opis\Colibri\{Application,
+    Collector,
+    IoC\Container,
+    Internal\Collector as InternalCollector,
+    Attributes\Priority};
+use Opis\Colibri\Utils\SortableList;
 use Opis\Colibri\Collectors\BaseCollector;
 
 class ItemCollector

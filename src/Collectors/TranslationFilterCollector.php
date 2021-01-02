@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\I18n\Translator\Filter;
+use Opis\Colibri\I18n\Translator\Filter;
 
 class TranslationFilterCollector extends ClassCollector
 {

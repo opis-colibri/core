@@ -15,49 +15,31 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Core;
+namespace Opis\Colibri\View;
 
-use Opis\I18n\Translator\LanguageInfo;
-use Opis\View\PHPEngine;
+use Throwable;
+use Opis\Colibri\I18n\Translator\LanguageInfo;
 use function Opis\Colibri\{
     view, render, asset, getURI, generateCSRFToken, t
 };
 
-class ViewEngine extends PHPEngine
+class PHPEngine implements Engine
 {
-    /**
-     * @param string $name
-     * @param array $arguments
-     * @return View
-     */
     public function view(string $name, array $arguments = []): View
     {
         return view($name, $arguments);
     }
 
-    /**
-     * @param $view
-     * @return string
-     */
-    public function render($view): string
+    public function render(string|Viewable $viewable): string
     {
-        return render($view);
+        return render($viewable);
     }
 
-    /**
-     * @param string $module
-     * @param string $path
-     * @return string
-     */
     public function asset(string $module, string $path): string
     {
         return asset($module, $path);
     }
 
-    /**
-     * @param string $path
-     * @return string
-     */
     public function getURI(string $path): string
     {
         return getURI($path);
@@ -81,5 +63,44 @@ class ViewEngine extends PHPEngine
     public function csrfToken(): string
     {
         return generateCSRFToken();
+    }
+
+    /**
+     * Build
+     *
+     * @param   string $path
+     * @param   array $vars
+     *
+     * @return  string
+     * @throws Throwable
+     */
+    public function build(string $path, array $vars = []): string
+    {
+        ${'#path'} = $path;
+        ${'#vars'} = $vars;
+
+        unset($path, $vars);
+
+        ob_start();
+
+        extract(${'#vars'});
+
+        try {
+            /** @noinspection PhpIncludeInspection */
+            include ${'#path'};
+        } catch (Throwable $e) {
+            ob_get_clean();
+            throw $e;
+        }
+
+        return ob_get_clean();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function canHandle(string $path): bool
+    {
+        return true;
     }
 }

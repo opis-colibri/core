@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Events\{EventDispatcher, EventHandler};
+use Opis\Colibri\Events\{EventDispatcher, EventHandler};
 
 /**
  * @method EventDispatcher data()

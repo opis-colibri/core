@@ -3,8 +3,20 @@
         <testsuite name="Routing">
             <directory suffix="RoutingTest.php">./tests</directory>
         </testsuite>
+        <testsuite name="Events">
+            <directory suffix="EventsTest.php">./tests</directory>
+        </testsuite>
         <testsuite name="Views">
             <directory suffix="ViewsTest.php">./tests</directory>
+        </testsuite>
+        <testsuite name="Cache">
+            <directory suffix="CacheTest.php">./tests</directory>
+        </testsuite>
+        <testsuite name="DataStore">
+            <directory suffix="Test.php">./tests/DataStore</directory>
+        </testsuite>
+        <testsuite name="I18n">
+            <directory suffix="Test.php">./tests/I18n</directory>
         </testsuite>
         <testsuite name="Rest">
             <directory suffix="RestTest.php">./tests</directory>

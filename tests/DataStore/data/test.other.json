@@ -1,0 +1,8 @@
+{
+  "test.other": {
+    "foo": {
+      "bar": "BAR",
+      "bar.baz": "BAZ"
+    }
+  }
+}

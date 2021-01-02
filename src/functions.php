@@ -17,16 +17,17 @@
 
 namespace Opis\Colibri;
 
-use Opis\Cache\CacheDriver;
+use Opis\Colibri\Cache\CacheDriver;
+use Opis\Colibri\View\View;
 use Opis\JsonSchema\Validator;
-use Opis\Colibri\Core\{Session, View as CoreView};
+use Opis\Colibri\Core\{Session};
 use Opis\Database\{
     Connection as DBConnection,
     Database,
     Schema
 };
-use Opis\DataStore\DataStore;
-use Opis\I18n\Translator\{
+use Opis\Colibri\DataStore\DataStore;
+use Opis\Colibri\I18n\Translator\{
     LanguageInfo,
     SubTranslator
 };
@@ -34,15 +35,14 @@ use Opis\ORM\{
     EntityManager,
     Core\EntityQuery
 };
-use Opis\Events\Event;
-use Opis\Colibri\Core\Event as DataEvent;
+use Opis\Colibri\Events\Event;
 use Opis\Routing\ControllerCallback;
 use Opis\Stream\Stream;
 use Opis\Http\{Request, Response as HttpResponse, Response};
 use Opis\Http\Responses\{
     HtmlResponse, JsonResponse, RedirectResponse
 };
-use Opis\View\View as OpisView;
+use Opis\Colibri\View\Viewable;
 use Psr\Log\LoggerInterface;
 use Opis\Colibri\Core\Module;
 
@@ -172,9 +172,9 @@ function entityManager(?string $connection = null): EntityManager
  * @param bool $cancelable
  * @return Event
  */
-function emit(string $event, $data = null, bool $cancelable = false): Event
+function emit(string $event, mixed $data = null, bool $cancelable = false): Event
 {
-    return Application::getInstance()->getEventDispatcher()->dispatch(new DataEvent($event, $data, $cancelable));
+    return Application::getInstance()->getEventDispatcher()->dispatch(new Event($event, $cancelable, $data));
 }
 
 /**
@@ -324,21 +324,12 @@ function module(string $module): Module
     return Application::getInstance()->getModule($module);
 }
 
-/**
- * @param string $name
- * @param array $vars
- * @return CoreView
- */
-function view(string $name, array $vars = []): CoreView
+function view(string $name, array $vars = []): View
 {
-    return new CoreView($name, $vars);
+    return new View($name, $vars);
 }
 
-/**
- * @param string|OpisView $view
- * @return string
- */
-function render($view): string
+function render(string|Viewable $view): string
 {
     return Application::getInstance()->getViewRenderer()->render($view);
 }

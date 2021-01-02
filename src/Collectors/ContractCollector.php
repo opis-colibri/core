@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Core\Container;
+use Opis\Colibri\IoC\Container;
 
 /**
  * @method Container data()

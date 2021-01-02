@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Core;
 
 use Opis\Colibri\Collectors\{TranslationCollector, TranslationFilterCollector};
-use Opis\I18n\Translator\{
+use Opis\Colibri\I18n\Translator\{
     BaseTranslator,
     Drivers\Memory,
     Driver,
