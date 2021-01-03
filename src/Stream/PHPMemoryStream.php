@@ -15,16 +15,24 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Templates;
+namespace Opis\Colibri\Stream;
 
-use Opis\Colibri\Stream\Content;
-
-interface TemplateStreamHandler
+final class PHPMemoryStream extends ResourceStream
 {
     /**
-     * @param string $id
-     * @param string $extension
-     * @return null|Content
+     * PHPMemoryStream constructor.
+     * @param string|null $data
+     * @param string|null $mode
+     * @param int|null $max Maximum amount of bytes to store in memory before using a temporary file
      */
-    public function handle(string $id, string $extension): ?Content;
+    public function __construct(?string $data = null, ?string $mode = null, ?int $max = null)
+    {
+        parent::__construct($max > 0 ? ('php://temp/maxmemory:' . $max) : 'php://memory', $mode ?? 'rb+');
+
+        if ($data !== null && $data !== '') {
+            if ($this->write($data) > 0) {
+                $this->rewind();
+            }
+        }
+    }
 }

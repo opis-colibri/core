@@ -19,7 +19,7 @@ namespace Opis\Colibri\Http;
 
 use Throwable;
 use InvalidArgumentException, RuntimeException;
-use Opis\Stream\{Stream, ResourceStream};
+use Opis\Colibri\Stream\{Stream, ResourceStream};
 
 class UploadedFileHandler implements UploadedFile
 {

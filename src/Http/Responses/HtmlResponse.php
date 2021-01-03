@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Http\Responses;
 
-use Opis\Stream\Stream;
+use Opis\Colibri\Stream\Stream;
 
 class HtmlResponse extends StringResponse
 {

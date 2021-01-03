@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Test\Http;
 
-use Opis\Stream\{PHPDataStream, ResourceStream};
+use Opis\Colibri\Stream\{PHPDataStream, ResourceStream};
 use PHPUnit\Framework\TestCase;
 
 class StreamTest extends TestCase

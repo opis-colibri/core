@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Templates;
 
-use Opis\Stream\Content;
+use Opis\Colibri\Stream\Content;
 
 final class CallbackContent extends Content
 {

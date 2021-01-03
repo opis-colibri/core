@@ -15,16 +15,19 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Templates;
+namespace Opis\Colibri\Stream;
 
-use Opis\Colibri\Stream\Content;
-
-interface TemplateStreamHandler
+final class PHPDataStream extends ResourceStream
 {
     /**
-     * @param string $id
-     * @param string $extension
-     * @return null|Content
+     * DataStream constructor.
+     * This is a readonly stream
+     * @param string $data
+     * @param string $mode
+     * @param string $content_type
      */
-    public function handle(string $id, string $extension): ?Content;
+    public function __construct(string $data, string $mode = 'rb', string $content_type = 'text/plain')
+    {
+        parent::__construct('data://' . $content_type . ';base64,' . base64_encode($data), $mode);
+    }
 }

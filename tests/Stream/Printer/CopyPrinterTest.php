@@ -15,16 +15,29 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Templates;
+namespace Opis\Colibri\Test\Stream\Printer;
 
-use Opis\Colibri\Stream\Content;
+use Opis\Colibri\Stream\{PHPDataStream, PHPMemoryStream, Printer\CopyPrinter};
+use PHPUnit\Framework\TestCase;
 
-interface TemplateStreamHandler
+class CopyPrinterTest extends TestCase
 {
+    public function testCopy()
+    {
+        $printer = $this->printer();
+
+        $this->assertEquals(1000, $printer->copy(new PHPDataStream(str_repeat('x', 1000))));
+        $this->assertEquals(3, $printer->append("\nok"));
+
+        $this->assertEquals(str_repeat('x', 1000) . "\nok", $printer->stream());
+    }
+
     /**
-     * @param string $id
-     * @param string $extension
-     * @return null|Content
+     * @param string $data
+     * @return CopyPrinter
      */
-    public function handle(string $id, string $extension): ?Content;
+    protected function printer(string $data = ''): CopyPrinter
+    {
+        return new CopyPrinter(new PHPMemoryStream($data, 'w+'));
+    }
 }

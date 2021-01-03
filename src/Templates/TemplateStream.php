@@ -17,8 +17,8 @@
 
 namespace Opis\Colibri\Templates;
 
-use Opis\Stream\Content;
-use Opis\Stream\Wrapper\ContentStreamWrapper;
+use Opis\Colibri\Stream\Content;
+use Opis\Colibri\Stream\Wrapper\ContentStreamWrapper;
 use Opis\Colibri\Collectors\TemplateStreamHandlerCollector;
 use function Opis\Colibri\collect;
 

@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Testing;
 
-use Opis\Stream\PHPDataStream;
+use Opis\Colibri\Stream\PHPDataStream;
 use Opis\Colibri\Http\{Request, Response};
 use Opis\Colibri\Testing\Builders\ApplicationBuilder;
 use Symfony\Component\Console\Input\ArrayInput;

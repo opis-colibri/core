@@ -21,7 +21,7 @@ use RuntimeException;
 use Opis\Colibri\Http\{
     MimeType, Response
 };
-use Opis\Stream\ResourceStream;
+use Opis\Colibri\Stream\ResourceStream;
 
 class FileDownload extends Response
 {

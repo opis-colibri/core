@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Test\Http;
 
 use RuntimeException;
-use Opis\Stream\{Stream, ResourceStream};
+use Opis\Colibri\Stream\{Stream, ResourceStream};
 use Opis\Colibri\Http\UploadedFileHandler;
 use PHPUnit\Framework\TestCase;
 

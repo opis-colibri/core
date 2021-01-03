@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Http\Responses;
 
 use Opis\Colibri\Http\Response;
-use Opis\Stream\PHPMemoryStream;
+use Opis\Colibri\Stream\PHPMemoryStream;
 
 class StringResponse extends Response
 {

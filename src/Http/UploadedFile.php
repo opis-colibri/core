@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Http;
 
-use Opis\Stream\Stream;
+use Opis\Colibri\Stream\Stream;
 
 interface UploadedFile
 {

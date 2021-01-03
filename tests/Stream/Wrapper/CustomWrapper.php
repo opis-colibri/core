@@ -15,16 +15,31 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Templates;
+namespace Opis\Colibri\Test\Stream\Wrapper;
 
-use Opis\Colibri\Stream\Content;
+use Opis\Colibri\Stream\{Content, Wrapper\ContentStreamWrapper};
 
-interface TemplateStreamHandler
+class CustomWrapper extends ContentStreamWrapper
 {
     /**
-     * @param string $id
-     * @param string $extension
-     * @return null|Content
+     * @inheritDoc
      */
-    public function handle(string $id, string $extension): ?Content;
+    protected function content(string $path): ?Content
+    {
+        $path = explode('://', $path, 2);
+
+        if (count($path) !== 2 || $path[0] !== static::protocol()) {
+            return null;
+        }
+
+        return new Content($path[1]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function protocol(): string
+    {
+        return 'custom';
+    }
 }

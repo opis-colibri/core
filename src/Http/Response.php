@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Http;
 
 use RuntimeException;
-use Opis\Stream\Stream;
+use Opis\Colibri\Stream\Stream;
 
 class Response extends Message
 {

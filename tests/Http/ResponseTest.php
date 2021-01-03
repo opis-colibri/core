@@ -25,7 +25,7 @@ use Opis\Colibri\Http\Responses\{
     HtmlResponse,
     RedirectResponse
 };
-use Opis\Stream\PHPDataStream;
+use Opis\Colibri\Stream\PHPDataStream;
 use PHPUnit\Framework\TestCase;
 
 class ResponseTest extends TestCase

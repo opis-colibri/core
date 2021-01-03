@@ -21,6 +21,9 @@
         <testsuite name="Session">
             <directory suffix="Test.php">./tests/Session</directory>
         </testsuite>
+        <testsuite name="Stream">
+            <directory suffix="Test.php">./tests/Stream</directory>
+        </testsuite>
         <testsuite name="Routing">
             <directory suffix="Test.php">./tests/Routing</directory>
         </testsuite>

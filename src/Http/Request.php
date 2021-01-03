@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Http;
 
 use Opis\Uri\Uri;
-use Opis\Stream\{ResourceStream, Stream};
+use Opis\Colibri\Stream\{ResourceStream, Stream};
 
 class Request extends Message
 {

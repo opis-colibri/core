@@ -19,7 +19,7 @@ namespace Test\Foo\Middleware;
 
 use Opis\Colibri\Routing\Middleware;
 use Opis\Colibri\Http\Response;
-use Opis\Stream\PHPMemoryStream;
+use Opis\Colibri\Stream\PHPMemoryStream;
 
 class PrefixMiddleware extends Middleware
 {

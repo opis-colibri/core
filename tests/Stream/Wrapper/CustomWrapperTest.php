@@ -15,16 +15,24 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Templates;
+namespace Opis\Colibri\Test\Stream\Wrapper;
 
-use Opis\Colibri\Stream\Content;
+use PHPUnit\Framework\TestCase;
 
-interface TemplateStreamHandler
+class CustomWrapperTest extends TestCase
 {
-    /**
-     * @param string $id
-     * @param string $extension
-     * @return null|Content
-     */
-    public function handle(string $id, string $extension): ?Content;
+    public function testCustom()
+    {
+        $this->assertFalse(CustomWrapper::isRegistered());
+        $this->assertTrue(CustomWrapper::register());
+        $this->assertTrue(CustomWrapper::isRegistered());
+
+        $this->assertEquals('ok', file_get_contents('custom://ok'));
+        $this->assertEquals('ok ok ok', file_get_contents('custom://ok ok ok'));
+        $this->assertEquals(5, filesize('custom://12345'));
+
+        $this->assertTrue(CustomWrapper::unregister());
+        $this->assertFalse(CustomWrapper::isRegistered());
+        $this->assertFalse(CustomWrapper::unregister());
+    }
 }

@@ -37,7 +37,7 @@ use Opis\ORM\{
 };
 use Opis\Colibri\Events\Event;
 use Opis\Colibri\Routing\ControllerCallback;
-use Opis\Stream\Stream;
+use Opis\Colibri\Stream\Stream;
 use Opis\Colibri\Http\{Request, Response as HttpResponse, Response};
 use Opis\Colibri\Http\Responses\{
     HtmlResponse, JsonResponse, RedirectResponse

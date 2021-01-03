@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Http\Responses;
 
 use RuntimeException;
-use Opis\Stream\ResourceStream;
+use Opis\Colibri\Stream\ResourceStream;
 use Opis\Colibri\Http\{MimeType, Response};
 
 class FileStream extends Response

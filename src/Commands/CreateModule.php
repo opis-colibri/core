@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Commands;
 
-use Opis\Stream\Wrapper\PHPCodeStreamWrapper;
+use Opis\Colibri\Stream\Wrapper\PHPCodeStreamWrapper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputArgument;
