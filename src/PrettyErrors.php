@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2020 Zindex Software
+ * Copyright 2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,31 +15,41 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Internal;
+namespace Opis\Colibri;
 
+use Whoops\Util\Misc;
+use Whoops\Run as WhoopsRun;
+use Whoops\Handler\{
+    JsonResponseHandler,
+    PrettyPageHandler,
+    PlainTextHandler
+};
 
-use Opis\Colibri\HTML\Template as HtmlTemplate;
-use Opis\Colibri\Templates\TemplateStream;
-
-final class Views
+final class PrettyErrors
 {
+    private static ?WhoopsRun $whoops = null;
+
     private function __construct()
     {
-        // only static methods
+        // NOP
     }
 
-    public static function httpError()
+    public static function enable(): void
     {
-        return __DIR__ . '/../../resources/templates/http-error.php';
-    }
+        if (self::$whoops !== null) {
+            return;
+        }
 
-    public static function welcome()
-    {
-        return __DIR__ . '/../../resources/templates/welcome.php';
-    }
+        self::$whoops = $whoops = new WhoopsRun();
 
-    public static function htmlTemplates(string $type)
-    {
-        return TemplateStream::url('callback', HtmlTemplate::class . '::' . $type, 'php');
+        if (Misc::isCommandLine()) {
+            $whoops->appendHandler(new PlainTextHandler());
+        } elseif (Misc::isAjaxRequest()) {
+            $whoops->appendHandler(new JsonResponseHandler());
+        } else {
+            $whoops->appendHandler(new PrettyPageHandler());
+        }
+
+        $whoops->register();
     }
 }
