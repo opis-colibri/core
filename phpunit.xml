@@ -1,8 +1,5 @@
 <phpunit bootstrap="./vendor/autoload.php">
     <testsuites>
-        <testsuite name="Routing">
-            <directory suffix="RoutingTest.php">./tests</directory>
-        </testsuite>
         <testsuite name="Events">
             <directory suffix="EventsTest.php">./tests</directory>
         </testsuite>
@@ -15,8 +12,17 @@
         <testsuite name="Config">
             <directory suffix="Test.php">./tests/Config</directory>
         </testsuite>
+        <testsuite name="HTTP">
+            <directory suffix="Test.php">./tests/Http</directory>
+        </testsuite>
         <testsuite name="I18n">
             <directory suffix="Test.php">./tests/I18n</directory>
+        </testsuite>
+        <testsuite name="Session">
+            <directory suffix="Test.php">./tests/Session</directory>
+        </testsuite>
+        <testsuite name="Routing">
+            <directory suffix="Test.php">./tests/Routing</directory>
         </testsuite>
         <testsuite name="Rest">
             <directory suffix="RestTest.php">./tests</directory>

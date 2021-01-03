@@ -15,17 +15,17 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Test;
+namespace Opis\Colibri\Test\Routing;
 
 use Opis\Colibri\Testing\Builders\ApplicationBuilder;
+use Opis\Colibri\Test\BaseAppTestCase;
 
 class RoutingTest extends BaseAppTestCase
 {
-
     protected static function setupApp(ApplicationBuilder $builder): void
     {
-        $builder->addEnabledModuleFromPath(__DIR__ . '/modules/Foo');
-        $builder->addEnabledModuleFromPath(__DIR__ . '/modules/Bar');
+        $builder->addEnabledModuleFromPath(__DIR__ . '/../modules/Foo');
+        $builder->addEnabledModuleFromPath(__DIR__ . '/../modules/Bar');
     }
 
     public function testFrontPage()
