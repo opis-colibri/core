@@ -15,12 +15,13 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Test;
+namespace Opis\Colibri\Test\Views;
 
+use Opis\Colibri\Test\BaseAppTestCase;
 use Opis\Colibri\Testing\Builders\ApplicationBuilder;
 use function Opis\Colibri\view;
 
-class ViewsTest extends BaseAppTestCase
+class ViewAppTest extends BaseAppTestCase
 {
 
     protected static function setupApp(ApplicationBuilder $builder): void
@@ -28,7 +29,7 @@ class ViewsTest extends BaseAppTestCase
         $builder->createEnabledTestModule(
             'test/views',
             'Test\\Views',
-            __DIR__ . '/code/test-views',
+            __DIR__ . '/../code/test-views',
             'Test\\Views\\Collector'
         );
     }

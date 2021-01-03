@@ -1,6 +1,6 @@
 <?php
-/* ============================================================================
- * Copyright 2018 Zindex Software
+/* ===========================================================================
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,30 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Test\Views;
+namespace Opis\Colibri\Test\Views;
 
-use Opis\Colibri\Collector as BaseCollector;
-use Opis\Colibri\Collectors\ViewCollector;
+use Opis\Colibri\View\Engine;
 
-class Collector extends BaseCollector
+class ViewEngine2 implements Engine
 {
-    /**
-     * @param ViewCollector $view
-     */
-    public function views(ViewCollector $view)
+    public function defaultValues($viewItem): array
     {
-        $view->handle('test.{name}', static function (string $name) {
-            return __DIR__ . "/views/test.{$name}.php";
-        })
-            ->whereIn('name', ['value', 'subview']);
+        return [];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function build(string $path, array $vars = array()): string
+    {
+        return strtoupper($path) . '!';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function canHandle(string $path): bool
+    {
+        return true;
     }
 }
