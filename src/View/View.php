@@ -17,9 +17,10 @@
 
 namespace Opis\Colibri\View;
 
+use Stringable;
 use function Opis\Colibri\render;
 
-class View implements Viewable
+class View implements Viewable, Stringable
 {
     protected string $name;
     protected array $vars;
