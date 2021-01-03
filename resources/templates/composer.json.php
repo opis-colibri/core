@@ -16,7 +16,7 @@
     },
     "require": {
         "php": "^8.0",
-        "opis/colibri": "2020.x-dev"
+        "opis-colibri/core": "2020.x-dev"
     },
     "config": {
         "preferred-install": "dist"
