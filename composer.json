@@ -1,7 +1,7 @@
 {
     "name": "opis-colibri/core",
     "license": "Apache-2.0",
-    "description": "Opis Colibri framework core",
+    "description": "The core package of the Opis Colibri framework",
     "keywords": ["opis", "colibri", "framework", "core"],
     "homepage": "http://opis.io",
     "authors": [
