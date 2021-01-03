@@ -12,8 +12,8 @@
         <testsuite name="Cache">
             <directory suffix="CacheTest.php">./tests</directory>
         </testsuite>
-        <testsuite name="DataStore">
-            <directory suffix="Test.php">./tests/DataStore</directory>
+        <testsuite name="Config">
+            <directory suffix="Test.php">./tests/Config</directory>
         </testsuite>
         <testsuite name="I18n">
             <directory suffix="Test.php">./tests/I18n</directory>

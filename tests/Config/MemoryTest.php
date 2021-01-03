@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Test\DataStore;
+namespace Opis\Colibri\Test\Config;
 
 use Opis\Colibri\Config\ConfigStore;
 use Opis\Colibri\Config\Drivers\Memory;
