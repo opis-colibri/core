@@ -166,7 +166,7 @@ class Plural
 
     protected static function pluralsDir(): string
     {
-        return __DIR__ . '/../../plurals';
+        return __DIR__ . '/../../resources/plurals';
     }
 
     public static function create(string $locale): self
