@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Serializable;
 
-use Opis\Session\SessionHandler;
+use Opis\Colibri\Session\SessionHandler;
 use Opis\Colibri\Core\Session;
 
 class SessionCollection extends Collection

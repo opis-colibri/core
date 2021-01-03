@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\RestAPI\Traits;
 
-use Opis\Http\Responses\JSONResponse;
+use Opis\Colibri\Http\Responses\JSONResponse;
 
 trait ResponseTrait
 {

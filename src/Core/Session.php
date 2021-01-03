@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Core;
 
-use Opis\Session\{SessionHandler, Session as BaseSession};
+use Opis\Colibri\Session\{SessionHandler, Session as BaseSession};
 use function Opis\Colibri\app;
 
 class Session extends BaseSession

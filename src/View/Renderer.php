@@ -18,7 +18,7 @@
 namespace Opis\Colibri\View;
 
 use Opis\Colibri\Utils\SortableList;
-use Opis\Routing\{ArgumentResolver, RegexBuilder};
+use Opis\Colibri\Routing\{ArgumentResolver, RegexBuilder};
 
 class Renderer extends SortableList
 {

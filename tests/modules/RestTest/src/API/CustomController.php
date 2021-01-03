@@ -18,7 +18,7 @@
 namespace Test\RestTest\API;
 
 use Opis\Colibri\RestAPI\RestController;
-use Opis\Http\Responses\JSONResponse;
+use Opis\Colibri\Http\Responses\JSONResponse;
 
 class CustomController extends RestController
 {

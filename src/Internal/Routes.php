@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Internal;
 
-use Opis\Http\Responses\FileStream;
+use Opis\Colibri\Http\Responses\FileStream;
 use function Opis\Colibri\{view, env};
 
 final class Routes

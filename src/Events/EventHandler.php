@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Events;
 
-use Opis\Routing\RegexBuilder;
+use Opis\Colibri\Routing\RegexBuilder;
 
 final class EventHandler implements EventHandlerSettings
 {

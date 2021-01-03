@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Routing\{Route, RouteCollection, RouteGroup};
+use Opis\Colibri\Routing\{Route, RouteCollection, RouteGroup};
 use function Opis\Colibri\collect;
 
 /**

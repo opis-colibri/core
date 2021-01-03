@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Events;
 
 use Generator;
-use Opis\Routing\RegexBuilder;
+use Opis\Colibri\Routing\RegexBuilder;
 use Opis\Colibri\Utils\SortableList;
 
 class EventDispatcher extends SortableList

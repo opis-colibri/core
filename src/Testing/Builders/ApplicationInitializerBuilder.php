@@ -17,8 +17,8 @@
 
 namespace Opis\Colibri\Testing\Builders;
 
-use Opis\Session\Handlers\Memory;
-use Opis\Session\SessionHandler;
+use Opis\Colibri\Session\Handlers\Memory;
+use Opis\Colibri\Session\SessionHandler;
 use Opis\Colibri\Testing\CustomApplicationInitializer;
 use Opis\Colibri\I18n\Locale;
 use Opis\Database\Connection;

@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\View;
 
-use Opis\Routing\RegexBuilder;
+use Opis\Colibri\Routing\RegexBuilder;
 
 class ViewHandler implements ViewHandlerSettings
 {

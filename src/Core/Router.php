@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Core;
 
 use ArrayObject;
-use Opis\Routing\{DefaultDispatcher, Router as BaseRouter};
+use Opis\Colibri\Routing\{DefaultDispatcher, Router as BaseRouter};
 use Opis\Colibri\Application;
 use Opis\Colibri\Collectors\RouteCollector;
 

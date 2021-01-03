@@ -17,8 +17,8 @@
 
 namespace Opis\Colibri\RestAPI;
 
-use Opis\Http\Request;
-use Opis\Routing\{Route, Mixin};
+use Opis\Colibri\Http\Request;
+use Opis\Colibri\Routing\{Route, Mixin};
 use function Opis\Colibri\controller;
 
 abstract class ControllerResolver extends Mixin

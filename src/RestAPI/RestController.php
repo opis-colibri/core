@@ -17,8 +17,8 @@
 
 namespace Opis\Colibri\RestAPI;
 
-use Opis\Routing\Controller;
-use Opis\Http\Responses\JSONResponse;
+use Opis\Colibri\Routing\Controller;
+use Opis\Colibri\Http\Responses\JSONResponse;
 use Opis\JsonSchema\Errors\ValidationError;
 use Opis\Colibri\RestAPI\Traits\{ResponseTrait, ValidationTrait};
 

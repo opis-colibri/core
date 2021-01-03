@@ -36,10 +36,10 @@ use Opis\ORM\{
     Core\EntityQuery
 };
 use Opis\Colibri\Events\Event;
-use Opis\Routing\ControllerCallback;
+use Opis\Colibri\Routing\ControllerCallback;
 use Opis\Stream\Stream;
-use Opis\Http\{Request, Response as HttpResponse, Response};
-use Opis\Http\Responses\{
+use Opis\Colibri\Http\{Request, Response as HttpResponse, Response};
+use Opis\Colibri\Http\Responses\{
     HtmlResponse, JsonResponse, RedirectResponse
 };
 use Opis\Colibri\View\Viewable;

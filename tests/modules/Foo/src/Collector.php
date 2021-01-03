@@ -18,7 +18,7 @@
 namespace Test\Foo;
 
 use Opis\Colibri\Collector as BaseCollector;
-use Opis\Http\Request;
+use Opis\Colibri\Http\Request;
 use Opis\Colibri\Collectors\{RouterGlobalsCollector, RouteCollector};
 use Test\Foo\Middleware\{AuthMiddleware, ToUpperMiddleware, PrefixMiddleware};
 use function Opis\Colibri\response;

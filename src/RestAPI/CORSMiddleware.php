@@ -17,11 +17,11 @@
 
 namespace Opis\Colibri\RestAPI;
 
-use Opis\Routing\{
+use Opis\Colibri\Routing\{
     Route,
     Middleware
 };
-use Opis\Http\{
+use Opis\Colibri\Http\{
     Request,
     Response
 };
