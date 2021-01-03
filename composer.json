@@ -31,6 +31,7 @@
         "ext-intl": "*",
         "ext-fileinfo": "*",
         "composer/composer": "^2.0",
+        "filp/whoops": "2.*",
         "opis-colibri/yarn": "2020.x-dev",
         "opis/closure": "4.x-dev",
         "opis/database": "2020.x-dev",
