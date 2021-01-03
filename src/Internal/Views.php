@@ -30,12 +30,12 @@ final class Views
 
     public static function httpError()
     {
-        return __DIR__ . '/../../templates/http-error.php';
+        return __DIR__ . '/../../resources/templates/http-error.php';
     }
 
     public static function welcome()
     {
-        return __DIR__ . '/../../templates/welcome.php';
+        return __DIR__ . '/../../resources/templates/welcome.php';
     }
 
     public static function htmlTemplates(string $type)

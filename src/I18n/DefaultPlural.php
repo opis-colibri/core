@@ -174,7 +174,7 @@ class DefaultPlural implements Plural
     public static function create(string $locale): self
     {
         $locale = DefaultLocale::parse($locale);
-        $dir = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', 'plurals']);
+        $dir = __DIR__ . '/../../resources/plurals';
 
         $lang = $locale['language'];
         $files = [$lang, 'en'];

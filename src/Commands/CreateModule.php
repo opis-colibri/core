@@ -90,7 +90,9 @@ class CreateModule extends Command
             'namespace' => trim(json_encode($namespace), '"'),
         ];
 
-        $data = $this->template(__DIR__ . '/../../templates/composer.json.php', $args);
+        $templatesDir = __DIR__ .'/../../resources/templates';
+
+        $data = $this->template($templatesDir . '/composer.json.php', $args);
 
         if (!file_put_contents($dir . '/composer.json', $data)) {
             $output->writeln('<error>Unable to create composer.json file</error>');
@@ -102,7 +104,7 @@ class CreateModule extends Command
             return 1;
         }
 
-        $data = $this->template(__DIR__ . '/../../templates/Collector.php', [
+        $data = $this->template($templatesDir . '/Collector.php', [
             'namespace' => $namespace,
             'title' => trim(json_encode($title), '"'),
             'assets' => $assets,
@@ -115,7 +117,7 @@ class CreateModule extends Command
         }
 
         if ($installer) {
-            $data = $this->template(__DIR__ . '/../../templates/Installer.php', ['namespace' => $namespace]);
+            $data = $this->template($templatesDir . '/Installer.php', ['namespace' => $namespace]);
 
             if (!file_put_contents($dir . '/src/Installer.php', $data)) {
                 $output->writeln('<error>Unable to create Installer.php file</error>');
@@ -130,7 +132,7 @@ class CreateModule extends Command
                 return 1;
             }
 
-            $data = $this->template(__DIR__ . '/../../templates/package.json.php', ['vendor' => $vendor, 'module' => $module]);
+            $data = $this->template($templatesDir . '/package.json.php', ['vendor' => $vendor, 'module' => $module]);
 
             if (!file_put_contents($dir . '/assets/package.json', $data)) {
                 $output->writeln('<error>Unable to create package.json file</error>');

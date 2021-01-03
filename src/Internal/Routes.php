@@ -34,7 +34,7 @@ final class Routes
 
     public static function file(string $file): FileStream
     {
-        return new FileStream(__DIR__ . '/../../assets/' . $file, 'image/png');
+        return new FileStream(__DIR__ . '/../../resources/assets/' . $file, 'image/png');
     }
 
     public static function filter(): bool
