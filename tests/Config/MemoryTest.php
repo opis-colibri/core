@@ -17,13 +17,13 @@
 
 namespace Opis\Colibri\Test\Config;
 
-use Opis\Colibri\Config\ConfigStore;
+use Opis\Colibri\Config\ConfigDriver;
 use Opis\Colibri\Config\Drivers\Memory;
 use PHPUnit\Framework\TestCase;
 
 class MemoryTest extends TestCase
 {
-    private ConfigStore $store;
+    private ConfigDriver $store;
 
     public function setUp(): void
     {

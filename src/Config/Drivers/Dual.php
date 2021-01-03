@@ -18,24 +18,24 @@
 namespace Opis\Colibri\Config\Drivers;
 
 use Opis\Colibri\Config\{
-    ConfigStore, Traits\Path
+    ConfigDriver, Traits\Path
 };
 
-class Dual implements ConfigStore
+class Dual implements ConfigDriver
 {
     use Path;
 
-    protected ConfigStore $primary;
-    protected ConfigStore $secondary;
+    protected ConfigDriver $primary;
+    protected ConfigDriver $secondary;
     protected bool $autoSync;
 
     /**
      * DualConfig constructor.
-     * @param ConfigStore $primary
-     * @param ConfigStore $secondary
+     * @param ConfigDriver $primary
+     * @param ConfigDriver $secondary
      * @param bool $auto_sync
      */
-    public function __construct(ConfigStore $primary, ConfigStore $secondary, bool $auto_sync = true)
+    public function __construct(ConfigDriver $primary, ConfigDriver $secondary, bool $auto_sync = true)
     {
         $this->primary = $primary;
         $this->secondary = $secondary;

@@ -26,7 +26,7 @@ use Opis\Database\{
     Database,
     Schema
 };
-use Opis\Colibri\Config\ConfigStore;
+use Opis\Colibri\Config\ConfigDriver;
 use Opis\Colibri\I18n\Translator\{
     LanguageInfo,
     SubTranslator
@@ -66,9 +66,9 @@ function cache(?string $storage = null): CacheDriver
 
 /**
  * @param string|null $storage
- * @return ConfigStore
+ * @return ConfigDriver
  */
-function config(?string $storage = null): ConfigStore
+function config(?string $storage = null): ConfigDriver
 {
     return Application::getInstance()->getConfig($storage);
 }

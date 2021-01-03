@@ -18,10 +18,10 @@
 namespace Opis\Colibri\Config\Drivers;
 
 use Opis\Colibri\Config\{
-    ConfigStore, Traits\Path
+    ConfigDriver, Traits\Path
 };
 
-class Memory implements ConfigStore
+class Memory implements ConfigDriver
 {
     use Path;
 

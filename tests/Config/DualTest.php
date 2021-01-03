@@ -19,14 +19,14 @@ namespace Opis\Colibri\Test\Config;
 
 use Opis\Colibri\Config\Drivers\Dual;
 use Opis\Colibri\Config\Drivers\Memory;
-use Opis\Colibri\Config\ConfigStore;
+use Opis\Colibri\Config\ConfigDriver;
 use PHPUnit\Framework\TestCase;
 
 class DualTest extends TestCase
 {
-    private ConfigStore $store;
-    private ConfigStore $primary;
-    private ConfigStore $secondary;
+    private ConfigDriver $store;
+    private ConfigDriver $primary;
+    private ConfigDriver $secondary;
 
     /**
      * @inheritDoc

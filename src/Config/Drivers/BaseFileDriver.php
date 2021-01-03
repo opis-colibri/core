@@ -19,10 +19,10 @@ namespace Opis\Colibri\Config\Drivers;
 
 use RuntimeException;
 use Opis\Colibri\Config\{
-    ConfigStore, Traits\Path
+    ConfigDriver, Traits\Path
 };
 
-abstract class BaseFileDriver implements ConfigStore
+abstract class BaseFileDriver implements ConfigDriver
 {
     use Path;
 

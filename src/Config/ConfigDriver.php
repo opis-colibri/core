@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Config;
 
-interface ConfigStore
+interface ConfigDriver
 {
     /**
      * @param string|string[] $path
