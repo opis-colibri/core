@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,23 +17,26 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\I18n\Translator\Filter;
+use Opis\Colibri\Serializable\Collection;
 
-class TranslationFilterCollector extends ClassCollector
+/**
+ * @method Collection data()
+ */
+class TranslationFilterCollector extends BaseCollector
 {
-    /**
-     * @inheritDoc
-     */
-    protected function getClass(): string
+    public function __construct()
     {
-        return Filter::class;
+        parent::__construct(new Collection());
     }
 
     /**
-     * @inheritDoc
+     * @param string $name
+     * @param callable(mixed, array, LanguageInfo) $callback
+     * @return self
      */
-    protected function singletonClasses(): bool
+    public function register(string $name, callable $callback): self
     {
-        return true;
+        $this->data()->add($name, $callback);
+        return $this;
     }
 }

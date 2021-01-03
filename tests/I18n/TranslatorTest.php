@@ -17,8 +17,8 @@
 
 namespace Opis\Colibri\Test\I18n;
 
-use Opis\Colibri\I18n\Translator\{BaseTranslator, Drivers\Memory, Driver, Filter, Translator, LanguageInfo};
-use Opis\Colibri\I18n\DefaultLocale;
+use Opis\Colibri\Core\Translator;
+use Opis\Colibri\I18n\Translator\{Drivers\Memory, Driver, LanguageInfo};
 use PHPUnit\Framework\TestCase;
 
 class TranslatorTest extends TestCase
@@ -95,38 +95,21 @@ class TranslatorTest extends TestCase
         $driver = $this->getDriver();
         $sysns = self::SYSTEM_LANG;
 
-        return new class($driver, $sysns, 'en_US') extends BaseTranslator {
-
+        return new class($driver, $sysns, 'en_US') extends Translator {
             protected array $sysns;
-
             protected array $filters = [];
 
-            /**
-             * @inheritDoc
-             */
+
             public function __construct(Driver $driver, array $sysns, string $default_language)
             {
                 parent::__construct($driver, $default_language);
 
                 $this->sysns = $sysns;
-                $this->filters['replace'] = new class implements Filter {
-                    /**
-                     * @inheritDoc
-                     */
-                    public function apply($value, array $args, LanguageInfo $language)
-                    {
-                        return str_replace($args[0] ?? '', $args[1] ?? '', $value);
-                    }
-
+                $this->filters['replace'] = static function ($value, array $args) {
+                    return str_replace($args[0] ?? '', $args[1] ?? '', $value);
                 };
-                $this->filters['date'] = new class implements Filter {
-                    /**
-                     * @inheritDoc
-                     */
-                    public function apply($value, array $args, LanguageInfo $language)
-                    {
-                        return $language->datetime()->format($value, $args[0] ?? 'short', $args[1] ?? 'short');
-                    }
+                $this->filters['date'] = static function ($value, array $args, LanguageInfo $language) {
+                    return $language->datetime()->format($value, $args[0] ?? 'short', $args[1] ?? 'short');
                 };
             }
 
@@ -142,7 +125,7 @@ class TranslatorTest extends TestCase
             /**
              * @inheritDoc
              */
-            protected function getFilter(string $name): ?Filter
+            protected function getFilter(string $name): ?callable
             {
                 return $this->filters[$name] ?? null;
             }

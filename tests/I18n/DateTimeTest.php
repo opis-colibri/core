@@ -17,7 +17,6 @@
 
 namespace Opis\Colibri\Test\I18n;
 
-use Opis\Colibri\I18n\DefaultDateTimeFormatter;
 use Opis\Colibri\I18n\DateTimeFormatter;
 use PHPUnit\Framework\TestCase;
 
@@ -26,13 +25,14 @@ class DateTimeTest extends TestCase
 
     public function testFormat()
     {
-        $d = DefaultDateTimeFormatter::create("en_US", "full", "full", null, null, "GMT");
+        $d = DateTimeFormatter::create("en_US", "full", "full", null, null, "GMT");
+        //var_dump($d->formatDate("now")); die;
         $this->doTests($d);
     }
 
     public function testOptions()
     {
-        $d = DefaultDateTimeFormatter::fromArray([
+        $d = DateTimeFormatter::fromArray([
             'locale' => 'en_US',
             'date' => 'full',
             'time' => 'full',

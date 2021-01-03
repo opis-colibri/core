@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,22 +18,15 @@
 namespace Opis\Colibri\I18n\Translator;
 
 use Opis\Colibri\I18n\{
-    Locale, Plural, DateTimeFormatter, NumberFormatter,
-    DefaultLocale, DefaultPlural, DefaultDateTimeFormatter, DefaultNumberFormatter
+    Locale, Plural, DateTimeFormatter, NumberFormatter
 };
 
 class LanguageInfo
 {
-
     protected Locale $locale;
-
     protected Plural $plural;
-
-    protected DateTimeFormatter $datetime;
-
     protected NumberFormatter $number;
-
-    /** @var string[] */
+    protected DateTimeFormatter $datetime;
     protected array $fallback;
 
     /**
@@ -42,7 +35,7 @@ class LanguageInfo
      * @param Plural $plural
      * @param DateTimeFormatter $date
      * @param NumberFormatter $number
-     * @param array $fallback
+     * @param string[] $fallback
      */
     public function __construct(Locale $locale, Plural $plural, DateTimeFormatter $date, NumberFormatter $number, array $fallback = [])
     {
@@ -136,14 +129,14 @@ class LanguageInfo
             return $locale;
         }
         if (is_array($locale)) {
-            return DefaultLocale::fromArray($locale);
+            return Locale::fromArray($locale);
         }
 
         if (!is_string($locale)) {
             $locale = Locale::SYSTEM_LOCALE;
         }
 
-        return DefaultLocale::create($locale);
+        return Locale::create($locale);
     }
 
     /**
@@ -158,12 +151,12 @@ class LanguageInfo
         }
 
         if (is_array($plural)) {
-            return DefaultPlural::fromArray($plural);
+            return Plural::fromArray($plural);
         }
 
         $locale = static::parseLocale(is_string($plural) ? $plural : $locale);
 
-        return DefaultPlural::create($locale->id());
+        return Plural::create($locale->id());
     }
 
     /**
@@ -180,10 +173,10 @@ class LanguageInfo
         $locale = static::parseLocale(is_string($datetime) ? $datetime : $locale);
 
         if (is_array($datetime)) {
-            return DefaultDateTimeFormatter::fromArray($datetime, $locale->id());
+            return DateTimeFormatter::fromArray($datetime, $locale->id());
         }
 
-        return DefaultDateTimeFormatter::create($locale->id());
+        return DateTimeFormatter::create($locale->id());
     }
 
     /**
@@ -200,10 +193,9 @@ class LanguageInfo
         $locale = static::parseLocale(is_string($number) ? $number : $locale);
 
         if (is_array($number)) {
-            return DefaultNumberFormatter::fromArray($number, $locale->id());
+            return NumberFormatter::fromArray($number, $locale->id());
         }
 
-        return DefaultNumberFormatter::create($locale->id());
+        return NumberFormatter::create($locale->id());
     }
-
 }

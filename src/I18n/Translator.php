@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,20 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\I18n\Translator;
+namespace Opis\Colibri\I18n;
 
-use Closure;
-use Opis\Colibri\I18n\Locale;
+use Opis\Colibri\I18n\Translator\{
+    Driver, LanguageInfo, SubTranslator
+};
 
-abstract class BaseTranslator implements Translator
+abstract class Translator
 {
     protected string $defaultLanguage;
-
     protected Driver $driver;
-
     /** @var LanguageInfo[]|null */
     protected ?array $languages = null;
-
     /** @var LanguageInfo[] */
     protected array $localeLanguages = [];
-
     protected ?array $cache = null;
 
     /**
@@ -41,32 +38,21 @@ abstract class BaseTranslator implements Translator
      */
     public function __construct(Driver $driver, ?string $default_language = null)
     {
-        // Accept from http
         $this->defaultLanguage = $default_language ?? Locale::SYSTEM_LOCALE;
         $this->driver = $driver;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function setDefaultLanguage(string $language): self
     {
         $this->defaultLanguage = $language;
-
         return $this;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getDefaultLanguage(): string
     {
         return $this->defaultLanguage;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function setDriver(Driver $driver): self
     {
         if ($this->driver !== $driver) {
@@ -78,21 +64,13 @@ abstract class BaseTranslator implements Translator
         return $this;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getDriver(): Driver
     {
         return $this->driver;
     }
 
-    /**
-     * @param string|null $language
-     * @return LanguageInfo
-     */
     public function language(?string $language = null): LanguageInfo
     {
-
         // Get default language
         if ($language === null) {
             $language = $this->defaultLanguage;
@@ -128,26 +106,19 @@ abstract class BaseTranslator implements Translator
         return $this->languages[$language];
     }
 
-    /**
-     * @param string $ns
-     * @return SubTranslator
-     */
     public function subTranslator(string $ns): SubTranslator
     {
         return new SubTranslator($this, $ns);
     }
 
-    /**
-     * @param string $ns
-     * @param string $key
-     * @param string|null $context
-     * @param array $params
-     * @param int $count
-     * @param string|LanguageInfo|null $language
-     * @return string
-     */
-    public function translate(string $ns, string $key, string $context = null, array $params = [], int $count = 1, $language = null): string
-    {
+    public function translate(
+        string $ns,
+        string $key,
+        ?string $context = null,
+        array $params = [],
+        int $count = 1,
+        string|LanguageInfo|null $language = null
+    ): string {
 
         // Load language
         if (!($language instanceof LanguageInfo)) {
@@ -171,20 +142,19 @@ abstract class BaseTranslator implements Translator
         return $this->format($text, $params, $language);
     }
 
-    /**
-     * @param string $key
-     * @param array $params
-     * @param int $count
-     * @param string|null|LanguageInfo $language
-     * @return string
-     */
-    public function translateKey(string $key, array $params = [], int $count = 1, $language = null): string
-    {
-        if (strpos($key, ':') === false) {
+    public function translateKey(
+        string $key,
+        array $params = [],
+        int $count = 1,
+        string|LanguageInfo|null $language = null
+    ): string {
+        if (!str_contains($key, ':')) {
             return $key;
         }
+
         [$ns, $key] = explode(':', $key, 2);
-        if (strpos($key, '_') === false) {
+
+        if (!str_contains($key, '_')) {
             $context = null;
         } else {
             [$key, $context] = explode('_', $key, 2);
@@ -201,24 +171,23 @@ abstract class BaseTranslator implements Translator
         if ($this->languages !== null) {
             return;
         }
+
         $this->languages = [];
         $this->languages[Locale::SYSTEM_LOCALE] = null;
+
         foreach ($this->getDriver()->listLanguages() as $lang) {
             $this->languages[$lang] = null;
         }
     }
 
-    /**
-     * @param string $language
-     * @param string $ns
-     * @return array|null
-     */
     protected function loadNS(string $language, string $ns): ?array
     {
         $this->preloadAvailableLanguages();
+
         if (!array_key_exists($language, $this->languages)) {
             $language = Locale::SYSTEM_LOCALE;
         }
+
         if (!isset($this->cache[$language][$ns])) {
             if ($language === Locale::SYSTEM_LOCALE) {
                 $this->cache[$language][$ns] = $this->loadSystemNS($ns);
@@ -230,15 +199,10 @@ abstract class BaseTranslator implements Translator
         return $this->cache[$language][$ns];
     }
 
-    /**
-     * @param string $ns
-     * @param string $key
-     * @param string|null $context
-     * @return string
-     */
-    protected function getFallbackTranslation(string $ns, string $key, string $context = null): string
+    protected function getFallbackTranslation(string $ns, string $key, ?string $context = null): string
     {
         $ns .= ':' . $key;
+
         if ($context !== null && $context !== '') {
             $ns .= '_' . $context;
         }
@@ -246,16 +210,13 @@ abstract class BaseTranslator implements Translator
         return $ns;
     }
 
-    /**
-     * @param LanguageInfo $language
-     * @param string $ns
-     * @param string $key
-     * @param string|null $context
-     * @param int $count
-     * @return null|string
-     */
-    protected function getTranslationText(LanguageInfo $language, string $ns, string $key, ?string $context = null, int $count = 1)
-    {
+    protected function getTranslationText(
+        LanguageInfo $language,
+        string $ns,
+        string $key,
+        ?string $context = null,
+        int $count = 1
+    ): ?string {
         $this->preloadAvailableLanguages();
         $plural_form = $language->plural()->form($count);
 
@@ -266,14 +227,17 @@ abstract class BaseTranslator implements Translator
 
         $path = explode('.', $key);
         $key = array_pop($path);
+
         foreach ($languages as $lang) {
             if (!array_key_exists($lang, $this->languages)) {
                 continue;
             }
+
             $data = $this->loadNS($lang, $ns);
             if (!is_array($data)) {
                 continue;
             }
+
             foreach ($path as $p) {
                 if (!isset($data[$p])) {
                     continue 2;
@@ -290,22 +254,17 @@ abstract class BaseTranslator implements Translator
             if ($text !== null) {
                 return $text;
             }
-
         }
 
         return null;
     }
 
-    /**
-     * @param array $data
-     * @param string $key
-     * @param string|null $context
-     * @param int $plural_form
-     * @return null|string
-     */
-    protected function getTranslationDataWithContext(array &$data, string $key,
-                                                     ?string $context = null, int $plural_form = 0): ?string
-    {
+    protected function getTranslationDataWithContext(
+        array $data,
+        string $key,
+        ?string $context = null,
+        int $plural_form = 0
+    ): ?string {
         // Check context
         if ($context !== null && $context !== '') {
             $ret = $this->getTranslationData($data, $key . '_' . $context, $plural_form);
@@ -320,15 +279,8 @@ abstract class BaseTranslator implements Translator
         return $this->getTranslationData($data, $key, $plural_form);
     }
 
-    /**
-     * @param array $data
-     * @param string $key
-     * @param int $plural_form
-     * @return null|string
-     */
-    protected function getTranslationData(array &$data, string $key, int $plural_form): ?string
+    protected function getTranslationData(array $data, string $key, int $plural_form): ?string
     {
-
         // Exact plural
         $keys = [$key . '_' . $plural_form];
 
@@ -353,12 +305,6 @@ abstract class BaseTranslator implements Translator
         return null;
     }
 
-    /**
-     * @param string $text
-     * @param array $params
-     * @param LanguageInfo $language
-     * @return string
-     */
     protected function format(string $text, array $params, LanguageInfo $language): string
     {
         return preg_replace_callback(
@@ -368,16 +314,12 @@ abstract class BaseTranslator implements Translator
         );
     }
 
-    /**
-     * @param LanguageInfo $language
-     * @param array $params
-     * @return callable
-     */
     protected function getFormatFunction(LanguageInfo $language, array $params): callable
     {
         return function (array $m) use ($language, &$params) {
             $path = explode('.', $m[1]);
             $value = $params;
+
             foreach ($path as $p) {
                 if (is_array($value)) {
                     if (!array_key_exists($p, $value)) {
@@ -414,11 +356,9 @@ abstract class BaseTranslator implements Translator
                 if (!$filter) {
                     continue;
                 }
-                $filter = $this->getFilter($filter);
-                if (!($filter instanceof Filter)) {
-                    continue;
+                if ($filter = $this->getFilter($filter)) {
+                    $value = $filter($value, $args, $language);
                 }
-                $value = $filter->apply($value, $args, $language);
                 unset($filter, $args);
             }
 
@@ -426,15 +366,7 @@ abstract class BaseTranslator implements Translator
         };
     }
 
-    /**
-     * @param string $ns
-     * @return null|array
-     */
     abstract protected function loadSystemNS(string $ns): ?array;
 
-    /**
-     * @param string $name
-     * @return Filter|null
-     */
-    abstract protected function getFilter(string $name): ?Filter;
+    abstract protected function getFilter(string $name): ?callable;
 }

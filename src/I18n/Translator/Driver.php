@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ namespace Opis\Colibri\I18n\Translator;
 
 interface Driver
 {
-
     /**
      * An array of available language names
      * @return string[]
@@ -62,5 +61,4 @@ interface Driver
      * @return bool
      */
     public function saveNS(string $language, string $ns, ?array $keys = null): bool;
-
 }

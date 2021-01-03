@@ -17,9 +17,7 @@
 
 namespace Opis\Colibri\Test\I18n;
 
-use Opis\Colibri\I18n\{
-    IntlChecker, DefaultNumberFormatter
-};
+use Opis\Colibri\I18n\{NumberFormatter};
 use PHPUnit\Framework\TestCase;
 
 class NumberTest extends TestCase
@@ -29,7 +27,7 @@ class NumberTest extends TestCase
 
     public function testFormat()
     {
-        $n = DefaultNumberFormatter::create('en_US');
+        $n = NumberFormatter::create('en_US');
 
         $this->assertEquals('987,612,345.068', $n->formatDecimal(self::NUMBER));
         $this->assertEquals('$987,612,345.07', $n->formatCurrency(self::NUMBER));
@@ -40,7 +38,7 @@ class NumberTest extends TestCase
 
     public function testOptions()
     {
-        $n = DefaultNumberFormatter::fromArray([
+        $n = NumberFormatter::fromArray([
             'locale' => 'en_US',
             'decimal' => [
                 'rounding_mode' => 'down',
@@ -53,13 +51,11 @@ class NumberTest extends TestCase
             ]
         ]);
 
-        $intl = IntlChecker::extensionExists();
-
-        $this->assertEquals($intl ? '987,612,345.067' : '987,612,345.068', $n->formatDecimal(self::NUMBER));
-        $this->assertEquals($intl ? '€987,612,345.07' : '$987,612,345.07', $n->formatCurrency(self::NUMBER));
+        $this->assertEquals('987,612,345.067', $n->formatDecimal(self::NUMBER));
+        $this->assertEquals('€987,612,345.07', $n->formatCurrency(self::NUMBER));
         $this->assertEquals('£987,612,345.07', $n->formatCurrency(self::NUMBER, 'GBP'));
         $this->assertEquals('$987,612,345.07', $n->formatCurrency(self::NUMBER, 'USD'));
-        $this->assertEquals($intl ? '25/100' : '25%', $n->formatPercent(0.25));
+        $this->assertEquals('25/100', $n->formatPercent(0.25));
     }
 
 

@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,8 @@ use Opis\Colibri\I18n\Translator\Driver;
 
 abstract class FileDriver implements Driver
 {
-
     protected int $dirMode = 0777;
-
     protected ?string $dir = null;
-
     protected ?array $languageDefaults = null;
 
     /**
@@ -56,7 +53,7 @@ abstract class FileDriver implements Driver
     public function loadLanguage(string $language): ?array
     {
         if ($this->languageDefaults === null) {
-            $file = $this->getDir() . DIRECTORY_SEPARATOR . 'defaults.' . $this->getExtension();
+            $file = $this->getDir() . '/defaults.' . $this->getExtension();
             $data = null;
             if (file_exists($file)) {
                 $data = $this->importFileContent($file);
@@ -64,7 +61,7 @@ abstract class FileDriver implements Driver
             $this->languageDefaults = $data ?? [];
             unset($data);
         }
-        $file = $this->getDir() . DIRECTORY_SEPARATOR . $language . '.' . $this->getExtension();
+        $file = $this->getDir() . '/' . $language . '.' . $this->getExtension();
         $data = null;
         if (file_exists($file)) {
             $data = $this->importFileContent($file);
@@ -85,7 +82,7 @@ abstract class FileDriver implements Driver
      */
     public function saveLanguage(string $language, array $settings = null): bool
     {
-        $file = $this->getDir() . DIRECTORY_SEPARATOR . $language . '.' . $this->getExtension();
+        $file = $this->getDir() . '/' . $language . '.' . $this->getExtension();
         if ($settings === null) {
             if (!file_exists($file)) {
                 return true;
@@ -102,7 +99,7 @@ abstract class FileDriver implements Driver
      */
     public function listNS(string $language): array
     {
-        return $this->fileList($this->getDir() . DIRECTORY_SEPARATOR . $language, $this->getExtension());
+        return $this->fileList($this->getDir() . '/' . $language, $this->getExtension());
     }
 
     /**
@@ -110,8 +107,8 @@ abstract class FileDriver implements Driver
      */
     public function loadNS(string $language, string $ns): ?array
     {
-        $file = $this->getDir() . DIRECTORY_SEPARATOR . $language
-            . DIRECTORY_SEPARATOR . $ns . '.' . $this->getExtension();
+        $file = $this->getDir() . '/' . $language
+            . '/' . $ns . '.' . $this->getExtension();
 
         return is_file($file) ? $this->importFileContent($file) : null;
     }
@@ -121,7 +118,7 @@ abstract class FileDriver implements Driver
      */
     public function saveNS(string $language, string $ns, array $keys = null): bool
     {
-        $dir = $this->getDir() . DIRECTORY_SEPARATOR . $language;
+        $dir = $this->getDir() . '/' . $language;
         if (!is_dir($dir)) {
             if ($keys === null) {
                 return true;
@@ -131,7 +128,7 @@ abstract class FileDriver implements Driver
             }
         }
 
-        $file = $dir . DIRECTORY_SEPARATOR . $ns . '.' . $this->getExtension();
+        $file = $dir . '/' . $ns . '.' . $this->getExtension();
         if ($keys === null) {
             if (is_file($keys)) {
                 return unlink($file);
@@ -218,7 +215,7 @@ abstract class FileDriver implements Driver
      */
     protected function getDir(): string
     {
-        return $this->dir . DIRECTORY_SEPARATOR . $this->getExtension();
+        return $this->dir . '/' . $this->getExtension();
     }
 
     /**

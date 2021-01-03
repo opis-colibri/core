@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Test\I18n;
 
-use Opis\Colibri\I18n\DefaultPlural;
+use Opis\Colibri\I18n\Plural;
 use PHPUnit\Framework\TestCase;
 
 class PluralTest extends TestCase
@@ -26,22 +26,22 @@ class PluralTest extends TestCase
     public function testForms()
     {
 
-        $p = DefaultPlural::create('en_US');
+        $p = Plural::create('en_US');
         $this->assertEquals(2, $p->forms());
 
-        $p = DefaultPlural::create('ro_RO');
+        $p = Plural::create('ro_RO');
         $this->assertEquals(3, $p->forms());
     }
 
     public function testRule()
     {
-        $p = DefaultPlural::create('en_US');
+        $p = Plural::create('en_US');
         $this->assertEquals(0, $p->form(1));
         $this->assertEquals(1, $p->form(0));
         $this->assertEquals(1, $p->form(2));
         $this->assertEquals(1, $p->form(-2));
 
-        $p = DefaultPlural::create('ro_RO');
+        $p = Plural::create('ro_RO');
         $this->assertEquals(0, $p->form(1));
         $this->assertEquals(1, $p->form(0));
         $this->assertEquals(1, $p->form(2));
