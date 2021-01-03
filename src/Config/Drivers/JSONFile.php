@@ -15,24 +15,28 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\DataStore\Drivers;
+namespace Opis\Colibri\Config\Drivers;
 
-class PHPFile extends BaseFileDriver
+class JSONFile extends BaseFileDriver
 {
-    /**
-     * @inheritDoc
-     */
-    public function __construct(string $path, string $prefix = '', string $extension = 'php')
-    {
-        parent::__construct($path, $prefix, $extension);
-    }
+    protected int $encodeOptions = 0;
+    protected bool $decodeAsArray = false;
 
     /**
-     * @inheritDoc
+     * @param string $path
+     * @param string $prefix
+     * @param bool $decode_assoc
+     * @param int $encode_options
      */
-    protected function readData(string $file): string
-    {
-        return $file;
+    public function __construct(
+        string $path,
+        string $prefix = '',
+        bool $decode_assoc = false,
+        int $encode_options = JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
+    ) {
+        $this->encodeOptions = $encode_options;
+        $this->decodeAsArray = $decode_assoc;
+        parent::__construct($path, $prefix, 'json');
     }
 
     /**
@@ -40,7 +44,7 @@ class PHPFile extends BaseFileDriver
      */
     protected function import(string $data)
     {
-        return include($data);
+        return json_decode($data, $this->decodeAsArray);
     }
 
     /**
@@ -48,8 +52,6 @@ class PHPFile extends BaseFileDriver
      */
     protected function export($data): string
     {
-        $data = var_export($data, true);
-        $data = str_replace('stdClass::__set_state', '(object)', $data);
-        return "<?php\n\rreturn " . $data . ';';
+        return json_encode($data, $this->encodeOptions);
     }
 }

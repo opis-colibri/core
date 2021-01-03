@@ -15,14 +15,14 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\DataStore\Drivers;
+namespace Opis\Colibri\Config\Drivers;
 
 use RuntimeException;
-use Opis\Colibri\DataStore\{
-    DataStore, Traits\Path
+use Opis\Colibri\Config\{
+    ConfigStore, Traits\Path
 };
 
-abstract class BaseFileDriver implements DataStore
+abstract class BaseFileDriver implements ConfigStore
 {
     use Path;
 

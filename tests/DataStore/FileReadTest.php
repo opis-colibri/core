@@ -17,13 +17,13 @@
 
 namespace Opis\Colibri\Test\DataStore;
 
-use Opis\Colibri\DataStore\DataStore;
-use Opis\Colibri\DataStore\Drivers\JSONFile;
+use Opis\Colibri\Config\ConfigStore;
+use Opis\Colibri\Config\Drivers\JSONFile;
 use PHPUnit\Framework\TestCase;
 
 class FileReadTest extends TestCase
 {
-    private DataStore $store;
+    private ConfigStore $store;
 
     /**
      * @inheritDoc

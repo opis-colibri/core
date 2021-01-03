@@ -15,27 +15,27 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\DataStore\Drivers;
+namespace Opis\Colibri\Config\Drivers;
 
-use Opis\Colibri\DataStore\{
-    DataStore, Traits\Path
+use Opis\Colibri\Config\{
+    ConfigStore, Traits\Path
 };
 
-class Dual implements DataStore
+class Dual implements ConfigStore
 {
     use Path;
 
-    protected DataStore $primary;
-    protected DataStore $secondary;
+    protected ConfigStore $primary;
+    protected ConfigStore $secondary;
     protected bool $autoSync;
 
     /**
      * DualConfig constructor.
-     * @param DataStore $primary
-     * @param DataStore $secondary
+     * @param ConfigStore $primary
+     * @param ConfigStore $secondary
      * @param bool $auto_sync
      */
-    public function __construct(DataStore $primary, DataStore $secondary, bool $auto_sync = true)
+    public function __construct(ConfigStore $primary, ConfigStore $secondary, bool $auto_sync = true)
     {
         $this->primary = $primary;
         $this->secondary = $secondary;

@@ -15,13 +15,13 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\DataStore\Drivers;
+namespace Opis\Colibri\Config\Drivers;
 
-use Opis\Colibri\DataStore\{
-    DataStore, Traits\Path
+use Opis\Colibri\Config\{
+    ConfigStore, Traits\Path
 };
 
-class Memory implements DataStore
+class Memory implements ConfigStore
 {
     use Path;
 

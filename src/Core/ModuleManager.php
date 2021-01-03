@@ -21,7 +21,7 @@ use Throwable, ArrayObject, Generator;
 use Composer\Json\JsonFile;
 use Composer\Package\CompletePackageInterface;
 use Composer\Repository\InstalledFilesystemRepository;
-use Opis\Colibri\DataStore\DataStore;
+use Opis\Colibri\Config\ConfigStore;
 
 class ModuleManager
 {
@@ -348,9 +348,9 @@ class ModuleManager
     }
 
     /**
-     * @return DataStore
+     * @return ConfigStore
      */
-    protected function config(): DataStore
+    protected function config(): ConfigStore
     {
         return ($this->config)();
     }

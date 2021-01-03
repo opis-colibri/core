@@ -28,7 +28,7 @@ use Opis\Colibri\Events\{Event, EventDispatcher};
 use Opis\Colibri\I18n\Translator\{Driver as TranslatorDriver};
 use Opis\Colibri\View\{Renderer};
 use Opis\Http\{Request as HttpRequest, Response as HttpResponse, Responses\FileStream, Responses\HtmlResponse};
-use Opis\Colibri\DataStore\{DataStore};
+use Opis\Colibri\Config\{ConfigStore};
 use Opis\Database\{Connection, Database, Schema};
 use Opis\ORM\EntityManager;
 use Opis\JsonSchema\Validator;
@@ -72,7 +72,7 @@ class Application
     protected ?Session $defaultSession = null;
     protected ?SessionHandler $defaultSessionHandler = null;
     protected ?array $defaultSessionConfig = null;
-    protected ?DataStore $defaultConfigDriver = null;
+    protected ?ConfigStore $defaultConfigDriver = null;
     protected ?CacheDriver $defaultCacheDriver = null;
     protected ?LoggerInterface $defaultLogger = null;
     protected ?TranslatorDriver $defaultTranslatorDriver = null;
@@ -83,7 +83,7 @@ class Application
     /** @var  CacheDriver[] */
     protected array $cache = [];
 
-    /** @var  DataStore[] */
+    /** @var  ConfigStore[] */
     protected array $config = [];
 
     /** @var  Connection[] */
@@ -325,9 +325,9 @@ class Application
     /**
      * Get config driver
      * @param string|null $driver
-     * @return DataStore
+     * @return ConfigStore
      */
-    public function getConfig(?string $driver = null): DataStore
+    public function getConfig(?string $driver = null): ConfigStore
     {
         if ($driver === null) {
             if ($this->defaultConfigDriver === null) {
@@ -539,10 +539,10 @@ class Application
     }
 
     /**
-     * @param DataStore $driver
+     * @param ConfigStore $driver
      * @return $this
      */
-    public function setConfigDriver(DataStore $driver): self
+    public function setConfigDriver(ConfigStore $driver): self
     {
         $this->defaultConfigDriver = $driver;
         return $this;
@@ -937,7 +937,7 @@ class Application
     public function getModuleManager(): ModuleManager
     {
         if ($this->moduleManager === null) {
-            $this->moduleManager = new ModuleManager($this->info->vendorDir(), fn (): DataStore => $this->getConfig());
+            $this->moduleManager = new ModuleManager($this->info->vendorDir(), fn (): ConfigStore => $this->getConfig());
         }
 
         return $this->moduleManager;

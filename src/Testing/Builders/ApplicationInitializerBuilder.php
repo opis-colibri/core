@@ -22,7 +22,7 @@ use Opis\Session\SessionHandler;
 use Opis\Colibri\Testing\CustomApplicationInitializer;
 use Opis\Colibri\I18n\Locale;
 use Opis\Database\Connection;
-use Opis\Colibri\DataStore\{DataStore, Drivers\Memory as DefaultConfig};
+use Opis\Colibri\Config\{ConfigStore, Drivers\Memory as DefaultConfig};
 use Psr\Log\{LoggerInterface, NullLogger as DefaultLogger};
 use Opis\Colibri\Cache\{CacheDriver, Drivers\Memory as DefaultCache};
 use Opis\Colibri\I18n\Translator\{Drivers\Memory as DefaultTranslator, Driver as TranslatorDriver};
@@ -30,7 +30,7 @@ use Opis\Colibri\I18n\Translator\{Drivers\Memory as DefaultTranslator, Driver as
 class ApplicationInitializerBuilder
 {
 
-    protected ?DataStore $config = null;
+    protected ?ConfigStore $config = null;
 
     protected ?string $timezone = null;
 
@@ -105,9 +105,9 @@ class ApplicationInitializerBuilder
     }
 
     /**
-     * @return null|DataStore
+     * @return null|ConfigStore
      */
-    public function getConfigDriver(): ?DataStore
+    public function getConfigDriver(): ?ConfigStore
     {
         if ($this->config === null) {
             $this->config = $this->defaultConfigDriver();
@@ -116,10 +116,10 @@ class ApplicationInitializerBuilder
     }
 
     /**
-     * @param DataStore|null $driver
+     * @param ConfigStore|null $driver
      * @return ApplicationInitializerBuilder
      */
-    public function setConfigDriver(?DataStore $driver): self
+    public function setConfigDriver(?ConfigStore $driver): self
     {
         $this->config = $driver;
         return $this;
@@ -308,9 +308,9 @@ class ApplicationInitializerBuilder
     }
 
     /**
-     * @return DataStore
+     * @return ConfigStore
      */
-    protected function defaultConfigDriver(): DataStore
+    protected function defaultConfigDriver(): ConfigStore
     {
         return new DefaultConfig();
     }

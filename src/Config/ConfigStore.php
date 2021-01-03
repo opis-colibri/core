@@ -15,23 +15,33 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\DataStore\Drivers;
+namespace Opis\Colibri\Config;
 
-class File extends BaseFileDriver
+interface ConfigStore
 {
     /**
-     * @inheritDoc
+     * @param string|string[] $path
+     * @param mixed $default
+     * @return mixed
      */
-    protected function import(string $data)
-    {
-        return unserialize($data);
-    }
+    public function read($path, $default = null);
 
     /**
-     * @inheritDoc
+     * @param string|string[] $path
+     * @param mixed $value
+     * @return bool
      */
-    protected function export($data): string
-    {
-        return serialize($data);
-    }
+    public function write($path, $value): bool;
+
+    /**
+     * @param string|string[] $path
+     * @return bool
+     */
+    public function delete($path): bool;
+
+    /**
+     * @param string|string[] $path
+     * @return bool
+     */
+    public function has($path): bool;
 }

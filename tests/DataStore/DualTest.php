@@ -17,16 +17,16 @@
 
 namespace Opis\Colibri\Test\DataStore;
 
-use Opis\Colibri\DataStore\Drivers\Dual;
-use Opis\Colibri\DataStore\Drivers\Memory;
-use Opis\Colibri\DataStore\DataStore;
+use Opis\Colibri\Config\Drivers\Dual;
+use Opis\Colibri\Config\Drivers\Memory;
+use Opis\Colibri\Config\ConfigStore;
 use PHPUnit\Framework\TestCase;
 
 class DualTest extends TestCase
 {
-    private DataStore $store;
-    private DataStore $primary;
-    private DataStore $secondary;
+    private ConfigStore $store;
+    private ConfigStore $primary;
+    private ConfigStore $secondary;
 
     /**
      * @inheritDoc

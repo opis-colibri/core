@@ -15,20 +15,23 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\DataStore\Traits;
+namespace Opis\Colibri\Config\Drivers;
 
-trait Path
+class File extends BaseFileDriver
 {
     /**
-     * @param string|string[] $path
-     * @return string[]
+     * @inheritDoc
      */
-    protected function normalizePath($path): array
+    protected function import(string $data)
     {
-        if (is_array($path)) {
-            return $path;
-        }
+        return unserialize($data);
+    }
 
-        return explode('.', (string)$path);
+    /**
+     * @inheritDoc
+     */
+    protected function export($data): string
+    {
+        return serialize($data);
     }
 }

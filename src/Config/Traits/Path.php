@@ -15,33 +15,20 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\DataStore;
+namespace Opis\Colibri\Config\Traits;
 
-interface DataStore
+trait Path
 {
     /**
      * @param string|string[] $path
-     * @param mixed $default
-     * @return mixed
+     * @return string[]
      */
-    public function read($path, $default = null);
+    protected function normalizePath($path): array
+    {
+        if (is_array($path)) {
+            return $path;
+        }
 
-    /**
-     * @param string|string[] $path
-     * @param mixed $value
-     * @return bool
-     */
-    public function write($path, $value): bool;
-
-    /**
-     * @param string|string[] $path
-     * @return bool
-     */
-    public function delete($path): bool;
-
-    /**
-     * @param string|string[] $path
-     * @return bool
-     */
-    public function has($path): bool;
+        return explode('.', (string)$path);
+    }
 }
