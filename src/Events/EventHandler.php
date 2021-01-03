@@ -17,19 +17,73 @@
 
 namespace Opis\Colibri\Events;
 
-interface EventHandler
+use Opis\Routing\RegexBuilder;
+
+final class EventHandler implements EventHandlerSettings
 {
-    /**
-     * @param string $name
-     * @param string $regex
-     * @return $this
-     */
-    public function where(string $name, string $regex): self;
+    private EventDispatcher $dispatcher;
+    private string $pattern;
+    /** @var callable */
+    private $callback;
+    private ?string $regex = null;
+    private array $placeholders = [];
+
+    public function __construct(EventDispatcher $dispatcher, string $pattern, callable $callback)
+    {
+        $this->dispatcher = $dispatcher;
+        $this->pattern = $pattern;
+        $this->callback = $callback;
+    }
+
+    public function getRegex(): string
+    {
+        if ($this->regex === null) {
+            $this->regex = $this->dispatcher->getRegexBuilder()->getRegex($this->pattern, $this->placeholders);
+        }
+
+        return $this->regex;
+    }
+
+    public function getCallback(): callable
+    {
+        return $this->callback;
+    }
+
+    public function where(string $name, string $regex): EventHandlerSettings
+    {
+        $this->regex = null;
+        $this->placeholders[$name] = $regex;
+        return $this;
+    }
 
     /**
      * @param string $name
      * @param string[] $values
      * @return $this
      */
-    public function whereIn(string $name, array $values): self;
+    public function whereIn(string $name, array $values): EventHandlerSettings
+    {
+        if (empty($values)) {
+            return $this;
+        }
+
+        $delimiter = $this->dispatcher->getRegexBuilder()->getOptions()[RegexBuilder::REGEX_DELIMITER];
+
+        $value = implode('|', array_map(function ($value) use ($delimiter) {
+            return preg_quote($value, $delimiter);
+        }, $values));
+
+        return $this->where($name, $value);
+    }
+
+    public function __serialize(): array
+    {
+        return [
+            'dispatcher' => $this->dispatcher,
+            'pattern' => $this->pattern,
+            'placeholders' => $this->placeholders,
+            'regex' => $this->getRegex(),
+            'callback' => $this->callback
+        ];
+    }
 }

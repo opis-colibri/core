@@ -17,16 +17,73 @@
 
 namespace Opis\Colibri\View;
 
-interface ViewHandler
-{
-    public function filter(callable $callback): self;
+use Opis\Routing\RegexBuilder;
 
-    public function where(string $name, string $regex): self;
+class ViewHandler implements ViewHandlerSettings
+{
+    /** @var callable|null */
+    private $filter = null;
+
+    /** @var callable */
+    private $callback;
+
+    private string $pattern;
+    private Renderer $renderer;
+    private array $placeholders = [];
+    private ?string $regex = null;
+
+    public function __construct(Renderer $renderer, string $pattern, callable $callback)
+    {
+        $this->renderer = $renderer;
+        $this->pattern = $pattern;
+        $this->callback = $callback;
+    }
+
+    public function filter(callable $callback): ViewHandlerSettings
+    {
+        $this->filter = $callback;
+        return $this;
+    }
+
+    public function where(string $name, string $regex): ViewHandlerSettings
+    {
+        $this->regex = null;
+        $this->placeholders[$name] = $regex;
+        return $this;
+    }
 
     /**
-     * @param string $name
-     * @param string[] $values
-     * @return $this
+     * @inheritDoc
      */
-    public function whereIn(string $name, array $values): self;
+    public function whereIn(string $name, array $values): ViewHandlerSettings
+    {
+        if (empty($values)) {
+            return $this;
+        }
+
+        $delimiter = $this->renderer->getRegexBuilder()->getOptions()[RegexBuilder::REGEX_DELIMITER];
+
+        $value = implode('|', array_map(static fn ($value) => preg_quote($value, $delimiter), $values));
+
+        return $this->where($name, $value);
+    }
+
+    public function getRegex(): string
+    {
+        if ($this->regex === null) {
+            $this->regex = $this->renderer->getRegexBuilder()->getRegex($this->pattern, $this->placeholders);
+        }
+
+        return $this->regex;
+    }
+
+    public function getCallback(): callable
+    {
+        return $this->callback;
+    }
+
+    public function getFilter(): ?callable
+    {
+        return $this->filter;
+    }
 }

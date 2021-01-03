@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,33 +15,18 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors;
+namespace Opis\Colibri\View;
 
-use Opis\Colibri\Events\{EventDispatcher, EventHandlerSettings};
-
-/**
- * @method EventDispatcher data()
- */
-class EventHandlerCollector extends BaseCollector
+interface ViewHandlerSettings
 {
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        parent::__construct(new EventDispatcher());
-    }
+    public function filter(callable $callback): self;
+
+    public function where(string $name, string $regex): self;
 
     /**
-     * Register a new event handler
-     *
-     * @param   string $event Event name
-     * @param   callable $callback A callback that will be executed
-     *
-     * @return  EventHandlerSettings
+     * @param string $name
+     * @param string[] $values
+     * @return $this
      */
-    public function handle(string $event, callable $callback): EventHandlerSettings
-    {
-        return $this->data()->handle($event, $callback, $this->crtPriority);
-    }
+    public function whereIn(string $name, array $values): self;
 }

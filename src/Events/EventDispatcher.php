@@ -31,9 +31,9 @@ class EventDispatcher extends SortableList
         $this->regexBuilder = $this->createRegexBuilder();
     }
 
-    public function handle(string $name, callable $callback, int $priority = 0): EventHandler
+    public function handle(string $name, callable $callback, int $priority = 0): EventHandlerSettings
     {
-        $handler = new DefaultEventHandler($this, $name, $callback);
+        $handler = new EventHandler($this, $name, $callback);
         $this->addItem($handler, $priority);
         return $handler;
     }
@@ -69,7 +69,7 @@ class EventDispatcher extends SortableList
 
     private function match(string $name): Generator
     {
-        /** @var DefaultEventHandler $handler */
+        /** @var EventHandler $handler */
         foreach ($this->getValues() as $handler) {
             if (preg_match($handler->getRegex(), $name)) {
                 yield $handler->getCallback();

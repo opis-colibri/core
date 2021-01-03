@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\View\{PHPEngine, Renderer, ViewHandler};
+use Opis\Colibri\View\{PHPEngine, Renderer, ViewHandlerSettings};
 use function Opis\Colibri\collect;
 
 /**
@@ -43,9 +43,9 @@ class ViewCollector extends BaseCollector
      * @param   string $pattern View's pattern
      * @param   callable $resolver A callback that will resolve a view route into a path
      *
-     * @return  ViewHandler
+     * @return  ViewHandlerSettings
      */
-    public function handle(string $pattern, callable $resolver): ViewHandler
+    public function handle(string $pattern, callable $resolver): ViewHandlerSettings
     {
         return $this->data()->handle($pattern, $resolver, $this->crtPriority);
     }

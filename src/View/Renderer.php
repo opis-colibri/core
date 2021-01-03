@@ -76,12 +76,12 @@ class Renderer extends SortableList
      * @param   callable $resolver
      * @param   int $priority
      *
-     * @return ViewHandler
+     * @return ViewHandlerSettings
      */
-    public function handle(string $pattern, callable $resolver, int $priority = 0): ViewHandler
+    public function handle(string $pattern, callable $resolver, int $priority = 0): ViewHandlerSettings
     {
         $this->cache = [];
-        $handler = new DefaultViewHandler($this, $pattern, $resolver);
+        $handler = new ViewHandler($this, $pattern, $resolver);
         $this->addItem($handler, $priority);
         return $handler;
     }
@@ -154,7 +154,7 @@ class Renderer extends SortableList
 
     private function find(string $name): ?string
     {
-        /** @var DefaultViewHandler $handler */
+        /** @var ViewHandler $handler */
         foreach ($this->getValues() as $handler) {
             if (preg_match($handler->getRegex(), $name)) {
                 $resolver = new ArgumentResolver();
