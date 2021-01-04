@@ -17,11 +17,35 @@
 
 namespace Opis\Colibri\Session;
 
-interface CookieContainer
-{
-    public function hasCookie(string $name): bool;
+use Opis\Colibri\Http\Request;
 
-    public function getCookie(string $name): ?string;
+class CookieContainer
+{
+    private ?Request $request = null;
+    private array $cookies = [];
+
+    public function __construct(?Request $request = null)
+    {
+        $this->request = $request;
+    }
+
+    public function hasCookie(string $name): bool
+    {
+        if ($this->request === null) {
+            return false;
+        }
+
+        return $this->request->hasCookie($name);
+    }
+
+    public function getCookie(string $name): ?string
+    {
+        if ($this->request === null) {
+            return null;
+        }
+
+        return $this->request->getCookie($name);
+    }
 
     public function setCookie(
         string $name,
@@ -32,7 +56,28 @@ interface CookieContainer
         bool $secure = false,
         bool $httponly = false,
         ?string $samesite = null
-    ): bool;
+    ): bool {
+        $this->cookies[$name] = [
+            'name' => $name,
+            'value' => $value,
+            'expires' => $expires,
+            'path' => $path,
+            'domain' => $domain,
+            'secure' => $secure,
+            'httponly' => $httponly,
+            'samesite' => $samesite,
+        ];
 
-    public function getAddedCookies(): array;
+        return true;
+    }
+
+    /**
+     * Get a list with the set cookies
+     *
+     * @return array
+     */
+    public function getAddedCookies(): array
+    {
+        return $this->cookies;
+    }
 }

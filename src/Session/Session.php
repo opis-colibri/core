@@ -28,14 +28,13 @@ class Session
 
     public function __construct(CookieContainer $container, ?SessionHandler $handler = null, array $config = [])
     {
-        $this->container = $container;
-
         if ($handler === null) {
             $file = $config['session.save_path'] ?? ini_get('session.save_path');
             $handler = new Handlers\File($file ?: sys_get_temp_dir());
             unset($file);
         }
 
+        $this->container = $container;
         $this->handler = $handler;
 
         $config += [

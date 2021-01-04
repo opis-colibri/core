@@ -20,7 +20,7 @@ namespace PHPSTORM_META {
         '\Opis\Colibri\Collectors\TemplateStreamHandlerCollector' => \Opis\Colibri\Serializable\AdvancedClassList::class,
         '\Opis\Colibri\Collectors\TranslationCollector' => \Opis\Colibri\Serializable\Translations::class,
         '\Opis\Colibri\Collectors\TranslationFilterCollector' => \Opis\Colibri\Serializable\Collection::class,
-        '\Opis\Colibri\Collectors\ViewCollector' => \Opis\View\Renderer::class,
+        '\Opis\Colibri\Collectors\ViewCollector' => \Opis\Colibri\View\Renderer::class,
         '\Opis\Colibri\Collectors\ViewEngineCollector' => \Opis\Colibri\Serializable\Collection::class,
     ]));
 
@@ -40,7 +40,7 @@ namespace PHPSTORM_META {
         '\Opis\Colibri\Collectors\TemplateStreamHandlerCollector' => \Opis\Colibri\Serializable\AdvancedClassList::class,
         '\Opis\Colibri\Collectors\TranslationCollector' => \Opis\Colibri\Serializable\Translations::class,
         '\Opis\Colibri\Collectors\TranslationFilterCollector' => \Opis\Colibri\Serializable\Collection::class,
-        '\Opis\Colibri\Collectors\ViewCollector' => \Opis\View\Renderer::class,
+        '\Opis\Colibri\Collectors\ViewCollector' => \Opis\Colibri\View\Renderer::class,
         '\Opis\Colibri\Collectors\ViewEngineCollector' => \Opis\Colibri\Serializable\Collection::class,
     ]));
 }

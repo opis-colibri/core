@@ -33,7 +33,7 @@ use Opis\Database\{Connection, Database, Schema};
 use Opis\ORM\EntityManager;
 use Opis\JsonSchema\Validator;
 use Opis\Colibri\Templates\TemplateStream;
-use Opis\Colibri\Core\{CSRFToken, ItemCollector, Module, ModuleManager, Router, Translator, RequestCookieContainer};
+use Opis\Colibri\Core\{CSRFToken, ItemCollector, Module, ModuleManager, Router, Translator};
 use Opis\Colibri\Collectors\{
     AssetsHandlerCollector,
     CacheCollector,
@@ -322,7 +322,7 @@ class Application
     public function getSessionCookieContainer(): CookieContainer
     {
         if ($this->sessionCookieContainer === null) {
-            $this->sessionCookieContainer = new RequestCookieContainer($this->httpRequest);
+            $this->sessionCookieContainer = new CookieContainer($this->httpRequest);
         }
 
         return $this->sessionCookieContainer;
