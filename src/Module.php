@@ -15,11 +15,12 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Core;
+namespace Opis\Colibri;
 
 use RuntimeException;
+use ReflectionObject;
 use Composer\Package\CompletePackageInterface;
-use Opis\Colibri\{Collector, Installer, Attributes\Module as ModuleAttribute};
+use Opis\Colibri\Attributes\Module as ModuleAttribute;
 
 class Module
 {
@@ -234,7 +235,7 @@ class Module
 
         $this->collector = new $collector_class();
 
-        $reflection = new \ReflectionObject($this->collector);
+        $reflection = new ReflectionObject($this->collector);
         $attr = $reflection->getAttributes(ModuleAttribute::class)[0] ?? null;
         $args = $attr?->getArguments() ?? [];
 

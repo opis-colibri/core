@@ -18,6 +18,7 @@
 namespace Opis\Colibri;
 
 use Opis\Colibri\IoC\Container;
+use Opis\Colibri\Utils\CSRFToken;
 use RuntimeException, Throwable;
 use Composer\Package\CompletePackageInterface;
 use Symfony\Component\Console\Application as ConsoleApplication;
@@ -34,7 +35,6 @@ use Opis\Database\{Connection, Database, Schema};
 use Opis\ORM\EntityManager;
 use Opis\JsonSchema\Validator;
 use Opis\Colibri\Templates\TemplateStream;
-use Opis\Colibri\Core\{CSRFToken, ItemCollector, Module, ModuleManager, Translator};
 use Opis\Colibri\Collectors\{
     AssetsHandlerCollector,
     CacheCollector,

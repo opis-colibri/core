@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Core\Module;
+use Opis\Colibri\Module;
 
 abstract class BaseCollector
 {

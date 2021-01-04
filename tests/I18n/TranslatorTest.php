@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Test\I18n;
 
-use Opis\Colibri\Core\Translator;
+use Opis\Colibri\Translator;
 use Opis\Colibri\I18n\Translator\{Drivers\Memory, Driver, LanguageInfo};
 use PHPUnit\Framework\TestCase;
 

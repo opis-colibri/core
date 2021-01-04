@@ -41,7 +41,6 @@ use Opis\Colibri\Http\Responses\{
 };
 use Opis\Colibri\Render\Renderable;
 use Psr\Log\LoggerInterface;
-use Opis\Colibri\Core\Module;
 
 use Opis\Colibri\Events\Event;
 use Opis\Colibri\Render\View;

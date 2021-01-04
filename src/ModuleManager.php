@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Core;
+namespace Opis\Colibri;
 
 use Throwable, ArrayObject, Generator;
 use Composer\Json\JsonFile;
@@ -283,7 +283,7 @@ class ModuleManager
             if ($callback) {
                 $callback($module);
             }
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             return $success;
         } finally {
             flock($fp, LOCK_UN);

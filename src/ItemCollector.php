@@ -15,16 +15,16 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Core;
+namespace Opis\Colibri;
 
 use ReflectionObject;
 use ReflectionMethod;
 use RuntimeException;
-use Opis\Colibri\{Application,
-    Collector,
+use Opis\Colibri\{
     IoC\Container,
     Internal\Collector as InternalCollector,
-    Attributes\Priority};
+    Attributes\Priority,
+};
 use Opis\Colibri\Utils\SortableList;
 use Opis\Colibri\Collectors\BaseCollector;
 

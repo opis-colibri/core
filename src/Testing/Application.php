@@ -18,7 +18,7 @@
 namespace Opis\Colibri\Testing;
 
 use Opis\Colibri\Application as BaseApplication;
-use Opis\Colibri\{ApplicationInitializer, ApplicationInfo, Core\ModuleManager};
+use Opis\Colibri\{ApplicationInitializer, ApplicationInfo, ModuleManager};
 use Opis\Colibri\Templates\TemplateStream;
 
 class Application extends BaseApplication

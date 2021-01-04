@@ -15,13 +15,12 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Core;
+namespace Opis\Colibri;
 
 use Opis\Colibri\I18n\Translator\Driver;
 use Opis\Colibri\I18n\Translator\Drivers\Memory;
 use Opis\Colibri\I18n\Translator as BaseTranslator;
 use Opis\Colibri\Collectors\{TranslationCollector, TranslationFilterCollector};
-use function Opis\Colibri\collect;
 
 class Translator extends BaseTranslator
 {
