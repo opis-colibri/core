@@ -17,13 +17,10 @@
 
 namespace Opis\Colibri\Session\Handlers;
 
-use function Opis\Colibri\uuid4;
-
 trait SessionIdTrait
 {
     public function generateSessionId(): string
     {
-        return uuid4('');
-        // return session_create_id();
+        return session_create_id();
     }
 }

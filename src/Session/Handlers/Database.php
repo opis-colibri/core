@@ -252,14 +252,14 @@ class Database implements SessionHandler
         ];
 
         $schema->create($table_name, static function (Blueprint $table) use ($columns) {
-            $table->fixed($columns['id'], 32)->notNull();
+            $table->string($columns['id'], 64)->notNull();
             $table->string($columns['name'], 32)->notNull();
             $table->integer($columns['expire'])->unsigned()->notNull()->defaultValue(0);
             $table->integer($columns['created_at'])->unsigned()->notNull();
             $table->integer($columns['updated_at'])->unsigned()->notNull();
             $table->binary($columns['data'])->size('big')->defaultValue(null);
 
-            $table->unique([$columns['id'], $columns['name']]);
+            $table->primary([$columns['id'], $columns['name']]);
             $table->index($columns['expire']);
             $table->index($columns['updated_at']);
         });
