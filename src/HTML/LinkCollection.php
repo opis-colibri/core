@@ -22,7 +22,7 @@ class LinkCollection extends Collection
     /**
      * @param string $entry
      * @param callable $callback
-     * @return LinkCollection|Collection
+     * @return LinkCollection
      */
     public function custom(string $entry, callable $callback): self
     {
@@ -36,7 +36,7 @@ class LinkCollection extends Collection
      * @param string $href
      * @param callable|null $callback
      * @param string|null $entry
-     * @return LinkCollection|Collection
+     * @return LinkCollection
      */
     public function link(string $rel, string $href, ?callable $callback = null, ?string $entry = null): self
     {
@@ -57,7 +57,7 @@ class LinkCollection extends Collection
     /**
      * @param string $href
      * @param callable|null $callback
-     * @return LinkCollection|Collection
+     * @return LinkCollection
      */
     public function favicon(string $href, ?callable $callback = null): self
     {
@@ -67,7 +67,7 @@ class LinkCollection extends Collection
     /**
      * @param string $href
      * @param callable|null $callback
-     * @return LinkCollection|Collection
+     * @return LinkCollection
      */
     public function canonical(string $href, ?callable $callback = null): self
     {

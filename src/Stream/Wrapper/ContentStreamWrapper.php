@@ -189,7 +189,7 @@ abstract class ContentStreamWrapper implements StreamWrapper
      * @param string $path
      * @param string $mode
      * @param array|null $options
-     * @return Stream
+     * @return Stream|null
      */
     protected function contentToStream(Content $content, string $path, string $mode, ?array $options = null): ?Stream
     {

@@ -17,6 +17,8 @@
 
 namespace Opis\Colibri\Utils;
 
+use Generator;
+
 class SortableList
 {
     private array $entries;
@@ -75,7 +77,7 @@ class SortableList
         return $this->sorted;
     }
 
-    public function getValues(bool $sort = true): \Generator
+    public function getValues(bool $sort = true): Generator
     {
         if ($sort) {
             $this->sort();

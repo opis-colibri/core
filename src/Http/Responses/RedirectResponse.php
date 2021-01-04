@@ -29,6 +29,6 @@ class RedirectResponse extends Response
     public function __construct(string $location, int $status = 301, array $headers = [])
     {
         $headers['Location'] = $location;
-        parent::__construct($status, $headers, null);
+        parent::__construct($status, $headers);
     }
 }

@@ -311,7 +311,7 @@ class ApplicationBuilder
      * @param string $name
      * @param string $ns
      * @param string $path
-     * @param string[] $info
+     * @param string $collector
      * @param int $status
      * @param null|string[] $require
      * @return ApplicationBuilder
@@ -472,7 +472,7 @@ class ApplicationBuilder
             $class = ltrim($class, '\\');
 
             foreach ($map as $dir => $namespace) {
-                if (strpos($class, $namespace) === 0) {
+                if (str_starts_with($class, $namespace)) {
                     $class = substr($class, strlen($namespace));
                     $path = '';
                     if (($pos = strripos($class, '\\')) !== false) {
@@ -657,7 +657,7 @@ class ApplicationBuilder
             $file = $dir . '/composer.json';
             file_put_contents($file, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 
-            $this->addModuleFromPath($dir, $module['status'], true);
+            $this->addModuleFromPath($dir, $module['status']);
         }
     }
 }

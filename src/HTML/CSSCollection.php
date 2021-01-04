@@ -21,7 +21,7 @@ class CSSCollection extends Collection
 {
     /**
      * @param string $href
-     * @return CSSCollection|Collection
+     * @return CSSCollection
      */
     public function url(string $href): self
     {
@@ -31,7 +31,7 @@ class CSSCollection extends Collection
     /**
      * @param string $content
      * @param string|null $media
-     * @return CSSCollection|Collection
+     * @return CSSCollection
      */
     public function inline(string $content, ?string $media = null): self
     {

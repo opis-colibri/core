@@ -38,17 +38,11 @@ class Plural
         $this->func = $func;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function forms(): int
     {
         return $this->forms;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function form(int $count): int
     {
         if ($this->func === null) {
@@ -65,9 +59,6 @@ class Plural
         return $count;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function rule(): string
     {
         return $this->rule;

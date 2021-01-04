@@ -332,7 +332,7 @@ class ModuleManager
      * @param Module $module
      * @param callable $deps
      * @param ArrayObject $checked
-     * @return Generator|Module[]
+     * @return Generator
      */
     protected function deps(Module $module, callable $deps, ArrayObject $checked): Generator {
         /** @var Module $dep */

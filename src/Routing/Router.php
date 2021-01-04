@@ -43,7 +43,7 @@ class Router
      */
     public function __construct(Application $app) {
         $this->app = $app;
-        $this->routes = $app->getCollector()->collect(RouteCollector::class);;
+        $this->routes = $app->getCollector()->collect(RouteCollector::class);
         $this->dispatcher = new Dispatcher();
         $this->global = new ArrayObject([
             'app' => $app,

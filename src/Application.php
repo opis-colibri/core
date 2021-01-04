@@ -759,7 +759,7 @@ class Application
                     }
                 }
                 if (!$dependency->isEnabled()) {
-                    if (!$this->enable($dependency, $recollect, false)) {
+                    if (!$this->enable($dependency, $recollect)) {
                         return false;
                     }
                 }
@@ -808,7 +808,7 @@ class Application
         if ($recursive) {
             foreach ($manager->recursiveDependants($module) as $dependant) {
                 if ($dependant->isEnabled()) {
-                    if (!$this->disable($dependant, $recollect, false)) {
+                    if (!$this->disable($dependant, $recollect)) {
                         return false;
                     }
                 }
@@ -866,7 +866,7 @@ class Application
         if ($recursive) {
             foreach ($manager->recursiveDependencies($module) as $dependency) {
                 if (!$dependency->isInstalled()) {
-                    if (!$this->install($dependency, $recollect, false)) {
+                    if (!$this->install($dependency, $recollect)) {
                         return false;
                     }
                 }
@@ -877,7 +877,7 @@ class Application
                 }
             }
 
-            if (!$module->isInstalled() && !$this->install($module, $recollect, false)) {
+            if (!$module->isInstalled() && !$this->install($module, $recollect)) {
                 return false;
             }
         }
@@ -929,7 +929,7 @@ class Application
                     }
                 }
                 if ($dependant->isInstalled()) {
-                    if (!$this->uninstall($dependant, $recollect, false)) {
+                    if (!$this->uninstall($dependant, $recollect)) {
                         return false;
                     }
                 }

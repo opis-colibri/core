@@ -20,6 +20,7 @@ namespace Opis\Colibri;
 use ReflectionObject;
 use ReflectionMethod;
 use RuntimeException;
+use ReflectionNamedType;
 use Opis\Colibri\{
     IoC\Container,
     Internal\Collector as InternalCollector,
@@ -237,7 +238,7 @@ class ItemCollector
                 continue;
             }
 
-            /** @var \ReflectionNamedType $type */
+            /** @var ReflectionNamedType $type */
             $type = $params[0]->getType();
             $type = $type->getName();
             $name = $invertedList[strtolower($type)] ?? null;

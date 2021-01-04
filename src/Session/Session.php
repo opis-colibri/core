@@ -24,7 +24,7 @@ class Session
     private CookieContainer $container;
     private array $data;
     private ?Flash $flash = null;
-    private ?SessionData $session = null;
+    private ?SessionData $session;
 
     public function __construct(CookieContainer $container, ?SessionHandler $handler = null, array $config = [])
     {

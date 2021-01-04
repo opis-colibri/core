@@ -17,7 +17,13 @@
 
 namespace Opis\Colibri\Routing;
 
-use ArrayAccess, ArrayObject;
+use Closure;
+use ArrayAccess;
+use ArrayObject;
+use ReflectionException;
+use ReflectionFunction;
+use ReflectionMethod;
+use ReflectionParameter;
 
 class ArgumentResolver
 {
@@ -98,7 +104,7 @@ class ArgumentResolver
         if ($bind && isset($this->bindings[$name])) {
             $callable = $this->bindings[$name];
             unset($this->bindings[$name]);
-            $this->values[$name] = $callable(...$this->resolve($callable, true));
+            $this->values[$name] = $callable(...$this->resolve($callable));
         }
 
         if (array_key_exists($name, $this->values)) {
@@ -123,7 +129,7 @@ class ArgumentResolver
 
         try {
             $parameters = $this->getParameters($callback);
-        } catch (\ReflectionException $e) {
+        } catch (ReflectionException $e) {
             return $arguments;
         }
 
@@ -137,26 +143,26 @@ class ArgumentResolver
 
     /**
      * @param callable $callback
-     * @return \ReflectionParameter[]
-     * @throws \ReflectionException
+     * @return ReflectionParameter[]
+     * @throws ReflectionException
      */
     public function getParameters(callable $callback): array
     {
         if (is_string($callback)) {
             if (function_exists($callback)) {
-                $parameters = (new \ReflectionFunction($callback))->getParameters();
+                $parameters = (new ReflectionFunction($callback))->getParameters();
             } else {
-                $parameters = (new \ReflectionMethod($callback))->getParameters();
+                $parameters = (new ReflectionMethod($callback))->getParameters();
             }
         } elseif (is_object($callback)) {
-            if ($callback instanceof \Closure) {
-                $parameters = (new \ReflectionFunction($callback))->getParameters();
+            if ($callback instanceof Closure) {
+                $parameters = (new ReflectionFunction($callback))->getParameters();
             } else {
-                $parameters = (new \ReflectionMethod($callback, '__invoke'))->getParameters();
+                $parameters = (new ReflectionMethod($callback, '__invoke'))->getParameters();
             }
         } else {
             /** @var array $callback */
-            $parameters = (new \ReflectionMethod(reset($callback), end($callback)))->getParameters();
+            $parameters = (new ReflectionMethod(reset($callback), end($callback)))->getParameters();
         }
 
         return $parameters;

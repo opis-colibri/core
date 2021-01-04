@@ -71,9 +71,9 @@ class RouteCollector extends BaseCollector
     /**
      * Define a new route that will intercept  the specified methods
      *
-     * @param   string|array $path The path to match
-     * @param   callable $action An action that will be executed
-     * @param   string|array $method (optional) Request method
+     * @param string $path The path to match
+     * @param callable $action An action that will be executed
+     * @param null $method (optional) Request method
      *
      * @return  Route
      */
@@ -103,9 +103,9 @@ class RouteCollector extends BaseCollector
     /**
      * Defines a new route that will intercept all HTTP requests
      *
-     * @param   string $path The path to match
-     * @param   callable $action An action that will be executed
-     * @param   string $name (optional) Route name
+     * @param string $path The path to match
+     * @param callable $action An action that will be executed
+     * @param string|null $name (optional) Route name
      *
      * @return  Route
      */
@@ -145,9 +145,9 @@ class RouteCollector extends BaseCollector
     /**
      * Defines a new route that will intercept all DELETE requests
      *
-     * @param   string $path The path to match
-     * @param   callable $action An action that will be executed
-     * @param   string $name (optional) Route name
+     * @param string $path The path to match
+     * @param callable $action An action that will be executed
+     * @param string|null $name (optional) Route name
      *
      * @return  Route
      */
@@ -159,9 +159,9 @@ class RouteCollector extends BaseCollector
     /**
      * Defines a new route that will intercept all PUT requests
      *
-     * @param   string $path The path to match
-     * @param   callable $action An action that will be executed
-     * @param   string $name (optional) Route name
+     * @param string $path The path to match
+     * @param callable $action An action that will be executed
+     * @param string|null $name (optional) Route name
      *
      * @return  Route
      */
@@ -173,9 +173,9 @@ class RouteCollector extends BaseCollector
     /**
      * Defines a new route that will intercept all PATCH requests
      *
-     * @param   string $path The path to match
-     * @param   callable $action An action that will be executed
-     * @param   string $name (optional) Route name
+     * @param string $path The path to match
+     * @param callable $action An action that will be executed
+     * @param string|null $name (optional) Route name
      *
      * @return  Route
      */
@@ -187,9 +187,9 @@ class RouteCollector extends BaseCollector
     /**
      * Defines a new route that will intercept all OPTIONS requests
      *
-     * @param   string $path The path to match
-     * @param   callable $action An action that will be executed
-     * @param   string $name (optional) Route name
+     * @param string $path The path to match
+     * @param callable $action An action that will be executed
+     * @param string|null $name (optional) Route name
      *
      * @return  Route
      */

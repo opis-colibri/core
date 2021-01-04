@@ -26,7 +26,7 @@ class ScriptCollection extends Collection
      * @param string $href
      * @param callable|null $callback
      * @param bool $inBody
-     * @return ScriptCollection|Collection
+     * @return ScriptCollection
      */
     public function url(string $href, ?callable $callback = null, bool $inBody = false): self
     {
@@ -43,7 +43,7 @@ class ScriptCollection extends Collection
      * @param string $content
      * @param callable|null $callback
      * @param bool $inBody
-     * @return ScriptCollection|Collection
+     * @return ScriptCollection
      */
     public function inline(string $content, ?callable $callback = null, bool $inBody = false): self
     {

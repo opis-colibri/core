@@ -60,41 +60,26 @@ class Locale
         $this->rtl = $rtl;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function id(): string
     {
         return $this->id;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function language(): string
     {
         return $this->language;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function script(): ?string
     {
         return $this->script;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function region(): ?string
     {
         return $this->region;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function rtl(): bool
     {
         return $this->rtl;

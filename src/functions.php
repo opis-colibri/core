@@ -17,6 +17,8 @@
 
 namespace Opis\Colibri;
 
+use stdClass;
+use Exception;
 use Opis\Colibri\Cache\CacheDriver;
 use Opis\JsonSchema\Validator;
 use Opis\Database\{
@@ -33,15 +35,13 @@ use Opis\ORM\{
     EntityManager,
     Core\EntityQuery
 };
-
 use Opis\Colibri\Routing\ControllerCallback;
-use Opis\Colibri\Http\{Request, Response as HttpResponse, Response};
+use Opis\Colibri\Http\{Request, Response};
 use Opis\Colibri\Http\Responses\{
     HtmlResponse, JsonResponse, RedirectResponse
 };
 use Opis\Colibri\Render\Renderable;
 use Psr\Log\LoggerInterface;
-
 use Opis\Colibri\Events\Event;
 use Opis\Colibri\Render\View;
 use Opis\Colibri\Session\Session;
@@ -139,11 +139,11 @@ function schema(?string $connection = null): Schema
 
 /**
  * @param callable $callback
- * @param mixed $default
+ * @param mixed|null $default
  * @param string|null $connection
- * @return mixed|false
+ * @return mixed
  */
-function transaction(callable $callback, $default = null, ?string $connection = null)
+function transaction(callable $callback, mixed $default = null, ?string $connection = null): mixed
 {
     return connection($connection)->transaction($callback, null, $default);
 }
@@ -196,14 +196,14 @@ function request(): ?Request
 }
 
 /**
- * @param string|Stream|array|\stdClass $body
+ * @param string|array|stdClass|Stream $body
  * @param int $status
  * @param array $headers
- * @return HttpResponse|JsonResponse|HtmlResponse
+ * @return HtmlResponse|JsonResponse
  */
-function response($body, int $status = 200, array $headers = []): HttpResponse
+function response(string|array|stdClass|Stream $body, int $status = 200, array $headers = []): HtmlResponse|JsonResponse
 {
-    if (is_array($body) || $body instanceof \stdClass) {
+    if (is_array($body) || $body instanceof stdClass) {
         return new JsonResponse($body, $status, $headers);
     }
 
@@ -212,11 +212,11 @@ function response($body, int $status = 200, array $headers = []): HttpResponse
 
 /**
  * @param int $status
- * @param string|Stream|array|null $body
+ * @param string|array|stdClass|Stream|null $body
  * @param array $headers
- * @return HttpResponse|JsonResponse|HtmlResponse
+ * @return HtmlResponse|JsonResponse
  */
-function httpError(int $status, $body = null, array $headers = []): HttpResponse
+function httpError(int $status, string|array|stdClass|Stream $body = null, array $headers = []): HtmlResponse|JsonResponse
 {
     if ($body === null && $status >= 400) {
         $body = view('error.' . $status, [
@@ -349,7 +349,7 @@ function uuid4(string $sep = '-'): string
             random_int(0, 0x3fff) | 0x8000,
             random_int(0, 0xffffffffffff)
         );
-    } catch (\Exception $e) {
+    } catch (Exception) {
         return sprintf("%08x$sep%04x$sep%04x$sep%04x$sep%012x",
             rand(0, 0xffffffff),
             rand(0, 0xffff),
@@ -375,7 +375,7 @@ function random_str(int $length): string
         for ($i = 0; $i < $length; $i++) {
             $str .= $key[random_int(0, $limit)];
         }
-    } catch (\Exception $e) {
+    } catch (Exception) {
         $str = '';
         for ($i = 0; $i < $length; $i++) {
             $str .= $key[rand(0, $limit)];
@@ -441,9 +441,9 @@ function convertToCase(string $value, string  $to='snake_case', string $from = '
 /**
  * @param string $type
  * @param bool $fresh
- * @return mixed
+ * @return object
  */
-function collect(string $type, bool $fresh = false)
+function collect(string $type, bool $fresh = false): object
 {
     return Application::getInstance()->getCollector()->collect($type, $fresh);
 }

@@ -21,7 +21,7 @@ use Opis\Colibri\Http\Request;
 
 class CookieContainer
 {
-    private ?Request $request = null;
+    private ?Request $request;
     private array $cookies = [];
 
     public function __construct(?Request $request = null)

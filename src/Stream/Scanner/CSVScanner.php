@@ -102,7 +102,7 @@ class CSVScanner
     }
 
     /**
-     * @return iterable|array[]
+     * @return iterable
      */
     public function all(): iterable
     {

@@ -182,7 +182,7 @@ class Container implements ContainerInterface
      * @param string|null|callable $concrete
      * @param array $arguments
      * @param bool $shared
-     * @return Container2
+     * @return Container
      */
     protected function bindDependency(string $abstract, string|callable|null $concrete, array $arguments, bool $shared): self
     {
@@ -227,7 +227,7 @@ class Container implements ContainerInterface
         }
 
         if (!isset($this->bindings[$abstract])) {
-            $this->bind($abstract, null);
+            $this->bind($abstract);
         }
 
         return $this->bindings[$abstract];

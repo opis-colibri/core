@@ -60,9 +60,6 @@ class NumberFormatter
         return $this->percent;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function formatDecimal(int|float|string $value): string
     {
         if ($this->decimal === null) {
@@ -72,9 +69,6 @@ class NumberFormatter
         return $this->decimal->format($value);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function formatPercent(int|float|string $value): string
     {
         if ($this->percent === null) {
@@ -84,9 +78,6 @@ class NumberFormatter
         return $this->percent->format($value);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function formatCurrency(int|float|string $value, ?string $currency = null): string
     {
         if ($this->currency === null) {

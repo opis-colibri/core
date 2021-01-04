@@ -44,7 +44,7 @@ class MetaCollection extends Collection
     /**
      * @param string $entry
      * @param callable $callback
-     * @return MetaCollection|Collection
+     * @return MetaCollection
      */
     public function custom(string $entry, callable $callback): self
     {
@@ -57,7 +57,7 @@ class MetaCollection extends Collection
      * @param string $type
      * @param string $value
      * @param callable|null $callback
-     * @return MetaCollection|Collection
+     * @return MetaCollection
      */
     public function httpEquiv(string $type, string $value, ?callable $callback = null): self
     {
@@ -78,7 +78,7 @@ class MetaCollection extends Collection
     /**
      * @param string $charset
      * @param callable|null $callback
-     * @return MetaCollection|Collection
+     * @return MetaCollection
      */
     public function charset(string $charset = 'utf-8', ?callable $callback = null): self
     {
@@ -95,7 +95,7 @@ class MetaCollection extends Collection
     /**
      * @param string $viewport
      * @param callable|null $callback
-     * @return MetaCollection|Collection
+     * @return MetaCollection
      */
     public function viewport(string $viewport = 'width=device-width, initial-scale=1, shrink-to-fit=no', ?callable $callback = null): self
     {
@@ -115,7 +115,7 @@ class MetaCollection extends Collection
     /**
      * @param string $value
      * @param callable|null $callback
-     * @return MetaCollection|Collection
+     * @return MetaCollection
      */
     public function contentType(string $value, ?callable $callback = null): self
     {
@@ -125,7 +125,7 @@ class MetaCollection extends Collection
     /**
      * @param string $value
      * @param callable|null $callback
-     * @return MetaCollection|Collection
+     * @return MetaCollection
      */
     public function defaultStyle(string $value, ?callable $callback = null): self
     {
@@ -135,7 +135,7 @@ class MetaCollection extends Collection
     /**
      * @param string $value
      * @param callable|null $callback
-     * @return MetaCollection|Collection
+     * @return MetaCollection
      */
     public function refresh(string $value, ?callable $callback = null): self
     {
@@ -145,7 +145,7 @@ class MetaCollection extends Collection
     /**
      * @param string $value
      * @param callable|null $callback
-     * @return MetaCollection|Collection
+     * @return MetaCollection
      */
     public function applicationName(string $value, ?callable $callback = null): self
     {
@@ -155,7 +155,7 @@ class MetaCollection extends Collection
     /**
      * @param string $value
      * @param callable|null $callback
-     * @return MetaCollection|Collection
+     * @return MetaCollection
      */
     public function author(string $value, ?callable $callback = null): self
     {
@@ -165,7 +165,7 @@ class MetaCollection extends Collection
     /**
      * @param string $value
      * @param callable|null $callback
-     * @return MetaCollection|Collection
+     * @return MetaCollection
      */
     public function copyright(string $value, ?callable $callback = null): self
     {
@@ -175,7 +175,7 @@ class MetaCollection extends Collection
     /**
      * @param string $value
      * @param callable|null $callback
-     * @return MetaCollection|Collection
+     * @return MetaCollection
      */
     public function description(string $value, ?callable $callback = null): self
     {
@@ -185,7 +185,7 @@ class MetaCollection extends Collection
     /**
      * @param string $value
      * @param callable|null $callback
-     * @return MetaCollection|Collection
+     * @return MetaCollection
      */
     public function generator(string $value, ?callable $callback = null): self
     {
@@ -195,7 +195,7 @@ class MetaCollection extends Collection
     /**
      * @param string|string[] $value
      * @param callable|null $callback
-     * @return MetaCollection|Collection
+     * @return MetaCollection
      */
     public function keywords($value, ?callable $callback = null): self
     {
@@ -208,7 +208,7 @@ class MetaCollection extends Collection
     /**
      * @param string $value
      * @param callable|null $callback
-     * @return MetaCollection|Collection
+     * @return MetaCollection
      */
     public function robots(string $value, ?callable $callback = null): self
     {

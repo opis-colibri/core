@@ -154,7 +154,7 @@ class ResourceStream implements Stream
         array_unshift($flags, '+');
 
         foreach ($flags as $f) {
-            if (strpos($mode, $f) !== false) {
+            if (str_contains($mode, $f)) {
                 return true;
             }
         }
@@ -215,11 +215,11 @@ class ResourceStream implements Stream
             return false;
         }
 
-        if (strpos($mode, 'r') !== false) {
+        if (str_contains($mode, 'r')) {
             return true;
         }
 
-        if (strpos($mode, '+') !== false) {
+        if (str_contains($mode, '+')) {
             return true;
         }
 

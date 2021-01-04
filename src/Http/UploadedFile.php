@@ -203,7 +203,7 @@ class UploadedFile
 
     /**
      * @param array $files
-     * @return array|self[]|self[][]
+     * @return array
      */
     public static function parseFiles(array $files): array
     {

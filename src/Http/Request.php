@@ -118,7 +118,7 @@ class Request extends Message
                 if (isset($this->headers['Host'])) {
                     $port = null;
                     $host = $this->headers['Host'];
-                    if (strpos($host, ':') !== false) {
+                    if (str_contains($host, ':')) {
                         [$host, $port] = explode(':', $host);
                         $port = (int) $port;
                         if (!Uri::isValidPort($port)) {

@@ -147,7 +147,7 @@ class ApplicationInitializerBuilder
     }
 
     /**
-     * @return SessionHandler
+     * @return SessionHandler|null
      */
     public function getSessionHandler(): ?SessionHandler
     {

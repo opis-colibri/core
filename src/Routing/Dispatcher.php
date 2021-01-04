@@ -31,9 +31,6 @@ class Dispatcher
         $this->httpError = $httpError ?? (static::class . '::createHttpError');
     }
 
-    /**
-     * @inheritDoc
-     */
     public function dispatch(Router $router, Request $request): Response
     {
         $route = $this->findRoute($router, $request);

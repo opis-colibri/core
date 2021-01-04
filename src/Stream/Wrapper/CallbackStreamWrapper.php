@@ -113,6 +113,6 @@ class CallbackStreamWrapper extends ContentStreamWrapper
      */
     protected static function formatPath(string $path): string
     {
-        return strpos($path, '?') === false ? $path : strstr($path, '?', true);
+        return !str_contains($path, '?') ? $path : strstr($path, '?', true);
     }
 }
