@@ -32,11 +32,11 @@ class Session
 
         if ($handler === null) {
             $file = $config['session.save_path'] ?? ini_get('session.save_path');
-            $this->handler = new Handlers\File($file ?: sys_get_temp_dir());
+            $handler = new Handlers\File($file ?: sys_get_temp_dir());
             unset($file);
-        } else {
-            $this->handler = $handler;
         }
+
+        $this->handler = $handler;
 
         $config += [
             'flash_slot' => '__flash__',
