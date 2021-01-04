@@ -240,7 +240,7 @@ class Database implements SessionHandler
                 ->delete() > 0;
     }
 
-    public static function setup(Schema $schema, string $table_name = 'sessions', array $columns = []): void
+    public static function setup(Schema $schema, string $table_name = 'sessions', array $columns = [], ?int $sid_length = null): void
     {
         $columns += [
             'id' => 'id',
@@ -251,8 +251,15 @@ class Database implements SessionHandler
             'data' => 'data',
         ];
 
-        $schema->create($table_name, static function (Blueprint $table) use ($columns) {
-            $table->string($columns['id'], 64)->notNull();
+        if ($sid_length === null) {
+            $sid_length = (int) ini_get('session.sid_length');
+        }
+
+        // 32-255
+        $sid_length = min(255, max(32, $sid_length));
+
+        $schema->create($table_name, static function (Blueprint $table) use ($columns, $sid_length) {
+            $table->fixed($columns['id'], $sid_length)->notNull();
             $table->string($columns['name'], 32)->notNull();
             $table->integer($columns['expire'])->unsigned()->notNull()->defaultValue(0);
             $table->integer($columns['created_at'])->unsigned()->notNull();
