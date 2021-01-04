@@ -316,7 +316,7 @@ class RoutingUnitTest extends TestCase
 
     public function testSerialization()
     {
-        \Opis\Closure\SerializableClosure::init();
+        \Opis\Closure\Library::init();
 
         $this->route('/', static fn () => 'OK')
             ->filter('foo', static fn ($x) => $x == 'X');

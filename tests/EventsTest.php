@@ -18,7 +18,6 @@
 namespace Opis\Colibri\Test;
 
 use Opis\Colibri\Events\{Event, EventDispatcher};
-use Opis\Closure\SerializableClosure;
 use PHPUnit\Framework\TestCase;
 
 class EventsTest extends TestCase
@@ -206,7 +205,7 @@ class EventsTest extends TestCase
 
     public function testSerializable()
     {
-        SerializableClosure::init();
+        \Opis\Closure\Library::init();
 
         $this->target->handle('foo', static function () {
             print "foo";

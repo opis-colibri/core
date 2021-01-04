@@ -17,7 +17,6 @@
 
 namespace Opis\Colibri\Test\Views;
 
-use Opis\Closure\SerializableClosure;
 use Opis\Colibri\View\Renderer;
 use PHPUnit\Framework\TestCase;
 
@@ -100,7 +99,7 @@ class ViewsTest extends TestCase
 
     public function testSerialization()
     {
-        SerializableClosure::init();
+        \Opis\Closure\Library::init();
 
         $this->renderer->getEngineResolver()->register(static fn() => new ViewEngine1(), 1);
 
