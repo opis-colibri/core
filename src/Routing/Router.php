@@ -18,6 +18,8 @@
 namespace Opis\Colibri\Routing;
 
 use ArrayAccess, ArrayObject;
+use Opis\Colibri\Application;
+use Opis\Colibri\Collectors\RouteCollector;
 use Opis\Colibri\Http\Request;
 use Opis\Colibri\Routing\Filters\{
     RequestFilter, UserFilter
@@ -25,32 +27,34 @@ use Opis\Colibri\Routing\Filters\{
 
 class Router
 {
+    private Application $app;
     private RouteCollection $routes;
 
     /** @var Filter[] */
     private array $filters;
 
     private Dispatcher $dispatcher;
-    protected ArrayAccess $global;
+    private ArrayAccess $global;
     private array $compacted = [];
 
     /**
      * Router constructor.
-     * @param RouteCollection $routes
-     * @param Dispatcher|null $dispatcher
-     * @param ArrayAccess|null $global
-     * @param array|null $filters
+     * @param Application $app
      */
-    public function __construct(
-        RouteCollection $routes,
-        ?Dispatcher $dispatcher = null,
-        ?ArrayAccess $global = null,
-        ?array $filters = null
-    ) {
-        $this->routes = $routes;
-        $this->dispatcher = $dispatcher ?? new DefaultDispatcher();
-        $this->global = $global ?? new ArrayObject();
-        $this->filters = $filters ?? [new RequestFilter(), new UserFilter()];
+    public function __construct(Application $app) {
+        $this->app = $app;
+        $this->routes = $app->getCollector()->collect(RouteCollector::class);;
+        $this->dispatcher = new Dispatcher();
+        $this->global = new ArrayObject([
+            'app' => $app,
+            'lang' => $app->getTranslator()->getDefaultLanguage(),
+        ]);
+        $this->filters = [new RequestFilter(), new UserFilter()];
+    }
+
+    public function getApplication(): Application
+    {
+        return $this->app;
     }
 
     /**

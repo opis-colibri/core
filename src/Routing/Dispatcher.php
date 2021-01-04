@@ -17,14 +17,156 @@
 
 namespace Opis\Colibri\Routing;
 
-use Opis\Colibri\Http\{Request, Response};
+use SplQueue;
+use Generator;
+use Opis\Colibri\Http\{Request, Responses\HtmlResponse, Response};
 
-interface Dispatcher
+class Dispatcher
 {
+    /** @var callable */
+    private $httpError;
+
+    public function __construct(?callable $httpError = null)
+    {
+        $this->httpError = $httpError ?? (static::class . '::createHttpError');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function dispatch(Router $router, Request $request): Response
+    {
+        $route = $this->findRoute($router, $request);
+
+        if ($route === null) {
+            return ($this->httpError)(404);
+        }
+
+        $invoker = $router->resolveInvoker($route, $request);
+        $guards = $route->getRouteCollection()->getGuards();
+
+        /**
+         * @var string $name
+         * @var callable|null $callback
+         */
+        foreach ($route->getGuards() as $name => $callback) {
+            if ($callback === null) {
+                if (!isset($guards[$name])) {
+                    continue;
+                }
+                $callback = $guards[$name];
+            }
+
+            $args = $invoker->getArgumentResolver()->resolve($callback);
+
+            if (false === $callback(...$args)) {
+                return ($this->httpError)(404);
+            }
+        }
+
+        $list = $route->getProperties()['middleware'] ?? [];
+
+        if (empty($list)) {
+            $result = $invoker->invokeAction();
+            if (!$result instanceof Response) {
+                $result = new HtmlResponse($result);
+            }
+            return $result;
+        }
+
+        $queue = new SplQueue();
+        $next = static function () use ($queue, $invoker) {
+            do {
+                if ($queue->isEmpty()) {
+                    $result = $invoker->invokeAction();
+                    if (!$result instanceof Response) {
+                        $result = new HtmlResponse($result);
+                    }
+                    return $result;
+                }
+                /** @var Middleware $middleware */
+                $middleware = $queue->dequeue();
+            } while (!is_callable($middleware));
+
+            $args = $invoker->getArgumentResolver()->resolve($middleware);
+            $result = $middleware(...$args);
+            if (!$result instanceof Response) {
+                $result = new HtmlResponse($result);
+            }
+            return $result;
+        };
+
+        foreach ($list as $item) {
+            if (is_subclass_of($item, Middleware::class, true)) {
+                $queue->enqueue(new $item($next));
+            }
+        }
+
+        return $next();
+    }
+
+    /**
+     * Default value for httpError property
+     * @param int $code
+     * @return Response
+     */
+    private static function createHttpError(int $code): Response
+    {
+        return new Response($code);
+    }
+
     /**
      * @param Router $router
      * @param Request $request
-     * @return Response
+     * @return null|Route
      */
-    public function dispatch(Router $router, Request $request): Response;
+    private function findRoute(Router $router, Request $request): ?Route
+    {
+        $global = $router->getGlobalValues();
+        $global['router'] = $router;
+        /** @var Route $route */
+        foreach ($this->match($router, $request->getUri()->path() ?? '') as $route) {
+            $global['route'] = $route;
+            if (!$this->filter($router, $route, $request)) {
+                continue;
+            }
+            return $route;
+        }
+        $global['route'] = null;
+        return null;
+    }
+
+    /**
+     * @param Router $router
+     * @param string $path
+     * @return Generator
+     */
+    private function match(Router $router, string $path): Generator
+    {
+        $routes = $router->getRouteCollection();
+        $routes->sort();
+
+        foreach ($routes->getRegexPatterns() as $routeID => $pattern) {
+            if (preg_match($pattern, $path)) {
+                yield $routes->getRoute($routeID);
+            }
+        }
+    }
+
+    /**
+     * @param Router $router
+     * @param Route $route
+     * @param Request $request
+     * @return bool
+     */
+    private function filter(Router $router, Route $route, Request $request): bool
+    {
+        foreach ($router->getFilters() as $filter) {
+            if (!$filter->filter($router, $route, $request)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

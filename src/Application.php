@@ -29,11 +29,12 @@ use Opis\Colibri\I18n\Translator\{Driver as TranslatorDriver};
 use Opis\Colibri\View\Renderer;
 use Opis\Colibri\Http\{Request as HttpRequest, Response as HttpResponse, Responses\FileStream, Responses\HtmlResponse};
 use Opis\Colibri\Config\{ConfigDriver};
+use Opis\Colibri\Routing\Router;
 use Opis\Database\{Connection, Database, Schema};
 use Opis\ORM\EntityManager;
 use Opis\JsonSchema\Validator;
 use Opis\Colibri\Templates\TemplateStream;
-use Opis\Colibri\Core\{CSRFToken, ItemCollector, Module, ModuleManager, Router, Translator};
+use Opis\Colibri\Core\{CSRFToken, ItemCollector, Module, ModuleManager, Translator};
 use Opis\Colibri\Collectors\{
     AssetsHandlerCollector,
     CacheCollector,

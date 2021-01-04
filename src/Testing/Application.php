@@ -23,7 +23,6 @@ use Opis\Colibri\Templates\TemplateStream;
 
 class Application extends BaseApplication
 {
-
     protected ?string $installedJson = null;
 
     /** @var null|callable */
