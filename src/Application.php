@@ -21,19 +21,19 @@ use Opis\Colibri\IoC\Container;
 use RuntimeException, Throwable;
 use Composer\Package\CompletePackageInterface;
 use Symfony\Component\Console\Application as ConsoleApplication;
-use Opis\Colibri\Session\{SessionHandler, Containers\RequestContainer};
+use Opis\Colibri\Session\{CookieContainer, Session, SessionHandler};
 use Psr\Log\{NullLogger, LoggerInterface};
 use Opis\Colibri\Cache\{CacheDriver};
 use Opis\Colibri\Events\{Event, EventDispatcher};
 use Opis\Colibri\I18n\Translator\{Driver as TranslatorDriver};
-use Opis\Colibri\View\{Renderer};
+use Opis\Colibri\View\Renderer;
 use Opis\Colibri\Http\{Request as HttpRequest, Response as HttpResponse, Responses\FileStream, Responses\HtmlResponse};
 use Opis\Colibri\Config\{ConfigDriver};
 use Opis\Database\{Connection, Database, Schema};
 use Opis\ORM\EntityManager;
 use Opis\JsonSchema\Validator;
 use Opis\Colibri\Templates\TemplateStream;
-use Opis\Colibri\Core\{CSRFToken, ItemCollector, Module, ModuleManager, Router, Session, Translator};
+use Opis\Colibri\Core\{CSRFToken, ItemCollector, Module, ModuleManager, Router, Translator, RequestCookieContainer};
 use Opis\Colibri\Collectors\{
     AssetsHandlerCollector,
     CacheCollector,
@@ -63,7 +63,7 @@ class Application
     protected ?Translator $translatorInstance = null;
     protected ?string $defaultLanguage = null;
     protected ?CSRFToken $csrfTokenInstance = null;
-    protected ?RequestContainer $sessionCookieContainer = null;
+    protected ?CookieContainer $sessionCookieContainer = null;
     protected ?Router $httpRouter = null;
     protected ?Renderer $viewRenderer = null;
     protected ?EventDispatcher $eventDispatcher = null;
@@ -130,7 +130,7 @@ class Application
     /**
      * Get module packs
      *
-     * @param   bool $clear (optional)
+     * @param bool $clear (optional)
      *
      * @return  CompletePackageInterface[]
      */
@@ -142,7 +142,7 @@ class Application
     /**
      * Get a list with available modules
      *
-     * @param   bool $clear (optional)
+     * @param bool $clear (optional)
      *
      * @return  Module[]
      */
@@ -298,25 +298,31 @@ class Application
     {
         if ($name === null) {
             if ($this->defaultSession === null) {
-                $this->defaultSession = new Session($this->defaultSessionConfig ?? [], $this->defaultSessionHandler);
+                $this->defaultSession = new Session(
+                    $this->getSessionCookieContainer(),
+                    $this->defaultSessionHandler,
+                    $this->defaultSessionConfig ?? [],
+                );
             }
             return $this->defaultSession;
         }
 
         if (!isset($this->session[$name])) {
-            $this->session[$name] = $this->getCollector()->collect(SessionCollector::class)->getSession($name);
+            $this->session[$name] = $this->getCollector()
+                ->collect(SessionCollector::class)
+                ->getSession($name, $this->getSessionCookieContainer());
         }
 
         return $this->session[$name];
     }
 
     /**
-     * @return RequestContainer
+     * @return CookieContainer
      */
-    public function getSessionCookieContainer(): RequestContainer
+    public function getSessionCookieContainer(): CookieContainer
     {
         if ($this->sessionCookieContainer === null) {
-            $this->sessionCookieContainer = new RequestContainer($this->httpRequest);
+            $this->sessionCookieContainer = new RequestCookieContainer($this->httpRequest);
         }
 
         return $this->sessionCookieContainer;
@@ -424,7 +430,7 @@ class Application
     /**
      * Returns a logger
      *
-     * @param   string|null $logger Logger's name
+     * @param string|null $logger Logger's name
      *
      * @return  LoggerInterface
      */
@@ -662,7 +668,8 @@ class Application
 
             $contentType = strtolower(trim(explode(';', $request->getHeader('Content-Type', 'text/html'))[0]));
 
-            return httpError(500, $contentType === 'application/json' ? (object) ['message' => 'Application error'] : null);
+            return httpError(500,
+                $contentType === 'application/json' ? (object)['message' => 'Application error'] : null);
         }
 
         if (!$response instanceof HttpResponse) {
@@ -710,9 +717,9 @@ class Application
     /**
      * Install a module
      *
-     * @param   Module $module
-     * @param   boolean $recollect (optional)
-     * @param   boolean $recursive (optional)
+     * @param Module $module
+     * @param boolean $recollect (optional)
+     * @param boolean $recursive (optional)
      *
      * @return  boolean
      */
@@ -764,9 +771,9 @@ class Application
     /**
      * Uninstall a module
      *
-     * @param   Module $module
-     * @param   boolean $recollect (optional)
-     * @param   boolean $recursive (optional)
+     * @param Module $module
+     * @param boolean $recollect (optional)
+     * @param boolean $recursive (optional)
      *
      * @return  boolean
      */
@@ -822,9 +829,9 @@ class Application
     /**
      * Enable a module
      *
-     * @param   Module $module
-     * @param   boolean $recollect (optional)
-     * @param   boolean $recursive (optional)
+     * @param Module $module
+     * @param boolean $recollect (optional)
+     * @param boolean $recursive (optional)
      *
      * @return  boolean
      */
@@ -880,9 +887,9 @@ class Application
     /**
      * Disable a module
      *
-     * @param   Module $module
-     * @param   boolean $recollect (optional)
-     * @param   boolean $recursive (optional)
+     * @param Module $module
+     * @param boolean $recollect (optional)
+     * @param boolean $recursive (optional)
      *
      * @return  boolean
      */
@@ -937,7 +944,8 @@ class Application
     public function getModuleManager(): ModuleManager
     {
         if ($this->moduleManager === null) {
-            $this->moduleManager = new ModuleManager($this->info->vendorDir(), fn (): ConfigDriver => $this->getConfig());
+            $this->moduleManager = new ModuleManager($this->info->vendorDir(),
+                fn(): ConfigDriver => $this->getConfig());
         }
 
         return $this->moduleManager;

@@ -238,12 +238,15 @@ class Request extends Message
     public function getFormData(): array
     {
         if ($this->formData === null) {
-            $data = [];
-            if (isset($this->headers['Content-Type']) && 0 === strpos($this->headers['Content-Type'],
-                    'application/x-www-form-urlencoded') && $this->body !== null) {
+            $data = null;
+            if (
+                $this->body !== null &&
+                isset($this->headers['Content-Type']) &&
+                str_starts_with($this->headers['Content-Type'], 'application/x-www-form-urlencoded')
+            ) {
                 parse_str((string)$this->body, $data);
             }
-            $this->formData = $data;
+            $this->formData = is_array($data) ? $data : [];
         }
 
         return $this->formData;
@@ -259,10 +262,10 @@ class Request extends Message
 
     /**
      * @param string $name
-     * @param null $default
-     * @return mixed|null
+     * @param mixed $default
+     * @return mixed
      */
-    public function query(string $name, $default = null)
+    public function query(string $name, mixed $default = null): mixed
     {
         return $this->getQuery()[$name] ?? $default;
     }
@@ -270,16 +273,16 @@ class Request extends Message
     /**
      * @param string $name
      * @param null $default
-     * @return mixed|null
+     * @return mixed
      */
-    public function formData(string $name, $default = null)
+    public function formData(string $name, mixed $default = null): mixed
     {
         return $this->getFormData()[$name] ?? $default;
     }
 
     /**
      * @param string $name
-     * @return null|UploadedFile
+     * @return UploadedFile|null
      */
     public function file(string $name): ?UploadedFile
     {
@@ -291,11 +294,13 @@ class Request extends Message
      */
     public static function fromGlobals(): self
     {
-        $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
+        $vars = $_SERVER;
+
+        $method = strtoupper($vars['REQUEST_METHOD'] ?? 'GET');
 
         if ($method === 'POST') {
-            if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
-                $method = strtoupper($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']);
+            if (isset($vars['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
+                $method = strtoupper($vars['HTTP_X_HTTP_METHOD_OVERRIDE']);
             } elseif (isset($_POST['x_http_method_override'])) {
                 $method = strtoupper($_POST['x_http_method_override']);
             }
@@ -303,11 +308,11 @@ class Request extends Message
 
         $headers = [];
 
-        foreach ($_SERVER as $key => $value) {
+        foreach ($vars as $key => $value) {
             if (!is_scalar($value)) {
                 continue;
             }
-            if (strpos($key, 'HTTP_') === 0) {
+            if (str_starts_with($key, 'HTTP_')) {
                 $key = substr($key, 5);
             } elseif (!in_array($key, ['CONTENT_LENGTH', 'CONTENT_MD5', 'CONTENT_TYPE'])) {
                 continue;
@@ -316,19 +321,18 @@ class Request extends Message
             $headers[$key] = $value;
         }
 
-        if (($_SERVER['PATH_INFO'] ?? '') !== '') {
-            $requestTarget = $_SERVER['PATH_INFO'];
-            if (($_SERVER['QUERY_STRING'] ?? '') !== '') {
-                $requestTarget .= '?' . $_SERVER['QUERY_STRING'];
+        if (($vars['PATH_INFO'] ?? '') !== '') {
+            $requestTarget = $vars['PATH_INFO'];
+            if (($vars['QUERY_STRING'] ?? '') !== '') {
+                $requestTarget .= '?' . $vars['QUERY_STRING'];
             }
         } else {
-            $requestTarget = $_SERVER['REQUEST_URI'] ?? '/';
+            $requestTarget = $vars['REQUEST_URI'] ?? '/';
         }
 
-        $protocol = $_SERVER['SERVER_PROTOCOL'] ?? 'HTTP/1.1';
-        $secure = ($_SERVER['HTTPS'] ?? 'off') !== 'off';
-        $files = UploadedFileHandler::parseFiles($_FILES);
-        $serverVariables = new ServerVariables($_SERVER);
+        $protocol = $vars['SERVER_PROTOCOL'] ?? 'HTTP/1.1';
+        $secure = ($vars['HTTPS'] ?? 'off') !== 'off';
+        $files = UploadedFile::parseFiles($_FILES);
 
         return new self(
             $method,
@@ -341,7 +345,7 @@ class Request extends Message
             $_COOKIE,
             $_GET,
             $_POST,
-            $serverVariables
+            new ServerVariables($vars),
         );
     }
 }

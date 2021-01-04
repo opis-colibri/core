@@ -24,13 +24,9 @@ use Opis\Colibri\Session\{SessionData, SessionHandler};
 
 class Database implements SessionHandler
 {
-
     protected ?OpisDatabase $db;
-
     protected string $table;
-
     protected array $columns;
-
     protected ?string $name = null;
 
     /**

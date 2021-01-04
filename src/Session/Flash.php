@@ -19,9 +19,7 @@ namespace Opis\Colibri\Session;
 
 class Flash
 {
-
     protected array $data = [];
-
     protected array $session;
 
     /**
@@ -39,7 +37,7 @@ class Flash
      * @param mixed $value
      * @return Flash
      */
-    public function set(string $key, $value): self
+    public function set(string $key, mixed $value): self
     {
         $this->data[$key] = $value;
 
@@ -54,7 +52,7 @@ class Flash
      *
      * @return  mixed
      */
-    public function get(string $key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         if (array_key_exists($key, $this->data)) {
             return $this->data[$key];
@@ -97,7 +95,7 @@ class Flash
      *
      * @return mixed
      */
-    public function load(string $key, callable $callback)
+    public function load(string $key, callable $callback): mixed
     {
         if (!$this->has($key)) {
             $this->set($key, $callback($key));
@@ -128,7 +126,7 @@ class Flash
      *
      * @return Flash
      */
-    public function reflash(array $keys = null): self
+    public function reflash(?array $keys = null): self
     {
         if ($keys === null) {
             return $this->clear($this->data + $this->session);

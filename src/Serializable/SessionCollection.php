@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2020 Zindex Software
+ * Copyright 2020-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,56 +17,29 @@
 
 namespace Opis\Colibri\Serializable;
 
-use Opis\Colibri\Session\SessionHandler;
-use Opis\Colibri\Core\Session;
+use Opis\Colibri\Session\{Session, CookieContainer};
 
 class SessionCollection extends Collection
 {
-    /** @var Session[] */
-    private array $sessions = [];
-
-    /** @var SessionHandler[] */
-    private array $handlers = [];
-
     /**
      * @param string $name
-     * @param callable $callback
+     * @param callable $callback Callback that creates a SessionHandler
      * @param array $config
      */
-    public function register(string $name, callable $callback, array $config)
+    public function register(string $name, callable $callback, array $config = []): void
     {
         $this->add($name, [
             'callback' => $callback,
-            'config' => $config
+            'config' => $config,
         ]);
     }
 
-    public function getSession(string $name): ?Session
+    public function getSession(string $name, CookieContainer $container): ?Session
     {
-        if (isset($this->sessions[$name])) {
-            return $this->sessions[$name];
-        }
-
         if (null === $session = $this->get($name)) {
             return null;
         }
 
-        return $this->sessions[$name] = new Session(
-            $session['config'],
-            $this->getHandler($name)
-        );
-    }
-
-    public function getHandler(string $name): ?SessionHandler
-    {
-        if (isset($this->handlers[$name])) {
-            return $this->handlers[$name];
-        }
-
-        if (null === $session = $this->get($name)) {
-            return null;
-        }
-
-        return $this->handlers[$name] = $session['callback']($name);
+        return new Session($container, $session['callback']($name), $session['config']);
     }
 }

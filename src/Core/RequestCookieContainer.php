@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2019-2020 Zindex Software
+ * Copyright 2019-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,31 +15,39 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Session\Containers;
+namespace Opis\Colibri\Core;
 
+use Opis\Colibri\Http\Request;
 use Opis\Colibri\Session\CookieContainer;
 
-class DefaultContainer implements CookieContainer
+class RequestCookieContainer implements CookieContainer
 {
-    /**
-     * @inheritDoc
-     */
+    private ?Request $request = null;
+    private array $cookies = [];
+
+    public function __construct(?Request $request = null)
+    {
+        $this->request = $request;
+    }
+
     public function hasCookie(string $name): bool
     {
-        return isset($_COOKIE[$name]);
+        if ($this->request === null) {
+            return false;
+        }
+
+        return $this->request->hasCookie($name);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getCookie(string $name): ?string
     {
-        return $_COOKIE[$name] ?? null;
+        if ($this->request === null) {
+            return null;
+        }
+
+        return $this->request->getCookie($name);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function setCookie(
         string $name,
         string $value,
@@ -50,18 +58,27 @@ class DefaultContainer implements CookieContainer
         bool $httponly = false,
         ?string $samesite = null
     ): bool {
-        $options = [
+        $this->cookies[$name] = [
+            'name' => $name,
+            'value' => $value,
             'expires' => $expires,
             'path' => $path,
             'domain' => $domain,
             'secure' => $secure,
             'httponly' => $httponly,
+            'samesite' => $samesite,
         ];
 
-        if ($samesite) {
-            $options['samesite'] = $samesite;
-        }
+        return true;
+    }
 
-        return setcookie($name, $value, $options);
+    /**
+     * Get a list with the set cookies
+     *
+     * @return array
+     */
+    public function getAddedCookies(): array
+    {
+        return $this->cookies;
     }
 }

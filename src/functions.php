@@ -18,9 +18,7 @@
 namespace Opis\Colibri;
 
 use Opis\Colibri\Cache\CacheDriver;
-use Opis\Colibri\View\View;
 use Opis\JsonSchema\Validator;
-use Opis\Colibri\Core\{Session};
 use Opis\Database\{
     Connection as DBConnection,
     Database,
@@ -35,9 +33,8 @@ use Opis\ORM\{
     EntityManager,
     Core\EntityQuery
 };
-use Opis\Colibri\Events\Event;
+
 use Opis\Colibri\Routing\ControllerCallback;
-use Opis\Colibri\Stream\Stream;
 use Opis\Colibri\Http\{Request, Response as HttpResponse, Response};
 use Opis\Colibri\Http\Responses\{
     HtmlResponse, JsonResponse, RedirectResponse
@@ -45,6 +42,11 @@ use Opis\Colibri\Http\Responses\{
 use Opis\Colibri\View\Viewable;
 use Psr\Log\LoggerInterface;
 use Opis\Colibri\Core\Module;
+
+use Opis\Colibri\Events\Event;
+use Opis\Colibri\View\View;
+use Opis\Colibri\Session\Session;
+use Opis\Colibri\Stream\Stream;
 
 /**
  * @return Application

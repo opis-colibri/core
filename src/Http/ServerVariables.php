@@ -33,17 +33,17 @@ class ServerVariables
     /**
      * @return array
      */
-    public function getVariables(): array
+    public function all(): array
     {
         return $this->vars;
     }
 
     /**
      * @param string $name
-     * @param null $default
-     * @return mixed|null
+     * @param string|null $default
+     * @return string|null
      */
-    public function get(string $name, $default = null)
+    public function get(string $name, ?string $default = null): ?string
     {
         return $this->vars[$name] ?? $default;
     }

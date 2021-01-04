@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2019-2020 Zindex Software
+ * Copyright 2019-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,29 +19,10 @@ namespace Opis\Colibri\Session;
 
 interface CookieContainer
 {
-    /**
-     * @param string $name
-     * @return bool
-     */
     public function hasCookie(string $name): bool;
 
-    /**
-     * @param string $name
-     * @return string|null
-     */
     public function getCookie(string $name): ?string;
 
-    /**
-     * @param string $name
-     * @param string $value
-     * @param int $expires
-     * @param string $path
-     * @param string $domain
-     * @param bool $secure
-     * @param bool $httponly
-     * @param string|null $samesite
-     * @return bool
-     */
     public function setCookie(
         string $name,
         string $value,
@@ -52,4 +33,6 @@ interface CookieContainer
         bool $httponly = false,
         ?string $samesite = null
     ): bool;
+
+    public function getAddedCookies(): array;
 }

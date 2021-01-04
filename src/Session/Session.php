@@ -17,42 +17,26 @@
 
 namespace Opis\Colibri\Session;
 
-use Opis\Colibri\Session\Containers\DefaultContainer;
-
 class Session
 {
-
     private array $config;
-
     private SessionHandler $handler;
-
     private CookieContainer $container;
-
     private array $data;
-
     private ?Flash $flash = null;
-
     private ?SessionData $session = null;
 
-    /**
-     * Session constructor.
-     *
-     * @param array $config
-     * @param SessionHandler|null $handler
-     * @param CookieContainer|null $container
-     */
-    public function __construct(array $config = [], ?SessionHandler $handler = null, ?CookieContainer $container = null)
+    public function __construct(CookieContainer $container, ?SessionHandler $handler = null, array $config = [])
     {
-        if ($handler === null) {
-            $handler = new Handlers\File(ini_get('session.save_path') ?: sys_get_temp_dir());
-        }
-
-        if ($container === null) {
-            $container = new DefaultContainer();
-        }
-
-        $this->handler = $handler;
         $this->container = $container;
+
+        if ($handler === null) {
+            $file = $config['session.save_path'] ?? ini_get('session.save_path');
+            $this->handler = new Handlers\File($file ?: sys_get_temp_dir());
+            unset($file);
+        } else {
+            $this->handler = $handler;
+        }
 
         $config += [
             'flash_slot' => '__flash__',
@@ -76,7 +60,7 @@ class Session
         $handler->open($config['cookie_name']);
 
         // Try GC before reading session data
-        $this->gc(false);
+        $this->gc();
 
         if ($container->hasCookie($config['cookie_name'])) {
             $session = $handler->read($container->getCookie($config['cookie_name']));
@@ -224,9 +208,9 @@ class Session
      * @param string $key Session key
      * @param mixed|null $default (optional) Default value
      *
-     * @return mixed|null
+     * @return mixed
      */
-    public function get(string $key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         if (array_key_exists($key, $this->data)) {
             return $this->data[$key];
@@ -243,7 +227,7 @@ class Session
      *
      * @return self
      */
-    public function set(string $key, $value): self
+    public function set(string $key, mixed $value): self
     {
         $this->data[$key] = $value;
 
@@ -268,9 +252,9 @@ class Session
      * @param string $key Session key
      * @param callable $callback Callback function
      *
-     * @return mixed|null
+     * @return mixed
      */
-    public function load(string $key, callable $callback)
+    public function load(string $key, callable $callback): mixed
     {
         if (!$this->has($key)) {
             $this->set($key, $callback($key));

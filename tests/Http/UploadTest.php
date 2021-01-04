@@ -19,7 +19,7 @@ namespace Opis\Colibri\Test\Http;
 
 use RuntimeException;
 use Opis\Colibri\Stream\{Stream, ResourceStream};
-use Opis\Colibri\Http\UploadedFileHandler;
+use Opis\Colibri\Http\UploadedFile;
 use PHPUnit\Framework\TestCase;
 
 class UploadTest extends TestCase
@@ -27,7 +27,7 @@ class UploadTest extends TestCase
     public function testOne()
     {
         $size = filesize(__FILE__);
-        $f = new UploadedFileHandler(__FILE__, 'Name', $size, 'text/plain');
+        $f = new UploadedFile(__FILE__, 'Name', $size, 'text/plain');
 
         $this->assertEquals($size, $f->getSize());
         $this->assertEquals('Name', $f->getClientFilename());
@@ -50,7 +50,7 @@ class UploadTest extends TestCase
 
     public function testArray()
     {
-        $f = UploadedFileHandler::factory([
+        $f = UploadedFile::factory([
             'tmp_name' => 'some-file',
             'name' => 'Name',
             'error' => UPLOAD_ERR_CANT_WRITE

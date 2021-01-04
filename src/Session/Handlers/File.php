@@ -24,18 +24,11 @@ use Opis\Colibri\Session\{
 
 class File implements SessionHandler
 {
-
     private string $path;
-
     /** @var resource */
     private $fp;
-
     private ?string $filename = null;
 
-    /**
-     * DefaultHandler constructor.
-     * @param string $path
-     */
     public function __construct(string $path)
     {
         if (!file_exists($path)) {
@@ -280,7 +273,7 @@ class File implements SessionHandler
      */
     protected function getHeaderFilename(string $name): string
     {
-        return $this->path . DIRECTORY_SEPARATOR . $name . '.session';
+        return $this->path . '/' . $name . '.session';
     }
 
     /**
@@ -289,7 +282,7 @@ class File implements SessionHandler
      */
     protected function getSessionDataFilename(string $session_id): string
     {
-        return $this->path . DIRECTORY_SEPARATOR . $session_id;
+        return $this->path . '/' . $session_id;
     }
 
     /**
@@ -344,9 +337,6 @@ class File implements SessionHandler
         return true;
     }
 
-    /**
-     * @return string
-     */
     private function getHeaderContent(): string
     {
         $fp = $this->fp;
@@ -358,9 +348,6 @@ class File implements SessionHandler
         return $content;
     }
 
-    /**
-     * @param string $content
-     */
     private function setHeaderContent(string $content)
     {
         $fp = $this->fp;

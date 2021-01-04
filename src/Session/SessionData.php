@@ -51,6 +51,7 @@ final class SessionData
         $this->id = $id;
         $this->expire = $expire;
         $this->data = $data;
+
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
     }
