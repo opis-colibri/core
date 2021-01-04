@@ -58,52 +58,6 @@ class ApplicationInfo
         ];
     }
 
-    public function initEnv(): void
-    {
-        $file = $this->envFile();
-
-        if (!is_file($file)) {
-            return;
-        }
-
-        $env = require($file);
-
-        foreach ($env as $name => $value) {
-            putenv("{$name}={$value}");
-        }
-    }
-
-    public function getEnv(string $name, mixed $default = null): mixed
-    {
-        if (array_key_exists($name, $this->env)) {
-            // We already have it in cache
-            return $this->env[$name];
-        }
-
-        if ($this->envLoaded) {
-            // file was already loaded
-            return $default;
-        }
-
-        $this->envLoaded = true;
-
-        $file = $this->envFile();
-
-        if (!is_file($file)) {
-            return $default;
-        }
-
-        $env = require($file);
-
-        if (!is_array($env)) {
-            return $default;
-        }
-
-        $this->env += $env;
-
-        return array_key_exists($name, $this->env) ? $this->env[$name] : $default;
-    }
-
     /**
      * Get root path
      * @return string
