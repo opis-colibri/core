@@ -514,20 +514,10 @@ function getModules(bool $clear = false): array
 
 function env(string $key, mixed $default = null, bool $fallback = true): mixed
 {
-    $app = Application::getInstance();
+    $value = getenv($key, true) ?: getenv($key);
 
-    $value = $app->getAppInfo()->getEnv($key, $app);
-
-    if ($value === $app) {
-        // not found
-        if (!$fallback) {
-            return $default;
-        }
-
-        $value = getenv($key, true) ?: getenv($key);
-        if ($value === false) {
-            return $default;
-        }
+    if ($value === false) {
+        return $default;
     }
 
     if (!is_string($value)) {
