@@ -1,6 +1,6 @@
 <?php
 /* ============================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ class File extends BaseFileDriver
     /**
      * @inheritDoc
      */
-    protected function import(string $data)
+    protected function import(string $data): mixed
     {
         return unserialize($data);
     }
@@ -30,7 +30,7 @@ class File extends BaseFileDriver
     /**
      * @inheritDoc
      */
-    protected function export($data): string
+    protected function export(mixed $data): string
     {
         return serialize($data);
     }

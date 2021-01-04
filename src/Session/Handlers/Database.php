@@ -17,13 +17,13 @@
 
 namespace Opis\Colibri\Session\Handlers;
 
-use Opis\Database\Connection;
-use Opis\Database\SQL\WhereStatement;
-use Opis\Database\Database as OpisDatabase;
 use Opis\Colibri\Session\{SessionData, SessionHandler};
+use Opis\Database\{Connection, Schema, Schema\Blueprint, SQL\WhereStatement, Database as OpisDatabase};
 
 class Database implements SessionHandler
 {
+    use SessionIdTrait;
+
     protected ?OpisDatabase $db;
     protected string $table;
     protected array $columns;
@@ -240,11 +240,28 @@ class Database implements SessionHandler
                 ->delete() > 0;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function generateSessionId(): string
+    public static function setup(Schema $schema, string $table_name = 'sessions', array $columns = []): void
     {
-        return session_create_id();
+        $columns += [
+            'id' => 'id',
+            'name' => 'name',
+            'expire' => 'expire',
+            'created_at' => 'created_at',
+            'updated_at' => 'updated_at',
+            'data' => 'data',
+        ];
+
+        $schema->create($table_name, static function (Blueprint $table) use ($columns) {
+            $table->fixed($columns['id'], 32)->notNull();
+            $table->string($columns['name'], 32)->notNull();
+            $table->integer($columns['expire'])->unsigned()->notNull()->defaultValue(0);
+            $table->integer($columns['created_at'])->unsigned()->notNull();
+            $table->integer($columns['updated_at'])->unsigned()->notNull();
+            $table->binary($columns['data'])->size('big')->defaultValue(null);
+
+            $table->unique([$columns['id'], $columns['name']]);
+            $table->index($columns['expire']);
+            $table->index($columns['updated_at']);
+        });
     }
 }

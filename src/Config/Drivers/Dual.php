@@ -1,6 +1,6 @@
 <?php
 /* ============================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ class Dual implements ConfigDriver
     /**
      * @inheritDoc
      */
-    public function read($path, $default = null)
+    public function read(string|array $path, mixed $default = null): mixed
     {
         $path = $this->normalizePath($path);
         if (empty($path)) {
@@ -70,7 +70,7 @@ class Dual implements ConfigDriver
     /**
      * @inheritDoc
      */
-    public function write($path, $value): bool
+    public function write(string|array $path, mixed $value): bool
     {
         $path = $this->normalizePath($path);
         if (empty($path)) {
@@ -87,7 +87,7 @@ class Dual implements ConfigDriver
     /**
      * @inheritDoc
      */
-    public function delete($path): bool
+    public function delete(string|array $path): bool
     {
         $path = $this->normalizePath($path);
         if (empty($path)) {
@@ -103,7 +103,7 @@ class Dual implements ConfigDriver
     /**
      * @inheritDoc
      */
-    public function has($path): bool
+    public function has(string|array $path): bool
     {
         $path = $this->normalizePath($path);
         if (empty($path)) {

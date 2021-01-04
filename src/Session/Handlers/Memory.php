@@ -23,6 +23,7 @@ use Opis\Colibri\Session\{
 
 class Memory implements SessionHandler
 {
+    use SessionIdTrait;
 
     /** @var SessionData[] */
     private array $sessions = [];
@@ -115,13 +116,5 @@ class Memory implements SessionHandler
         }
 
         return true;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function generateSessionId(): string
-    {
-        return session_create_id();
     }
 }

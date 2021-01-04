@@ -1,6 +1,6 @@
 <?php
 /* ============================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ abstract class BaseFileDriver implements ConfigDriver
     /**
      * @inheritDoc
      */
-    public function read($path, $default = null)
+    public function read(string|array $path, mixed $default = null): mixed
     {
         $path = $this->normalizePath($path);
         if (empty($path)) {
@@ -89,7 +89,7 @@ abstract class BaseFileDriver implements ConfigDriver
     /**
      * @inheritDoc
      */
-    public function write($path, $value): bool
+    public function write(string|array $path, mixed $value): bool
     {
         $path = $this->normalizePath($path);
         if (empty($path)) {
@@ -120,7 +120,7 @@ abstract class BaseFileDriver implements ConfigDriver
     /**
      * @inheritDoc
      */
-    public function delete($path): bool
+    public function delete(string|array $path): bool
     {
         $path = $this->normalizePath($path);
         if (empty($path)) {
@@ -153,7 +153,7 @@ abstract class BaseFileDriver implements ConfigDriver
     /**
      * @inheritDoc
      */
-    public function has($path): bool
+    public function has(string|array $path): bool
     {
         return $this !== $this->read($path, $this);
     }
@@ -210,11 +210,11 @@ abstract class BaseFileDriver implements ConfigDriver
      * @param string $data
      * @return mixed
      */
-    abstract protected function import(string $data);
+    abstract protected function import(string $data): mixed;
 
     /**
      * @param mixed $data
      * @return string
      */
-    abstract protected function export($data): string;
+    abstract protected function export(mixed $data): string;
 }

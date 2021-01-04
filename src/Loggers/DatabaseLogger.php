@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2019-2020 Zindex Software
+ * Copyright 2019-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,12 @@ namespace Opis\Colibri\Loggers;
 
 use DateTime;
 use Psr\Log\AbstractLogger;
-use Opis\Database\{Connection, Database};
+use Opis\Database\{Connection, Database, Schema, Schema\Blueprint};
 
 class DatabaseLogger extends AbstractLogger
 {
-
     protected Database $db;
-
     protected string $table;
-
     protected array $columns;
 
     /**
@@ -40,6 +37,7 @@ class DatabaseLogger extends AbstractLogger
         $this->db = new Database($connection);
         $this->table = $table;
         $this->columns = $columns + [
+            'id' => 'id',
             'level' => 'level',
             'message' => 'message',
             'context' => 'context',
@@ -64,5 +62,26 @@ class DatabaseLogger extends AbstractLogger
         $data[$cols['date']] = new DateTime();
 
         $this->db->insert($data)->into($this->table);
+    }
+
+    public static function setup(Schema $schema, string $table_name = 'logs', array $columns = []): void
+    {
+        $columns += [
+            'id' => 'id',
+            'level' => 'level',
+            'message' => 'message',
+            'context' => 'context',
+            'date' => 'date',
+        ];
+
+        $schema->create($table_name, static function (Blueprint $table) use ($columns) {
+            $table->integer($columns['id'])->notNull()->unsigned()->size('big')->autoincrement()->primary();
+            $table->string($columns['level'], 32)->notNull();
+            $table->text($columns['message'])->notNull();
+            $table->binary($columns['context'])->size('big')->defaultValue(null);
+            $table->dateTime($columns['date'])->notNull();
+
+            $table->index($columns['level']);
+        });
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /* ============================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ class PHPFile extends BaseFileDriver
     /**
      * @inheritDoc
      */
-    protected function import(string $data)
+    protected function import(string $data): mixed
     {
         return include($data);
     }
@@ -46,10 +46,10 @@ class PHPFile extends BaseFileDriver
     /**
      * @inheritDoc
      */
-    protected function export($data): string
+    protected function export(mixed $data): string
     {
         $data = var_export($data, true);
         $data = str_replace('stdClass::__set_state', '(object)', $data);
-        return "<?php\n\rreturn " . $data . ';';
+        return "<?php\nreturn {$data};";
     }
 }

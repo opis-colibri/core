@@ -1,6 +1,6 @@
 <?php
 /* ============================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,13 +25,12 @@ class Memory implements ConfigDriver
 {
     use Path;
 
-    /** @var mixed */
-    protected $data;
+    protected mixed $data;
 
     /**
-     * @param array $data
+     * @param array|object $data
      */
-    public function __construct($data = [])
+    public function __construct(array|object $data = [])
     {
         if (!is_object($data) && !is_array($data)) {
             $data = [];
@@ -39,10 +38,16 @@ class Memory implements ConfigDriver
         $this->data = $data;
     }
 
+
+    public function data(): mixed
+    {
+        return $this->data;
+    }
+
     /**
      * @inheritDoc
      */
-    public function read($path, $default = null)
+    public function read(string|array $path, mixed $default = null): mixed
     {
         $path = $this->normalizePath($path);
         if (empty($path)) {
@@ -73,7 +78,7 @@ class Memory implements ConfigDriver
     /**
      * @inheritDoc
      */
-    public function write($path, $value): bool
+    public function write(string|array $path, mixed $value): bool
     {
         $path = $this->normalizePath($path);
         if (empty($path)) {
@@ -116,7 +121,7 @@ class Memory implements ConfigDriver
     /**
      * @inheritDoc
      */
-    public function delete($path): bool
+    public function delete(string|array $path): bool
     {
         $path = $this->normalizePath($path);
         if (empty($path)) {
@@ -165,16 +170,8 @@ class Memory implements ConfigDriver
     /**
      * @inheritDoc
      */
-    public function has($path): bool
+    public function has(string|array $path): bool
     {
         return $this !== $this->read($path, $this);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function data()
-    {
-        return $this->data;
     }
 }

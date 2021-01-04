@@ -24,6 +24,8 @@ use Opis\Colibri\Session\{
 
 class File implements SessionHandler
 {
+    use SessionIdTrait;
+
     private string $path;
     /** @var resource */
     private $fp;
@@ -217,14 +219,6 @@ class File implements SessionHandler
         }
 
         return $this->releaseLock();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function generateSessionId(): string
-    {
-        return session_create_id();
     }
 
     /**

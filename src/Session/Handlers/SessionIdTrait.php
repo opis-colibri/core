@@ -1,6 +1,6 @@
 <?php
 /* ============================================================================
- * Copyright 2018-2021 Zindex Software
+ * Copyright 2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,33 +15,15 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Config;
+namespace Opis\Colibri\Session\Handlers;
 
-interface ConfigDriver
+use function Opis\Colibri\uuid4;
+
+trait SessionIdTrait
 {
-    /**
-     * @param string|string[] $path
-     * @param mixed $default
-     * @return mixed
-     */
-    public function read(string|array $path, mixed $default = null): mixed;
-
-    /**
-     * @param string|string[] $path
-     * @param mixed $value
-     * @return bool
-     */
-    public function write(string|array $path, mixed $value): bool;
-
-    /**
-     * @param string|string[] $path
-     * @return bool
-     */
-    public function delete(string|array $path): bool;
-
-    /**
-     * @param string|string[] $path
-     * @return bool
-     */
-    public function has(string|array $path): bool;
+    public function generateSessionId(): string
+    {
+        return uuid4('');
+        // return session_create_id();
+    }
 }

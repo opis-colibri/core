@@ -23,12 +23,12 @@ trait Path
      * @param string|string[] $path
      * @return string[]
      */
-    protected function normalizePath($path): array
+    protected function normalizePath(string|array $path): array
     {
         if (is_array($path)) {
             return $path;
         }
 
-        return explode('.', (string)$path);
+        return explode('.', $path);
     }
 }
