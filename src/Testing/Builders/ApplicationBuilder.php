@@ -81,11 +81,6 @@ class ApplicationBuilder
 
         $bootstrap = $this->builder->build();
 
-        // Load env
-        if (is_file($info->envFile())) {
-            $_ENV += require_once($info->envFile());
-        }
-
         $app = new Application(
             $bootstrap,
             $info,

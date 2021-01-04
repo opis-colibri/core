@@ -34,16 +34,20 @@ class ApplicationInfo
     protected array $cache = [];
     protected array $settings;
     protected string $rootDir;
+    protected array $env;
+    protected bool $envLoaded = false;
 
     /**
      * AppInfo constructor.
      * @param string $rootDir
      * @param array $settings
+     * @param array $env
      */
-    public function __construct(string $rootDir, array $settings)
+    public function __construct(string $rootDir, array $settings, array $env = [])
     {
         $this->rootDir = $rootDir;
         $this->settings = $settings;
+        $this->env = $env;
 
         $this->settings += [
             self::VENDOR_DIR => 'vendor',
@@ -56,6 +60,43 @@ class ApplicationInfo
             self::ASSETS_PATH => '/assets',
             self::WEB_PATH => '/',
         ];
+    }
+
+    /**
+     * Get env variable stored in envFile()
+     * @param string $name
+     * @param mixed|null $default
+     * @return mixed
+     */
+    public function getEnv(string $name, mixed $default = null): mixed
+    {
+        if (array_key_exists($name, $this->env)) {
+            // We already have it in cache
+            return $this->env[$name];
+        }
+
+        if ($this->envLoaded) {
+            // file was already loaded
+            return $default;
+        }
+
+        $this->envLoaded = true;
+
+        $file = $this->envFile();
+
+        if (!is_file($file)) {
+            return $default;
+        }
+
+        $env = require($file);
+
+        if (!is_array($env)) {
+            return $default;
+        }
+
+        $this->env += $env;
+
+        return array_key_exists($name, $this->env) ? $this->env[$name] : $default;
     }
 
     /**

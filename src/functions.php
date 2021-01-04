@@ -512,13 +512,23 @@ function getModules(bool $clear = false): array
     return Application::getInstance()->getModules($clear);
 }
 
-function env(string $key, mixed $default = null): mixed
+function env(string $key, mixed $default = null, bool $fallback = true): mixed
 {
-    if (!array_key_exists($key, $_ENV)) {
-        return $default;
-    }
+    $app = Application::getInstance();
 
-    $value = $_ENV[$key];
+    $value = $app->getAppInfo()->getEnv($key, $app);
+
+    if ($value === $app) {
+        // not found
+        if (!$fallback) {
+            return $default;
+        }
+
+        $value = getenv($key, true) ?: getenv($key);
+        if ($value === false) {
+            return $default;
+        }
+    }
 
     if (!is_string($value)) {
         return $value;

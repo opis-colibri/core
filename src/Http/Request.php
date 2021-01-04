@@ -191,14 +191,17 @@ class Request extends Message
     {
         if ($this->cookies === null) {
             $result = [];
-            $cookies = explode('; ', $this->headers['Cookie']);
+            $cookies = explode(';', $this->headers['Cookie']);
             foreach ($cookies as $cookie) {
                 [$name, $value] = explode('=', $cookie, 2);
                 $name = trim($name);
-                if (empty($name)) {
+                if ($name === '') {
                     continue;
                 }
-                $result[$name] = trim($value, '"');
+                if ($value !== '' && $value[0] === '"' && $value[-1] === '"') {
+                    $value = substr($value, 1, -1);
+                }
+                $result[$name] = rawurldecode($value);
             }
             $this->cookies = $result;
         }
@@ -239,12 +242,10 @@ class Request extends Message
     {
         if ($this->formData === null) {
             $data = null;
-            if (
-                $this->body !== null &&
-                isset($this->headers['Content-Type']) &&
-                str_starts_with($this->headers['Content-Type'], 'application/x-www-form-urlencoded')
-            ) {
-                parse_str((string)$this->body, $data);
+            if ($this->body !== null && isset($this->headers['Content-Type'])) {
+                if (str_contains($this->headers['Content-Type'], 'application/x-www-form-urlencoded')) {
+                    parse_str((string)$this->body, $data);
+                }
             }
             $this->formData = is_array($data) ? $data : [];
         }
@@ -306,19 +307,22 @@ class Request extends Message
             }
         }
 
-        $headers = [];
-
-        foreach ($vars as $key => $value) {
-            if (!is_scalar($value)) {
-                continue;
+        if (function_exists('getallheaders')) {
+            $headers = getallheaders();
+        } else {
+            $headers = [];
+            foreach ($vars as $key => $value) {
+                if (!is_scalar($value)) {
+                    continue;
+                }
+                if (str_starts_with($key, 'HTTP_')) {
+                    $key = substr($key, 5);
+                } elseif (!str_starts_with($key, 'CONTENT_')) {
+                    continue;
+                }
+                $key = str_replace('_', '-', $key);
+                $headers[$key] = $value;
             }
-            if (str_starts_with($key, 'HTTP_')) {
-                $key = substr($key, 5);
-            } elseif (!in_array($key, ['CONTENT_LENGTH', 'CONTENT_MD5', 'CONTENT_TYPE'])) {
-                continue;
-            }
-            $key = implode('-', explode('_', $key));
-            $headers[$key] = $value;
         }
 
         if (($vars['PATH_INFO'] ?? '') !== '') {
@@ -330,17 +334,13 @@ class Request extends Message
             $requestTarget = $vars['REQUEST_URI'] ?? '/';
         }
 
-        $protocol = $vars['SERVER_PROTOCOL'] ?? 'HTTP/1.1';
-        $secure = ($vars['HTTPS'] ?? 'off') !== 'off';
-        $files = UploadedFile::parseFiles($_FILES);
-
         return new self(
             $method,
             $requestTarget,
-            $protocol,
-            $secure,
+            $vars['SERVER_PROTOCOL'] ?? 'HTTP/1.1',
+            ($vars['HTTPS'] ?? 'off') !== 'off',
             $headers,
-            $files,
+            $_FILES ? UploadedFile::parseFiles($_FILES) : [],
             null,
             $_COOKIE,
             $_GET,

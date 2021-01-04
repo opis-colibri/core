@@ -42,9 +42,9 @@ abstract class Translator
         $this->driver = $driver;
     }
 
-    public function setDefaultLanguage(string $language): self
+    public function setDefaultLanguage(?string $language): self
     {
-        $this->defaultLanguage = $language;
+        $this->defaultLanguage = $language ?? Locale::SYSTEM_LOCALE;
         return $this;
     }
 

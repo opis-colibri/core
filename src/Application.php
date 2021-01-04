@@ -231,10 +231,10 @@ class Application
     }
 
     /**
-     * @param string $language
+     * @param ?string $language
      * @return $this
      */
-    public function setDefaultLanguage(string $language): self
+    public function setDefaultLanguage(?string $language): self
     {
         $this->defaultLanguage = $language;
         if ($this->translatorInstance !== null) {
