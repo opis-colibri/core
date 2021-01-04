@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Test\Views;
+namespace Opis\Colibri\Test\Render;
 
 use Opis\Colibri\Test\BaseAppTestCase;
 use Opis\Colibri\Testing\Builders\ApplicationBuilder;

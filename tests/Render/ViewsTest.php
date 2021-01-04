@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Test\Views;
+namespace Opis\Colibri\Test\Render;
 
 use Opis\Colibri\Render\Renderer;
 use PHPUnit\Framework\TestCase;

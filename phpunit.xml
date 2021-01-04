@@ -3,8 +3,8 @@
         <testsuite name="Events">
             <directory suffix="EventsTest.php">./tests</directory>
         </testsuite>
-        <testsuite name="Views">
-            <directory suffix="Test.php">./tests/Views</directory>
+        <testsuite name="Render">
+            <directory suffix="Test.php">./tests/Render</directory>
         </testsuite>
         <testsuite name="Cache">
             <directory suffix="CacheTest.php">./tests</directory>
@@ -29,9 +29,6 @@
         </testsuite>
         <testsuite name="Rest">
             <directory suffix="RestTest.php">./tests</directory>
-        </testsuite>
-        <testsuite name="Render">
-            <directory suffix="RenderTest.php">./tests</directory>
         </testsuite>
     </testsuites>
 </phpunit>

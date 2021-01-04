@@ -15,11 +15,11 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Test\Views;
+namespace Opis\Colibri\Test\Render;
 
 use Opis\Colibri\Render\Engine;
 
-class RenderEngine1 implements Engine
+class RenderEngine2 implements Engine
 {
     public function defaultValues($viewItem): array
     {
@@ -31,7 +31,7 @@ class RenderEngine1 implements Engine
      */
     public function build(string $path, array $vars = array()): string
     {
-        return strtoupper($path);
+        return strtoupper($path) . '!';
     }
 
     /**
