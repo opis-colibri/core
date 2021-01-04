@@ -15,30 +15,24 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Test\Views;
+namespace Opis\Colibri\Render;
 
-use Opis\Colibri\View\Engine;
-
-class ViewEngine2 implements Engine
+interface Engine
 {
-    public function defaultValues($viewItem): array
-    {
-        return [];
-    }
+    /**
+     * Build content
+     *
+     * @param string $path
+     * @param array $vars
+     * @return string
+     */
+    public function build(string $path, array $vars = []): string;
 
     /**
-     * @inheritdoc
+     * Check if the engine can handle a given path
+     *
+     * @param string $path
+     * @return bool
      */
-    public function build(string $path, array $vars = array()): string
-    {
-        return strtoupper($path) . '!';
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function canHandle(string $path): bool
-    {
-        return true;
-    }
+    public function canHandle(string $path): bool;
 }

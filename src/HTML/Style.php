@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\HTML;
 
-use Opis\Colibri\View\View;
+use Opis\Colibri\Render\View;
 
 class Style extends View
 {

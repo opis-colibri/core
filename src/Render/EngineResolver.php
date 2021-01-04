@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\View;
+namespace Opis\Colibri\Render;
 
 use Opis\Colibri\Utils\SortableList;
 

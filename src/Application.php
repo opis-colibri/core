@@ -26,7 +26,7 @@ use Psr\Log\{NullLogger, LoggerInterface};
 use Opis\Colibri\Cache\{CacheDriver};
 use Opis\Colibri\Events\{Event, EventDispatcher};
 use Opis\Colibri\I18n\Translator\{Driver as TranslatorDriver};
-use Opis\Colibri\View\Renderer;
+use Opis\Colibri\Render\Renderer;
 use Opis\Colibri\Http\{Request as HttpRequest, Response as HttpResponse, Responses\FileStream, Responses\HtmlResponse};
 use Opis\Colibri\Config\{ConfigDriver};
 use Opis\Colibri\Routing\Router;
@@ -52,7 +52,7 @@ use Opis\Colibri\Collectors\{
     TranslationCollector,
     TranslationFilterCollector,
     ViewCollector,
-    ViewEngineCollector
+    RenderEngineCollector
 };
 
 class Application
@@ -1078,7 +1078,7 @@ class Application
                 'description' => 'Collects event handlers',
             ],
             'view-engines' => [
-                'class' => ViewEngineCollector::class,
+                'class' => RenderEngineCollector::class,
                 'description' => 'Collects view engines',
             ],
             'cache-drivers' => [

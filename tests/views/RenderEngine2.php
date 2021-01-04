@@ -17,9 +17,9 @@
 
 namespace Opis\Colibri\Test\Views;
 
-use Opis\Colibri\View\Engine;
+use Opis\Colibri\Render\Engine;
 
-class ViewEngine1 implements Engine
+class RenderEngine2 implements Engine
 {
     public function defaultValues($viewItem): array
     {
@@ -31,7 +31,7 @@ class ViewEngine1 implements Engine
      */
     public function build(string $path, array $vars = array()): string
     {
-        return strtoupper($path);
+        return strtoupper($path) . '!';
     }
 
     /**

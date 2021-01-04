@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\View;
+namespace Opis\Colibri\Render;
 
 use Opis\Colibri\Utils\SortableList;
 use Opis\Colibri\Routing\{ArgumentResolver, RegexBuilder};
@@ -88,12 +88,12 @@ class Renderer extends SortableList
 
     /**
      * Render a view
-     * @param Viewable|string $view
+     * @param Renderable|string $view
      * @return string
      */
     public function render($view): string
     {
-        if (!($view instanceof Viewable)) {
+        if (!($view instanceof Renderable)) {
             return $view;
         }
 

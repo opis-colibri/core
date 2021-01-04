@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2020 Zindex Software
+ * Copyright 2018-2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,21 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\View;
+namespace Opis\Colibri\Render;
 
-interface ViewHandlerSettings
+interface Renderable
 {
-    public function filter(callable $callback): self;
-
-    public function where(string $name, string $regex): self;
+    /**
+     * Returns view's name
+     *
+     * @return  string
+     */
+    public function getViewName(): string;
 
     /**
-     * @param string $name
-     * @param string[] $values
-     * @return $this
+     * Returns view's variables
+     *
+     * @return  array
      */
-    public function whereIn(string $name, array $values): self;
+    public function getViewVariables(): array;
 }

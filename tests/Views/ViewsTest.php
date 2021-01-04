@@ -17,7 +17,7 @@
 
 namespace Opis\Colibri\Test\Views;
 
-use Opis\Colibri\View\Renderer;
+use Opis\Colibri\Render\Renderer;
 use PHPUnit\Framework\TestCase;
 
 class ViewsTest extends TestCase
@@ -63,7 +63,7 @@ class ViewsTest extends TestCase
 
     public function testEngine()
     {
-        $this->renderer->getEngineResolver()->register(static fn() => new ViewEngine1());
+        $this->renderer->getEngineResolver()->register(static fn() => new RenderEngine1());
 
         $this->renderer->handle('foo', static fn() => 'bar');
 
@@ -72,9 +72,9 @@ class ViewsTest extends TestCase
 
     public function testEnginePriority1()
     {
-        $this->renderer->getEngineResolver()->register(static fn() => new ViewEngine1());
+        $this->renderer->getEngineResolver()->register(static fn() => new RenderEngine1());
 
-        $this->renderer->getEngineResolver()->register(static fn() => new ViewEngine2());
+        $this->renderer->getEngineResolver()->register(static fn() => new RenderEngine2());
 
         $this->renderer->handle('foo', static fn() => 'bar');
 
@@ -83,9 +83,9 @@ class ViewsTest extends TestCase
 
     public function testEnginePriority2()
     {
-        $this->renderer->getEngineResolver()->register(static fn() => new ViewEngine1(), 1);
+        $this->renderer->getEngineResolver()->register(static fn() => new RenderEngine1(), 1);
 
-        $this->renderer->getEngineResolver()->register(static fn() => new ViewEngine2());
+        $this->renderer->getEngineResolver()->register(static fn() => new RenderEngine2());
 
         $this->renderer->handle('foo', static fn() => 'bar');
 
@@ -101,9 +101,9 @@ class ViewsTest extends TestCase
     {
         \Opis\Closure\Library::init();
 
-        $this->renderer->getEngineResolver()->register(static fn() => new ViewEngine1(), 1);
+        $this->renderer->getEngineResolver()->register(static fn() => new RenderEngine1(), 1);
 
-        $this->renderer->getEngineResolver()->register(static fn() => new ViewEngine2());
+        $this->renderer->getEngineResolver()->register(static fn() => new RenderEngine2());
 
         $this->renderer->handle('foo', static fn() => 'bar');
 

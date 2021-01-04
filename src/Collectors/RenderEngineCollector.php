@@ -15,21 +15,34 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\View;
+namespace Opis\Colibri\Collectors;
 
-interface Viewable
+use Opis\Colibri\Serializable\Collection;
+
+/**
+ * @method Collection data()
+ */
+class RenderEngineCollector extends BaseCollector
 {
     /**
-     * Returns view's name
-     *
-     * @return  string
+     * Constructor
      */
-    public function getViewName(): string;
+    public function __construct()
+    {
+        parent::__construct(new Collection());
+    }
 
     /**
-     * Returns view's variables
+     * Defines a new view engine
      *
-     * @return  array
+     * @param callable $factory
+     *
+     * @return RenderEngineCollector
      */
-    public function getViewVariables(): array;
+    public function register(callable $factory): self
+    {
+        $key = $this->data()->length() + 1;
+        $this->data()->add($key, [$factory, $this->crtPriority]);
+        return $this;
+    }
 }

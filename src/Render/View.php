@@ -15,12 +15,12 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\View;
+namespace Opis\Colibri\Render;
 
 use Stringable;
 use function Opis\Colibri\render;
 
-class View implements Viewable, Stringable
+class View implements Renderable, Stringable
 {
     protected string $name;
     protected array $vars;

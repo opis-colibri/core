@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2020 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,34 +15,18 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Collectors;
+namespace Opis\Colibri\Render;
 
-use Opis\Colibri\Serializable\Collection;
-
-/**
- * @method Collection data()
- */
-class ViewEngineCollector extends BaseCollector
+interface ViewHandlerSettings
 {
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        parent::__construct(new Collection());
-    }
+    public function filter(callable $callback): self;
+
+    public function where(string $name, string $regex): self;
 
     /**
-     * Defines a new view engine
-     *
-     * @param callable $factory
-     *
-     * @return ViewEngineCollector
+     * @param string $name
+     * @param string[] $values
+     * @return $this
      */
-    public function register(callable $factory): self
-    {
-        $key = $this->data()->length() + 1;
-        $this->data()->add($key, [$factory, $this->crtPriority]);
-        return $this;
-    }
+    public function whereIn(string $name, array $values): self;
 }

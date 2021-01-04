@@ -15,24 +15,30 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\View;
+namespace Opis\Colibri\Test\Views;
 
-interface Engine
+use Opis\Colibri\Render\Engine;
+
+class RenderEngine1 implements Engine
 {
-    /**
-     * Build content
-     *
-     * @param string $path
-     * @param array $vars
-     * @return string
-     */
-    public function build(string $path, array $vars = []): string;
+    public function defaultValues($viewItem): array
+    {
+        return [];
+    }
 
     /**
-     * Check if the engine can handle a given path
-     *
-     * @param string $path
-     * @return bool
+     * @inheritdoc
      */
-    public function canHandle(string $path): bool;
+    public function build(string $path, array $vars = array()): string
+    {
+        return strtoupper($path);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function canHandle(string $path): bool
+    {
+        return true;
+    }
 }

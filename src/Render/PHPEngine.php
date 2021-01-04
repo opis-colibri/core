@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\View;
+namespace Opis\Colibri\Render;
 
 use Throwable;
 use Opis\Colibri\I18n\Translator\LanguageInfo;
@@ -30,7 +30,7 @@ class PHPEngine implements Engine
         return view($name, $arguments);
     }
 
-    public function render(string|Viewable $viewable): string
+    public function render(string|Renderable $viewable): string
     {
         return render($viewable);
     }

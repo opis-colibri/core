@@ -39,12 +39,12 @@ use Opis\Colibri\Http\{Request, Response as HttpResponse, Response};
 use Opis\Colibri\Http\Responses\{
     HtmlResponse, JsonResponse, RedirectResponse
 };
-use Opis\Colibri\View\Viewable;
+use Opis\Colibri\Render\Renderable;
 use Psr\Log\LoggerInterface;
 use Opis\Colibri\Core\Module;
 
 use Opis\Colibri\Events\Event;
-use Opis\Colibri\View\View;
+use Opis\Colibri\Render\View;
 use Opis\Colibri\Session\Session;
 use Opis\Colibri\Stream\Stream;
 
@@ -331,7 +331,7 @@ function view(string $name, array $vars = []): View
     return new View($name, $vars);
 }
 
-function render(string|Viewable $view): string
+function render(string|Renderable $view): string
 {
     return Application::getInstance()->getViewRenderer()->render($view);
 }
