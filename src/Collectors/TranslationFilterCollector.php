@@ -17,26 +17,6 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Serializable\Collection;
-
-/**
- * @method Collection data()
- */
-class TranslationFilterCollector extends BaseCollector
+class TranslationFilterCollector extends CallableCollector
 {
-    public function __construct()
-    {
-        parent::__construct(new Collection());
-    }
-
-    /**
-     * @param string $name
-     * @param callable(mixed, array, LanguageInfo) $callback
-     * @return self
-     */
-    public function register(string $name, callable $callback): self
-    {
-        $this->data()->add($name, $callback);
-        return $this;
-    }
 }

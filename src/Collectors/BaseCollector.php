@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,14 +40,14 @@ abstract class BaseCollector
         return $this->data;
     }
 
-    public static function update(BaseCollector $instance, ?Module $module, ?string $collector, ?int $priority): void
+    public static function update(self $instance, ?Module $module, ?string $collector, ?int $priority): void
     {
         $instance->crtModule = $module;
         $instance->crtCollectorName = $collector;
         $instance->crtPriority = $priority;
     }
 
-    public static function getData(BaseCollector $instance): object
+    public static function getData(self $instance): object
     {
         return $instance->data;
     }

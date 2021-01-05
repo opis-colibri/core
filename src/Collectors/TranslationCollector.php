@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ class TranslationCollector extends BaseCollector
      * @param string|null $translator_comment
      * @return TranslationCollector
      */
-    public function addComment(string $ns, string $key, string $comment = null, string $translator_comment = null): self
+    public function addComment(string $ns, string $key, ?string $comment = null, ?string $translator_comment = null): self
     {
         $this->data()->addComment($ns, $key, $comment, $translator_comment);
         return $this;

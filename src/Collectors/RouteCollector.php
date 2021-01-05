@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ use function Opis\Colibri\collect;
  */
 class RouteCollector extends BaseCollector
 {
-
     protected string $prefix = '';
 
     public function __construct()
@@ -73,11 +72,11 @@ class RouteCollector extends BaseCollector
      *
      * @param string $path The path to match
      * @param callable $action An action that will be executed
-     * @param null $method (optional) Request method
+     * @param string|array|null $method (optional) Request method
      *
      * @return  Route
      */
-    public function __invoke(string $path, callable $action, $method = null): Route
+    public function __invoke(string $path, callable $action, string|array|null $method = null): Route
     {
         $name = null;
 
@@ -87,14 +86,10 @@ class RouteCollector extends BaseCollector
             $path = $tmp;
         }
 
-        if ($method === null) {
-            $method = ['GET'];
+        if (is_array($method)) {
+            $method = array_unique(array_map('strtoupper', $method));
         } else {
-            if (!is_array($method)) {
-                $method = [strtoupper($method)];
-            } else {
-                $method = array_map('strtoupper', $method);
-            }
+            $method = [strtoupper($method ?? 'GET')];
         }
 
         return $this->handle($path, $action, $method, $name);
@@ -109,7 +104,7 @@ class RouteCollector extends BaseCollector
      *
      * @return  Route
      */
-    public function all(string $path, callable $action, string $name = null): Route
+    public function all(string $path, callable $action, ?string $name = null): Route
     {
         return $this->handle($path, $action, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], $name);
     }
@@ -123,7 +118,7 @@ class RouteCollector extends BaseCollector
      *
      * @return  Route
      */
-    public function get(string $path, callable $action, string $name = null): Route
+    public function get(string $path, callable $action, ?string $name = null): Route
     {
         return $this->handle($path, $action, ['GET'], $name);
     }
@@ -137,7 +132,7 @@ class RouteCollector extends BaseCollector
      *
      * @return  Route
      */
-    public function post(string $path, callable $action, string $name = null): Route
+    public function post(string $path, callable $action, ?string $name = null): Route
     {
         return $this->handle($path, $action, ['POST'], $name);
     }
@@ -151,7 +146,7 @@ class RouteCollector extends BaseCollector
      *
      * @return  Route
      */
-    public function delete(string $path, callable $action, string $name = null): Route
+    public function delete(string $path, callable $action, ?string $name = null): Route
     {
         return $this->handle($path, $action, ['DELETE'], $name);
     }
@@ -165,7 +160,7 @@ class RouteCollector extends BaseCollector
      *
      * @return  Route
      */
-    public function put(string $path, callable $action, string $name = null): Route
+    public function put(string $path, callable $action, ?string $name = null): Route
     {
         return $this->handle($path, $action, ['PUT'], $name);
     }
@@ -179,7 +174,7 @@ class RouteCollector extends BaseCollector
      *
      * @return  Route
      */
-    public function patch(string $path, callable $action, string $name = null): Route
+    public function patch(string $path, callable $action, ?string $name = null): Route
     {
         return $this->handle($path, $action, ['PATCH'], $name);
     }
@@ -193,7 +188,7 @@ class RouteCollector extends BaseCollector
      *
      * @return  Route
      */
-    public function options(string $path, callable $action, string $name = null): Route
+    public function options(string $path, callable $action, ?string $name = null): Route
     {
         return $this->handle($path, $action, ['OPTIONS'], $name);
     }
@@ -208,7 +203,7 @@ class RouteCollector extends BaseCollector
      *
      * @return  Route
      */
-    protected function handle(string $path, callable $action, array $method, string $name = null): Route
+    protected function handle(string $path, callable $action, array $method, ?string $name = null): Route
     {
         return $this->data()->createRoute($this->prefix . $path, $action, $method, $this->crtPriority, $name);
     }

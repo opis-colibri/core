@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2020 Zindex Software
+ * Copyright 2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,16 +22,14 @@ use InvalidArgumentException;
 
 class FactoryCollection extends Collection
 {
-    private array $cache = [];
-
     /**
      * @var callable|null
      */
     private $builder;
-
     private bool $exception;
+    private array $cache = [];
 
-    public function __construct(callable $builder = null, bool $exception = true)
+    public function __construct(?callable $builder = null, bool $exception = true)
     {
         $this->builder = $builder;
         $this->exception = $exception;
@@ -47,16 +45,16 @@ class FactoryCollection extends Collection
             throw new InvalidArgumentException("Callable expected");
         }
 
-        $this->add($key, $value);
+        parent::add($key, $value);
     }
 
-    public function getInstance(string $key)
+    public function getInstance(string $key): ?object
     {
         if (isset($this->cache[$key])) {
             return $this->cache[$key];
         }
 
-        if (null === $item = $this::get($key)) {
+        if (null === $item = $this->get($key)) {
             if ($this->exception) {
                 throw new RuntimeException("Invalid key ${key}");
             }

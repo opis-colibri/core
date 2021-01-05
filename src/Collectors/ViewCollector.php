@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ class ViewCollector extends BaseCollector
             $resolver->register($entry[0], $entry[1]);
         }
         $resolver->sort();
+
         parent::__construct($renderer);
     }
 

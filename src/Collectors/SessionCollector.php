@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ class SessionCollector extends BaseCollector
      */
     public function register(string $name, callable $constructor, array $config = []): self
     {
-        $config['cookie_name'] = $name;
+        $config['cookie_name'] ??= $name;
         $this->data()->register($name, $constructor, $config);
         return $this;
     }

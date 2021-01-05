@@ -1,6 +1,6 @@
 <?php
-/* ===========================================================================
- * Copyright 2018-2021 Zindex Software
+/* ============================================================================
+ * Copyright 2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,21 @@
 
 namespace Opis\Colibri\Collectors;
 
-class CacheCollector extends FactoryCollector
+use Opis\Colibri\Serializable\FactoryCollection;
+
+/**
+ * @method FactoryCollection data()
+ */
+abstract class FactoryCollector extends BaseCollector
 {
+    public function __construct()
+    {
+        parent::__construct(new FactoryCollection());
+    }
+
+    public function register(string $name, callable $factory): static
+    {
+        $this->data()->add($name, $factory);
+        return $this;
+    }
 }

@@ -21,7 +21,7 @@ class Collection
 {
     private array $entries = [];
 
-    public function add(string $key, $value): void
+    public function add(string $key, mixed $value): void
     {
         $this->entries[$key] = $value;
     }
@@ -36,7 +36,7 @@ class Collection
         unset($this->entries[$key]);
     }
 
-    public function get(string $key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         if (!$this->has($key)) {
             return $default;
@@ -50,6 +50,9 @@ class Collection
         return $this->entries;
     }
 
+    /**
+     * @return string[]
+     */
     public function getKeys(): array
     {
         return array_keys($this->entries);

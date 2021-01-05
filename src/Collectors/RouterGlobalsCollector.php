@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -93,7 +93,7 @@ class RouterGlobalsCollector extends BaseCollector
      *
      * @return  $this
      */
-    public function implicit(string $name, $value): self
+    public function implicit(string $name, mixed $value): self
     {
         $this->data()->implicit($name, $value);
         return $this;

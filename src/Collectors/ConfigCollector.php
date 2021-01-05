@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,29 +17,6 @@
 
 namespace Opis\Colibri\Collectors;
 
-use Opis\Colibri\Serializable\FactoryCollection;
-
-/**
- * @method FactoryCollection data()
- */
-class ConfigCollector extends BaseCollector
+class ConfigCollector extends FactoryCollector
 {
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        parent::__construct(new FactoryCollection());
-    }
-
-    /**
-     * @param string $storage
-     * @param callable $constructor
-     * @return self
-     */
-    public function register(string $storage, callable $constructor): self
-    {
-        $this->data()->add($storage, $constructor);
-        return $this;
-    }
 }
