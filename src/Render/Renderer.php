@@ -72,9 +72,9 @@ class Renderer extends SortableList
     /**
      * Register a new view
      *
-     * @param   string $pattern
-     * @param   callable $resolver
-     * @param   int $priority
+     * @param string $pattern
+     * @param callable $resolver
+     * @param int $priority
      *
      * @return ViewHandlerSettings
      */
@@ -107,8 +107,8 @@ class Renderer extends SortableList
     /**
      * Render a view
      *
-     * @param   string $name
-     * @param   array $vars
+     * @param string $name
+     * @param array $vars
      *
      * @return  string
      */
@@ -120,7 +120,7 @@ class Renderer extends SortableList
     /**
      * Resolve a view's name
      *
-     * @param   string $name
+     * @param string $name
      *
      * @return  string|null
      */
@@ -150,21 +150,29 @@ class Renderer extends SortableList
 
     private function find(string $name): ?string
     {
+        $regexBuilder = $this->getRegexBuilder();
+
         /** @var ViewHandler $handler */
         foreach ($this->getValues() as $handler) {
-            if (preg_match($handler->getRegex(), $name)) {
-                $resolver = new ArgumentResolver();
-                $resolver->addValues($this->getRegexBuilder()->getValues($handler->getRegex(), $name));
-                if (null !== $filter = $handler->getFilter()) {
-                    $arguments = $resolver->resolve($filter);
-                    if (!(bool)$filter(...$arguments)) {
-                        continue;
-                    }
-                }
-                $callback = $handler->getCallback();
-                $arguments = $resolver->resolve($callback);
-                return $callback(...$arguments);
+            $values = $regexBuilder->getValues($handler->getRegex(), $name);
+            if ($values === null) {
+                // match failed
+                continue;
             }
+
+            $resolver = new ArgumentResolver($values);
+            unset($values);
+
+            if (null !== $filter = $handler->getFilter()) {
+                $arguments = $resolver->resolve($filter);
+                if (!(bool)$filter(...$arguments)) {
+                    continue;
+                }
+            }
+
+            $callback = $handler->getCallback();
+            $arguments = $resolver->resolve($callback);
+            return $callback(...$arguments);
         }
 
         return null;

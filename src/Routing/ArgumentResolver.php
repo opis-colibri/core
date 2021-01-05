@@ -34,15 +34,18 @@ class ArgumentResolver
     private array $bindings = [];
 
     /** @var ArrayAccess */
-    private $defaults;
+    private ArrayAccess $defaults;
 
     /**
      * ArgumentResolver constructor.
-     * @param ArrayAccess|null $defaults
+     * @param array|ArrayAccess|null $defaults
      */
-    public function __construct(ArrayAccess $defaults = null)
+    public function __construct(array|ArrayAccess|null $defaults = null)
     {
-        $this->defaults = $defaults ?? new ArrayObject();
+        if (!($defaults instanceof ArrayAccess)) {
+            $defaults = $defaults ? new ArrayObject($defaults) : new ArrayObject();
+        }
+        $this->defaults = $defaults;
     }
 
     /**

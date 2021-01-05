@@ -75,11 +75,11 @@ class RouteInvoker extends Invoker
             $routes = $this->route->getRouteCollection();
 
             $values = $routes->getRegexBuilder()->getValues($routes->getRegex($id), $uri->path());
-            $this->values = array_intersect_key($values, $names);
+
+            $this->values = $values ? array_intersect_key($values, $names) : [];
 
             if (null !== $domain = $this->route->getDomain()) {
-                $values = $routes->getDomainBuilder()->getValues($routes->getDomainRegex($id), $uri->host());
-                if ($values) {
+                if ($values = $routes->getDomainBuilder()->getValues($routes->getDomainRegex($id), $uri->host())) {
                     $this->values += array_intersect_key($values, $names);
                 }
             }

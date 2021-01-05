@@ -184,12 +184,12 @@ class RegexBuilder
     /**
      * @param string $regex
      * @param string $path
-     * @return array
+     * @return array|null Returns null if path doesn't match regex
      */
-    public function getValues(string $regex, string $path): array
+    public function getValues(string $regex, string $path): ?array
     {
         if (!preg_match($regex, $path, $parameters)) {
-            return [];
+            return null;
         }
 
         // Remove full match
