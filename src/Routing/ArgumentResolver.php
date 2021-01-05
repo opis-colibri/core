@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,13 +96,7 @@ class ArgumentResolver
         return $this;
     }
 
-    /**
-     * @param string $name
-     * @param bool $bind
-     * @param null $default
-     * @return mixed|null
-     */
-    public function getArgumentValue(string $name, bool $bind = true, $default = null)
+    public function getArgumentValue(string $name, bool $bind = true, mixed $default = null): mixed
     {
         if ($bind && isset($this->bindings[$name])) {
             $callable = $this->bindings[$name];
@@ -121,24 +115,19 @@ class ArgumentResolver
         return $default;
     }
 
-    /**
-     * @param callable $callback
-     * @param bool $bind
-     * @return array
-     */
     public function resolve(callable $callback, bool $bind = true): array
     {
         $arguments = [];
 
         try {
             $parameters = $this->getParameters($callback);
-        } catch (ReflectionException $e) {
+        } catch (ReflectionException) {
             return $arguments;
         }
 
         foreach ($parameters as $param) {
             $arguments[] = $this->getArgumentValue($param->getName(), $bind,
-                $param->isOptional() ? $param->getDefaultValue() : null);
+                $param->isDefaultValueAvailable() ? $param->getDefaultValue() : null);
         }
 
         return $arguments;
