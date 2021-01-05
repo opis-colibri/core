@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ class FileStream extends Response
      * @param int $status
      * @param array $headers
      */
-    public function __construct(string $file, string $contentType = null, int $status = 200, array $headers = [])
+    public function __construct(string $file, ?string $contentType = null, int $status = 200, array $headers = [])
     {
         if (!is_file($file)) {
             throw new RuntimeException(sprintf('File %s does not exist', $file));

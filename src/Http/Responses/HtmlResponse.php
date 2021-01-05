@@ -1,6 +1,6 @@
 <?php
 /* ============================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,10 @@
 
 namespace Opis\Colibri\Http\Responses;
 
-use Opis\Colibri\Stream\Stream;
-
 class HtmlResponse extends StringResponse
 {
     /**
-     * @param Stream|string $body
+     * @param mixed $body
      * @param int $status
      * @param array $headers
      */
@@ -34,7 +32,7 @@ class HtmlResponse extends StringResponse
             }
             $body = (string)$body;
         } else {
-            $body = '';
+            $body = null;
         }
 
         parent::__construct($body, $status, $headers);

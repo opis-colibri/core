@@ -22,11 +22,8 @@ use Opis\Colibri\Stream\Stream;
 
 class Response extends Message
 {
-
     protected array $cookies = [];
-
     protected int $statusCode;
-
     private bool $locked = true;
 
     /** @var array */
@@ -115,8 +112,28 @@ class Response extends Message
         ?Stream $body = null,
         string $protocolVersion = 'HTTP/1.1'
     ) {
-        $this->statusCode = $statusCode;
+        if ($statusCode === 204) {
+            $body = null;
+        }
+
         parent::__construct($body, $headers, $protocolVersion);
+
+        $this->statusCode = $statusCode;
+
+        // Try to set content length
+
+        if ($body === null) {
+            // Remove content length
+            unset($this->headers['Content-Length']);
+            return;
+        } elseif (isset($headers['Content-Length'])) {
+            // Already specified
+            return;
+        }
+
+        if ($size = $body->size()) {
+            $this->headers['Content-Length'] = (string)$size;
+        }
     }
 
     /**

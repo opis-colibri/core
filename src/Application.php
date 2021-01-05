@@ -28,7 +28,7 @@ use Opis\Colibri\Cache\{CacheDriver};
 use Opis\Colibri\Events\{Event, EventDispatcher};
 use Opis\Colibri\I18n\Translator\{Driver as TranslatorDriver};
 use Opis\Colibri\Render\Renderer;
-use Opis\Colibri\Http\{Request as HttpRequest, Response as HttpResponse, Responses\FileStream, Responses\HtmlResponse};
+use Opis\Colibri\Http\{Request as HttpRequest, Response as HttpResponse, Responses\FileStream};
 use Opis\Colibri\Config\{ConfigDriver};
 use Opis\Colibri\Routing\Router;
 use Opis\Database\{Connection, Database, Schema};
@@ -650,6 +650,8 @@ class Application
             $request = HttpRequest::fromGlobals();
         }
 
+        $prevRequest = $this->httpRequest;
+
         $this->httpRequest = $request;
 
         try {
@@ -658,34 +660,41 @@ class Application
             if (env('APP_PRODUCTION', false) === false) {
                 throw $exception;
             }
+            $response = $this->onError($request, $exception);
+        } finally {
+            $this->httpRequest = $prevRequest;
 
-            $this->getLogger()->error('Internal server error', [
-                'message' => $exception->getMessage(),
-                'file' => $exception->getLine(),
-                'line' => $exception->getLine(),
-                'code' => $exception->getCode(),
-                'trace' => $exception->getTraceAsString(),
-            ]);
+            if ($flush) {
+                $this->flushResponse($request, $response);
+            }
 
-            $contentType = strtolower(trim(explode(';', $request->getHeader('Content-Type', 'text/html'))[0]));
+            return $response;
+        }
+    }
 
-            return httpError(500,
-                $contentType === 'application/json' ? (object)['message' => 'Application error'] : null);
+    /**
+     * Unhandled exception response
+     * @param HttpRequest $request
+     * @param Throwable $exception
+     * @return HttpResponse
+     */
+    protected function onError(HttpRequest $request, Throwable $exception): HttpResponse
+    {
+        $this->getLogger()->error('Internal server error', [
+            'message' => $exception->getMessage(),
+            'file' => $exception->getLine(),
+            'line' => $exception->getLine(),
+            'code' => $exception->getCode(),
+            'trace' => $exception->getTraceAsString(),
+        ]);
+
+        $body = null;
+
+        if (stripos($request->getHeader('Content-Type', ''), 'application/json') !== false) {
+            $body = (object)['message' => 'Application error'];
         }
 
-        if (!$response instanceof HttpResponse) {
-            $response = new HtmlResponse($response);
-        }
-
-        $response = $this->addSessionCookies($response);
-
-        if ($flush) {
-            $this->flushResponse($request, $response);
-        }
-
-        $this->httpRequest = null;
-
-        return $response;
+        return httpError(500, $body);
     }
 
     /**
@@ -973,29 +982,6 @@ class Application
     protected function emit(string $name, bool $cancelable = false): Event
     {
         return $this->getEventDispatcher()->emit($name, $cancelable);
-    }
-
-    protected function addSessionCookies(HttpResponse $response): HttpResponse
-    {
-        $added = $this->getSessionCookieContainer()->getAddedCookies();
-        if (!$added) {
-            return $response;
-        }
-
-        return $response->modify(function (HttpResponse $response) use ($added) {
-            foreach ($added as $cookie) {
-                $response->setCookie(
-                    $cookie['name'],
-                    $cookie['value'],
-                    $cookie['expires'],
-                    $cookie['path'],
-                    $cookie['domain'],
-                    $cookie['secure'],
-                    $cookie['httponly'],
-                    $cookie['samesite'],
-                );
-            }
-        });
     }
 
     /**

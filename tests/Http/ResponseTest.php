@@ -61,7 +61,7 @@ class ResponseTest extends TestCase
         $response = new Response(200, [], $stream);
 
         $this->assertEquals($data, $response->getBody());
-        $this->assertEmpty($response->getHeaders());
+        $this->assertEquals(['Content-Length' => strlen($data)], $response->getHeaders());
     }
 
     public function testJson()

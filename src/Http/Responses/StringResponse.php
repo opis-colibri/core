@@ -1,6 +1,6 @@
 <?php
 /* ============================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,28 +17,28 @@
 
 namespace Opis\Colibri\Http\Responses;
 
+use Stringable;
 use Opis\Colibri\Http\Response;
-use Opis\Colibri\Stream\PHPMemoryStream;
+use Opis\Colibri\Stream\{PHPMemoryStream, Stream};
 
 class StringResponse extends Response
 {
     /**
-     * @param string $body
+     * @param string|Stringable|null $body
      * @param int $status
      * @param array $headers
      */
-    public function __construct(string $body, int $status = 200, array $headers = [])
+    public function __construct(string|Stringable|null $body, int $status = 200, array $headers = [])
     {
-        $len = $status !== 204 ? strlen($body) : 0;
-
-        if ($len) {
-            $headers['Content-Length'] = (string)$len;
-            $stream = new PHPMemoryStream($body);
-        } else {
-            unset($headers['Content-Length']);
-            $stream = null;
+        if ($body === null || $status === 204) {
+            parent::__construct($status, $headers);
+            return;
         }
 
-        parent::__construct($status, $headers, $stream);
+        if (!($body instanceof Stream)) {
+            $body = new PHPMemoryStream((string)$body);
+        }
+
+        parent::__construct($status, $headers, $body);
     }
 }

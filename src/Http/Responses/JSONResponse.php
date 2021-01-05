@@ -1,6 +1,6 @@
 <?php
 /* ============================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,12 +26,12 @@ class JSONResponse extends StringResponse
      * @param int $encodeOptions
      */
     public function __construct(
-        $json,
+        int|float|string|array|object|null $json,
         int $status = 200,
         array $headers = [],
         int $encodeOptions = JSON_UNESCAPED_SLASHES
     ) {
-        $body = '';
+        $body = null;
 
         if ($status !== 204) {
             if (!isset($headers['Content-Type'])) {

@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,12 +31,7 @@ class Collection extends View
         ]);
     }
 
-    /**
-     * @param mixed $item
-     * @param mixed $entry
-     * @return Collection
-     */
-    public function add($item, $entry = null): self
+    public function add(mixed $item, int|string|null $entry = null): self
     {
         if ($entry === null) {
             $this->vars['items'][] = $item;
@@ -46,15 +41,12 @@ class Collection extends View
         return $this;
     }
 
-    /**
-     * @param Collection $collection
-     * @return static
-     */
     public function merge(Collection $collection): self
     {
-        $array1 = $this->vars['items'];
-        $array2 = $collection->vars['items'];
-        $this->vars['items'] = array_merge($array1, $array2);
+        $this->vars['items'] = array_merge(
+            $this->vars['items'],
+            $collection->vars['items'],
+        );
         return $this;
     }
 }

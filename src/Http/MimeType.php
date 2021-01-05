@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,39 @@ namespace Opis\Colibri\Http;
 
 final class MimeType
 {
-    private static array $defaultMime = [
+    /**
+     * Mime constructor
+     */
+    private function __construct()
+    {
+        // nothing here
+    }
+
+    /**
+     * Returns the mime type of a file.
+     *
+     * @param   string   $file   Full path to the file
+     * @param   boolean  $guess  (optional) Set to false to disable mime type guessing
+     * @return  string
+     */
+    public static function get(string $file, bool $guess = true): string
+    {
+        if($guess === true) {
+            $extension = pathinfo($file, PATHINFO_EXTENSION);
+            if(isset(self::KNOWN_MIME[$extension])) {
+                return self::KNOWN_MIME[$extension];
+            }
+        }
+
+        // Get mime using the file information functions
+        $info = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($info, $file);
+        finfo_close($info);
+
+        return $mime ?: 'application/octet-stream';
+    }
+
+    private const KNOWN_MIME = [
         'ez' => 'application/andrew-inset',
         'aw' => 'application/applixware',
         'atom' => 'application/atom+xml',
@@ -785,41 +817,4 @@ final class MimeType
         'smv' => 'video/x-smv',
         'ice' => 'x-conference/x-cooltalk',
     ];
-
-
-    /**
-     * Mime constructor
-     */
-    private function __construct()
-    {
-        // nothing here
-    }
-
-    /**
-     * Returns the mime type of a file.
-     *
-     * @param   string   $file   Full path to the file
-     * @param   boolean  $guess  (optional) Set to false to disable mime type guessing
-     * @return  string
-     */
-    public static function get(string $file, bool $guess = true): string
-    {
-        if($guess === true) {
-            $extension = pathinfo($file, PATHINFO_EXTENSION);
-            if(isset(self::$defaultMime[$extension])) {
-                return self::$defaultMime[$extension];
-            }
-        }
-
-        // Get mime using the file information functions
-        $info = finfo_open(FILEINFO_MIME_TYPE);
-        $mime = finfo_file($info, $file);
-        finfo_close($info);
-
-        if(false === $mime){
-            $mime = 'application/octet-stream';
-        }
-
-        return $mime;
-    }
 }

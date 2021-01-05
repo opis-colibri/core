@@ -46,7 +46,6 @@ use Psr\Log\LoggerInterface;
 use Opis\Colibri\Events\Event;
 use Opis\Colibri\Render\View;
 use Opis\Colibri\Session\Session;
-use Opis\Colibri\Stream\Stream;
 
 /**
  * @return Application
@@ -197,12 +196,12 @@ function request(): ?Request
 }
 
 /**
- * @param string|array|stdClass|Stream $body
+ * @param string|array|stdClass|Stringable $body
  * @param int $status
  * @param array $headers
  * @return HtmlResponse|JsonResponse
  */
-function response(string|array|stdClass|Stream $body, int $status = 200, array $headers = []): HtmlResponse|JsonResponse
+function response(string|array|stdClass|Stringable $body, int $status = 200, array $headers = []): HtmlResponse|JsonResponse
 {
     if (is_array($body) || $body instanceof stdClass) {
         return new JsonResponse($body, $status, $headers);
@@ -213,11 +212,11 @@ function response(string|array|stdClass|Stream $body, int $status = 200, array $
 
 /**
  * @param int $status
- * @param string|array|stdClass|Stream|null $body
+ * @param string|array|stdClass|Stringable|null $body
  * @param array $headers
  * @return HtmlResponse|JsonResponse
  */
-function httpError(int $status, string|array|stdClass|Stream $body = null, array $headers = []): HtmlResponse|JsonResponse
+function httpError(int $status, string|array|stdClass|Stringable $body = null, array $headers = []): HtmlResponse|JsonResponse
 {
     if ($body === null && $status >= 400) {
         $body = view('error.' . $status, [

@@ -62,7 +62,7 @@ class Dispatcher
             }
         }
 
-        $list = $route->getProperties()['middleware'] ?? [];
+        $list = $route->getMiddleware();
 
         if (empty($list)) {
             $result = $invoker->invokeAction();

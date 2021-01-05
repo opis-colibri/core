@@ -26,7 +26,7 @@ class Style extends View
      * @param string|null $content
      * @param string|null $media
      */
-    public function __construct(string $content = null, ?string $media = null)
+    public function __construct(?string $content = null, ?string $media = null)
     {
         parent::__construct('html.style', [
             'content' => $content,

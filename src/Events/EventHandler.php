@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2020 Zindex Software
+ * Copyright 2020-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,9 +69,7 @@ final class EventHandler implements EventHandlerSettings
 
         $delimiter = $this->dispatcher->getRegexBuilder()->getOptions()[RegexBuilder::REGEX_DELIMITER];
 
-        $value = implode('|', array_map(function ($value) use ($delimiter) {
-            return preg_quote($value, $delimiter);
-        }, $values));
+        $value = implode('|', array_map(static fn ($value) => preg_quote($value, $delimiter), $values));
 
         return $this->where($name, $value);
     }

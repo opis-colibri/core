@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,10 @@
 
 namespace Opis\Colibri\Stream;
 
+use Stringable;
 use const SEEK_CUR, SEEK_END, SEEK_SET;
 
-interface Stream
+interface Stream extends Stringable
 {
     const SEEK_SET = SEEK_SET;
     const SEEK_CUR = SEEK_CUR;
@@ -151,10 +152,4 @@ interface Stream
      * @return resource|null
      */
     public function resource(bool $detach = false);
-
-    /**
-     * Gets all stream data and restores pointer position if possible
-     * @return string
-     */
-    public function __toString();
 }

@@ -51,9 +51,7 @@ abstract class ControllerResolver extends Mixin
 
         // Add cors middleware
 
-        $middleware = $route->getProperties()['middleware'] ?? null;
-
-        if ($middleware) {
+        if ($middleware = $route->getMiddleware()) {
             $route->middleware(CORSMiddleware::class, ...$middleware);
         } else {
             $route->middleware(CORSMiddleware::class);

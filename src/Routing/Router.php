@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,8 @@ namespace Opis\Colibri\Routing;
 use ArrayAccess, ArrayObject;
 use Opis\Colibri\Application;
 use Opis\Colibri\Collectors\RouteCollector;
-use Opis\Colibri\Http\Request;
-use Opis\Colibri\Routing\Filters\{
-    RequestFilter, UserFilter
-};
+use Opis\Colibri\Http\{Request, Response};
+use Opis\Colibri\Routing\Filters\{RequestFilter, UserFilter};
 
 class Router
 {
@@ -41,7 +39,8 @@ class Router
      * Router constructor.
      * @param Application $app
      */
-    public function __construct(Application $app) {
+    public function __construct(Application $app)
+    {
         $this->app = $app;
         $this->routes = $app->getCollector()->collect(RouteCollector::class);
         $this->dispatcher = new Dispatcher();
@@ -95,11 +94,6 @@ class Router
         return $this->dispatcher;
     }
 
-    /**
-     * @param Route $route
-     * @param Request $request
-     * @return RouteInvoker
-     */
     public function resolveInvoker(Route $route, Request $request): RouteInvoker
     {
         $cid = spl_object_hash($request);
@@ -112,9 +106,35 @@ class Router
         return $this->compacted[$cid][$rid];
     }
 
-    public function route(Request $request)
+    public function route(Request $request): Response
     {
         $this->global['request'] = $request;
-        return $this->getDispatcher()->dispatch($this, $request);
+
+        $response = $this->getDispatcher()->dispatch($this, $request);
+
+        unset($this->global['request']);
+
+        // Handle cookies
+
+        $cookies = $this->app->getSessionCookieContainer()->getAddedCookies();
+
+        if (!$cookies) {
+            return $response;
+        }
+
+        return $response->modify(static function (Response $response) use ($cookies) {
+            foreach ($cookies as $cookie) {
+                $response->setCookie(
+                    $cookie['name'],
+                    $cookie['value'],
+                    $cookie['expires'],
+                    $cookie['path'],
+                    $cookie['domain'],
+                    $cookie['secure'],
+                    $cookie['httponly'],
+                    $cookie['samesite'],
+                );
+            }
+        });
     }
 }

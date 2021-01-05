@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,23 +22,14 @@ use Opis\Colibri\Stream\{ResourceStream, Stream};
 
 class Request extends Message
 {
-
     protected string $method;
-
     protected string $requestTarget;
-
     protected bool $secure;
-
     protected ?Uri $uri = null;
-
     protected ?array $cookies = null;
-
     protected array $files;
-
     protected ?array $query = null;
-
     protected ?array $formData;
-
     protected ServerVariables $serverVars;
 
     /**

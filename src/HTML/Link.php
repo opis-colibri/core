@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,10 +33,10 @@ class Link extends View
 
     /**
      * @param string $name
-     * @param null $value
+     * @param string|null $value
      * @return Link
      */
-    public function attribute(string $name, $value = null): self
+    public function attribute(string $name, ?string $value = null): self
     {
         /** @var Attributes $attributes */
         $attributes = $this->vars['attributes'];
