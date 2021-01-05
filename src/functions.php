@@ -286,6 +286,11 @@ function tns(string $ns): SubTranslator
     return Application::getInstance()->getTranslator()->subTranslator($ns);
 }
 
+function lang(?string $name = null): LanguageInfo
+{
+    return Application::getInstance()->getTranslator()->language($name);
+}
+
 /**
  * @param string $path
  * @return string
