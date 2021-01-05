@@ -663,13 +663,13 @@ class Application
             $response = $this->onError($request, $exception);
         } finally {
             $this->httpRequest = $prevRequest;
-
-            if ($flush) {
-                $this->flushResponse($request, $response);
-            }
-
-            return $response;
         }
+
+        if ($flush) {
+            $this->flushResponse($request, $response);
+        }
+
+        return $response;
     }
 
     /**
