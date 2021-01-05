@@ -30,8 +30,8 @@ class ViewCollector extends BaseCollector
         $renderer = new Renderer(new PHPEngine());
         $resolver = $renderer->getEngineResolver();
 
-        foreach (collect(RenderEngineCollector::class)->getEntries() as $entry) {
-            $resolver->register($entry[0], $entry[1]);
+        foreach (collect(RenderEngineCollector::class)->getEntries() as [$factory, $priority]) {
+            $resolver->register($factory, $priority);
         }
         $resolver->sort();
 
