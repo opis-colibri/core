@@ -21,12 +21,9 @@ use ReflectionObject;
 use ReflectionMethod;
 use RuntimeException;
 use ReflectionNamedType;
-use Opis\Colibri\{
-    IoC\Container,
-    Internal\Collector as InternalCollector,
-    Attributes\Priority,
-};
+use Opis\Colibri\IoC\Container;
 use Opis\Colibri\Utils\SortableList;
+use Opis\Colibri\Attributes\Priority;
 use Opis\Colibri\Collectors\BaseCollector;
 
 class ItemCollector
