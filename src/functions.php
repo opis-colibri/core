@@ -272,7 +272,7 @@ function session(?string $name = null): Session
  * @param string|LanguageInfo|null $language
  * @return string
  */
-function t(string $key, array $params = null, int $count = 1, $language = null): string
+function t(string $key, array $params = null, int $count = 1, string|LanguageInfo|null $language = null): string
 {
     return Application::getInstance()->getTranslator()->translateKey($key, $params ?? [], $count, $language);
 }
@@ -392,7 +392,7 @@ function random_str(int $length): string
     return $str;
 }
 
-function convertToCase(string $value, string  $to='snake_case', string $from = 'camelCase'): string
+function convertToCase(string $value, string $to='snake_case', string $from = 'camelCase'): string
 {
     $allowed = ['PascalCase', 'camelCase', 'snake_case', 'kebab-case'];
 
