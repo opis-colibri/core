@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,8 @@ use function Opis\Colibri\make;
 
 class ClassList
 {
-
     protected array $list = [];
-
     protected ?array $cache = null;
-
     protected bool $singleton = false;
 
     /**
@@ -40,31 +37,18 @@ class ClassList
         }
     }
 
-    /**
-     * @param string $type
-     * @param string $class
-     * @return ClassList
-     */
-    public function add(string $type, string $class): self
+    public function add(string $type, string $class): static
     {
         $this->list[$type] = $class;
         return $this;
     }
 
-    /**
-     * @param string $type
-     * @return ClassList
-     */
-    public function remove(string $type): self
+    public function remove(string $type): static
     {
         unset($this->list[$type]);
         return $this;
     }
 
-    /**
-     * @param string $type
-     * @return bool
-     */
     public function has(string $type): bool
     {
         return isset($this->list[$type]);

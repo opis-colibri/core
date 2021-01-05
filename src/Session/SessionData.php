@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2019-2020 Zindex Software
+ * Copyright 2019-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,10 @@ namespace Opis\Colibri\Session;
 
 final class SessionData
 {
-
     private string $id;
-
     private int $expire;
-
     private array $data;
-
     private int $createdAt;
-
     private int $updatedAt;
 
     /**
@@ -56,68 +51,42 @@ final class SessionData
         $this->updatedAt = $updatedAt;
     }
 
-    /**
-     * @return string
-     */
     public function id(): string
     {
         return $this->id;
     }
 
-    /**
-     * @return int
-     */
     public function expiresAt(): int
     {
         return $this->expire;
     }
 
-    /**
-     * @param int $timestamp
-     */
     public function setExpirationDate(int $timestamp): void
     {
         $this->expire = $timestamp;
     }
 
-    /**
-     * @return array
-     */
     public function data(): array
     {
         return $this->data;
     }
 
-    /**
-     * @param array $array
-     * @return SessionData
-     */
     public function setData(array $array): self
     {
         $this->data = $array;
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function createdAt(): int
     {
         return $this->createdAt;
     }
 
-    /**
-     * @return int
-     */
     public function updatedAt(): int
     {
         return $this->updatedAt;
     }
 
-    /**
-     * @param int $timestamp
-     * @return bool
-     */
     public function isExpiredAt(int $timestamp): bool
     {
         if ($this->expire === 0) {

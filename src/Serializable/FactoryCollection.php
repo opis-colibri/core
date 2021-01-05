@@ -39,7 +39,7 @@ class FactoryCollection extends Collection
      * @param string $key
      * @param callable $value
      */
-    public function add(string $key, $value): void
+    public function add(string $key, mixed $value): void
     {
         if (!is_callable($value)) {
             throw new InvalidArgumentException("Callable expected");
