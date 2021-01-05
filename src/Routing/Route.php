@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ class Route
         callable $action,
         array $method = ['GET'],
         int $priority = 0,
-        string $name = null
+        ?string $name = null
     ) {
         $this->collection = $collection;
         $this->id = $id;
@@ -245,6 +245,11 @@ class Route
         return $this;
     }
 
+    public function getMiddleware(): ?array
+    {
+        return $this->properties['middleware'] ?? null;
+    }
+
     /**
      * @param string $value
      * @return static
@@ -256,6 +261,11 @@ class Route
         }
         $this->properties['domain'] = $value;
         return $this;
+    }
+
+    public function getDomain(): ?string
+    {
+        return $this->properties['domain'] ?? null;
     }
 
     /**
@@ -270,6 +280,11 @@ class Route
 
         $this->properties['secure'] = $value;
         return $this;
+    }
+
+    public function isSecure(): bool
+    {
+        return $this->properties['secure'] ?? false;
     }
 
     /**

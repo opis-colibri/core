@@ -101,4 +101,18 @@ class Collector extends BaseCollector
     {
         $global->implicit('gow', 'bar');
     }
+
+    public function domainRoutes(RouteCollector $route)
+    {
+        $route->get('/sub-domain', static fn() => 'sub=1')
+            ->domain('sub1.example.com');
+
+        $route->get('/sub-domain', static fn() => 'sub=2')
+            ->domain('sub2.example.com');
+
+        $route->get('/sub-domain', static fn($name) => "sub=$name")
+            ->domain('sub-{name}.example.com')
+            ->where('name', '[a-z]+')
+        ;
+    }
 }

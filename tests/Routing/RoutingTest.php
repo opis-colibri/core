@@ -17,6 +17,7 @@
 
 namespace Opis\Colibri\Test\Routing;
 
+use Opis\Colibri\Http\Request;
 use Opis\Colibri\Testing\Builders\ApplicationBuilder;
 use Opis\Colibri\Test\BaseAppTestCase;
 
@@ -329,4 +330,29 @@ class RoutingTest extends BaseAppTestCase
         $this->assertEquals('intruder:type4', (string)$result->getBody());
     }
 
+
+    /**
+     * @dataProvider domainTestProvider
+     */
+    public function testDomain(string $uri, int $status, ?string $body)
+    {
+        $request = new Request('GET', $uri);
+        $result = $this->execRequest($request);
+
+        $this->assertEquals($status, $result->getStatusCode());
+
+        if ($body !== null) {
+            $this->assertEquals($body, (string)$result->getBody());
+        }
+    }
+
+    public function domainTestProvider(): array
+    {
+        return [
+            ['http://sub1.example.com/sub-domain', 200, 'sub=1'],
+            ['http://sub2.example.com/sub-domain', 200, 'sub=2'],
+            ['http://sub-123.example.com/sub-domain', 404, null],
+            ['http://sub-abc.example.com/sub-domain', 200, 'sub=abc'],
+        ];
+    }
 }

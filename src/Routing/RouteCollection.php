@@ -32,6 +32,8 @@ class RouteCollection
 
     /** @var null|string[] */
     private ?array $regex = null;
+    /** @var null|string[] */
+    private ?array $domainRegex = null;
 
     /** @var string[] */
     private array $namedRoutes = [];
@@ -70,6 +72,7 @@ class RouteCollection
         $this->routes[$id] = $route;
         $this->dirty = true;
         $this->regex = null;
+        $this->domainRegex = null;
 
         if (null !== $name = $route->getName()) {
             $this->namedRoutes[$name] = $id;
@@ -95,19 +98,25 @@ class RouteCollection
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     public function getRegexPatterns(): array
     {
         if ($this->regex === null) {
-            $this->regex = [];
-            foreach ($this->routes as $route) {
-                $this->regex[$route->getID()] = $this->builder->getRegex($route->getPattern(),
-                    $route->getPlaceholders());
-            }
+            $this->generateRegexPatterns();
         }
-
         return $this->regex;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getDomainRegexPatterns(): array
+    {
+        if ($this->domainRegex === null) {
+            $this->generateRegexPatterns();
+        }
+        return $this->domainRegex;
     }
 
     /**
@@ -134,10 +143,21 @@ class RouteCollection
     public function getRegex(string $id): ?string
     {
         if ($this->regex === null) {
-            $this->getRegexPatterns();
+            $this->generateRegexPatterns();
         }
-
         return $this->regex[$id] ?? null;
+    }
+
+    /**
+     * @param string $id
+     * @return string|null
+     */
+    public function getDomainRegex(string $id): ?string
+    {
+        if ($this->domainRegex === null) {
+            $this->generateRegexPatterns();
+        }
+        return $this->domainRegex[$id] ?? null;
     }
 
     /**
@@ -173,6 +193,7 @@ class RouteCollection
         }
 
         $this->regex = null;
+        $this->domainRegex = null;
         $this->dirty = false;
         $this->routes = array_combine($keys, $values);
     }
@@ -198,6 +219,7 @@ class RouteCollection
             'builder' => $this->builder,
             'dirty' => $this->dirty,
             'regex' => $this->getRegexPatterns(),
+            'domainRegex' => $this->getDomainRegexPatterns(),
             'routes' => $this->routes,
             'namedRoutes' => $this->namedRoutes,
             'defaults' => $this->defaults,
@@ -211,6 +233,26 @@ class RouteCollection
     {
         foreach ($data as $property => $value) {
             $this->{$property} = $value;
+        }
+    }
+
+    /**
+     * Generate regexes
+     */
+    private function generateRegexPatterns(): void
+    {
+        $this->regex = [];
+        $this->domainRegex = [];
+
+        foreach ($this->routes as $route) {
+            $id = $route->getID();
+            $placeholders = $route->getPlaceholders();
+
+            $this->regex[$id] = $this->builder->getRegex($route->getPattern(), $placeholders);
+
+            if (null !== $domain = $route->getDomain()) {
+                $this->domainRegex[$id] = $this->getDomainBuilder()->getRegex($domain, $placeholders);
+            }
         }
     }
 

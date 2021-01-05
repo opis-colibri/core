@@ -51,13 +51,12 @@ class RouteInvoker extends Invoker
     public function getNames(): array
     {
         if ($this->names === null) {
-            $names = [];
             $collection = $this->route->getRouteCollection();
-            if (null !== $domain = ($this->route->getProperties()['domain'] ?? null)) {
-                $names += $collection->getDomainBuilder()->getNames($domain);
+            $names = $collection->getRegexBuilder()->getNames($this->route->getPattern());
+            if (null !== $domain = $this->route->getDomain()) {
+                $names = array_merge($collection->getDomainBuilder()->getNames($domain), $names);
             }
-            $names += $collection->getRegexBuilder()->getNames($this->route->getPattern());
-            $this->names = $names;
+            $this->names = array_unique($names);
         }
 
         return $this->names;
@@ -69,13 +68,23 @@ class RouteInvoker extends Invoker
     public function getValues(): array
     {
         if ($this->values === null) {
+            $id = $this->route->getID();
+            $uri = $this->request->getUri();
+            $names = array_flip($this->getNames());
+
             $routes = $this->route->getRouteCollection();
-            $builder = $routes->getRegexBuilder();
 
-            $regex = $routes->getRegex($this->route->getID());
-            $values = $builder->getValues($regex, $this->request->getUri()->path());
+            $values = $routes->getRegexBuilder()->getValues($routes->getRegex($id), $uri->path());
+            $this->values = array_intersect_key($values, $names);
 
-            $this->values = array_intersect_key($values, array_flip($this->getNames())) + $this->route->getDefaults();
+            if (null !== $domain = $this->route->getDomain()) {
+                $values = $routes->getDomainBuilder()->getValues($routes->getDomainRegex($id), $uri->host());
+                if ($values) {
+                    $this->values += array_intersect_key($values, $names);
+                }
+            }
+
+            $this->values += $this->route->getDefaults();
         }
 
         return $this->values;
