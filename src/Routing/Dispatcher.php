@@ -20,15 +20,16 @@ namespace Opis\Colibri\Routing;
 use SplQueue;
 use Generator;
 use Opis\Colibri\Http\{Request, Responses\HtmlResponse, Response};
+use function Opis\Colibri\httpError;
 
 class Dispatcher
 {
-    /** @var callable */
-    private $httpError;
+    /** @var callable|null */
+    private $customHttpError;
 
     public function __construct(?callable $httpError = null)
     {
-        $this->httpError = $httpError ?? (static::class . '::createHttpError');
+        $this->customHttpError = $httpError;
     }
 
     public function dispatch(Router $router, Request $request): Response
@@ -36,7 +37,7 @@ class Dispatcher
         $route = $this->findRoute($router, $request);
 
         if ($route === null) {
-            return ($this->httpError)(404);
+            return $this->httpError(404);
         }
 
         $invoker = $router->resolveInvoker($route, $request);
@@ -57,7 +58,7 @@ class Dispatcher
             $args = $invoker->getArgumentResolver()->resolve($callback);
 
             if (false === $callback(...$args)) {
-                return ($this->httpError)(404);
+                return $this->httpError(404);
             }
         }
 
@@ -103,13 +104,13 @@ class Dispatcher
     }
 
     /**
-     * Default value for httpError property
+     * Http error
      * @param int $code
      * @return Response
      */
-    private static function createHttpError(int $code): Response
+    private function httpError(int $code): Response
     {
-        return new Response($code);
+        return $this->customHttpError ? ($this->customHttpError)($code) : httpError($code);
     }
 
     /**

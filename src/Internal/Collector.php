@@ -45,7 +45,7 @@ class Collector extends BaseCollector
     #[Priority(-100)]
     public function routes(RouteCollector $route)
     {
-        $route->group(function (RouteCollector $route) {
+        $route->group(static function (RouteCollector $route) {
             $route('/', InternalRoutes::class . '::welcome');
             $route('/opis-colibri/assets/{file}', InternalRoutes::class . '::file')
                 ->whereIn('file', ['background.png', 'favicon.png']);
