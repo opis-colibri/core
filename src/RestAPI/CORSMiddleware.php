@@ -1,6 +1,6 @@
 <?php
 /* ============================================================================
- * Copyright 2020 Zindex Software
+ * Copyright 2020-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,12 @@
 
 namespace Opis\Colibri\RestAPI;
 
-use Opis\Colibri\Routing\{
-    Route,
-    Middleware
-};
-use Opis\Colibri\Http\{
-    Request,
-    Response
-};
+use Opis\Colibri\Http\{Request, Response};
+use Opis\Colibri\Routing\{Route, Middleware};
 
 class CORSMiddleware extends Middleware
 {
-    public function __invoke(Request $request, Route $route)
+    public function __invoke(Request $request, Route $route): Response
     {
         $headers = [
             'Access-Control-Allow-Origin' => $request->getHeader('Origin') ?? '*',

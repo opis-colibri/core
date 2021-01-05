@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,17 +24,11 @@ abstract class Middleware
 {
     private Closure $next;
 
-    /**
-     * @param Closure $next
-     */
     final function __construct(Closure $next)
     {
         $this->next = $next;
     }
 
-    /**
-     * @return Response
-     */
     protected function next(): Response
     {
         return ($this->next)();

@@ -67,11 +67,7 @@ final class EventHandler implements EventHandlerSettings
             return $this;
         }
 
-        $delimiter = $this->dispatcher->getRegexBuilder()->getOptions()[RegexBuilder::REGEX_DELIMITER];
-
-        $value = implode('|', array_map(static fn ($value) => preg_quote($value, $delimiter), $values));
-
-        return $this->where($name, $value);
+        return $this->where($name, $this->dispatcher->getRegexBuilder()->join($values));
     }
 
     public function __serialize(): array

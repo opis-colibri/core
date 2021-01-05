@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,17 +23,12 @@ use Opis\Colibri\Http\Request;
 class RouteInvoker extends Invoker
 {
     private Router $router;
-
     private Route $route;
-
     private Request $request;
 
     /** @var string[]|null */
     private ?array $names = null;
-
-    /** @var array|null */
     private ?array $values = null;
-
     /** @var callable[]|null */
     private ?array $bindings = null;
 

@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,24 +20,15 @@ namespace Opis\Colibri\Routing;
 use SplQueue;
 use Generator;
 use Opis\Colibri\Http\{Request, Responses\HtmlResponse, Response};
-use function Opis\Colibri\httpError;
 
 class Dispatcher
 {
-    /** @var callable|null */
-    private $customHttpError;
-
-    public function __construct(?callable $httpError = null)
-    {
-        $this->customHttpError = $httpError;
-    }
-
-    public function dispatch(Router $router, Request $request): Response
+    public function dispatch(Router $router, Request $request): ?Response
     {
         $route = $this->findRoute($router, $request);
 
         if ($route === null) {
-            return $this->httpError(404);
+            return null;
         }
 
         $invoker = $router->resolveInvoker($route, $request);
@@ -58,27 +49,27 @@ class Dispatcher
             $args = $invoker->getArgumentResolver()->resolve($callback);
 
             if (false === $callback(...$args)) {
-                return $this->httpError(404);
+                return null;
             }
         }
 
         $list = $route->getMiddleware();
 
-        if (empty($list)) {
+        if (!$list) {
             $result = $invoker->invokeAction();
             if (!$result instanceof Response) {
-                $result = new HtmlResponse($result);
+                return new HtmlResponse($result);
             }
             return $result;
         }
 
         $queue = new SplQueue();
-        $next = static function () use ($queue, $invoker) {
+        $next = static function () use ($queue, $invoker): Response {
             do {
                 if ($queue->isEmpty()) {
                     $result = $invoker->invokeAction();
                     if (!$result instanceof Response) {
-                        $result = new HtmlResponse($result);
+                        return new HtmlResponse($result);
                     }
                     return $result;
                 }
@@ -89,7 +80,7 @@ class Dispatcher
             $args = $invoker->getArgumentResolver()->resolve($middleware);
             $result = $middleware(...$args);
             if (!$result instanceof Response) {
-                $result = new HtmlResponse($result);
+                return new HtmlResponse($result);
             }
             return $result;
         };
@@ -103,21 +94,6 @@ class Dispatcher
         return $next();
     }
 
-    /**
-     * Http error
-     * @param int $code
-     * @return Response
-     */
-    private function httpError(int $code): Response
-    {
-        return $this->customHttpError ? ($this->customHttpError)($code) : httpError($code);
-    }
-
-    /**
-     * @param Router $router
-     * @param Request $request
-     * @return null|Route
-     */
     private function findRoute(Router $router, Request $request): ?Route
     {
         $global = $router->getGlobalValues();
@@ -134,11 +110,6 @@ class Dispatcher
         return null;
     }
 
-    /**
-     * @param Router $router
-     * @param string $path
-     * @return Generator
-     */
     private function match(Router $router, string $path): Generator
     {
         $routes = $router->getRouteCollection();
@@ -151,12 +122,6 @@ class Dispatcher
         }
     }
 
-    /**
-     * @param Router $router
-     * @param Route $route
-     * @param Request $request
-     * @return bool
-     */
     private function filter(Router $router, Route $route, Request $request): bool
     {
         foreach ($router->getFilters() as $filter) {

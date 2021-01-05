@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,16 @@
 
 namespace Opis\Colibri\Routing;
 
-class ControllerCallback
+final class ControllerCallback
 {
-
-    protected string $method;
-
-    protected string $className;
-
-    protected bool $isStatic;
+    private string $method;
+    private string $className;
+    private bool $isStatic;
 
     /**
      * @var self[]
      */
-    protected static array $instances = [];
+    private static array $instances = [];
 
     /**
      * Constructor
@@ -38,7 +35,7 @@ class ControllerCallback
      * @param   string $method
      * @param   boolean $static (optional)
      */
-    protected function __construct(string $class, string $method, bool $static = false)
+    private function __construct(string $class, string $method, bool $static = false)
     {
         $this->className = $class;
         $this->method = $method;
@@ -48,7 +45,7 @@ class ControllerCallback
     /**
      * Make the instances of this class being a valid callable value
      */
-    final public function __invoke()
+    public function __invoke()
     {
         // nop
     }
@@ -83,20 +80,14 @@ class ControllerCallback
         return $this->isStatic;
     }
 
-    /**
-     * @param string $class
-     * @param string $method
-     * @param bool $static
-     * @return ControllerCallback
-     */
     public static function get(string $class, string $method, bool $static = false): self
     {
         $key = trim($class) . ($static ? '::' : '->') . trim($method);
 
-        if (!isset(static::$instances[$key])) {
-            static::$instances[$key] = new static($class, $method, $static);
+        if (!isset(self::$instances[$key])) {
+            self::$instances[$key] = new self($class, $method, $static);
         }
 
-        return static::$instances[$key];
+        return self::$instances[$key];
     }
 }

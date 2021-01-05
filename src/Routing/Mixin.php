@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2020 Zindex Software
+ * Copyright 2020-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,5 +24,5 @@ abstract class Mixin
         // nop
     }
 
-    abstract function __invoke(Route $route, ?array $config);
+    abstract function __invoke(Route $route, ?array $config): void;
 }

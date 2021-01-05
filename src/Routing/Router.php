@@ -22,6 +22,7 @@ use Opis\Colibri\Application;
 use Opis\Colibri\Collectors\RouteCollector;
 use Opis\Colibri\Http\{Request, Response};
 use Opis\Colibri\Routing\Filters\{RequestFilter, UserFilter};
+use function Opis\Colibri\httpError;
 
 class Router
 {
@@ -113,6 +114,10 @@ class Router
         $response = $this->getDispatcher()->dispatch($this, $request);
 
         unset($this->global['request']);
+
+        if ($response === null) {
+            $response = httpError(404);
+        }
 
         // Handle cookies
 

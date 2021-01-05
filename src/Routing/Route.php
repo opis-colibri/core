@@ -232,10 +232,6 @@ class Route
         return $this->setGuard($name, $callback);
     }
 
-    /**
-     * @param string ...$middleware
-     * @return static
-     */
     public function middleware(string ...$middleware): self
     {
         if ($this->inheriting && isset($this->properties['middleware'])) {
@@ -250,10 +246,6 @@ class Route
         return $this->properties['middleware'] ?? null;
     }
 
-    /**
-     * @param string $value
-     * @return static
-     */
     public function domain(string $value): self
     {
         if ($this->inheriting && isset($this->properties['domain'])) {
@@ -268,10 +260,6 @@ class Route
         return $this->properties['domain'] ?? null;
     }
 
-    /**
-     * @param bool $value
-     * @return static
-     */
     public function secure(bool $value = true): self
     {
         if ($this->inheriting && isset($this->properties['secure'])) {
@@ -292,7 +280,7 @@ class Route
      *
      * @param   string $name
      * @param   string $value
-     * @return  static|Route
+     * @return  static
      */
     public function where(string $name, string $value): self
     {
@@ -302,7 +290,7 @@ class Route
     /**
      * @param string $name
      * @param string[] $values
-     * @return static|Route
+     * @return static
      */
     public function whereIn(string $name, array $values): self
     {
@@ -310,13 +298,7 @@ class Route
             return $this;
         }
 
-        $delimiter = $this->collection->getRegexBuilder()->getOptions()[RegexBuilder::REGEX_DELIMITER];
-
-        $value = implode('|', array_map(static function ($value) use ($delimiter) {
-            return preg_quote($value, $delimiter);
-        }, $values));
-
-        return $this->placeholder($name, $value);
+        return $this->placeholder($name, $this->collection->getRegexBuilder()->join($values));
     }
 
     /**

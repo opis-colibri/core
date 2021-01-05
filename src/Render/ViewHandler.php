@@ -61,11 +61,7 @@ class ViewHandler implements ViewHandlerSettings
             return $this;
         }
 
-        $delimiter = $this->renderer->getRegexBuilder()->getOptions()[RegexBuilder::REGEX_DELIMITER];
-
-        $value = implode('|', array_map(static fn ($value) => preg_quote($value, $delimiter), $values));
-
-        return $this->where($name, $value);
+        return $this->where($name, $this->renderer->getRegexBuilder()->join($values));
     }
 
     public function getRegex(): string

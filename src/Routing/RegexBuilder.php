@@ -19,13 +19,10 @@ namespace Opis\Colibri\Routing;
 
 use RuntimeException;
 
-class RegexBuilder
+final class RegexBuilder
 {
-    /** @var array */
-    protected $options;
-
-    /** @var array */
-    protected $tokens = [];
+    private array $options;
+    private array $tokens = [];
 
     const CAPTURE_LEFT = 1;
     const CAPTURE_RIGHT = 2;
@@ -209,13 +206,14 @@ class RegexBuilder
     }
 
     /**
-     * @param string $regex
-     * @param string $path
-     * @return bool
+     * Escapes values and joins them with |
+     * @param string[] $values
+     * @return string
      */
-    public function matches(string $regex, string $path): bool
+    public function join(array $values): string
     {
-        return (bool)preg_match($regex, $path);
+        $delimiter = $this->options[self::REGEX_DELIMITER];
+        return implode('|', array_map(static fn ($value) => preg_quote($value, $delimiter), $values));
     }
 
     /**
@@ -230,7 +228,7 @@ class RegexBuilder
      * @param string $pattern
      * @return array
      */
-    protected function getTokens(string $pattern): array
+    private function getTokens(string $pattern): array
     {
         $key = md5($pattern);
 

@@ -29,7 +29,7 @@ abstract class ControllerResolver extends Mixin
      *
      * Use $config['no-cors'] = true to disable the CORSMiddleware
      */
-    public function __invoke(Route $route, ?array $config)
+    public function __invoke(Route $route, ?array $config): void
     {
         // Bind methods
 
@@ -69,10 +69,10 @@ abstract class ControllerResolver extends Mixin
 
     /**
      * @param Request $request
-     * @return object|array|null
+     * @return mixed
      * @internal
      */
-    public static function bindData(Request $request)
+    public static function bindData(Request $request): mixed
     {
         $body = $request->getBody();
 

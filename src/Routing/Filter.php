@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,5 @@ use Opis\Colibri\Http\Request;
 
 interface Filter
 {
-    /**
-     * @param Router $router
-     * @param Route $route
-     * @param Request $request
-     * @return bool
-     */
     public function filter(Router $router, Route $route, Request $request): bool;
 }

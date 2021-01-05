@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2020 Zindex Software
+ * Copyright 2020-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,9 @@ use ArrayAccess;
 
 abstract class Invoker
 {
+    private mixed $result;
     private ArrayAccess $defaults;
     private ?ArgumentResolver $argumentResolver = null;
-    /** @var Invoker|mixed */
-    private $result;
 
     public function __construct(ArrayAccess $defaults)
     {
@@ -32,9 +31,6 @@ abstract class Invoker
         $this->result = $this;
     }
 
-    /**
-     * @return array
-     */
     public abstract function getValues(): array;
 
     /**
@@ -42,15 +38,7 @@ abstract class Invoker
      */
     public abstract function getBindings(): array;
 
-    /**
-     * @return callable
-     */
-    protected abstract function getCallback(): callable;
-
-    /**
-     * @return mixed
-     */
-    public function invokeAction()
+    public function invokeAction(): mixed
     {
         if ($this->result === $this) {
             $callback = $this->getCallback();
@@ -61,9 +49,6 @@ abstract class Invoker
         return $this->result;
     }
 
-    /**
-     * @return ArgumentResolver
-     */
     public function getArgumentResolver(): ArgumentResolver
     {
         if ($this->argumentResolver === null) {
@@ -83,4 +68,6 @@ abstract class Invoker
 
         return $this->argumentResolver;
     }
+
+    abstract protected function getCallback(): callable;
 }
