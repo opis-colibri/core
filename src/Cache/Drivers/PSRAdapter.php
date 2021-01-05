@@ -1,6 +1,6 @@
 <?php
 /* ============================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,12 @@
 
 namespace Opis\Colibri\Cache\Drivers;
 
-use Opis\Colibri\Cache\{
-    CacheDriver, Traits\Load
-};
+use Opis\Colibri\Cache\CacheDriver;
 use Psr\SimpleCache\CacheInterface as PsrCache;
 
 class PSRAdapter implements CacheDriver
 {
-    use Load;
+    use CacheLoadTrait;
 
     protected PsrCache $cache;
 
@@ -47,7 +45,7 @@ class PSRAdapter implements CacheDriver
     /**
      * @inheritDoc
      */
-    public function read(string $key)
+    public function read(string $key): mixed
     {
         return $this->cache->get($key, false);
     }
@@ -55,7 +53,7 @@ class PSRAdapter implements CacheDriver
     /**
      * @inheritDoc
      */
-    public function write(string $key, $data, int $ttl = 0): bool
+    public function write(string $key, mixed $data, int $ttl = 0): bool
     {
         return $this->cache->set($key, $data, $ttl);
     }

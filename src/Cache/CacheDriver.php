@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,19 +23,19 @@ interface CacheDriver
      * Read from cache
      *
      * @param string $key
-     * @return mixed|false
+     * @return mixed False if cache miss
      */
-    public function read(string $key);
+    public function read(string $key): mixed;
 
     /**
      * Write to cache
      *
      * @param string $key
-     * @param $data
+     * @param mixed $data
      * @param int $ttl
      * @return bool
      */
-    public function write(string $key, $data, int $ttl = 0): bool;
+    public function write(string $key, mixed $data, int $ttl = 0): bool;
 
     /**
      * Load an item from cache
@@ -45,7 +45,7 @@ interface CacheDriver
      * @param int $ttl
      * @return mixed
      */
-    public function load(string $key, callable $loader, int $ttl = 0);
+    public function load(string $key, callable $loader, int $ttl = 0): mixed;
 
     /**
      * Delete from cache

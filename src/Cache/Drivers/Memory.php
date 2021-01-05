@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,23 +17,18 @@
 
 namespace Opis\Colibri\Cache\Drivers;
 
-use Opis\Colibri\Cache\{
-    CacheDriver, Traits\Load
-};
+use Opis\Colibri\Cache\CacheDriver;
 
 class Memory implements CacheDriver
 {
-    use Load;
+    use CacheLoadTrait;
 
     protected array $cache = [];
 
     /**
-     * Read from cache
-     *
-     * @param string $key
-     * @return mixed|false
+     * @inheritDoc
      */
-    public function read(string $key)
+    public function read(string $key): mixed
     {
         if (isset($this->cache[$key])) {
             $expire = (int)$this->cache[$key]['ttl'];
@@ -50,12 +45,7 @@ class Memory implements CacheDriver
     }
 
     /**
-     * Write to cache
-     *
-     * @param string $key
-     * @param $data
-     * @param int $ttl
-     * @return bool
+     * @inheritDoc
      */
     public function write(string $key, $data, int $ttl = 0): bool
     {
@@ -66,10 +56,7 @@ class Memory implements CacheDriver
     }
 
     /**
-     * Delete from cache
-     *
-     * @param string $key
-     * @return bool
+     * @inheritDoc
      */
     public function delete(string $key): bool
     {
@@ -82,10 +69,7 @@ class Memory implements CacheDriver
     }
 
     /**
-     * Check if the cache entry exists
-     *
-     * @param string $key
-     * @return bool
+     * @inheritDoc
      */
     public function has(string $key): bool
     {
@@ -98,9 +82,7 @@ class Memory implements CacheDriver
     }
 
     /**
-     * Clear cache
-     *
-     * @return bool
+     * @inheritDoc
      */
     public function clear(): bool
     {

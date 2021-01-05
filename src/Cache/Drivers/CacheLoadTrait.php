@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,23 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Colibri\Cache\Traits;
+namespace Opis\Colibri\Cache\Drivers;
 
 use Opis\Colibri\Cache\CacheDriver;
 
-trait Load
+trait CacheLoadTrait
 {
     /**
-     * @param string $key
-     * @param callable $loader
-     * @param int $ttl
-     * @return mixed
+     * @inheritDoc
      */
-    public function load(string $key, callable $loader, int $ttl = 0)
+    public function load(string $key, callable $loader, int $ttl = 0): mixed
     {
-        /** @var CacheDriver $cache */
-        $cache = $this;
+        /** @var CacheDriver $this */
 
-        if (!$cache->has($key)) {
-            $cache->write($key, $loader($key), $ttl);
+        if (!$this->has($key)) {
+            $this->write($key, $loader($key), $ttl);
         }
 
-        return $cache->read($key);
+        return $this->read($key);
     }
 }
