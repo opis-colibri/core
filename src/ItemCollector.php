@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2020 Zindex Software
+ * Copyright 2020-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ use Opis\Colibri\Collectors\BaseCollector;
 
 class ItemCollector
 {
-    private bool $collectorsIncluded =  false;
     private Application $app;
     private Container $container;
 
@@ -41,6 +40,7 @@ class ItemCollector
     private array $cache = [];
     private array $collectedEntries = [];
     private array $invertedList = [];
+    private bool $collectorsIncluded = false;
 
     public function __construct(Application $app)
     {
@@ -200,48 +200,49 @@ class ItemCollector
             }
         }
 
-        $this->collectFromCore($collectorList, $invertedList);
+        // Collect from core
+        $this->doCollect(null, new InternalCollector(), $invertedList);
 
         foreach ($this->app->getModules() as $module) {
-            if (!$module->isEnabled()) {
+            if (!$module->isEnabled() || !($collector = $module->collector())) {
                 continue;
             }
-            $this->doCollect($module, $module->collector(), $collectorList, $invertedList);
+            $this->doCollect($module, $collector, $invertedList);
         }
     }
 
-    private function collectFromCore(array $collectorList, array $invertedList): void
-    {
-        $fakeModule = $this->app->getModule('opis-colibri/core');
-
-        $instance = new InternalCollector();
-
-        $this->doCollect($fakeModule, $instance, $collectorList, $invertedList);
-    }
-
-    private function doCollect(Module $module, Collector $instance,
-                               array $collectorList, array $invertedList): void
+    private function doCollect(?Module $module, Collector $instance, array $invertedList): void
     {
         $reflection = new ReflectionObject($instance);
 
         foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+            if ($method->isStatic()) {
+                // Skip static methods
+                continue;
+            }
 
             $methodName = $method->getShortName();
 
-            if (substr($methodName, 0, 2) === '__') {
+            if (str_starts_with($methodName, '__')) {
+                // Skip magic methods
                 continue;
             }
 
             $params = $method->getParameters();
 
-            if (empty($params) || count($params) > 1 || !$params[0]->hasType()) {
+            if (count($params) !== 1 || !$params[0]->hasType()) {
+                // Only methods with 1 typed parameter
                 continue;
             }
 
-            /** @var ReflectionNamedType $type */
             $type = $params[0]->getType();
-            $type = $type->getName();
-            $name = $invertedList[strtolower($type)] ?? null;
+
+            if (!($type instanceof ReflectionNamedType)) {
+                // Skip union types
+                continue;
+            }
+
+            $name = $invertedList[strtolower($type->getName())] ?? null;
 
             if ($name === null) {
                 continue;

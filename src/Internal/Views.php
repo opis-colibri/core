@@ -17,10 +17,12 @@
 
 namespace Opis\Colibri\Internal;
 
-
 use Opis\Colibri\HTML\Template as HtmlTemplate;
 use Opis\Colibri\Templates\TemplateStream;
 
+/**
+ * @internal
+ */
 final class Views
 {
     private function __construct()

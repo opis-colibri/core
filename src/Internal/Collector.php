@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2020 Zindex Software
+ * Copyright 2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,14 +24,17 @@ use Opis\Colibri\Templates\CallbackTemplateHandler;
 use Opis\Colibri\Internal\Views as InternalViews;
 use Opis\Colibri\Internal\Routes as InternalRoutes;
 
+/**
+ * @internal
+ */
 class Collector extends BaseCollector
 {
-    public function templateHandlers(TemplateStreamHandlerCollector $collector)
+    public function templateHandlers(TemplateStreamHandlerCollector $collector): void
     {
         $collector->register('callback', CallbackTemplateHandler::class);
     }
 
-    public function views(ViewCollector $view)
+    public function views(ViewCollector $view): void
     {
         $view->handle('welcome', InternalViews::class . '::welcome');
 
@@ -43,12 +46,14 @@ class Collector extends BaseCollector
     }
 
     #[Priority(-100)]
-    public function routes(RouteCollector $route)
+    public function routes(RouteCollector $route): void
     {
-        $route->group(static function (RouteCollector $route) {
-            $route('/', InternalRoutes::class . '::welcome');
-            $route('/opis-colibri/assets/{file}', InternalRoutes::class . '::file')
-                ->whereIn('file', ['background.png', 'favicon.png']);
-        })->filter('opis-colibri-production', InternalRoutes::class . '::filter');
+        $route
+            ->group(static function (RouteCollector $route) {
+                $route('/', InternalRoutes::class . '::welcome');
+                $route('/opis-colibri/assets/{file}', InternalRoutes::class . '::file')
+                    ->whereIn('file', ['background.png', 'favicon.png']);
+            })
+            ->filter('opis-colibri-production', InternalRoutes::class . '::filter');
     }
 }

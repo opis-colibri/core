@@ -101,7 +101,7 @@ class Module
         return $this->directory;
     }
 
-    public function collector(): Collector
+    public function collector(): ?Collector
     {
         return $this->load()->collector;
     }

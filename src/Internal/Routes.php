@@ -20,6 +20,9 @@ namespace Opis\Colibri\Internal;
 use Opis\Colibri\Http\Responses\FileStream;
 use function Opis\Colibri\{view, env};
 
+/**
+ * @internal
+ */
 final class Routes
 {
     private function __construct()
@@ -34,7 +37,7 @@ final class Routes
 
     public static function file(string $file): FileStream
     {
-        return new FileStream(__DIR__ . '/../../resources/assets/' . $file, 'image/png');
+        return new FileStream(__DIR__ . '/../../resources/assets/' . $file);
     }
 
     public static function filter(): bool
