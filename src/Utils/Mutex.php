@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@
 
 namespace Opis\Colibri\Utils;
 
-class Mutex
+final class Mutex
 {
     /** @var resource File resource */
-    protected $fp;
+    private $fp;
 
     /** @var string File path */
-    protected $file;
+    private string $file;
 
     /**
      * Mutex constructor
@@ -31,12 +31,13 @@ class Mutex
      * @param string|null $file
      * @param bool $create
      */
-    public function __construct(string $file = null, bool $create = false)
+    public function __construct(?string $file = null, bool $create = false)
     {
         if ($file === null) {
             $file = __FILE__;
         }
 
+        /** @var string $file */
         if ($create && !file_exists($file)) {
             file_put_contents($file, '');
         }

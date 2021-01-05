@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2020 Zindex Software
+ * Copyright 2020-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ class SortableList
         $this->descending = $descending;
     }
 
-    public function addItem($item, int $priority = 0): void
+    public function addItem(mixed $item, int $priority = 0): void
     {
         $this->entries[] = [$priority, $item];
         $this->sorted = false;

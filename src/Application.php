@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,19 @@
 
 namespace Opis\Colibri;
 
+use RuntimeException, Throwable;
 use Opis\Colibri\IoC\Container;
 use Opis\Colibri\Utils\CSRFToken;
-use RuntimeException, Throwable;
 use Composer\Package\CompletePackageInterface;
 use Symfony\Component\Console\Application as ConsoleApplication;
 use Opis\Colibri\Session\{CookieContainer, Session, SessionHandler};
 use Psr\Log\{NullLogger, LoggerInterface};
-use Opis\Colibri\Cache\{CacheDriver};
+use Opis\Colibri\Cache\CacheDriver;
 use Opis\Colibri\Events\{Event, EventDispatcher};
-use Opis\Colibri\I18n\Translator\{Driver as TranslatorDriver};
+use Opis\Colibri\I18n\Translator\Driver as TranslatorDriver;
 use Opis\Colibri\Render\Renderer;
 use Opis\Colibri\Http\{Request as HttpRequest, Response as HttpResponse, Responses\FileStream};
-use Opis\Colibri\Config\{ConfigDriver};
+use Opis\Colibri\Config\ConfigDriver;
 use Opis\Colibri\Routing\Router;
 use Opis\Database\{Connection, Database, Schema};
 use Opis\ORM\EntityManager;

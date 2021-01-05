@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+ * Copyright 2018-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,55 +17,29 @@
 
 namespace Opis\Colibri\Utils;
 
-class Version
+final class Version
 {
-    protected static $mapFunction;
-
-    /**
-     * @param $version1
-     * @param $version2
-     * @param null $sign
-     * @return bool|int
-     */
-    public static function compare($version1, $version2, $sign = null)
+    public static function eval(string $version1, string $version2, string $sign = '='): bool
     {
-        $result = static::getResult($version1, $version2);
+        $result = self::compare($version1, $version2);
 
-        switch ($sign) {
-            case '=':
-                return $result === 0;
-            case '<':
-                return $result === -1;
-            case '<=':
-                return $result === -1 || $result === 0;
-            case '>':
-                return $result === 1;
-            case '>=':
-                return $result === 1 || $result === 0;
-            case '!=':
-            case '<>':
-                return $result !== 0;
-        }
-
-        return $result;
+        return match($sign) {
+            '=', '==' => $result === 0,
+            '!=', '<>' => $result !== 0,
+            '<' => $result < 0,
+            '<=' => $result <= 0,
+            '>' => $result > 0,
+            '>=' => $result >= 0,
+            default => false,
+        };
     }
 
-    /**
-     * @param $version1
-     * @param $version2
-     * @param string $replace
-     * @return bool
-     */
-    public static function match($version1, $version2, $replace = '*')
+    public static function match(string $version1, string $version2, int|string $replace = '*'): bool
     {
-        return 0 === static::getResult($version1, $version2, $replace);
+        return 0 === self::compare($version1, $version2, $replace);
     }
 
-    /**
-     * @param $version
-     * @return string
-     */
-    protected static function normalize($version)
+    public static function normalize(string $version): string
     {
         $version = preg_replace('/[_\-+]+/', '.', $version);
         $version = preg_replace('/\#+/', '#', $version);
@@ -76,16 +50,10 @@ class Version
         return strtolower(trim($version, '.'));
     }
 
-    /**
-     * @param $version1
-     * @param $version2
-     * @param int $replace
-     * @return int
-     */
-    protected static function getResult($version1, $version2, $replace = 0)
+    public static function compare(string $version1, string $version2, int|string|null $replace = null): int
     {
-        $version1 = explode('.', static::normalize($version1));
-        $version2 = explode('.', static::normalize($version2));
+        $version1 = explode('.', self::normalize($version1));
+        $version2 = explode('.', self::normalize($version2));
 
         $c1 = count($version1);
         $c2 = count($version2);
@@ -99,40 +67,14 @@ class Version
                 $max = $c2;
             }
 
+            $replace ??= 0;
             for ($i = 0, $l = abs($c1 - $c2); $i < $l; $i++) {
                 $v[] = $replace;
             }
         }
 
-        if (static::$mapFunction === null) {
-            $map = [
-                'dev' => -6,
-                'alpha' => -5,
-                'a' => -5,
-                'beta' => -4,
-                'b' => -4,
-                'rc' => -3,
-                '#' => -2,
-                'pl' => -1,
-                'p' => -1,
-            ];
-
-            static::$mapFunction = function ($value) use (&$map) {
-
-                if (isset($map[$value])) {
-                    return $map[$value];
-                }
-
-                if (is_numeric($value)) {
-                    return (int)$value;
-                }
-
-                return $value;
-            };
-        }
-
-        $version1 = array_map(static::$mapFunction, $version1);
-        $version2 = array_map(static::$mapFunction, $version2);
+        $version1 = array_map(self::class . '::map', $version1);
+        $version2 = array_map(self::class . '::map', $version2);
 
         for ($i = 0; $i < $max; $i++) {
             $v1 = $version1[$i];
@@ -165,5 +107,22 @@ class Version
         }
 
         return 0;
+    }
+
+    private const MAP = [
+        'dev' => -6,
+        'alpha' => -5,
+        'a' => -5,
+        'beta' => -4,
+        'b' => -4,
+        'rc' => -3,
+        '#' => -2,
+        'pl' => -1,
+        'p' => -1,
+    ];
+
+    private static function map(string $value): int|string
+    {
+        return self::MAP[$value] ?? (is_numeric($value) ? (int)$value : $value);
     }
 }
