@@ -1,6 +1,6 @@
 <?php
 /* ===========================================================================
- * Copyright 2020 Zindex Software
+ * Copyright 2020-2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,14 @@ class Event
 {
     private string $name;
     private bool $cancelable;
+    private mixed $data;
     private bool $isCanceled = false;
-    private mixed $data = null;
 
     public function __construct(string $name, bool $cancelable = false, mixed $data = null)
     {
         $this->name = $name;
         $this->cancelable = $cancelable;
+        $this->data = $data;
     }
 
     public function name(): string
