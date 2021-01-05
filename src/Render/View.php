@@ -78,6 +78,11 @@ class View implements Renderable, Stringable
         return $this->vars[$name] ?? $default;
     }
 
+    public function isRendered(): bool
+    {
+        return $this->renderedContent !== null;
+    }
+
     public function __toString(): string
     {
         if ($this->renderedContent === null) {

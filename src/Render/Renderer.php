@@ -88,15 +88,11 @@ class Renderer extends SortableList
 
     /**
      * Render a view
-     * @param Renderable|string $view
+     * @param Renderable $view
      * @return string
      */
-    public function render($view): string
+    public function render(Renderable $view): string
     {
-        if (!($view instanceof Renderable)) {
-            return $view;
-        }
-
         $path = $this->resolveViewName($view->getViewName());
 
         if ($path === null) {
@@ -114,9 +110,9 @@ class Renderer extends SortableList
      * @param   string $name
      * @param   array $vars
      *
-     * @return  mixed
+     * @return  string
      */
-    public function renderView(string $name, array $vars = [])
+    public function renderView(string $name, array $vars = []): string
     {
         return $this->render(new View($name, $vars));
     }

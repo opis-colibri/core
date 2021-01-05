@@ -18,6 +18,7 @@
 namespace Opis\Colibri\Render;
 
 use Throwable;
+use Stringable;
 use Opis\Colibri\I18n\Translator\LanguageInfo;
 use function Opis\Colibri\{
     view, render, asset, getURI, generateCSRFToken, t
@@ -30,7 +31,7 @@ class PHPEngine implements Engine
         return view($name, $arguments);
     }
 
-    public function render(string|Renderable $viewable): string
+    public function render(string|Stringable|Renderable $viewable): string
     {
         return render($viewable);
     }

@@ -92,11 +92,6 @@ class ViewsTest extends TestCase
         $this->assertEquals('BAR', $this->renderer->renderView('foo'));
     }
 
-    public function testRenderMethod1()
-    {
-        $this->assertEquals('foo', $this->renderer->render('foo'));
-    }
-
     public function testSerialization()
     {
         \Opis\Closure\Library::init();

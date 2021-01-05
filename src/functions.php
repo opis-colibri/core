@@ -19,6 +19,7 @@ namespace Opis\Colibri;
 
 use stdClass;
 use Exception;
+use Stringable;
 use Opis\Colibri\Cache\CacheDriver;
 use Opis\JsonSchema\Validator;
 use Opis\Database\{
@@ -330,9 +331,16 @@ function view(string $name, array $vars = []): View
     return new View($name, $vars);
 }
 
-function render(string|Renderable $view): string
+function render(string|Stringable|Renderable $view): string
 {
-    return Application::getInstance()->getViewRenderer()->render($view);
+    if ($view instanceof Renderable) {
+        if (($view instanceof View) && $view->isRendered()) {
+            // Render the view only once
+            return $view;
+        }
+        return Application::getInstance()->getViewRenderer()->render($view);
+    }
+    return $view;
 }
 
 /**
