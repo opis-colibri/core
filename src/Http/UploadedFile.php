@@ -159,6 +159,11 @@ class UploadedFile
         return $this->error;
     }
 
+    public function hasError(): bool
+    {
+        return $this->error !== UPLOAD_ERR_OK;
+    }
+
     public function getClientFilename(): ?string
     {
         return $this->name;
