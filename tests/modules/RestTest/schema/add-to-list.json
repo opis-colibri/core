@@ -1,7 +1,7 @@
 {
   "$error": {
-    "type": "I expected '@expected' not '@type'",
-    "minimum": "Send at least @min"
+    "type": "I expected '{expected}' not '{type}'",
+    "minimum": "Send at least {min}"
   },
   "type": "integer",
   "minimum": 4
