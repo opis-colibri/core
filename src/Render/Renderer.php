@@ -159,7 +159,7 @@ class Renderer extends SortableList
                 // match failed
                 continue;
             }
-
+            $values += $handler->getDefaultValues();
             $resolver = new ArgumentResolver($values);
             unset($values);
 

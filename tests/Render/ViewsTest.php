@@ -61,6 +61,12 @@ class ViewsTest extends TestCase
         $this->assertEquals('bar', $this->renderer->resolveViewName('foo'));
     }
 
+    public function testImplicitValues()
+    {
+        $this->renderer->handle('foo.{bar?}', static fn($bar) => $bar)->implicit('bar', 'baz');
+        $this->assertEquals('baz', $this->renderer->resolveViewName('foo'));
+    }
+
     public function testEngine()
     {
         $this->renderer->getEngineResolver()->register(static fn() => new RenderEngine1());

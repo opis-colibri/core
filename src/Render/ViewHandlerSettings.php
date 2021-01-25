@@ -19,6 +19,8 @@ namespace Opis\Colibri\Render;
 
 interface ViewHandlerSettings
 {
+    public function implicit(string $name, mixed $value): self;
+
     public function filter(callable $callback): self;
 
     public function where(string $name, string $regex): self;

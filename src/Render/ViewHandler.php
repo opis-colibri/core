@@ -29,6 +29,7 @@ class ViewHandler implements ViewHandlerSettings
 
     private string $pattern;
     private Renderer $renderer;
+    private array $defaults = [];
     private array $placeholders = [];
     private ?string $regex = null;
 
@@ -38,6 +39,13 @@ class ViewHandler implements ViewHandlerSettings
         $this->pattern = $pattern;
         $this->callback = $callback;
     }
+
+    public function implicit(string $name, mixed $value): ViewHandlerSettings
+    {
+        $this->defaults[$name] = $value;
+        return $this;
+    }
+
 
     public function filter(callable $callback): ViewHandlerSettings
     {
@@ -81,5 +89,10 @@ class ViewHandler implements ViewHandlerSettings
     public function getFilter(): ?callable
     {
         return $this->filter;
+    }
+
+    public function getDefaultValues(): array
+    {
+        return $this->defaults;
     }
 }
