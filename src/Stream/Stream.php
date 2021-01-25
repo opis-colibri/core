@@ -140,10 +140,10 @@ interface Stream extends Stringable
     /**
      * Get stream meta information
      * @param string|null $key
-     * @return mixed|array|null
+     * @return mixed
      * @see stream_get_meta_data()
      */
-    public function metadata(string $key = null);
+    public function metadata(?string $key = null): mixed;
 
     /**
      * Gets the associated resource, if any

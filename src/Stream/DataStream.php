@@ -369,7 +369,7 @@ class DataStream implements Stream
     /**
      * @inheritDoc
      */
-    public function metadata(string $key = null)
+    public function metadata(?string $key = null): mixed
     {
         if ($this->meta === null) {
             return null;

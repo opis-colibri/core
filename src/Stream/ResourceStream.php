@@ -283,7 +283,7 @@ class ResourceStream implements Stream
     /**
      * @inheritDoc
      */
-    public function metadata(string $key = null)
+    public function metadata(?string $key = null): mixed
     {
         if (!$this->resource) {
             return null;
