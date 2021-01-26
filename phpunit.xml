@@ -30,5 +30,8 @@
         <testsuite name="Rest">
             <directory suffix="RestTest.php">./tests</directory>
         </testsuite>
+        <testsuite name="FileSystem">
+            <directory suffix="Test.php">./tests/FileSystem</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
