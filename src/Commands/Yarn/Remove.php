@@ -50,9 +50,11 @@ class Remove extends Command
             return 1;
         }
 
+        $package = json_decode(file_get_contents($assets))->name;
+
         $cwd = getcwd();
         chdir(info()->rootDir());
-        passthru('yarn remove '. $assets);
+        passthru('yarn remove ' . $package);
         chdir($cwd);
 
         return 0;
