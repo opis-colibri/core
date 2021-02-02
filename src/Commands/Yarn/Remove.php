@@ -50,7 +50,7 @@ class Remove extends Command
             return 1;
         }
 
-        $package = json_decode(file_get_contents($assets))->name;
+        $package = json_decode(file_get_contents($assets . '/package.json'))->name;
 
         $cwd = getcwd();
         chdir(info()->rootDir());
