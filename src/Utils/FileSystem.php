@@ -96,7 +96,7 @@ final class FileSystem
     public static function relativize(string $base, string $path): string
     {
         $base = self::normalize($base);
-        if (!str_starts_with('/', $path)) {
+        if (!str_starts_with($path, '/')) {
             $path = self::normalize($base . '/' . $path);
         }
         $b = explode('/', $base);
