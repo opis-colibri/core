@@ -17,12 +17,12 @@
 
 namespace Opis\Colibri\Utils;
 
-class FileSystem
+final class FileSystem
 {
     /**
      * Constructor
      */
-    protected function __construct()
+    private function __construct()
     {
         // empty constructor
     }
@@ -47,7 +47,7 @@ class FileSystem
             if ($entry == '.' || $entry == '..') {
                 continue;
             }
-            static::copy("$source/$entry", "$dest/$entry");
+            self::copy("$source/$entry", "$dest/$entry");
         }
 
         $dir->close();
@@ -55,34 +55,84 @@ class FileSystem
         return true;
     }
 
-    /**
-     * Remove directory
-     *
-     * @param   string  $dirname
-     *
-     * @return  boolean
-     */
-    public static function remove(string $dirname): bool
+    public static function remove(string $source): bool
     {
-        if (!is_dir($dirname)) {
-            return false;
+        if (!is_dir($source)) {
+            return unlink($source);
         }
 
-        $dir = dir($dirname);
+        $dir = dir($source);
 
         while (false !== $entry = $dir->read()) {
             if ($entry == '.' || $entry == '..') {
                 continue;
             }
-            $item = $dirname . '/' . $entry;
+            $item = $source . '/' . $entry;
+            self::remove($item);
+        }
 
-            if (is_dir($item)) {
-                static::remove($item);
+        return rmdir($source);
+    }
+
+    public static function normalize(string $path): string
+    {
+        $path = trim($path);
+        $root = str_starts_with($path, '/') ? '/' : '';
+        $result = [];
+        foreach (explode('/', trim($path, '/')) as $segment) {
+            if ($segment === '' || $segment === '.') {
+                continue;
+            }
+            if ($segment === '..') {
+                array_pop($result);
             } else {
-                unlink($item);
+                $result[] = $segment;
             }
         }
 
-        return rmdir($dirname);
+        return $root . implode('/', $result);
+    }
+
+    public static function relativize(string $base, string $path): string
+    {
+        $base = self::normalize($base);
+        if (!str_starts_with('/', $path)) {
+            $path = self::normalize($base . '/' . $path);
+        }
+        $b = explode('/', $base);
+        $p = explode('/', $path);
+
+        $baseLength = count($b);
+        $pathLength = count($p);
+        $baseIsLonger = $baseLength > $pathLength;
+        $min = $baseIsLonger ? $pathLength : $baseLength;
+        $result = [];
+
+        $check = true;
+        for ($i = 0; $i < $min; $i++) {
+            if ($check && $b[$i] === $p[$i]) {
+                continue;
+            }
+            $check = false;
+            $result[] = '..';
+        }
+
+        $start = $min - count($result);
+
+        if ($baseIsLonger) {
+            for ($i = $min; $i < $baseLength; $i++) {
+                $result[] = '..';
+            }
+        }
+
+        if (empty($result)) {
+            $result[] = '.';
+        }
+
+        for ($i = $start; $i < $pathLength; $i++) {
+            $result[] = $p[$i];
+        }
+
+        return implode('/', $result);
     }
 }

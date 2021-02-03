@@ -18,6 +18,7 @@
 namespace Opis\Colibri\Commands\Yarn;
 
 use Symfony\Component\Console\{Command\Command, Input\InputArgument, Input\InputInterface, Output\OutputInterface};
+use Opis\Colibri\Utils\FileSystem;
 use function Opis\Colibri\{info, module};
 
 class Add extends Command
@@ -50,9 +51,10 @@ class Add extends Command
             return 1;
         }
 
+        $root = info()->rootDir();
         $cwd = getcwd();
-        chdir(info()->rootDir());
-        passthru('yarn add '. $assets);
+        chdir($root);
+        passthru('yarn add '. FileSystem::relativize($root, $assets));
         chdir($cwd);
 
         return 0;
