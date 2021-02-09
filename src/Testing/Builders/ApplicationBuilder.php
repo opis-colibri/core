@@ -257,7 +257,7 @@ class ApplicationBuilder
      * @param string $name
      * @param string $ns
      * @param string $path
-     * @param string $collector
+     * @param string|null $collector
      * @param string[] $require
      * @return ApplicationBuilder
      */
@@ -265,7 +265,7 @@ class ApplicationBuilder
         string $name,
         string $ns,
         string $path,
-        string $collector,
+        ?string $collector = null,
         array $require = []
     ): self {
         return $this->createTestModule($name, $ns, $path, $collector, Module::UNINSTALLED, $require);
@@ -275,7 +275,7 @@ class ApplicationBuilder
      * @param string $name
      * @param string $ns
      * @param string $path
-     * @param string $collector
+     * @param string|null $collector
      * @param string[] $require
      * @return ApplicationBuilder
      */
@@ -283,7 +283,7 @@ class ApplicationBuilder
         string $name,
         string $ns,
         string $path,
-        string $collector,
+        ?string $collector = null,
         array $require = []
     ): self {
         return $this->createTestModule($name, $ns, $path, $collector, Module::INSTALLED, $require);
@@ -293,7 +293,7 @@ class ApplicationBuilder
      * @param string $name
      * @param string $ns
      * @param string $path
-     * @param string $collector
+     * @param string|null $collector
      * @param string[] $require
      * @return ApplicationBuilder
      */
@@ -301,7 +301,7 @@ class ApplicationBuilder
         string $name,
         string $ns,
         string $path,
-        string $collector,
+        ?string $collector = null,
         array $require = []
     ): self {
         return $this->createTestModule($name, $ns, $path, $collector, Module::ENABLED, $require);
@@ -320,10 +320,11 @@ class ApplicationBuilder
         string $name,
         string $ns,
         string $path,
-        string $collector,
+        ?string $collector,
         int $status,
         ?array $require = null
     ): self {
+        $collector ??= is_file($path . '/Collector.php') ? $ns . '\\Collector' : null;
         $this->createdModules[$name] = [
             'name' => $name,
             'ns' => $ns,
