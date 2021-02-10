@@ -21,11 +21,10 @@ use Opis\Colibri\Render\View;
 
 class Script extends View
 {
+    use AttributeTrait;
+
     protected bool $inBody = false;
 
-    /**
-     * Script constructor.
-     */
     public function __construct()
     {
         parent::__construct('html.script', [
@@ -34,68 +33,24 @@ class Script extends View
         ]);
     }
 
-    /**
-     * @param bool $value
-     * @return Script
-     */
-    public function inBody(bool $value = true): self
+    public function inBody(bool $value = true): static
     {
         $this->inBody = $value;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isInBody(): bool
     {
         return $this->inBody;
     }
 
-    /**
-     * @param $content
-     * @return Script
-     */
-    public function content(string $content): self
+    public function content(string $content): static
     {
         return $this->set('content', $content);
     }
 
-    /**
-     * @param string $value
-     * @return Script
-     */
-    public function src(string $value): self
+    public function src(string $value): static
     {
         return $this->attribute('src', $value);
-    }
-
-    /**
-     * @param string $name
-     * @param string|null $value
-     * @return Script
-     */
-    public function attribute(string $name, ?string $value = null): self
-    {
-        /** @var Attributes $attributes */
-        $attributes = $this->vars['attributes'];
-        $attributes->add($name, $value);
-        return $this;
-    }
-
-    /**
-     * @param array $attributes
-     * @return Script
-     */
-    public function attributes(array $attributes): self
-    {
-        foreach ($attributes as $name => $value) {
-            if (is_numeric($name)) {
-                $name = $value;
-                $value = null;
-            }
-            $this->attribute($name, $value);
-        }
-        return $this;
     }
 }

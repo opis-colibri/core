@@ -21,43 +21,12 @@ use Opis\Colibri\Render\View;
 
 class Meta extends View
 {
-    /**
-     * Meta constructor.
-     */
+    use AttributeTrait;
+
     public function __construct()
     {
         parent::__construct('html.meta', [
             'attributes' => new Attributes(),
         ]);
-    }
-
-    /**
-     * @param string $name
-     * @param string|null $value
-     * @return Meta
-     */
-    public function attribute(string $name, ?string $value = null): self
-    {
-        /** @var Attributes $attributes */
-        $attributes = $this->vars['attributes'];
-        $attributes->add($name, $value);
-        return $this;
-    }
-
-    /**
-     * @param array $attributes
-     * @return Meta
-     */
-    public function attributes(array $attributes): self
-    {
-        foreach ($attributes as $name => $value) {
-            if (is_numeric($name)) {
-                $name = $value;
-                $value = null;
-            }
-
-            $this->attribute($name, $value);
-        }
-        return $this;
     }
 }

@@ -38,70 +38,42 @@ class Document extends View
         ]);
     }
 
-    /**
-     * @param string $title
-     * @return Document
-     */
-    public function title(string $title): self
+    public function title(string $title): static
     {
         return $this->set('title', $title);
     }
 
-    /**
-     * @param string $path
-     * @return Document
-     */
-    public function base(string $path): self
+    public function base(string $path): static
     {
         return $this->set('base', $path);
     }
 
-    /**
-     * @param $content
-     * @return Document
-     */
-    public function content($content): self
+    public function content(mixed $content): static
     {
         return $this->set('content', $content);
     }
 
-    /**
-     * @return LinkCollection
-     */
     public function links(): LinkCollection
     {
         return $this->get('links');
     }
 
-    /**
-     * @return CSSCollection
-     */
     public function css(): CSSCollection
     {
         return $this->get('styles');
     }
 
-    /**
-     * @return ScriptCollection
-     */
     public function script(): ScriptCollection
     {
         return $this->get('scripts');
     }
 
-    /**
-     * @return MetaCollection
-     */
     public function meta(): MetaCollection
     {
         return $this->get('meta');
     }
 
-    /**
-     * @param array $attributes
-     * @return Document
-     */
-    public function htmlAttributes(array $attributes): self
+    public function htmlAttributes(array $attributes): static
     {
         if ($this->has('htmlAttributes')) {
             $attr = $this->get('htmlAttributes');
@@ -121,24 +93,16 @@ class Document extends View
         return $this->set('htmlAttributes', $attr);
     }
 
-    /**
-     * @param array $classes
-     * @return Document
-     */
-    public function bodyClasses(array $classes): self
+    public function bodyClasses(array $classes): static
     {
         $classes = array_flip(array_values($classes));
         $this->classes += $classes;
-        return $this->bodyAttributes(array(
+        return $this->bodyAttributes([
             'class' => implode(' ', array_keys($this->classes)),
-        ));
+        ]);
     }
 
-    /**
-     * @param array $attributes
-     * @return Document
-     */
-    public function bodyAttributes(array $attributes): self
+    public function bodyAttributes(array $attributes): static
     {
         if ($this->has('bodyAttributes')) {
             $attr = $this->get('bodyAttributes');

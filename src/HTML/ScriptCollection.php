@@ -22,13 +22,7 @@ class ScriptCollection extends Collection
     protected ?Collection $headScripts = null;
     protected ?Collection $bodyScripts = null;
 
-    /**
-     * @param string $href
-     * @param callable|null $callback
-     * @param bool $inBody
-     * @return ScriptCollection
-     */
-    public function url(string $href, ?callable $callback = null, bool $inBody = false): self
+    public function url(string $href, ?callable $callback = null, bool $inBody = false): static
     {
         $script = new Script();
 
@@ -39,13 +33,7 @@ class ScriptCollection extends Collection
         return $this->add($script->inBody($inBody)->src($href), $href);
     }
 
-    /**
-     * @param string $content
-     * @param callable|null $callback
-     * @param bool $inBody
-     * @return ScriptCollection
-     */
-    public function inline(string $content, ?callable $callback = null, bool $inBody = false): self
+    public function inline(string $content, ?callable $callback = null, bool $inBody = false): static
     {
         $script = new Script();
         if ($callback !== null) {
@@ -55,9 +43,6 @@ class ScriptCollection extends Collection
         return $this->add($script->inBody($inBody)->content($content), md5($content));
     }
 
-    /**
-     * @return Collection
-     */
     public function headScripts(): Collection
     {
         if ($this->headScripts === null) {
@@ -66,9 +51,6 @@ class ScriptCollection extends Collection
         return $this->headScripts;
     }
 
-    /**
-     * @return Collection
-     */
     public function bodyScripts(): Collection
     {
         if ($this->bodyScripts === null) {
@@ -77,10 +59,6 @@ class ScriptCollection extends Collection
         return $this->bodyScripts;
     }
 
-    /**
-     * @param bool $inBody
-     * @return Collection
-     */
     protected function getScriptCollection(bool $inBody): Collection
     {
         $scripts = array();

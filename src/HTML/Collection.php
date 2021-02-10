@@ -21,9 +21,6 @@ use Opis\Colibri\Render\View;
 
 class Collection extends View
 {
-    /**
-     * Collection constructor.
-     */
     public function __construct()
     {
         parent::__construct('html.collection', [
@@ -31,7 +28,7 @@ class Collection extends View
         ]);
     }
 
-    public function add(mixed $item, int|string|null $entry = null): self
+    public function add(mixed $item, int|string|null $entry = null): static
     {
         if ($entry === null) {
             $this->vars['items'][] = $item;
@@ -41,7 +38,7 @@ class Collection extends View
         return $this;
     }
 
-    public function merge(Collection $collection): self
+    public function merge(Collection $collection): static
     {
         $this->vars['items'] = array_merge(
             $this->vars['items'],

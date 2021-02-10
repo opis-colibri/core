@@ -1,6 +1,6 @@
 <?php
-/* ===========================================================================
- * Copyright 2018-2020 Zindex Software
+/* ============================================================================
+ * Copyright 2021 Zindex Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,29 @@
 
 namespace Opis\Colibri\HTML;
 
-class CSSCollection extends Collection
+/**
+ * @internal
+ */
+trait AttributeTrait
 {
-    public function url(string $href): static
+    public function attribute(string $name, ?string $value = null): static
     {
-        return $this->add((new Link())->attributes(['href' => $href, 'rel' => 'stylesheet']), $href);
+        /** @var Attributes $attributes */
+        $attributes = $this->vars['attributes'];
+        $attributes->add($name, $value);
+        return $this;
     }
 
-    public function inline(string $content, ?string $media = null): static
+    public function attributes(array $attributes): static
     {
-        return $this->add(new Style($content, $media), md5($content));
+        foreach ($attributes as $name => $value) {
+            if (is_numeric($name)) {
+                $name = $value;
+                $value = null;
+            }
+
+            $this->attribute($name, $value);
+        }
+        return $this;
     }
 }

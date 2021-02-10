@@ -19,13 +19,6 @@ namespace Opis\Colibri\HTML;
 
 class MetaCollection extends Collection
 {
-    /**
-     * @param string $entry
-     * @param string $name
-     * @param string $content
-     * @param callable|null $callback
-     * @return Meta
-     */
     protected function createContentMeta(string $entry, string $name, string $content, ?callable $callback = null): Meta
     {
         $meta = new Meta();
@@ -41,25 +34,14 @@ class MetaCollection extends Collection
         return $meta;
     }
 
-    /**
-     * @param string $entry
-     * @param callable $callback
-     * @return MetaCollection
-     */
-    public function custom(string $entry, callable $callback): self
+    public function custom(string $entry, callable $callback): static
     {
         $meta = new Meta();
         $callback($meta);
         return $this->add($meta, $entry);
     }
 
-    /**
-     * @param string $type
-     * @param string $value
-     * @param callable|null $callback
-     * @return MetaCollection
-     */
-    public function httpEquiv(string $type, string $value, ?callable $callback = null): self
+    public function httpEquiv(string $type, string $value, ?callable $callback = null): static
     {
         $meta = new Meta();
 
@@ -75,12 +57,7 @@ class MetaCollection extends Collection
         return $this->add($meta, 'http-equiv-' . strtolower($type));
     }
 
-    /**
-     * @param string $charset
-     * @param callable|null $callback
-     * @return MetaCollection
-     */
-    public function charset(string $charset = 'utf-8', ?callable $callback = null): self
+    public function charset(string $charset = 'utf-8', ?callable $callback = null): static
     {
         $meta = new Meta();
         $meta->attribute('charset', $charset);
@@ -92,12 +69,7 @@ class MetaCollection extends Collection
         return $this->add($meta, 'charset');
     }
 
-    /**
-     * @param string $viewport
-     * @param callable|null $callback
-     * @return MetaCollection
-     */
-    public function viewport(string $viewport = 'width=device-width, initial-scale=1, shrink-to-fit=no', ?callable $callback = null): self
+    public function viewport(string $viewport = 'width=device-width, initial-scale=1, shrink-to-fit=no', ?callable $callback = null): static
     {
         $meta = new Meta();
         $meta->attributes(array(
@@ -112,92 +84,47 @@ class MetaCollection extends Collection
         return $this->add($meta, 'viewport');
     }
 
-    /**
-     * @param string $value
-     * @param callable|null $callback
-     * @return MetaCollection
-     */
-    public function contentType(string $value, ?callable $callback = null): self
+    public function contentType(string $value, ?callable $callback = null): static
     {
         return $this->httpEquiv('content-type', $value, $callback);
     }
 
-    /**
-     * @param string $value
-     * @param callable|null $callback
-     * @return MetaCollection
-     */
-    public function defaultStyle(string $value, ?callable $callback = null): self
+    public function defaultStyle(string $value, ?callable $callback = null): static
     {
         return $this->httpEquiv('default-style', $value, $callback);
     }
 
-    /**
-     * @param string $value
-     * @param callable|null $callback
-     * @return MetaCollection
-     */
-    public function refresh(string $value, ?callable $callback = null): self
+    public function refresh(string $value, ?callable $callback = null): static
     {
         return $this->httpEquiv('refresh', $value, $callback);
     }
 
-    /**
-     * @param string $value
-     * @param callable|null $callback
-     * @return MetaCollection
-     */
-    public function applicationName(string $value, ?callable $callback = null): self
+    public function applicationName(string $value, ?callable $callback = null): static
     {
         return $this->add($this->createContentMeta('name', 'application-name', $value, $callback), 'application-name');
     }
 
-    /**
-     * @param string $value
-     * @param callable|null $callback
-     * @return MetaCollection
-     */
-    public function author(string $value, ?callable $callback = null): self
+    public function author(string $value, ?callable $callback = null): static
     {
         return $this->add($this->createContentMeta('name', 'author', $value, $callback), 'author');
     }
 
-    /**
-     * @param string $value
-     * @param callable|null $callback
-     * @return MetaCollection
-     */
-    public function copyright(string $value, ?callable $callback = null): self
+    public function copyright(string $value, ?callable $callback = null): static
     {
         return $this->add($this->createContentMeta('name', 'copyright', $value, $callback), 'copyright');
     }
 
-    /**
-     * @param string $value
-     * @param callable|null $callback
-     * @return MetaCollection
-     */
-    public function description(string $value, ?callable $callback = null): self
+    public function description(string $value, ?callable $callback = null): static
     {
         return $this->add($this->createContentMeta('name', 'description', $value, $callback), 'description');
     }
 
-    /**
-     * @param string $value
-     * @param callable|null $callback
-     * @return MetaCollection
-     */
-    public function generator(string $value, ?callable $callback = null): self
+    public function generator(string $value, ?callable $callback = null): static
     {
         return $this->add($this->createContentMeta('name', 'generator', $value, $callback), 'generator');
     }
 
-    /**
-     * @param string|string[] $value
-     * @param callable|null $callback
-     * @return MetaCollection
-     */
-    public function keywords($value, ?callable $callback = null): self
+    public function keywords(string|array $value, ?callable $callback = null): static
     {
         if(is_array($value)){
             $value = implode(', ', $value);
@@ -205,12 +132,7 @@ class MetaCollection extends Collection
         return $this->add($this->createContentMeta('name', 'keywords', $value, $callback), 'keywords');
     }
 
-    /**
-     * @param string $value
-     * @param callable|null $callback
-     * @return MetaCollection
-     */
-    public function robots(string $value, ?callable $callback = null): self
+    public function robots(string $value, ?callable $callback = null): static
     {
         return $this->add($this->createContentMeta('name', 'robots', $value, $callback), 'robots');
     }

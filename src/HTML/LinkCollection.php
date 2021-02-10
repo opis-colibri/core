@@ -19,26 +19,14 @@ namespace Opis\Colibri\HTML;
 
 class LinkCollection extends Collection
 {
-    /**
-     * @param string $entry
-     * @param callable $callback
-     * @return LinkCollection
-     */
-    public function custom(string $entry, callable $callback): self
+    public function custom(string $entry, callable $callback): static
     {
         $link = new Link();
         $callback($link);
         return $this->add($link, $entry);
     }
 
-    /**
-     * @param string $rel
-     * @param string $href
-     * @param callable|null $callback
-     * @param string|null $entry
-     * @return LinkCollection
-     */
-    public function link(string $rel, string $href, ?callable $callback = null, ?string $entry = null): self
+    public function link(string $rel, string $href, ?callable $callback = null, ?string $entry = null): static
     {
         $link = new Link();
 
@@ -54,22 +42,12 @@ class LinkCollection extends Collection
         return $this->add($link, $entry);
     }
 
-    /**
-     * @param string $href
-     * @param callable|null $callback
-     * @return LinkCollection
-     */
-    public function favicon(string $href, ?callable $callback = null): self
+    public function favicon(string $href, ?callable $callback = null): static
     {
         return $this->link('icon', $href, $callback);
     }
 
-    /**
-     * @param string $href
-     * @param callable|null $callback
-     * @return LinkCollection
-     */
-    public function canonical(string $href, ?callable $callback = null): self
+    public function canonical(string $href, ?callable $callback = null): static
     {
         return $this->link('canonical', $href, $callback, 'canonical');
     }

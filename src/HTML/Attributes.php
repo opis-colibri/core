@@ -34,9 +34,9 @@ class Attributes extends View
     /**
      * @param string $name
      * @param string|null $value
-     * @return Attributes
+     * @return static
      */
-    public function add(string $name, ?string $value = null): self
+    public function add(string $name, ?string $value = null): static
     {
         $this->vars['attributes'][$name] = $value;
         return $this;

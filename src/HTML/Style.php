@@ -21,11 +21,6 @@ use Opis\Colibri\Render\View;
 
 class Style extends View
 {
-    /**
-     * Style constructor.
-     * @param string|null $content
-     * @param string|null $media
-     */
     public function __construct(?string $content = null, ?string $media = null)
     {
         parent::__construct('html.style', [
@@ -34,20 +29,12 @@ class Style extends View
         ]);
     }
 
-    /**
-     * @param string $content
-     * @return Style
-     */
-    public function content(string $content): self
+    public function content(string $content): static
     {
         return $this->set('content', $content);
     }
 
-    /**
-     * @param string $media
-     * @return Style
-     */
-    public function media(string $media): self
+    public function media(string $media): static
     {
         return $this->set('media', $media);
     }
