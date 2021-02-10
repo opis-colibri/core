@@ -25,14 +25,6 @@ final class SessionData
     private int $createdAt;
     private int $updatedAt;
 
-    /**
-     * SessionData constructor.
-     * @param string $id
-     * @param int $expire
-     * @param array $data
-     * @param int|null $createdAt
-     * @param int|null $updatedAt
-     */
     public function __construct(string $id, int $expire, array $data = [], ?int $createdAt = null, ?int $updatedAt = null)
     {
         if ($createdAt === null) {
@@ -47,7 +39,9 @@ final class SessionData
         $this->expire = $expire;
         $this->data = $data;
 
+        /** @var int $createdAt */
         $this->createdAt = $createdAt;
+        /** @var int $updatedAt */
         $this->updatedAt = $updatedAt;
     }
 

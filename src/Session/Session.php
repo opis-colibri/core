@@ -35,6 +35,7 @@ class Session
         }
 
         $this->container = $container;
+        /** @var SessionHandler $handler */
         $this->handler = $handler;
 
         $config += [
@@ -224,9 +225,9 @@ class Session
      * @param string $key Session key
      * @param mixed $value Session data
      *
-     * @return self
+     * @return static
      */
-    public function set(string $key, mixed $value): self
+    public function set(string $key, mixed $value): static
     {
         $this->data[$key] = $value;
 
@@ -267,9 +268,9 @@ class Session
      *
      * @param string $key Session key
      *
-     * @return self
+     * @return static
      */
-    public function delete(string $key): self
+    public function delete(string $key): static
     {
         unset($this->data[$key]);
 
@@ -295,9 +296,9 @@ class Session
      *
      * @param bool $flash
      *
-     * @return self
+     * @return static
      */
-    public function clear(bool $flash = true): self
+    public function clear(bool $flash = true): static
     {
         $f = $this->flash();
         if ($flash) {
