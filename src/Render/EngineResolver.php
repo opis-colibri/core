@@ -43,7 +43,7 @@ class EngineResolver extends SortableList
      * @param int $priority
      * @return EngineResolver
      */
-    public function register(callable $factory, int $priority = 0): self
+    public function register(callable $factory, int $priority = 0): static
     {
         $this->cache = null;
         $this->addItem($factory, $priority);

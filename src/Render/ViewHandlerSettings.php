@@ -19,16 +19,8 @@ namespace Opis\Colibri\Render;
 
 interface ViewHandlerSettings
 {
-    public function implicit(string $name, mixed $value): self;
-
-    public function filter(callable $callback): self;
-
-    public function where(string $name, string $regex): self;
-
-    /**
-     * @param string $name
-     * @param string[] $values
-     * @return $this
-     */
-    public function whereIn(string $name, array $values): self;
+    public function implicit(string $name, mixed $value): static;
+    public function filter(callable $callback): static;
+    public function where(string $name, string $regex): static;
+    public function whereIn(string $name, array $values): static;
 }

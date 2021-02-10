@@ -38,29 +38,26 @@ class ViewHandler implements ViewHandlerSettings
         $this->callback = $callback;
     }
 
-    public function implicit(string $name, mixed $value): ViewHandlerSettings
+    public function implicit(string $name, mixed $value): static
     {
         $this->defaults[$name] = $value;
         return $this;
     }
 
-    public function filter(callable $callback): ViewHandlerSettings
+    public function filter(callable $callback): static
     {
         $this->filter = $callback;
         return $this;
     }
 
-    public function where(string $name, string $regex): ViewHandlerSettings
+    public function where(string $name, string $regex): static
     {
         $this->regex = null;
         $this->placeholders[$name] = $regex;
         return $this;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function whereIn(string $name, array $values): ViewHandlerSettings
+    public function whereIn(string $name, array $values): static
     {
         if (empty($values)) {
             return $this;
