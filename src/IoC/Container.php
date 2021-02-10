@@ -51,33 +51,17 @@ class Container implements ContainerInterface
         $this->instances[Application::class] = Application::getInstance();
     }
 
-    /**
-     * @param string $abstract
-     * @param null|string|callable $concrete
-     * @param array $arguments
-     * @return $this
-     */
-    public function singleton(string $abstract, string|callable|null $concrete = null, array $arguments = []): self
+    public function singleton(string $abstract, string|callable|null $concrete = null, array $arguments = []): static
     {
         return $this->bindDependency($abstract, $concrete, $arguments, true);
     }
 
-    /**
-     * @param string $abstract
-     * @param null|string|callable $concrete
-     * @param array $arguments
-     * @return $this
-     */
-    public function bind(string $abstract, string|callable|null $concrete = null, array $arguments = []): self
+    public function bind(string $abstract, string|callable|null $concrete = null, array $arguments = []): static
     {
         return $this->bindDependency($abstract, $concrete, $arguments, false);
     }
 
-    /**
-     * @param string $abstract
-     * @return $this
-     */
-    public function unbind(string $abstract): self
+    public function unbind(string $abstract): static
     {
         unset(
             $this->instances[$abstract],
@@ -88,12 +72,7 @@ class Container implements ContainerInterface
         return $this;
     }
 
-    /**
-     * @param string $alias
-     * @param string|null $type Use null to remove alias
-     * @return $this
-     */
-    public function alias(string $alias, ?string $type): self
+    public function alias(string $alias, ?string $type): static
     {
         if ($type === null) {
             unset($this->aliases[$alias]);
@@ -104,21 +83,12 @@ class Container implements ContainerInterface
         return $this;
     }
 
-    /**
-     * @param string $abstract
-     * @param callable $extender
-     * @return $this
-     */
-    public function extend(string $abstract, callable $extender): self
+    public function extend(string $abstract, callable $extender): static
     {
         $this->resolve($abstract)->addExtender($extender);
         return $this;
     }
 
-    /**
-     * @param string $abstract
-     * @return object
-     */
     public function make(string $abstract): object
     {
         if (isset($this->instances[$abstract])) {
@@ -143,10 +113,6 @@ class Container implements ContainerInterface
         return $instance;
     }
 
-    /**
-     * @param string $abstract
-     * @return mixed
-     */
     public function __invoke(string $abstract): object
     {
         return $this->make($abstract);
@@ -177,14 +143,7 @@ class Container implements ContainerInterface
         return $this->instances[$key] ?? null;
     }
 
-    /**
-     * @param string $abstract
-     * @param string|null|callable $concrete
-     * @param array $arguments
-     * @param bool $shared
-     * @return Container
-     */
-    protected function bindDependency(string $abstract, string|callable|null $concrete, array $arguments, bool $shared): self
+    protected function bindDependency(string $abstract, string|callable|null $concrete, array $arguments, bool $shared): static
     {
         if (is_null($concrete)) {
             $concrete = $abstract;
@@ -204,13 +163,6 @@ class Container implements ContainerInterface
         return $this;
     }
 
-    /**
-     * Resolves an abstract type
-     *
-     * @param string $abstract
-     * @param array $stack
-     * @return Dependency
-     */
     protected function resolve(string $abstract, array &$stack = []): Dependency
     {
         if (isset($this->aliases[$abstract])) {
@@ -233,13 +185,6 @@ class Container implements ContainerInterface
         return $this->bindings[$abstract];
     }
 
-    /**
-     * Builds an instance of a concrete type
-     *
-     * @param string|callable $concrete
-     * @param array $arguments
-     * @return object
-     */
     protected function build(string|callable $concrete, array $arguments = []): object
     {
         if (is_callable($concrete)) {
