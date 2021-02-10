@@ -32,6 +32,7 @@ class Dispatcher
         }
 
         $invoker = $router->resolveInvoker($route, $request);
+        $resolver = $invoker->getArgumentResolver();
         $guards = $route->getRouteCollection()->getGuards();
 
         /**
@@ -46,9 +47,7 @@ class Dispatcher
                 $callback = $guards[$name];
             }
 
-            $args = $invoker->getArgumentResolver()->resolve($callback);
-
-            if (false === $callback(...$args)) {
+            if (false === $resolver->execute($callback)) {
                 return null;
             }
         }
@@ -64,7 +63,7 @@ class Dispatcher
         }
 
         $queue = new SplQueue();
-        $next = static function () use ($queue, $invoker): Response {
+        $next = static function () use ($queue, $invoker, $resolver): Response {
             do {
                 if ($queue->isEmpty()) {
                     $result = $invoker->invokeAction();
@@ -77,9 +76,8 @@ class Dispatcher
                 $middleware = $queue->dequeue();
             } while (!is_callable($middleware));
 
-            $args = $invoker->getArgumentResolver()->resolve($middleware);
-            $result = $middleware(...$args);
-            if (!$result instanceof Response) {
+            $result = $resolver->execute($middleware);
+            if (!($result instanceof Response)) {
                 return new HtmlResponse($result);
             }
             return $result;

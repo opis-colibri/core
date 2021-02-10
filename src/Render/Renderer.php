@@ -164,15 +164,12 @@ class Renderer extends SortableList
             unset($values);
 
             if (null !== $filter = $handler->getFilter()) {
-                $arguments = $resolver->resolve($filter);
-                if (!(bool)$filter(...$arguments)) {
+                if (!$resolver->execute($filter)) {
                     continue;
                 }
             }
 
-            $callback = $handler->getCallback();
-            $arguments = $resolver->resolve($callback);
-            return $callback(...$arguments);
+            return $resolver->execute($handler->getCallback());
         }
 
         return null;

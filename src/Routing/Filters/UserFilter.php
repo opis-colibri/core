@@ -33,6 +33,7 @@ class UserFilter implements Filter
     public function filter(Router $router, Route $route, Request $request): bool
     {
         $invoker = $router->resolveInvoker($route, $request);
+        $resolver = $invoker->getArgumentResolver();
         $filters = $route->getRouteCollection()->getFilters();
 
         /**
@@ -47,9 +48,7 @@ class UserFilter implements Filter
                 $callback = $filters[$name];
             }
 
-            $arguments = $invoker->getArgumentResolver()->resolve($callback, false);
-
-            if (false === $callback(...$arguments)) {
+            if (false === $resolver->execute($callback, false)) {
                 return false;
             }
         }

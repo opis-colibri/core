@@ -17,8 +17,6 @@
 
 namespace Opis\Colibri\Render;
 
-use Opis\Colibri\Routing\RegexBuilder;
-
 class ViewHandler implements ViewHandlerSettings
 {
     /** @var callable|null */
@@ -45,7 +43,6 @@ class ViewHandler implements ViewHandlerSettings
         $this->defaults[$name] = $value;
         return $this;
     }
-
 
     public function filter(callable $callback): ViewHandlerSettings
     {

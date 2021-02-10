@@ -45,6 +45,7 @@ class ArgumentResolver
         if (!($defaults instanceof ArrayAccess)) {
             $defaults = $defaults ? new ArrayObject($defaults) : new ArrayObject();
         }
+        /** @var ArrayAccess $defaults */
         $this->defaults = $defaults;
     }
 
@@ -115,6 +116,12 @@ class ArgumentResolver
         return $default;
     }
 
+    public function execute(callable $callback, bool $bind = true): mixed
+    {
+        $arguments = $this->resolve($callback, $bind);
+        return $arguments ? $callback(...$arguments) : $callback();
+    }
+
     public function resolve(callable $callback, bool $bind = true): array
     {
         $arguments = [];
@@ -126,8 +133,11 @@ class ArgumentResolver
         }
 
         foreach ($parameters as $param) {
-            $arguments[] = $this->getArgumentValue($param->getName(), $bind,
-                $param->isDefaultValueAvailable() ? $param->getDefaultValue() : null);
+            $arguments[] = $this->getArgumentValue(
+                $param->getName(),
+                $bind,
+                $param->isDefaultValueAvailable() ? $param->getDefaultValue() : null
+            );
         }
 
         return $arguments;

@@ -41,9 +41,7 @@ abstract class Invoker
     public function invokeAction(): mixed
     {
         if ($this->result === $this) {
-            $callback = $this->getCallback();
-            $arguments = $this->getArgumentResolver()->resolve($callback);
-            $this->result = $callback(...$arguments);
+            $this->result = $this->getArgumentResolver()->execute($this->getCallback());
         }
 
         return $this->result;
