@@ -19,7 +19,6 @@ namespace Opis\Colibri\Routing\Traits;
 
 trait Filter
 {
-    /** @var array */
     private array $placeholders = [];
 
     /** @var callable[] */
@@ -28,19 +27,12 @@ trait Filter
     /** @var callable[] */
     private array $filters = [];
 
-    /**
-     * Get placeholders
-     *
-     * @return  array
-     */
     public function getPlaceholders(): array
     {
         return $this->placeholders;
     }
 
     /**
-     * Get filters
-     *
      * @return callable[]
      */
     public function getFilters(): array
@@ -49,8 +41,6 @@ trait Filter
     }
 
     /**
-     * Get guards
-     *
      * @return callable[]
      */
     public function getGuards(): array
@@ -58,14 +48,7 @@ trait Filter
         return $this->guards;
     }
 
-    /**
-     * Add a placeholder
-     *
-     * @param string $name
-     * @param $value
-     * @return static
-     */
-    public function placeholder(string $name, $value): self
+    public function placeholder(string $name, mixed $value): static
     {
         $this->placeholders[$name] = $value;
         return $this;
@@ -78,7 +61,7 @@ trait Filter
      * @param callable|null $callback
      * @return static
      */
-    public function filter(string $name, ?callable $callback = null): self
+    public function filter(string $name, ?callable $callback = null): static
     {
         $this->filters[$name] = $callback;
         return $this;
@@ -91,7 +74,7 @@ trait Filter
      * @param callable|null $callback
      * @return static
      */
-    public function guard(string $name, ?callable $callback = null): self
+    public function guard(string $name, ?callable $callback = null): static
     {
         $this->guards[$name] = $callback;
         return $this;

@@ -23,7 +23,6 @@ class RouteGroup
     private array $routes;
 
     /**
-     * RouteGroup constructor.
      * @param Route[] $routes
      */
     public function __construct(array $routes)
@@ -31,57 +30,57 @@ class RouteGroup
         $this->routes = $routes;
     }
 
-    public function mixin(string $name, ?array $config = null): self
+    public function mixin(string $name, ?array $config = null): static
     {
         return $this->callMethod(__FUNCTION__, [$name, $config]);
     }
 
-    public function bind(string $name, callable $callback): self
+    public function bind(string $name, callable $callback): static
     {
         return $this->callMethod(__FUNCTION__, [$name, $callback]);
     }
 
-    public function filter(string $name, ?callable $callback = null): self
+    public function filter(string $name, ?callable $callback = null): static
     {
         return $this->callMethod(__FUNCTION__, [$name, $callback]);
     }
 
-    public function guard(string $name, ?callable $callback = null): self
+    public function guard(string $name, ?callable $callback = null): static
     {
         return $this->callMethod(__FUNCTION__, [$name, $callback]);
     }
 
-    public function implicit(string $name, $value): self
+    public function implicit(string $name, $value): static
     {
         return $this->callMethod(__FUNCTION__, [$name, $value]);
     }
 
-    public function where(string $name, string $value): self
+    public function where(string $name, string $value): static
     {
         return $this->callMethod(__FUNCTION__, [$name, $value]);
     }
 
-    public function whereIn(string $name, array $values): self
+    public function whereIn(string $name, array $values): static
     {
         return $this->callMethod(__FUNCTION__, [$name, $values]);
     }
 
-    public function middleware(string ...$middleware): self
+    public function middleware(string ...$middleware): static
     {
         return $this->callMethod(__FUNCTION__, $middleware);
     }
 
-    public function domain(string $value): self
+    public function domain(string $value): static
     {
         return $this->callMethod(__FUNCTION__, [$value]);
     }
 
-    public function secure(bool $value = true): self
+    public function secure(bool $value = true): static
     {
         return $this->callMethod(__FUNCTION__, [$value]);
     }
 
-    private function callMethod(string $method, array $arguments): self
+    private function callMethod(string $method, array $arguments): static
     {
         foreach ($this->routes as $route) {
             // Signal to route that this values are inherited

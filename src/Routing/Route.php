@@ -56,16 +56,6 @@ class Route
     private array $properties = [];
     private bool $inheriting = false;
 
-    /**
-     * Route constructor.
-     * @param RouteCollection $collection
-     * @param string $id
-     * @param string $pattern
-     * @param callable $action
-     * @param string[] $method
-     * @param int $priority
-     * @param string|null $name
-     */
     public function __construct(
         RouteCollection $collection,
         string $id,
@@ -84,47 +74,26 @@ class Route
         $this->method = $method;
     }
 
-    /**
-     * @return string
-     */
     public function getID(): string
     {
         return $this->id;
     }
 
-    /**
-     * Get the route's pattern
-     *
-     * @return string
-     */
     public function getPattern(): string
     {
         return $this->pattern;
     }
 
-    /**
-     * Get the route's callback
-     *
-     * @return  callable
-     */
     public function getAction(): callable
     {
         return $this->action;
     }
 
-    /**
-     * Get the name of the route
-     *
-     * @return null|string
-     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @return RouteCollection
-     */
     public function getRouteCollection(): RouteCollection
     {
         return $this->collection;
@@ -138,9 +107,6 @@ class Route
         return $this->method;
     }
 
-    /**
-     * @return array
-     */
     public function getProperties(): array
     {
         return $this->properties;
@@ -151,9 +117,6 @@ class Route
         return $this->priority;
     }
 
-    /**
-     * @return array
-     */
     public function getDefaults(): array
     {
         if (!isset($this->cache[__FUNCTION__])) {
@@ -175,9 +138,6 @@ class Route
         return $this->cache[__FUNCTION__];
     }
 
-    /**
-     * @return array
-     */
     public function getPlaceholders(): array
     {
         if (!isset($this->cache[__FUNCTION__])) {
@@ -187,7 +147,7 @@ class Route
         return $this->cache[__FUNCTION__];
     }
 
-    public function bind(string $name, callable $callback): self
+    public function bind(string $name, callable $callback): static
     {
         if ($this->inheriting && isset($this->getLocalBindings()[$name])) {
             return $this;
@@ -196,7 +156,7 @@ class Route
         return $this->setBinding($name, $callback);
     }
 
-    public function placeholder(string $name, $value): self
+    public function placeholder(string $name, $value): static
     {
         if ($this->inheriting && isset($this->getLocalPlaceholders()[$name])) {
             return $this;
@@ -205,7 +165,7 @@ class Route
         return $this->setPlaceholder($name, $value);
     }
 
-    public function implicit(string $name, $value): self
+    public function implicit(string $name, $value): static
     {
         if ($this->inheriting && array_key_exists($name, $this->getLocalDefaults())) {
             return $this;
@@ -214,7 +174,7 @@ class Route
         return $this->setImplicit($name, $value);
     }
 
-    public function filter(string $name, ?callable $callback = null): self
+    public function filter(string $name, ?callable $callback = null): static
     {
         if ($this->inheriting && array_key_exists($name, $this->filters)) {
             return $this;
@@ -223,7 +183,7 @@ class Route
         return $this->setFilter($name, $callback);
     }
 
-    public function guard(string $name, ?callable $callback = null): self
+    public function guard(string $name, ?callable $callback = null): static
     {
         if ($this->inheriting && array_key_exists($name, $this->guards)) {
             return $this;
@@ -232,7 +192,7 @@ class Route
         return $this->setGuard($name, $callback);
     }
 
-    public function middleware(string ...$middleware): self
+    public function middleware(string ...$middleware): static
     {
         if ($this->inheriting && isset($this->properties['middleware'])) {
             return $this;
@@ -246,7 +206,7 @@ class Route
         return $this->properties['middleware'] ?? null;
     }
 
-    public function domain(string $value): self
+    public function domain(string $value): static
     {
         if ($this->inheriting && isset($this->properties['domain'])) {
             return $this;
@@ -260,7 +220,7 @@ class Route
         return $this->properties['domain'] ?? null;
     }
 
-    public function secure(bool $value = true): self
+    public function secure(bool $value = true): static
     {
         if ($this->inheriting && isset($this->properties['secure'])) {
             return $this;
@@ -275,24 +235,12 @@ class Route
         return $this->properties['secure'] ?? false;
     }
 
-    /**
-     * Define a new placeholder
-     *
-     * @param   string $name
-     * @param   string $value
-     * @return  static
-     */
-    public function where(string $name, string $value): self
+    public function where(string $name, string $value): static
     {
         return $this->placeholder($name, $value);
     }
 
-    /**
-     * @param string $name
-     * @param string[] $values
-     * @return static
-     */
-    public function whereIn(string $name, array $values): self
+    public function whereIn(string $name, array $values): static
     {
         if (empty($values)) {
             return $this;
@@ -301,12 +249,7 @@ class Route
         return $this->placeholder($name, $this->collection->getRegexBuilder()->join($values));
     }
 
-    /**
-     * @param string $name
-     * @param array|null $config
-     * @return static
-     */
-    public function mixin(string $name, ?array $config = null): self
+    public function mixin(string $name, ?array $config = null): static
     {
         if (!is_subclass_of($name, Mixin::class, true)) {
             throw new RuntimeException("Unknown mixin " . $name);
@@ -341,11 +284,7 @@ class Route
         }
     }
 
-    /**
-     * @param Route $route
-     * @param bool $value
-     */
-    public static function setIsInheriting(Route $route, bool $value)
+    public static function setIsInheriting(Route $route, bool $value): void
     {
         $route->inheriting = $value;
     }

@@ -27,19 +27,11 @@ use ReflectionParameter;
 
 class ArgumentResolver
 {
-    /** @var array */
     private array $values = [];
-
     /** @var callable[] */
     private array $bindings = [];
-
-    /** @var ArrayAccess */
     private ArrayAccess $defaults;
 
-    /**
-     * ArgumentResolver constructor.
-     * @param array|ArrayAccess|null $defaults
-     */
     public function __construct(array|ArrayAccess|null $defaults = null)
     {
         if (!($defaults instanceof ArrayAccess)) {
@@ -49,33 +41,19 @@ class ArgumentResolver
         $this->defaults = $defaults;
     }
 
-    /**
-     * @param string $name
-     * @param $value
-     * @return $this
-     */
-    public function addValue(string $name, $value): self
+    public function addValue(string $name, $value): static
     {
         $this->values[$name] = $value;
         return $this;
     }
 
-    /**
-     * @param string $name
-     * @param callable $binding
-     * @return $this
-     */
-    public function addBinding(string $name, callable $binding): self
+    public function addBinding(string $name, callable $binding): static
     {
         $this->bindings[$name] = $binding;
         return $this;
     }
 
-    /**
-     * @param array $values
-     * @return $this
-     */
-    public function addValues(array $values): self
+    public function addValues(array $values): static
     {
         foreach ($values as $name => $value) {
             $this->values[$name] = $value;
@@ -88,7 +66,7 @@ class ArgumentResolver
      * @param callable[] $bindings
      * @return $this
      */
-    public function addBindings(array $bindings): self
+    public function addBindings(array $bindings): static
     {
         foreach ($bindings as $name => $callback) {
             $this->bindings[$name] = $callback;

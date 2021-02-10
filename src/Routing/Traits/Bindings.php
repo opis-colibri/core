@@ -21,13 +21,9 @@ trait Bindings
 {
     /** @var callable[] */
     private array $bindings = [];
-
-    /** @var array */
     private array $defaults = [];
 
     /**
-     * Get bindings
-     *
      * @return  callable[]
      */
     public function getBindings(): array
@@ -35,37 +31,18 @@ trait Bindings
         return $this->bindings;
     }
 
-    /**
-     * Get default values
-     *
-     * @return  array
-     */
     public function getDefaults(): array
     {
         return $this->defaults;
     }
 
-    /**
-     * Binding
-     *
-     * @param   string $name
-     * @param   callable $callback
-     * @return  static
-     */
-    public function bind(string $name, callable $callback): self
+    public function bind(string $name, callable $callback): static
     {
         $this->bindings[$name] = $callback;
         return $this;
     }
 
-    /**
-     * Set a default value
-     *
-     * @param   string $name
-     * @param   mixed $value
-     * @return  static
-     */
-    public function implicit(string $name, $value): self
+    public function implicit(string $name, mixed $value): static
     {
         $this->defaults[$name] = $value;
         return $this;
