@@ -19,17 +19,6 @@ namespace Opis\Colibri\Events;
 
 interface EventHandlerSettings
 {
-    /**
-     * @param string $name
-     * @param string $regex
-     * @return $this
-     */
-    public function where(string $name, string $regex): self;
-
-    /**
-     * @param string $name
-     * @param string[] $values
-     * @return $this
-     */
-    public function whereIn(string $name, array $values): self;
+    public function where(string $name, string $regex): static;
+    public function whereIn(string $name, array $values): static;
 }

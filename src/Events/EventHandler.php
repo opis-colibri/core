@@ -17,8 +17,6 @@
 
 namespace Opis\Colibri\Events;
 
-use Opis\Colibri\Routing\RegexBuilder;
-
 final class EventHandler implements EventHandlerSettings
 {
     private EventDispatcher $dispatcher;
@@ -49,19 +47,14 @@ final class EventHandler implements EventHandlerSettings
         return $this->callback;
     }
 
-    public function where(string $name, string $regex): EventHandlerSettings
+    public function where(string $name, string $regex): static
     {
         $this->regex = null;
         $this->placeholders[$name] = $regex;
         return $this;
     }
 
-    /**
-     * @param string $name
-     * @param string[] $values
-     * @return $this
-     */
-    public function whereIn(string $name, array $values): EventHandlerSettings
+    public function whereIn(string $name, array $values): static
     {
         if (empty($values)) {
             return $this;
