@@ -528,9 +528,9 @@ class Application
         }
 
         if (isset($this->assets[$module])) {
-            return ($this->assets[$module])($module, $path);
+            return ($this->assets[$module])($path, $module);
         } elseif (isset($this->assets['*'])) {
-            return ($this->assets['*'])($module, $path);
+            return ($this->assets['*'])($path, $module);
         }
 
         //npm @vendor/package
