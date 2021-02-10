@@ -17,6 +17,7 @@
 
 namespace Opis\Colibri;
 
+use Opis\Colibri\Serializable\RelativePath;
 use stdClass;
 use Exception;
 use Stringable;
@@ -313,6 +314,11 @@ function controller(string $class, string $method, bool $static = false): callab
 function module(string $module): Module
 {
     return Application::getInstance()->getModule($module);
+}
+
+function module_path(string $module, string $path = ''): RelativePath
+{
+    return new RelativePath($module, $path);
 }
 
 function view(string $name, array $vars = []): View
