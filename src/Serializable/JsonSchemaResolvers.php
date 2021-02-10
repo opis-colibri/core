@@ -17,6 +17,7 @@
 
 namespace Opis\Colibri\Serializable;
 
+use Stringable;
 use Opis\JsonSchema\Resolvers\{
     ContentEncodingResolver,
     ContentMediaTypeResolver,
@@ -80,25 +81,25 @@ class JsonSchemaResolvers
         return $this->schema;
     }
 
-    public function setParserOption(string $name, $value): self
+    public function setParserOption(string $name, mixed $value): static
     {
         $this->options[$name] = $value;
         return $this;
     }
 
-    public function addParserFactory(string $name, callable $factory): self
+    public function addParserFactory(string $name, callable $factory): static
     {
         $this->parsers[$name] = $factory;
         return $this;
     }
 
-    public function setMaxErrors(int $max): self
+    public function setMaxErrors(int $max): static
     {
         $this->maxErrors = $max;
         return $this;
     }
 
-    public function addLoader(string $name, ?string $dir = null, ?callable $dynamic = null): self
+    public function addLoader(string $name, string|Stringable|null $dir = null, ?callable $dynamic = null): static
     {
         if ($dir === null && $dynamic === null) {
             if (isset($this->loaders[$name])) {
@@ -177,7 +178,7 @@ class JsonSchemaResolvers
         return null;
     }
 
-    public function load(Uri $uri)
+    public function load(Uri $uri): mixed
     {
         $loader = $this->loaders[$uri->host()] ?? null;
 
@@ -186,7 +187,7 @@ class JsonSchemaResolvers
             return null;
         }
 
-        if ($loader[1] && $uri->query() !== null && $uri->query() !== '') {
+        if ($loader[1] && $uri->query() !== null) {
             // If the uri has query-string consider it dynamic
             return $loader[1]($uri);
         }
@@ -207,7 +208,7 @@ class JsonSchemaResolvers
             $path = '.' . $path;
         }
 
-        $file = (string) Uri::merge($path, rtrim($loader[0], '/') . '/', false);
+        $file = (string)Uri::merge($path, rtrim((string)$loader[0], '/') . '/', false);
 
         if ($file === '' || !is_file($file)) {
             return null;
