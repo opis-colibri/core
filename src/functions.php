@@ -300,31 +300,16 @@ function getURI(string $path): string
     return rtrim(info()->webPath(), '/') . '/' . ltrim($path, '/');
 }
 
-/**
- * @param string $module
- * @param string $path
- * @return string
- */
 function asset(string $module, string $path): string
 {
     return Application::getInstance()->resolveAsset($module, $path);
 }
 
-/**
- * @param string $class
- * @param string $method
- * @param bool $static
- * @return callable
- */
 function controller(string $class, string $method, bool $static = false): callable
 {
     return ControllerCallback::get($class, $method, $static);
 }
 
-/**
- * @param string $module
- * @return Module
- */
 function module(string $module): Module
 {
     return Application::getInstance()->getModule($module);
@@ -347,10 +332,6 @@ function render(string|Stringable|Renderable $view): string
     return $view;
 }
 
-/**
- * @param string $sep
- * @return string
- */
 function uuid4(string $sep = '-'): string
 {
     try {
@@ -372,10 +353,6 @@ function uuid4(string $sep = '-'): string
     }
 }
 
-/**
- * @param int $length
- * @return string
- */
 function random_str(int $length): string
 {
     static $key = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -450,45 +427,26 @@ function convertToCase(string $value, string $to='snake_case', string $from = 'c
     return implode($separator, $words);
 }
 
-/**
- * @param string $type
- * @param bool $fresh
- * @return object
- */
 function collect(string $type, bool $fresh = false): object
 {
     return Application::getInstance()->getCollector()->collect($type, $fresh);
 }
 
-/**
- * @param string $class
- * @param string $description
- */
 function registerCollector(string $class, string $description): void
 {
     Application::getInstance()->getCollector()->register($class, $description);
 }
 
-/**
- * @param string $class
- */
 function unregisterCollector(string $class): void
 {
     Application::getInstance()->getCollector()->unregister($class);
 }
 
-/**
- * @return Validator
- */
 function validator(): Validator
 {
     return Application::getInstance()->getValidator();
 }
 
-/**
- * @param bool $fresh
- * @return bool
- */
 function recollect(bool $fresh = true): bool
 {
     return Application::getInstance()->getCollector()->recollect($fresh);
