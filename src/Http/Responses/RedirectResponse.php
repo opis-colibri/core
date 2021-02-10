@@ -21,11 +21,6 @@ use Opis\Colibri\Http\Response;
 
 class RedirectResponse extends Response
 {
-    /**
-     * @param string $location
-     * @param int $status
-     * @param array $headers
-     */
     public function __construct(string $location, int $status = 301, array $headers = [])
     {
         $headers['Location'] = $location;

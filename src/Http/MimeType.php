@@ -19,9 +19,6 @@ namespace Opis\Colibri\Http;
 
 final class MimeType
 {
-    /**
-     * Mime constructor
-     */
     private function __construct()
     {
         // nothing here

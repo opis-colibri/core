@@ -19,12 +19,6 @@ namespace Opis\Colibri\Http\Responses;
 
 class JSONResponse extends StringResponse
 {
-    /**
-     * @param $json
-     * @param int $status
-     * @param array $headers
-     * @param int $encodeOptions
-     */
     public function __construct(
         int|float|string|array|object|null $json,
         int $status = 200,

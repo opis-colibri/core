@@ -25,12 +25,6 @@ abstract class Message
     protected string $protocolVersion;
     protected ?Stream $body;
 
-    /**
-     * Message constructor.
-     * @param null|Stream $body
-     * @param array $headers
-     * @param string $protocolVersion
-     */
     public function __construct(?Stream $body = null, array $headers = [], string $protocolVersion = 'HTTP/1.1')
     {
         $this->body = $body;
@@ -38,53 +32,31 @@ abstract class Message
         $this->protocolVersion = $protocolVersion;
     }
 
-    /**
-     * @return string
-     */
     public function getProtocolVersion(): string
     {
         return $this->protocolVersion;
     }
 
-    /**
-     * @return null|Stream
-     */
     public function getBody(): ?Stream
     {
         return $this->body;
     }
 
-    /**
-     * @return array
-     */
     public function getHeaders(): array
     {
         return $this->headers;
     }
 
-    /**
-     * @param string $name
-     * @return bool
-     */
     public function hasHeader(string $name): bool
     {
         return isset($this->headers[$this->formatHeader($name)]);
     }
 
-    /**
-     * @param string $name
-     * @param string|null $default
-     * @return null|string
-     */
     public function getHeader(string $name, string $default = null): ?string
     {
         return $this->headers[$this->formatHeader($name)] ?? $default;
     }
 
-    /**
-     * @param array $headers
-     * @return array
-     */
     protected function filterHeaders(array $headers): array
     {
         $result = [];
@@ -100,10 +72,6 @@ abstract class Message
         return $result;
     }
 
-    /**
-     * @param string $header
-     * @return string
-     */
     protected function formatHeader(string $header): string
     {
         return ucwords(strtolower(trim($header)), '-');

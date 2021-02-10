@@ -23,11 +23,6 @@ use Opis\Colibri\Stream\{PHPMemoryStream, Stream};
 
 class StringResponse extends Response
 {
-    /**
-     * @param string|Stringable|null $body
-     * @param int $status
-     * @param array $headers
-     */
     public function __construct(string|Stringable|null $body, int $status = 200, array $headers = [])
     {
         if ($body === null || $status === 204) {

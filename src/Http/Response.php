@@ -99,13 +99,6 @@ class Response extends Message
         511 => 'Network Authentication Required',
     ];
 
-    /**
-     * Response constructor.
-     * @param int $statusCode
-     * @param array $headers
-     * @param null|Stream $body
-     * @param string $protocolVersion
-     */
     public function __construct(
         int $statusCode = 200,
         array $headers = [],
@@ -136,11 +129,7 @@ class Response extends Message
         }
     }
 
-    /**
-     * @param callable $callback
-     * @return Response
-     */
-    public function modify(callable $callback): self
+    public function modify(callable $callback): static
     {
         $response = clone $this;
         $response->locked = false;
@@ -149,11 +138,7 @@ class Response extends Message
         return $response;
     }
 
-    /**
-     * @param string $version
-     * @return Response
-     */
-    public function setProtocolVersion(string $version): self
+    public function setProtocolVersion(string $version): static
     {
         if ($this->locked) {
             throw new RuntimeException("Immutable object");
@@ -163,11 +148,7 @@ class Response extends Message
         return $this;
     }
 
-    /**
-     * @param int $code
-     * @return Response
-     */
-    public function setStatusCode(int $code): self
+    public function setStatusCode(int $code): static
     {
         if ($this->locked) {
             throw new RuntimeException("Immutable object");
@@ -177,28 +158,17 @@ class Response extends Message
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getStatusCode(): int
     {
         return $this->statusCode;
     }
 
-    /**
-     * @return string
-     */
     public function getReasonPhrase(): string
     {
         return self::HTTP_STATUS[$this->statusCode] ?? '';
     }
 
-    /**
-     * @param string $name
-     * @param string $value
-     * @return Response
-     */
-    public function setHeader(string $name, string $value): self
+    public function setHeader(string $name, string $value): static
     {
         if ($this->locked) {
             throw new RuntimeException("Immutable object");
@@ -209,11 +179,7 @@ class Response extends Message
         return $this;
     }
 
-    /**
-     * @param array $headers
-     * @return Response
-     */
-    public function addHeaders(array $headers): self
+    public function addHeaders(array $headers): static
     {
         if ($this->locked) {
             throw new RuntimeException("Immutable object");
@@ -226,11 +192,7 @@ class Response extends Message
         return $this;
     }
 
-    /**
-     * @param null|Stream $body
-     * @return Response
-     */
-    public function setBody(?Stream $body): self
+    public function setBody(?Stream $body): static
     {
         if ($this->locked) {
             throw new RuntimeException("Immutable object");
@@ -240,25 +202,11 @@ class Response extends Message
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getCookies(): array
     {
         return $this->cookies;
     }
 
-    /**
-     * @param string $name
-     * @param string $value
-     * @param int $expires
-     * @param string $path
-     * @param string $domain
-     * @param bool $secure
-     * @param bool $httponly
-     * @param string|null $samesite
-     * @return Response
-     */
     public function setCookie(
         string $name,
         string $value = '',
@@ -268,7 +216,7 @@ class Response extends Message
         bool $secure = false,
         bool $httponly = false,
         ?string $samesite = null
-    ): self {
+    ): static {
         if ($this->locked) {
             throw new RuntimeException("Immutable object");
         }
@@ -287,36 +235,18 @@ class Response extends Message
         return $this;
     }
 
-    /**
-     * @param string $name
-     * @param string $path
-     * @param string $domain
-     * @return null|string
-     */
     public function getCookie(string $name, string $path = '', string $domain = ''): ?string
     {
         $id = md5(serialize([$name, $path, $domain]));
         return isset($this->cookies[$id]) ? rawurldecode($this->cookies[$id]['value']) : null;
     }
 
-    /**
-     * @param string $name
-     * @param string $path
-     * @param string $domain
-     * @return bool
-     */
     public function hasCookie(string $name, string $path = '', string $domain = ''): bool
     {
         return isset($this->cookies[md5(serialize([$name, $path, $domain]))]);
     }
 
-    /**
-     * @param string $name
-     * @param string $path
-     * @param string $domain
-     * @return Response
-     */
-    public function clearCookie(string $name, string $path = '', string $domain = ''): self
+    public function clearCookie(string $name, string $path = '', string $domain = ''): static
     {
         if ($this->locked) {
             throw new RuntimeException("Immutable object");
@@ -327,10 +257,7 @@ class Response extends Message
         return $this;
     }
 
-    /**
-     * @return Response
-     */
-    public function clearCookies(): self
+    public function clearCookies(): static
     {
         if ($this->locked) {
             throw new RuntimeException("Immutable object");

@@ -31,13 +31,6 @@ class UploadedFile
     protected ?string $file = null;
     protected bool $moved = false;
 
-    /**
-     * @param string|Stream $file
-     * @param string|null $name
-     * @param int|null $size
-     * @param string|null $type
-     * @param int $error
-     */
     public function __construct(
         string|Stream $file,
         ?string $name = null,

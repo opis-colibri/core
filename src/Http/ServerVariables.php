@@ -19,30 +19,18 @@ namespace Opis\Colibri\Http;
 
 class ServerVariables
 {
-    /** @var array */
     private array $vars;
 
-    /**
-     * @param array $variables
-     */
     public function __construct(array $variables = [])
     {
         $this->vars = $variables;
     }
 
-    /**
-     * @return array
-     */
     public function all(): array
     {
         return $this->vars;
     }
 
-    /**
-     * @param string $name
-     * @param string|null $default
-     * @return string|null
-     */
     public function get(string $name, ?string $default = null): ?string
     {
         return $this->vars[$name] ?? $default;

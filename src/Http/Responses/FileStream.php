@@ -23,12 +23,6 @@ use Opis\Colibri\Http\{MimeType, Response};
 
 class FileStream extends Response
 {
-    /**
-     * @param string $file
-     * @param string|null $contentType
-     * @param int $status
-     * @param array $headers
-     */
     public function __construct(string $file, ?string $contentType = null, int $status = 200, array $headers = [])
     {
         if (!is_file($file)) {

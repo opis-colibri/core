@@ -19,12 +19,7 @@ namespace Opis\Colibri\Http\Responses;
 
 class HtmlResponse extends StringResponse
 {
-    /**
-     * @param mixed $body
-     * @param int $status
-     * @param array $headers
-     */
-    public function __construct($body, int $status = 200, array $headers = [])
+    public function __construct(mixed $body, int $status = 200, array $headers = [])
     {
         if ($status !== 204) {
             if (!isset($headers['Content-Type'])) {

@@ -25,12 +25,6 @@ use Opis\Colibri\Stream\ResourceStream;
 
 class FileDownload extends Response
 {
-    /**
-     * @param string $file
-     * @param array $options
-     * @param int $status
-     * @param array $headers
-     */
     public function __construct(string $file, array $options = [], int $status = 200, array $headers = [])
     {
         if (!is_file($file)) {

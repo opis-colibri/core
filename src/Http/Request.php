@@ -284,7 +284,7 @@ class Request extends Message
     /**
      * @return Request
      */
-    public static function fromGlobals(): self
+    public static function fromGlobals(): static
     {
         $vars = $_SERVER;
 
