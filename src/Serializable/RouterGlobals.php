@@ -20,19 +20,12 @@ namespace Opis\Colibri\Serializable;
 class RouterGlobals
 {
     private array $globals = [
-        'mixin' => [],
         'implicit' => [],
         'bind' => [],
         'filter' => [],
         'guard' => [],
         'placeholder' => [],
     ];
-
-    public function mixin(string $name, callable $callback): self
-    {
-        $this->globals[__FUNCTION__][$name] = $callback;
-        return $this;
-    }
 
     public function bind(string $name, callable $callback): self
     {
@@ -58,7 +51,7 @@ class RouterGlobals
         return $this;
     }
 
-    public function placeholder(string $name, string $value): self
+    public function placeholder(string $name, mixed $value): self
     {
         $this->globals[__FUNCTION__][$name] = $value;
         return $this;

@@ -156,7 +156,7 @@ class Route
         return $this->setBinding($name, $callback);
     }
 
-    public function placeholder(string $name, $value): static
+    public function placeholder(string $name, mixed $value): static
     {
         if ($this->inheriting && isset($this->getLocalPlaceholders()[$name])) {
             return $this;
@@ -165,7 +165,7 @@ class Route
         return $this->setPlaceholder($name, $value);
     }
 
-    public function implicit(string $name, $value): static
+    public function implicit(string $name, mixed $value): static
     {
         if ($this->inheriting && array_key_exists($name, $this->getLocalDefaults())) {
             return $this;
@@ -249,12 +249,12 @@ class Route
         return $this->placeholder($name, $this->collection->getRegexBuilder()->join($values));
     }
 
-    public function mixin(string $name, ?array $config = null): static
+    public function mixin(string $class, ?array $config = null): static
     {
-        if (!is_subclass_of($name, Mixin::class, true)) {
-            throw new RuntimeException("Unknown mixin " . $name);
+        if (!is_subclass_of($class, Mixin::class, true)) {
+            throw new RuntimeException("Unknown mixin " . $class);
         }
-        (new $name)($this, $config);
+        (new $class)($this, $config);
         return $this;
     }
 
