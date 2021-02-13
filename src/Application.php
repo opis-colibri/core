@@ -344,7 +344,7 @@ class Application
         }
 
         if (!isset($this->config[$driver])) {
-            $this->config[$driver] = $this->getCollector()->collect(ConfigCollector::class)->get($driver);
+            $this->config[$driver] = $this->getCollector()->collect(ConfigCollector::class)->getInstance($driver);
         }
 
         return $this->config[$driver];
@@ -445,7 +445,7 @@ class Application
         }
 
         if (!isset($this->loggers[$logger])) {
-            $this->loggers[$logger] = $this->getCollector()->collect(LoggerCollector::class)->get($logger);
+            $this->loggers[$logger] = $this->getCollector()->collect(LoggerCollector::class)->getInstance($logger);
         }
 
         return $this->loggers[$logger];

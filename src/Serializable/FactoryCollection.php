@@ -22,16 +22,11 @@ use InvalidArgumentException;
 
 class FactoryCollection extends Collection
 {
-    /**
-     * @var callable|null
-     */
-    private $builder;
     private bool $exception;
     private array $cache = [];
 
-    public function __construct(?callable $builder = null, bool $exception = true)
+    public function __construct(bool $exception = true)
     {
-        $this->builder = $builder;
         $this->exception = $exception;
     }
 
@@ -61,19 +56,12 @@ class FactoryCollection extends Collection
             return null;
         }
 
-        if ($this->builder) {
-            $instance = ($this->builder)($item['callback'], $item['options']);
-        } else {
-            $instance = $item['callback']($item['options']);
-        }
-
-        return $this->cache[$key] = $instance;
+        return $this->cache[$key] = $item();
     }
 
     public function __serialize(): array
     {
         return [
-            'builder' => $this->builder,
             'exception' => $this->exception,
             'parent' => parent::__serialize(),
         ];
@@ -82,7 +70,6 @@ class FactoryCollection extends Collection
     public function __unserialize(array $data): void
     {
         parent::__unserialize($data['parent']);
-        $this->builder = $data['builder'];
         $this->exception = $data['exception'];
     }
 }
