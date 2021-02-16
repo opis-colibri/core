@@ -93,6 +93,10 @@ class Renderer extends SortableList
      */
     public function render(Renderable $view): string
     {
+        if ($view->isRendered()) {
+            return $view;
+        }
+
         $path = $this->resolveViewName($view->getViewName());
 
         if ($path === null) {

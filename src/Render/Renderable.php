@@ -17,7 +17,9 @@
 
 namespace Opis\Colibri\Render;
 
-interface Renderable
+use Stringable;
+
+interface Renderable extends Stringable
 {
     /**
      * Returns view's name
@@ -32,4 +34,11 @@ interface Renderable
      * @return  array
      */
     public function getViewVariables(): array;
+
+    /**
+     * True if the renderable cached the rendered view
+     *
+     * @return bool
+     */
+    public function isRendered(): bool;
 }

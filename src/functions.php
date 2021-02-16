@@ -326,13 +326,9 @@ function view(string $name, array $vars = []): View
     return new View($name, $vars);
 }
 
-function render(string|Stringable|Renderable $view): string
+function render(string|Stringable $view): string
 {
     if ($view instanceof Renderable) {
-        if (($view instanceof View) && $view->isRendered()) {
-            // Render the view only once
-            return $view;
-        }
         return Application::getInstance()->getViewRenderer()->render($view);
     }
     return $view;

@@ -17,10 +17,9 @@
 
 namespace Opis\Colibri\Render;
 
-use Stringable;
-use function Opis\Colibri\render;
+use function Opis\Colibri\app;
 
-class View implements Renderable, Stringable
+class View implements Renderable
 {
     protected string $name;
     protected array $vars;
@@ -42,38 +41,18 @@ class View implements Renderable, Stringable
         return $this->vars;
     }
 
-    /**
-     * Set a value
-     *
-     * @param string $name
-     * @param mixed $value
-     * @return $this
-     */
-    protected function set(string $name, mixed $value): static
+    public function set(string $name, mixed $value): static
     {
         $this->vars[$name] = $value;
         return $this;
     }
 
-    /**
-     * Check if a value was set
-     *
-     * @param   string $name
-     * @return  boolean
-     */
-    protected function has(string $name): bool
+    public function has(string $name): bool
     {
         return isset($this->vars[$name]);
     }
 
-    /**
-     * Get a value
-     *
-     * @param string $name
-     * @param mixed|null $default
-     * @return mixed
-     */
-    protected function get(string $name, mixed $default = null): mixed
+    public function get(string $name, mixed $default = null): mixed
     {
         return $this->vars[$name] ?? $default;
     }
@@ -86,7 +65,7 @@ class View implements Renderable, Stringable
     public function __toString(): string
     {
         if ($this->renderedContent === null) {
-            $this->renderedContent = render($this);
+            $this->renderedContent = app()->getViewRenderer()->render($this);
         }
 
         return $this->renderedContent;
