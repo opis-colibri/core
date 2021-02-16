@@ -40,7 +40,7 @@ use Opis\ORM\{
 use Opis\Colibri\Routing\ControllerCallback;
 use Opis\Colibri\Http\{Request, Response};
 use Opis\Colibri\Http\Responses\{
-    HtmlResponse, JsonResponse, RedirectResponse
+    HtmlResponse, JSONResponse, RedirectResponse
 };
 use Opis\Colibri\Render\Renderable;
 use Psr\Log\LoggerInterface;
@@ -200,12 +200,12 @@ function request(): ?Request
  * @param string|array|stdClass|Stringable $body
  * @param int $status
  * @param array $headers
- * @return HtmlResponse|JsonResponse
+ * @return HtmlResponse|JSONResponse
  */
-function response(string|array|stdClass|Stringable $body, int $status = 200, array $headers = []): HtmlResponse|JsonResponse
+function response(string|array|stdClass|Stringable $body, int $status = 200, array $headers = []): HtmlResponse|JSONResponse
 {
     if (is_array($body) || $body instanceof stdClass) {
-        return new JsonResponse($body, $status, $headers);
+        return new JSONResponse($body, $status, $headers);
     }
 
     return new HtmlResponse($body, $status, $headers);
@@ -215,9 +215,9 @@ function response(string|array|stdClass|Stringable $body, int $status = 200, arr
  * @param int $status
  * @param string|array|stdClass|Stringable|null $body
  * @param array $headers
- * @return HtmlResponse|JsonResponse
+ * @return HtmlResponse|JSONResponse
  */
-function httpError(int $status, string|array|stdClass|Stringable $body = null, array $headers = []): HtmlResponse|JsonResponse
+function httpError(int $status, string|array|stdClass|Stringable $body = null, array $headers = []): HtmlResponse|JSONResponse
 {
     if ($body === null && $status >= 400) {
         $body = view('error.' . $status, [
