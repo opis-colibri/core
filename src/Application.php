@@ -706,13 +706,29 @@ class Application
     {
         $request = HttpRequest::fromGlobals();
 
-        $info = $this->getAppInfo();
-        $assetsPath = rtrim($info->assetsPath(), '/') . '/';
-        $path = $request->getUri()->path();
+        $path = $request->getUri()->path() ?: '';
 
-        if (str_starts_with($path, $assetsPath)) {
-            $file = $info->assetsDir() . '/' . substr($path, strlen($assetsPath));
-            if (is_file($file)) {
+        if ($path !== '' && $path !== '/') {
+            $file = null;
+            $path = rawurldecode($path);
+            $info = $this->getAppInfo();
+
+            // Check public and assets
+
+            $public_file = $info->publicDir() . $path;
+            if (is_file($public_file)) {
+                $file = $public_file;
+            } else {
+                $assetsPath = rtrim($info->assetsPath(), '/') . '/';
+                if (str_starts_with($path, $assetsPath)) {
+                    $file = $info->assetsDir() . '/' . substr($path, strlen($assetsPath));
+                    if (!is_file($file)) {
+                        $file = null;
+                    }
+                }
+            }
+
+            if ($file !== null) {
                 $response = new FileStream($file);
                 if ($flush) {
                     $this->flushResponse($request, $response);
