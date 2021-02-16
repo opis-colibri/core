@@ -316,13 +316,15 @@ class Request extends Message
             }
         }
 
-        if (($vars['PATH_INFO'] ?? '') !== '') {
+        if (isset($vars['REQUEST_URI'])) {
+            $requestTarget = $vars['REQUEST_URI'];
+        } elseif (($vars['PATH_INFO'] ?? '') !== '') {
             $requestTarget = $vars['PATH_INFO'];
             if (($vars['QUERY_STRING'] ?? '') !== '') {
                 $requestTarget .= '?' . $vars['QUERY_STRING'];
             }
         } else {
-            $requestTarget = $vars['REQUEST_URI'] ?? '/';
+            $requestTarget = '/';
         }
 
         return new self(
