@@ -63,7 +63,7 @@ class ViewsTest extends TestCase
 
     public function testImplicitValues()
     {
-        $this->renderer->handle('foo.{bar?}', static fn($bar) => $bar)->implicit('bar', 'baz');
+        $this->renderer->handle('foo.{bar?}', static fn($bar) => $bar)->default('bar', 'baz');
         $this->assertEquals('baz', $this->renderer->resolveViewName('foo'));
     }
 

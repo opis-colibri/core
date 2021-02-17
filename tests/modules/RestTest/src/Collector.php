@@ -42,7 +42,7 @@ class Collector extends BaseCollector
 
                 $route('/{controller}', $ctrl, ['GET', 'OPTIONS', 'POST'])
                     ->whereIn('controller', ['custom-controller'])
-                    ->implicit('action', 'collection');
+                    ->default('action', 'collection');
 
             }, RestResolver::PREFIX)
             // Add the rest resolver

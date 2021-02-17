@@ -27,8 +27,8 @@ class Collector extends BaseCollector
 {
     public function routerGlobals(RouterGlobalsCollector $global)
     {
-        $global->implicit('g1', 'G1');
-        $global->implicit('gow', 'foo');
+        $global->default('g1', 'G1');
+        $global->default('gow', 'foo');
 
         $global->filter('filter_g1', static fn() => false);
 

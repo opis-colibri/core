@@ -33,19 +33,6 @@ class RouterGlobalsCollector extends BaseCollector
     }
 
     /**
-     * Set a global mixin
-     *
-     * @param string $name
-     * @param callable $callback
-     * @return $this
-     */
-    public function mixin(string $name, callable $callback): self
-    {
-        $this->data()->mixin($name, $callback);
-        return $this;
-    }
-
-    /**
      * Defines a global binding
      *
      * @param   string $name The name of the binding
@@ -93,9 +80,9 @@ class RouterGlobalsCollector extends BaseCollector
      *
      * @return  $this
      */
-    public function implicit(string $name, mixed $value): self
+    public function default(string $name, mixed $value): self
     {
-        $this->data()->implicit($name, $value);
+        $this->data()->default($name, $value);
         return $this;
     }
 

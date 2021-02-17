@@ -50,7 +50,7 @@ class RouteGroup
         return $this->callMethod(__FUNCTION__, [$name, $callback]);
     }
 
-    public function implicit(string $name, $value): static
+    public function default(string $name, mixed $value): static
     {
         return $this->callMethod(__FUNCTION__, [$name, $value]);
     }

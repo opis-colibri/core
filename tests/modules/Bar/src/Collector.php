@@ -32,10 +32,10 @@ class Collector extends BaseCollector
         $route('/multiple-methods', static fn() => 'OK', ['GET', 'POST']);
 
         $route('/bar-opt/{bar?}', static fn($bar) => $bar)
-            ->implicit('bar', 'bar');
+            ->default('bar', 'bar');
 
         $route('/bar-opt-g1/{g1?}', static fn($g1) => $g1)
-            ->implicit('g1', 'OG1');
+            ->default('g1', 'OG1');
 
         $route('/bar-guard2', static fn() => 'bar')
             ->guard('guard1', static fn() => true)
@@ -50,7 +50,7 @@ class Collector extends BaseCollector
                 $route->group(static function (RouteCollector $route) {
                     $route('/', static fn($upName) => $upName)
                         // overwrite implicit again
-                        ->implicit('name', 'group3');
+                        ->default('name', 'group3');
                 }, '/baz')
                     // binding should handle & overwrite implicit
                     ->bind('name', static fn($name) => implode('-', str_split($name)))
@@ -59,7 +59,7 @@ class Collector extends BaseCollector
 
             }, '/bar')
                 // overwrite
-                ->implicit('name', 'group2');
+                ->default('name', 'group2');
 
             $route->group(static function (RouteCollector $route) {
                 $route('/public', static fn($type) => $type);
@@ -76,7 +76,7 @@ class Collector extends BaseCollector
                 ->whereIn('type', ['type1', 'type2', 'type3']);
 
         }, '/bar-group')
-            ->implicit('name', 'group1')
+            ->default('name', 'group1')
             ->bind('upName', static fn($name) => strtoupper($name));
 
     }
@@ -99,7 +99,7 @@ class Collector extends BaseCollector
     #[Priority(1)]
     public function priorityGlobals(RouterGlobalsCollector $global)
     {
-        $global->implicit('gow', 'bar');
+        $global->default('gow', 'bar');
     }
 
     public function domainRoutes(RouteCollector $route)

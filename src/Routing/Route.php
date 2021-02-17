@@ -36,7 +36,7 @@ class Route
         getBindings as getLocalBindings;
         getDefaults as getLocalDefaults;
         bind as private setBinding;
-        implicit as private setImplicit;
+        default as private setDefault;
     }
 
     private RouteCollection $collection;
@@ -165,13 +165,13 @@ class Route
         return $this->setPlaceholder($name, $value);
     }
 
-    public function implicit(string $name, mixed $value): static
+    public function default(string $name, mixed $value): static
     {
         if ($this->inheriting && array_key_exists($name, $this->getLocalDefaults())) {
             return $this;
         }
 
-        return $this->setImplicit($name, $value);
+        return $this->setDefault($name, $value);
     }
 
     public function filter(string $name, ?callable $callback = null): static

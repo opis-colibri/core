@@ -20,7 +20,7 @@ namespace Opis\Colibri\Serializable;
 class RouterGlobals
 {
     private array $globals = [
-        'implicit' => [],
+        'default' => [],
         'bind' => [],
         'filter' => [],
         'guard' => [],
@@ -45,7 +45,7 @@ class RouterGlobals
         return $this;
     }
 
-    public function implicit(string $name, mixed $value): self
+    public function default(string $name, mixed $value): self
     {
         $this->globals[__FUNCTION__][$name] = $value;
         return $this;

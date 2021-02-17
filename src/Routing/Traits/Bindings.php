@@ -42,7 +42,7 @@ trait Bindings
         return $this;
     }
 
-    public function implicit(string $name, mixed $value): static
+    public function default(string $name, mixed $value): static
     {
         $this->defaults[$name] = $value;
         return $this;
