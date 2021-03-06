@@ -47,9 +47,7 @@ class RestTest extends BaseAppTestCase
         $result = $this->execJSON('/api/custom-controller', 'POST', "5");
 
         $this->assertEquals(422, $result->getStatusCode());
-        $this->assertEquals(['/' => [
-            "I expected 'integer' not 'string'"
-        ]], $this->getRestErrors($result));
+        $this->assertEquals(['/' => "I expected 'integer' not 'string'"], $this->getRestErrors($result));
     }
 
     public function test_actionAddToList_error_minimum(): void
@@ -57,8 +55,6 @@ class RestTest extends BaseAppTestCase
         $result = $this->execJSON('/api/custom-controller', 'POST', 3);
 
         $this->assertEquals(422, $result->getStatusCode());
-        $this->assertEquals(['/' => [
-            "Send at least 4"
-        ]], $this->getRestErrors($result));
+        $this->assertEquals(['/' => "Send at least 4"], $this->getRestErrors($result));
     }
 }
