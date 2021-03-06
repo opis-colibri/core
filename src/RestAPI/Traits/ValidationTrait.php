@@ -65,7 +65,7 @@ trait ValidationTrait
      */
     protected function formatErrors(
         ValidationError $error,
-        bool $multiple = true,
+        bool $multiple = false,
         ?callable $formatter = null,
         ?callable $key_formatter = null
     ): array {
