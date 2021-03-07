@@ -17,9 +17,8 @@
 
 namespace Opis\Colibri\Routing;
 
-use SplQueue;
-use Generator;
-use Opis\Colibri\Http\{Request, Responses\HtmlResponse, Response};
+use SplQueue, Generator, JsonSerializable, stdClass;
+use Opis\Colibri\Http\{Request, Responses\HtmlResponse, Response, Responses\JSONResponse};
 
 class Dispatcher
 {
@@ -55,32 +54,20 @@ class Dispatcher
         $list = $route->getMiddleware();
 
         if (!$list) {
-            $result = $invoker->invokeAction();
-            if (!$result instanceof Response) {
-                return new HtmlResponse($result);
-            }
-            return $result;
+            return $this->handleResult($invoker->invokeAction());
         }
 
         $queue = new SplQueue();
         $next = static function () use ($queue, $invoker, $resolver): Response {
             do {
                 if ($queue->isEmpty()) {
-                    $result = $invoker->invokeAction();
-                    if (!$result instanceof Response) {
-                        return new HtmlResponse($result);
-                    }
-                    return $result;
+                    return $this->handleResult($invoker->invokeAction());
                 }
                 /** @var Middleware $middleware */
                 $middleware = $queue->dequeue();
             } while (!is_callable($middleware));
 
-            $result = $resolver->execute($middleware);
-            if (!($result instanceof Response)) {
-                return new HtmlResponse($result);
-            }
-            return $result;
+            return $this->handleResult($resolver->execute($middleware));
         };
 
         foreach ($list as $item) {
@@ -90,6 +77,17 @@ class Dispatcher
         }
 
         return $next();
+    }
+
+    private function handleResult(mixed $result): Response
+    {
+        if (!$result instanceof Response) {
+            if (is_array($result) || $result instanceof stdClass || $result instanceof JsonSerializable) {
+                return new JSONResponse($result);
+            }
+            return new HtmlResponse($result);
+        }
+        return $result;
     }
 
     private function findRoute(Router $router, Request $request): ?Route

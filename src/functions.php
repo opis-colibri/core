@@ -21,6 +21,7 @@ use Opis\Colibri\Serializable\RelativePath;
 use stdClass;
 use Exception;
 use Stringable;
+use JsonSerializable;
 use Opis\Colibri\Cache\CacheDriver;
 use Opis\JsonSchema\Validator;
 use Opis\Database\{
@@ -204,7 +205,7 @@ function request(): ?Request
  */
 function response(string|array|stdClass|Stringable $body, int $status = 200, array $headers = []): HtmlResponse|JSONResponse
 {
-    if (is_array($body) || $body instanceof stdClass) {
+    if (is_array($body) || $body instanceof stdClass || $body instanceof JsonSerializable) {
         return new JSONResponse($body, $status, $headers);
     }
 
