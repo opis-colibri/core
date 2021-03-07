@@ -58,7 +58,7 @@ class Dispatcher
         }
 
         $queue = new SplQueue();
-        $next = static function () use ($queue, $invoker, $resolver): Response {
+        $next = function () use ($queue, $invoker, $resolver): Response {
             do {
                 if ($queue->isEmpty()) {
                     return $this->handleResult($invoker->invokeAction());
