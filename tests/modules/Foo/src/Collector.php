@@ -19,24 +19,12 @@ namespace Test\Foo;
 
 use Opis\Colibri\Collector as BaseCollector;
 use Opis\Colibri\Http\Request;
-use Opis\Colibri\Collectors\{RouterGlobalsCollector, RouteCollector};
+use Opis\Colibri\Collectors\{RouteCollector};
 use Test\Foo\Middleware\{AuthMiddleware, ToUpperMiddleware, PrefixMiddleware};
 use function Opis\Colibri\response;
 
 class Collector extends BaseCollector
 {
-    public function routerGlobals(RouterGlobalsCollector $global)
-    {
-        $global->default('g1', 'G1');
-        $global->default('gow', 'foo');
-
-        $global->filter('filter_g1', static fn() => false);
-
-        $global->bind('bind_g1', static fn ($foo1) => 'bind_g1_' . $foo1);
-
-        $global->bind('bind_g2', static fn ($bind_g2) => 'bind_g2_' . $bind_g2);
-    }
-
     public function routes(RouteCollector $route)
     {
         $route('/', static fn() => 'Front page');
@@ -61,15 +49,10 @@ class Collector extends BaseCollector
         $route('/foo-filter-g1-pass', static fn() => 'foo');
 
         $route('/foo-guard1', static fn() => 'foo')
-            ->guard('guard1', static fn() => true);
+            ->guard(static fn() => true);
 
         $route('/foo-guard2', static fn() => 'foo')
-            ->guard('guard1', static fn() => true)
-            ->guard('guard2', static fn() => true);
-
-        $route('/foo-guard-uk', static fn() => 'foo')
-            ->guard('guard_uk1')
-            ->guard('guard_uk2');
+            ->guard(static fn() => true);
 
         $route('/foo/bind/1/{foo1}', static fn ($foo1, $foo2) => $foo1 . $foo2)
             ->bind('foo2', static fn ($foo1) => strtoupper($foo1));

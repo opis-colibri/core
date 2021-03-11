@@ -18,29 +18,21 @@
 namespace Opis\Colibri\Routing;
 
 use RuntimeException;
-use Opis\Colibri\Routing\Traits\{
-    Filter as FilterTrait,
-    Bindings as BindingTrait
-};
 
 class Route
 {
-    use FilterTrait {
-        getPlaceholders as getLocalPlaceholders;
-        filter as private setFilter;
-        guard as private setGuard;
-        placeholder as private setPlaceholder;
-    }
-
-    use BindingTrait {
-        getBindings as getLocalBindings;
-        getDefaults as getLocalDefaults;
-        bind as private setBinding;
-        default as private setDefault;
-    }
-
     private RouteCollection $collection;
     private string $pattern;
+
+    /** @var callable[] */
+    private array $guards = [];
+    private array $placeholders = [];
+    /** @var callable[] */
+    private array $filters = [];
+
+    /** @var callable[] */
+    private array $bindings = [];
+    private array $defaults = [];
 
     /** @var callable */
     private $action;
@@ -117,79 +109,81 @@ class Route
         return $this->priority;
     }
 
-    public function getDefaults(): array
+    public function getPlaceholders(): array
     {
-        if (!isset($this->cache[__FUNCTION__])) {
-            $this->cache[__FUNCTION__] = $this->getLocalDefaults() + $this->collection->getDefaults();
-        }
-
-        return $this->cache[__FUNCTION__];
+        return $this->placeholders;
     }
 
     /**
      * @return callable[]
      */
-    public function getBindings(): array
+    public function getFilters(): array
     {
-        if (!isset($this->cache[__FUNCTION__])) {
-            $this->cache[__FUNCTION__] = $this->getLocalBindings() + $this->collection->getBindings();
-        }
-
-        return $this->cache[__FUNCTION__];
+        return $this->filters;
     }
 
-    public function getPlaceholders(): array
+    /**
+     * @return callable[]
+     */
+    public function getGuards(): array
     {
-        if (!isset($this->cache[__FUNCTION__])) {
-            $this->cache[__FUNCTION__] = $this->getLocalPlaceholders() + $this->collection->getPlaceholders();
-        }
+        return $this->guards;
+    }
 
-        return $this->cache[__FUNCTION__];
+    public function getDefaults(): array
+    {
+        return $this->defaults;
+    }
+
+    /**
+     * @return  callable[]
+     */
+    public function getBindings(): array
+    {
+        return $this->bindings;
     }
 
     public function bind(string $name, callable $callback): static
     {
-        if ($this->inheriting && isset($this->getLocalBindings()[$name])) {
+        if ($this->inheriting && array_key_exists($name, $this->bindings)) {
             return $this;
         }
-
-        return $this->setBinding($name, $callback);
+        $this->bindings[$name] = $callback;
+        return $this;
     }
 
     public function placeholder(string $name, mixed $value): static
     {
-        if ($this->inheriting && isset($this->getLocalPlaceholders()[$name])) {
+        if ($this->inheriting && array_key_exists($name, $this->placeholders)) {
             return $this;
         }
-
-        return $this->setPlaceholder($name, $value);
+        $this->placeholders[$name] = $value;
+        return $this;
     }
 
     public function default(string $name, mixed $value): static
     {
-        if ($this->inheriting && array_key_exists($name, $this->getLocalDefaults())) {
+        if ($this->inheriting && array_key_exists($name, $this->defaults)) {
             return $this;
         }
-
-        return $this->setDefault($name, $value);
+        $this->defaults[$name] = $value;
+        return $this;
     }
 
-    public function filter(string $name, ?callable $callback = null): static
+    public function filter(callable $callback ): static
     {
-        if ($this->inheriting && array_key_exists($name, $this->filters)) {
-            return $this;
+        if (!in_array($callback, $this->filters)) {
+            $this->filters[] = $callback;
         }
-
-        return $this->setFilter($name, $callback);
+        return $this;
     }
 
-    public function guard(string $name, ?callable $callback = null): static
+    public function guard(callable $callback): static
     {
-        if ($this->inheriting && array_key_exists($name, $this->guards)) {
-            return $this;
+        if (!in_array($callback, $this->guards)) {
+            $this->guards[] = $callback;
         }
-
-        return $this->setGuard($name, $callback);
+        return $this;
     }
 
     public function middleware(string ...$middleware): static

@@ -40,14 +40,14 @@ class RouteGroup
         return $this->callMethod(__FUNCTION__, [$name, $callback]);
     }
 
-    public function filter(string $name, ?callable $callback = null): static
+    public function filter(callable $callback): static
     {
-        return $this->callMethod(__FUNCTION__, [$name, $callback]);
+        return $this->callMethod(__FUNCTION__, [$callback]);
     }
 
-    public function guard(string $name, ?callable $callback = null): static
+    public function guard(callable $callback): static
     {
-        return $this->callMethod(__FUNCTION__, [$name, $callback]);
+        return $this->callMethod(__FUNCTION__, [$callback]);
     }
 
     public function default(string $name, mixed $value): static

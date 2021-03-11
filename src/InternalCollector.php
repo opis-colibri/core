@@ -57,7 +57,7 @@ final class InternalCollector extends Collector
                 $route('/opis-colibri/assets/{file}', self::class . '::assetFile')
                     ->whereIn('file', ['logo.png', 'background.png', 'favicon.png']);
             })
-            ->filter('opis-colibri-production', self::class . '::isDevelopment');
+            ->filter(self::class . '::isDevelopment');
     }
 
     /** -- Filters -- */

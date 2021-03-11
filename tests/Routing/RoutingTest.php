@@ -132,30 +132,6 @@ class RoutingTest extends BaseAppTestCase
         $this->assertEquals('ok', (string)$result->getBody());
     }
 
-    public function testImplicitGlobal1()
-    {
-        $result = $this->exec('/foo-opt-g1');
-
-        $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('G1', (string)$result->getBody());
-    }
-
-    public function testGlobalOverwrite()
-    {
-        $result = $this->exec('/foo-global-overwrite');
-
-        $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('bar', (string)$result->getBody());
-    }
-
-    public function testImplicitGlobal1Override()
-    {
-        $result = $this->exec('/bar-opt-g1');
-
-        $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('OG1', (string)$result->getBody());
-    }
-
     public function testFilter1()
     {
         $result = $this->exec('/foo-filter1');
@@ -210,14 +186,6 @@ class RoutingTest extends BaseAppTestCase
         $this->assertEquals(404, $result->getStatusCode());
     }
 
-    public function testGuardUnknown()
-    {
-        $result = $this->exec('/foo-guard-uk');
-
-        $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('foo', (string)$result->getBody());
-    }
-
     public function testBind1()
     {
         $result = $this->exec('/foo/bind/1/foo');
@@ -232,22 +200,6 @@ class RoutingTest extends BaseAppTestCase
 
         $this->assertEquals(200, $result->getStatusCode());
         $this->assertEquals('FOO', (string)$result->getBody());
-    }
-
-    public function testBindGlobal1()
-    {
-        $result = $this->exec('/foo/bind/3/foo');
-
-        $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('bind_g1_foo', (string)$result->getBody());
-    }
-
-    public function testBindGlobal2()
-    {
-        $result = $this->exec('/foo/bind/4/foo');
-
-        $this->assertEquals(200, $result->getStatusCode());
-        $this->assertEquals('bind_g2_foo', (string)$result->getBody());
     }
 
     public function testMiddlewareAuth()

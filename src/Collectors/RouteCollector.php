@@ -29,16 +29,7 @@ class RouteCollector extends BaseCollector
 
     public function __construct()
     {
-        $routes = new RouteCollection();
-        $globals = collect(RouterGlobalsCollector::class);
-
-        foreach ($globals->getGlobals() as $method => $entries) {
-            foreach ($entries as $name => $value) {
-                $routes->{$method}($name, $value);
-            }
-        }
-
-        parent::__construct($routes);
+        parent::__construct(new RouteCollection());
     }
 
     /**

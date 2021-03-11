@@ -18,15 +18,9 @@
 namespace Opis\Colibri\Routing;
 
 use Throwable;
-use Opis\Colibri\Routing\Traits\{
-    Filter as FilterTrait,
-    Bindings as BindingTrait
-};
 
 class RouteCollection
 {
-    use FilterTrait, BindingTrait;
-
     /** @var Route[] */
     private array $routes = [];
 
@@ -222,10 +216,6 @@ class RouteCollection
             'domainRegex' => $this->getDomainRegexPatterns(),
             'routes' => $this->routes,
             'namedRoutes' => $this->namedRoutes,
-            'defaults' => $this->defaults,
-            'bindings' => $this->bindings,
-            'filters' => $this->filters,
-            'placeholders' => $this->placeholders,
         ];
     }
 

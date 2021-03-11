@@ -34,20 +34,9 @@ class UserFilter implements Filter
     {
         $invoker = $router->resolveInvoker($route, $request);
         $resolver = $invoker->getArgumentResolver();
-        $filters = $route->getRouteCollection()->getFilters();
 
-        /**
-         * @var string $name
-         * @var callable|null $callback
-         */
-        foreach ($route->getFilters() as $name => $callback) {
-            if ($callback === null) {
-                if (!isset($filters[$name])) {
-                    continue;
-                }
-                $callback = $filters[$name];
-            }
 
+        foreach ($route->getFilters() as $callback) {
             if (false === $resolver->execute($callback, false)) {
                 return false;
             }

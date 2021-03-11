@@ -46,7 +46,6 @@ use Opis\Colibri\Collectors\{
     JsonSchemaResolversCollector,
     LoggerCollector,
     RouteCollector,
-    RouterGlobalsCollector,
     SessionCollector,
     TemplateStreamHandlerCollector,
     TranslationCollector,
@@ -1058,10 +1057,6 @@ class Application
             'routes' => [
                 'class' => RouteCollector::class,
                 'description' => 'Collects web routes',
-            ],
-            'router-globals' => [
-                'class' => RouterGlobalsCollector::class,
-                'description' => 'Collects routing related global items',
             ],
             'views' => [
                 'class' => ViewCollector::class,

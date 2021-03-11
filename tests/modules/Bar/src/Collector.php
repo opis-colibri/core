@@ -19,7 +19,7 @@ namespace Test\Bar;
 
 use Opis\Colibri\Collector as BaseCollector;
 use Opis\Colibri\Attributes\Priority;
-use Opis\Colibri\Collectors\{RouterGlobalsCollector, RouteCollector};
+use Opis\Colibri\Collectors\{RouteCollector};
 
 class Collector extends BaseCollector
 {
@@ -38,8 +38,8 @@ class Collector extends BaseCollector
             ->default('g1', 'OG1');
 
         $route('/bar-guard2', static fn() => 'bar')
-            ->guard('guard1', static fn() => true)
-            ->guard('guard2', static fn() => false);
+            ->guard(static fn() => true)
+            ->guard(static fn() => false);
 
         $route->group(static function (RouteCollector $route) {
             $route('/foo', static fn($upName) => $upName);
@@ -87,19 +87,10 @@ class Collector extends BaseCollector
         $route('/foo', static fn() => 'Bar');
 
         $route('/foo-filter1', static fn() => 'bar')
-            ->filter('filter1', static fn() => false);
-
-        $route('/foo-filter-g1', static fn() => 'bar')
-            ->filter('filter_g1');
+            ->filter(static fn() => false);
 
         $route('/foo-filter-g1-pass', static fn() => 'bar')
-            ->filter('filter_g1', static fn() => true);
-    }
-
-    #[Priority(1)]
-    public function priorityGlobals(RouterGlobalsCollector $global)
-    {
-        $global->default('gow', 'bar');
+            ->filter(static fn() => true);
     }
 
     public function domainRoutes(RouteCollector $route)

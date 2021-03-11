@@ -32,20 +32,8 @@ class Dispatcher
 
         $invoker = $router->resolveInvoker($route, $request);
         $resolver = $invoker->getArgumentResolver();
-        $guards = $route->getRouteCollection()->getGuards();
 
-        /**
-         * @var string $name
-         * @var callable|null $callback
-         */
-        foreach ($route->getGuards() as $name => $callback) {
-            if ($callback === null) {
-                if (!isset($guards[$name])) {
-                    continue;
-                }
-                $callback = $guards[$name];
-            }
-
+        foreach ($route->getGuards() as $callback) {
             if (false === $resolver->execute($callback)) {
                 return null;
             }
