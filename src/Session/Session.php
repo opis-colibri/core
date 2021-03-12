@@ -92,11 +92,7 @@ class Session
     public function __destruct()
     {
         if ($this->session !== null) {
-            $flash = $this->flash()->toArray();
-            if ($flash) {
-                $this->data[$this->config['flash_slot']] = $flash;
-            }
-            unset($flash);
+            $this->data[$this->config['flash_slot']] = $this->flash()->toArray();
             $this->session->setData($this->data);
             $this->handler->update($this->session);
         }
