@@ -32,11 +32,13 @@ class UserFilter implements Filter
      */
     public function filter(Router $router, Route $route, Request $request): bool
     {
-        $invoker = $router->resolveInvoker($route, $request);
-        $resolver = $invoker->getArgumentResolver();
+        if (!($filters = $route->getFilters())) {
+            return true;
+        }
 
+        $resolver = $router->resolveInvoker($route, $request)->getArgumentResolver();
 
-        foreach ($route->getFilters() as $callback) {
+        foreach ($filters as $callback) {
             if (false === $resolver->execute($callback, false)) {
                 return false;
             }

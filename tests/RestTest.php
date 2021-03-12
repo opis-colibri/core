@@ -55,6 +55,6 @@ class RestTest extends BaseAppTestCase
         $result = $this->execJSON('/api/custom-controller', 'POST', 3);
 
         $this->assertEquals(422, $result->getStatusCode());
-        //$this->assertEquals(['/' => "Send at least 4"], $this->getRestErrors($result));
+        $this->assertEquals(['/' => "Send at least 4"], $this->getRestErrors($result));
     }
 }

@@ -41,7 +41,7 @@ class ArgumentResolver
         $this->defaults = $defaults;
     }
 
-    public function addValue(string $name, $value): static
+    public function addValue(string $name, mixed $value): static
     {
         $this->values[$name] = $value;
         return $this;
@@ -55,8 +55,8 @@ class ArgumentResolver
 
     public function addValues(array $values): static
     {
-        foreach ($values as $name => $value) {
-            $this->values[$name] = $value;
+        if ($values) {
+            $this->values = array_merge($this->values, $values);
         }
 
         return $this;
@@ -68,8 +68,8 @@ class ArgumentResolver
      */
     public function addBindings(array $bindings): static
     {
-        foreach ($bindings as $name => $callback) {
-            $this->bindings[$name] = $callback;
+        if ($bindings) {
+            $this->bindings = array_merge($this->bindings, $bindings);
         }
 
         return $this;

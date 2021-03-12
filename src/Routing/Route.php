@@ -44,7 +44,6 @@ class Route
     /** @var string[] */
     private array $method;
 
-    private array $cache = [];
     private array $properties = [];
     private bool $inheriting = false;
 
@@ -170,19 +169,25 @@ class Route
         return $this;
     }
 
-    public function filter(callable $callback ): static
+    public function filter(callable ...$callbacks): static
     {
-        if (!in_array($callback, $this->filters)) {
-            $this->filters[] = $callback;
+        foreach ($callbacks as $callback) {
+            if (!in_array($callback, $this->filters, true)) {
+                $this->filters[] = $callback;
+            }
         }
+
         return $this;
     }
 
-    public function guard(callable $callback): static
+    public function guard(callable ...$callbacks): static
     {
-        if (!in_array($callback, $this->guards)) {
-            $this->guards[] = $callback;
+        foreach ($callbacks as $callback) {
+            if (!in_array($callback, $this->guards, true)) {
+                $this->guards[] = $callback;
+            }
         }
+
         return $this;
     }
 

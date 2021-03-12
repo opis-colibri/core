@@ -258,7 +258,7 @@ class RouteCollection
                 random_int(0, 0x3fff) | 0x8000,
                 random_int(0, 0xffffffffffff)
             );
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             return sprintf('%012x%04x%04x%012x',
                 rand(0, 0xffffffffffff),
                 rand(0, 0x0fff) | 0x4000,
