@@ -19,7 +19,7 @@ namespace Opis\Colibri\Attributes;
 
 use Attribute;
 
-#[Attribute]
+#[Attribute(Attribute::TARGET_CLASS)]
 final class Module
 {
     public ?string $name;
