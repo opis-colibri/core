@@ -21,7 +21,6 @@ use Throwable;
 
 abstract class Installer
 {
-
     protected Module $module;
 
     /**
@@ -68,32 +67,32 @@ abstract class Installer
     /**
      * @param Throwable $e
      */
-    public function installError(Throwable $e)
+    public function installError(Throwable $e): void
     {
-
+        logError($e, "Module install error");
     }
 
     /**
      * @param Throwable $e
      */
-    public function enableError(Throwable $e)
+    public function enableError(Throwable $e): void
     {
-
+        logError($e, "Module enable error");
     }
 
     /**
      * @param Throwable $e
      */
-    public function uninstallError(Throwable $e)
+    public function uninstallError(Throwable $e): void
     {
-
+        logError($e, "Module uninstall error");
     }
 
     /**
      * @param Throwable $e
      */
-    public function disableError(Throwable $e)
+    public function disableError(Throwable $e): void
     {
-
+        logError($e, "Module disable error");
     }
 }

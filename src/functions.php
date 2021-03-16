@@ -17,9 +17,8 @@
 
 namespace Opis\Colibri;
 
-use Opis\Colibri\Serializable\RelativePath;
 use stdClass;
-use Exception;
+use Throwable;
 use Stringable;
 use JsonSerializable;
 use Opis\Colibri\Cache\CacheDriver;
@@ -43,6 +42,7 @@ use Opis\Colibri\Http\{Request, Response};
 use Opis\Colibri\Http\Responses\{
     HtmlResponse, JSONResponse, RedirectResponse
 };
+use Opis\Colibri\Serializable\RelativePath;
 use Opis\Colibri\Render\Renderable;
 use Psr\Log\LoggerInterface;
 use Opis\Colibri\Events\Event;
@@ -258,6 +258,16 @@ function logger(?string $logger = null): LoggerInterface
     return Application::getInstance()->getLogger($logger);
 }
 
+function logError(Throwable $error, ?string $message = null, ?string $logger = null): void {
+    Application::getInstance()->getLogger($logger)->error($message ?? $error->getMessage(), [
+        'error' => $error->getMessage(),
+        'file' => $error->getFile(),
+        'line' => $error->getLine(),
+        'code' => $error->getCode(),
+        'trace' => $error->getTraceAsString(),
+    ]);
+}
+
 /**
  * @param string|null $name
  * @return Session
@@ -345,7 +355,7 @@ function uuid4(string $sep = '-'): string
             random_int(0, 0x3fff) | 0x8000,
             random_int(0, 0xffffffffffff)
         );
-    } catch (Exception) {
+    } catch (Throwable) {
         return sprintf("%08x$sep%04x$sep%04x$sep%04x$sep%012x",
             rand(0, 0xffffffff),
             rand(0, 0xffff),
@@ -367,7 +377,7 @@ function random_str(int $length): string
         for ($i = 0; $i < $length; $i++) {
             $str .= $key[random_int(0, $limit)];
         }
-    } catch (Exception) {
+    } catch (Throwable) {
         $str = '';
         for ($i = 0; $i < $length; $i++) {
             $str .= $key[rand(0, $limit)];
