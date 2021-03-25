@@ -44,7 +44,6 @@ class RoutingTest extends BaseAppTestCase
         $this->assertEquals(404, $result->getStatusCode());
     }
 
-
     public function testBarPage()
     {
         $result = $this->exec('/bar');
@@ -298,6 +297,24 @@ class RoutingTest extends BaseAppTestCase
         }
     }
 
+    /**
+     * @dataProvider paramResolverProvider
+     */
+    public function testParamResolver(string $uri, int $status, mixed $expected)
+    {
+        $result = $this->exec($uri);
+
+        $this->assertEquals($status, $result->getStatusCode());
+        $this->assertEquals($expected, json_decode((string)$result->getBody())->v);
+    }
+
+    public function testParamResolverException()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Could not resolve `foo` parameter');
+        $this->exec('/param-resolver/exception');
+    }
+
     public function domainTestProvider(): array
     {
         return [
@@ -305,6 +322,18 @@ class RoutingTest extends BaseAppTestCase
             ['http://sub2.example.com/sub-domain', 200, 'sub=2'],
             ['http://sub-123.example.com/sub-domain', 404, null],
             ['http://sub-abc.example.com/sub-domain', 200, 'sub=abc'],
+        ];
+    }
+
+    public function paramResolverProvider(): array
+    {
+        return [
+            ['/param-resolver/default', 200, 'bar'],
+            ['/param-resolver/nullable', 200, null],
+            ['/param-resolver/variadic', 200, []],
+            ['/param-resolver/unknown', 200, null],
+            ['/param-resolver/union', 200, 'Test\Bar\TestClassA'],
+            ['/param-resolver/union-nullable', 200, null],
         ];
     }
 }

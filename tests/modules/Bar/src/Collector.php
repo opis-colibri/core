@@ -106,4 +106,15 @@ class Collector extends BaseCollector
             ->where('name', '[a-z]+')
         ;
     }
+
+    public function paramResolverRoutes(RouteCollector $route)
+    {
+        $route->get('/param-resolver/exception', static fn(string $foo) => $foo);
+        $route->get('/param-resolver/default', static fn(string $foo = 'bar') => ['v' => $foo]);
+        $route->get('/param-resolver/nullable', static fn(?string $foo) => ['v' => $foo]);
+        $route->get('/param-resolver/variadic', static fn(string ...$foo) => ['v' => $foo]);
+        $route->get('/param-resolver/union', static fn(string|int|TestClassA $foo) => ['v' => $foo]);
+        $route->get('/param-resolver/union-nullable', static fn(string|int|null $foo) => ['v' => $foo]);
+        $route->get('/param-resolver/unknown', static fn($foo) => ['v' => $foo]);
+    }
 }

@@ -91,6 +91,10 @@ class ArgumentResolver
             return $this->defaults[$name];
         }
 
+        if ($default instanceof ParamResolver) {
+            return $default->resolve();
+        }
+
         return $default;
     }
 
@@ -111,10 +115,13 @@ class ArgumentResolver
         }
 
         foreach ($parameters as $param) {
+            if ($param->isVariadic()) {
+                break;
+            }
             $arguments[] = $this->getArgumentValue(
                 $param->getName(),
                 $bind,
-                $param->isDefaultValueAvailable() ? $param->getDefaultValue() : null
+                new ParamResolver($param)
             );
         }
 
