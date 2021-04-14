@@ -33,7 +33,6 @@
         "composer/composer": "^2.0",
         "opis/closure": "4.x-dev",
         "opis/database": "2020.x-dev",
-        "opis/orm": "2020.x-dev",
         "opis/uri": "2021.x-dev",
         "opis/json-schema": "2020.x-dev",
         "psr/log": "^1.0",

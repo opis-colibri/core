@@ -26,16 +26,14 @@ use Opis\JsonSchema\Validator;
 use Opis\Database\{
     Connection as DBConnection,
     Database,
-    Schema
+    Schema,
+    EntityManager,
+    ORM\Internal\EntityQuery
 };
 use Opis\Colibri\Config\ConfigDriver;
 use Opis\Colibri\I18n\Translator\{
     LanguageInfo,
     SubTranslator
-};
-use Opis\ORM\{
-    EntityManager,
-    Core\EntityQuery
 };
 use Opis\Colibri\Routing\ControllerCallback;
 use Opis\Colibri\Http\{Request, Response};

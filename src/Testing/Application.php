@@ -74,16 +74,6 @@ class Application extends BaseApplication
                     $connection->disconnect();
                 }
             }
-            if ($this->database) {
-                foreach ($this->database as $database) {
-                    $database->getConnection()->disconnect();
-                }
-            }
-            if ($this->entityManager) {
-                foreach ($this->entityManager as $entityManager) {
-                    $entityManager->getConnection()->disconnect();
-                }
-            }
             if ($this->session) {
                 foreach ($this->session as $session) {
                     if ($session) {
@@ -101,8 +91,6 @@ class Application extends BaseApplication
         $this->csrfTokenInstance = null;
         $this->cache = [];
         $this->connection = [];
-        $this->database = [];
-        $this->entityManager = [];
         $this->session = [];
         $this->httpRequest = null;
         $this->httpRouter = null;

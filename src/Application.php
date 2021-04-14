@@ -31,8 +31,7 @@ use Opis\Colibri\Render\Renderer;
 use Opis\Colibri\Http\{Request as HttpRequest, Response as HttpResponse, Responses\FileStream};
 use Opis\Colibri\Config\ConfigDriver;
 use Opis\Colibri\Routing\Router;
-use Opis\Database\{Connection, Database, Schema};
-use Opis\ORM\EntityManager;
+use Opis\Database\{Connection, Database, Schema, EntityManager};
 use Opis\JsonSchema\Validator;
 use Opis\Colibri\Templates\TemplateStream;
 use Opis\Colibri\Collectors\{
@@ -88,12 +87,6 @@ class Application
 
     /** @var  Connection[] */
     protected array $connection = [];
-
-    /** @var  Database[] */
-    protected array $database = [];
-
-    /** @var  EntityManager[] */
-    protected array $entityManager = [];
 
     /** @var  Session[] */
     protected array $session = [];
@@ -418,13 +411,7 @@ class Application
      */
     public function getEntityManager(?string $connection = null): EntityManager
     {
-        $entry = $connection ?? '#default';
-
-        if (!isset($this->entityManager[$entry])) {
-            $this->entityManager[$entry] = new EntityManager($this->getConnection($connection));
-        }
-
-        return $this->entityManager[$entry];
+        return $this->getConnection($connection)->getEntityManager();
     }
 
     /**
@@ -620,8 +607,6 @@ class Application
         $this->cache = [];
         $this->config = [];
         $this->connection = [];
-        $this->database = [];
-        $this->entityManager = [];
         $this->loggers = [];
         TemplateStream::clearCache();
     }
