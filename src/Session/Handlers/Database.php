@@ -18,13 +18,13 @@
 namespace Opis\Colibri\Session\Handlers;
 
 use Opis\Colibri\Session\{SessionData, SessionHandler};
-use Opis\Database\{Connection, Schema, Schema\Blueprint, SQL\WhereStatement, Database as OpisDatabase};
+use Opis\Database\{Connection, Schema, Schema\Blueprint, SQL\WhereStatement, DatabaseHandler};
 
 class Database implements SessionHandler
 {
     use SessionIdTrait;
 
-    protected ?OpisDatabase $db;
+    protected ?DatabaseHandler $db;
     protected string $table;
     protected array $columns;
     protected ?string $name = null;
@@ -37,7 +37,7 @@ class Database implements SessionHandler
      */
     public function __construct(Connection $connection, string $table = 'sessions', array $columns = [])
     {
-        $this->db = new OpisDatabase($connection);
+        $this->db = $connection->getDatabaseHandler();
         $this->table = $table;
         $this->columns = $columns + [
             'id' => 'id',

@@ -25,7 +25,7 @@ use Opis\Colibri\Cache\CacheDriver;
 use Opis\JsonSchema\Validator;
 use Opis\Database\{
     Connection as DBConnection,
-    Database,
+    DatabaseHandler,
     Schema,
     EntityManager,
     ORM\Internal\EntityQuery
@@ -121,11 +121,11 @@ function connection(?string $name = null): DBConnection
 
 /**
  * @param string|null $connection
- * @return Database
+ * @return DatabaseHandler
  */
-function db(?string $connection = null): Database
+function db(?string $connection = null): DatabaseHandler
 {
-    return Application::getInstance()->getDatabase($connection);
+    return Application::getInstance()->getDatabaseHandler($connection);
 }
 
 /**

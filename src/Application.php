@@ -31,7 +31,7 @@ use Opis\Colibri\Render\Renderer;
 use Opis\Colibri\Http\{Request as HttpRequest, Response as HttpResponse, Responses\FileStream};
 use Opis\Colibri\Config\ConfigDriver;
 use Opis\Colibri\Routing\Router;
-use Opis\Database\{Connection, Database, Schema, EntityManager};
+use Opis\Database\{Connection, DatabaseHandler, Schema, EntityManager};
 use Opis\JsonSchema\Validator;
 use Opis\Colibri\Templates\TemplateStream;
 use Opis\Colibri\Collectors\{
@@ -389,11 +389,11 @@ class Application
 
     /**
      * @param string|null $connection
-     * @return Database
+     * @return DatabaseHandler
      */
-    public function getDatabase(?string $connection = null): Database
+    public function getDatabaseHandler(?string $connection = null): DatabaseHandler
     {
-        return $this->getConnection($connection)->getDatabase();
+        return $this->getConnection($connection)->getDatabaseHandler();
     }
 
     /**

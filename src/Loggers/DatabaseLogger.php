@@ -19,11 +19,11 @@ namespace Opis\Colibri\Loggers;
 
 use DateTime;
 use Psr\Log\AbstractLogger;
-use Opis\Database\{Connection, Database, Schema, Schema\Blueprint};
+use Opis\Database\{Connection, DatabaseHandler, Schema, Schema\Blueprint};
 
 class DatabaseLogger extends AbstractLogger
 {
-    protected Database $db;
+    protected DatabaseHandler $db;
     protected string $table;
     protected array $columns;
 
@@ -34,7 +34,7 @@ class DatabaseLogger extends AbstractLogger
      */
     public function __construct(Connection $connection, string $table = 'logs', array $columns = [])
     {
-        $this->db = new Database($connection);
+        $this->db = $connection->getDatabaseHandler();
         $this->table = $table;
         $this->columns = $columns + [
             'id' => 'id',
